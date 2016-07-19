@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    tools:context="ro.antiprotv.radioclock.MainActivity">
+    tools:context=".ClockActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -15,8 +15,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true"
-        android:text="@string/dummy_content"
-        android:textColor="#00ff00"
+        android:textColor="@color/color.clock"
         android:textSize="150sp"
         android:textStyle="bold"/>
 
@@ -24,6 +23,7 @@
          android:fitsSystemWindows. -->
 
     <FrameLayout
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -40,11 +40,34 @@
 
             <Button
                 android:id="@+id/stream1"
+                android:tag="setting.key.stream1"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/stream1"
-                android:clickable="false" />
+                android:text="@string/button.name.stream1"
+                android:clickable="false"
+                android:background="@drawable/memory"
+                android:textColor="@color/button.color.off" />
+            <Button
+                android:id="@+id/stream2"
+                android:tag="setting.key.stream2"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button.name.stream2"
+                android:clickable="false"
+                android:background="@drawable/memory"
+                android:textColor="@color/button.color.off" />
+            <Button
+                android:id="@+id/stream3"
+                android:tag="setting.key.stream3"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button.name.stream3"
+                android:clickable="false"
+                android:background="@drawable/memory"
+                android:textColor="@color/button.color.off" />
 
         </LinearLayout>
 

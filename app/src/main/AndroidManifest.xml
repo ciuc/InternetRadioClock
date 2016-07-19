@@ -9,9 +9,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         >
+        <!-- main activity -->
         <activity
-            android:name=".MainActivity"
+            android:name=".ClockActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="landscape"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
@@ -21,6 +23,13 @@
             </intent-filter>
         </activity>
 
+        <!-- Settings activity-->
+        <activity
+            android:name="ro.antiprotv.radioclock.PreferencesActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="landscape"
+            android:label="Preferences">
+        </activity>
     </application>
 <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

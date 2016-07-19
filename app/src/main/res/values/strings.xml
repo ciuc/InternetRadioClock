@@ -1,6 +1,26 @@
 <resources>
-    <string name="app_name">RadioClock</string>
+    <string name="app_name">InternetRadioClock</string>
 
-    <string name="stream1">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="button.name.stream1">1</string>
+    <string name="button.name.stream2">2</string>
+    <string name="button.name.stream3">3</string>
+
+    <!--settings-->
+
+    <string name="settings.menu.settings">Settings</string>
+    <string name="settings.menu.exit">Exit</string>
+
+    <string name="setting.key.stream1">setting.key.stream1</string>
+    <string name="setting.key.stream2">setting.key.stream2</string>
+    <string name="setting.key.stream3">setting.key.stream3</string>
+
+
+    <string name="setting.name.stream1">Memory 1</string>
+    <string name="setting.name.stream2">Memory 2</string>
+    <string name="setting.name.stream3">Memory 3</string>
+
+    <string name="setting.default.stream1">http://live.guerrillaradio.ro:8010/guerrilla.aac</string>
+    <string name="setting.default.stream2">http://live.tananana.ro:8010/stream-48.aac</string>
+    <string name="setting.default.stream3">http://live.guerrillaradio.ro:8010/guerrilla.aac</string>
+
 </resources>

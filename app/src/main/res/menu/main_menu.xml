@@ -3,6 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/settings"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:title="xxx"
+        android:title="@string/settings.menu.settings"
+        app:showAsAction="never"/>
+    <item android:id="@+id/exit"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/settings.menu.exit"
         app:showAsAction="never"/>
 </menu>
