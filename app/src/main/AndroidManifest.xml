@@ -30,6 +30,13 @@
             android:screenOrientation="landscape"
             android:label="Preferences">
         </activity>
+
+        <activity
+            android:name="ro.antiprotv.radioclock.AboutActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="landscape"
+            android:label="About">
+        </activity>
     </application>
 <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

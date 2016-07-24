@@ -5,6 +5,10 @@
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/settings.menu.settings"
         app:showAsAction="never"/>
+    <item android:id="@+id/about"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/settings.menu.about"
+        app:showAsAction="never"/>
     <item android:id="@+id/exit"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/settings.menu.exit"

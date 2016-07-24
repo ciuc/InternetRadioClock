@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.RunnableFuture;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -65,6 +66,7 @@ public class ClockActivity extends AppCompatActivity {
     private static final int UI_ANIMATION_DELAY = 300;
 
     public static final String TAG_RADIOCLOCK = "RadioClock";
+    public static final String TAG_STATE = "State";
     private TextView mContentView;
     private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private EMAudioPlayer mMediaPlayer;
@@ -82,6 +84,27 @@ public class ClockActivity extends AppCompatActivity {
     //url(setting_key_stream1 >  http://something)
     private final HashMap<String, String> mUrls = new HashMap<String, String>();
 
+    private ClockRunner clockRunner;
+
+    private class ClockRunner extends Thread {
+        @Override
+        public void run() {
+            try {
+                Log.d(TAG_RADIOCLOCK, "Starting clock thread: " + isInterrupted());
+                while (!Thread.currentThread().isInterrupted()) {
+                    Thread.sleep(1000);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mContentView.setText(sdf.format(new Date()));
+                        }
+                    });
+                }
+            } catch (InterruptedException e) {
+                Log.d(TAG_RADIOCLOCK, "Thread interrupted");
+            }
+        }
+    }
     ///////////////////////////////////////////////////////////////////////////
     // State methods
     ///////////////////////////////////////////////////////////////////////////
@@ -120,11 +143,12 @@ public class ClockActivity extends AppCompatActivity {
         mContentView.setTextSize(TypedValue.COMPLEX_UNIT_FRACTION,200);
 
         //Clock changing thread
-        Thread t = new Thread() {
+        /*clockRunner = new Thread() {
 
             @Override
             public void run() {
                 try {
+                    Log.d(TAG_RADIOCLOCK, "Starting clock thread: " + isInterrupted());
                     while (!isInterrupted()) {
                         Thread.sleep(1000);
                         runOnUiThread(new Runnable() {
@@ -135,11 +159,13 @@ public class ClockActivity extends AppCompatActivity {
                         });
                     }
                 } catch (InterruptedException e) {
+                    Log.d(TAG_RADIOCLOCK, "Thread interrupted");
                 }
             }
-        };
+        };*/
 
-        t.start();
+        clockRunner = new ClockRunner();
+        clockRunner.start();
 
         //Initialize the buttons list
         Button stream1 = (Button) findViewById(R.id.stream1);
@@ -175,15 +201,42 @@ public class ClockActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG_RADIOCLOCK, "onDestroy called");
+        Log.d(TAG_STATE, "onDestroy");
         stop();
         mMediaPlayer = null;
+        clockRunner.interrupt();
         super.onDestroy();
     }
     @Override
     protected void onRestart() {
+        Log.d(TAG_STATE, "onRestart");
         super.onRestart();
-        resetMediaPlayer();
+        if (mMediaPlayer == null) {
+            initMediaPlayer();
+        }
+        if (!clockRunner.isAlive()) {
+            clockRunner = new ClockRunner();
+            clockRunner.start();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(TAG_STATE, "onStop");
+        super.onStop();
+        Log.d(TAG_RADIOCLOCK, clockRunner.getState().toString());
+        clockRunner.interrupt();
+        Log.d(TAG_RADIOCLOCK, clockRunner.getState().toString());
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(TAG_STATE, "onStart");
+        super.onStart();
+        Log.d(TAG_RADIOCLOCK, clockRunner.getState().toString());
+        if (clockRunner.isInterrupted()) {
+            clockRunner.run(); 
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -353,6 +406,11 @@ public class ClockActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setClassName(this, "ro.antiprotv.radioclock.PreferencesActivity");
                 startActivity(intent);
+                return true;
+            case R.id.about:
+                Intent about = new Intent();
+                about.setClassName(this, "ro.antiprotv.radioclock.AboutActivity");
+                startActivity(about);
                 return true;
             case R.id.exit:
                 resetMediaPlayer();
