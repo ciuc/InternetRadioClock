@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.media.MediaCodec;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -38,7 +40,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.RunnableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -84,13 +89,15 @@ public class ClockActivity extends AppCompatActivity {
     //url(setting_key_stream1 >  http://something)
     private final HashMap<String, String> mUrls = new HashMap<String, String>();
 
+    //Threads
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
     private ClockRunner clockRunner;
 
-    private class ClockRunner extends Thread {
+    private class ClockRunner implements Runnable {
         @Override
         public void run() {
             try {
-                Log.d(TAG_RADIOCLOCK, "Starting clock thread: " + isInterrupted());
+                //Log.d(TAG_RADIOCLOCK, "Starting clock thread: " + isInterrupted());
                 while (!Thread.currentThread().isInterrupted()) {
                     Thread.sleep(1000);
                     runOnUiThread(new Runnable() {
@@ -142,30 +149,10 @@ public class ClockActivity extends AppCompatActivity {
         mContentView.setTypeface(digital7);
         mContentView.setTextSize(TypedValue.COMPLEX_UNIT_FRACTION,200);
 
-        //Clock changing thread
-        /*clockRunner = new Thread() {
-
-            @Override
-            public void run() {
-                try {
-                    Log.d(TAG_RADIOCLOCK, "Starting clock thread: " + isInterrupted());
-                    while (!isInterrupted()) {
-                        Thread.sleep(1000);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mContentView.setText(sdf.format(new Date()));
-                            }
-                        });
-                    }
-                } catch (InterruptedException e) {
-                    Log.d(TAG_RADIOCLOCK, "Thread interrupted");
-                }
-            }
-        };*/
-
         clockRunner = new ClockRunner();
-        clockRunner.start();
+        if (executorService.isShutdown() || executorService.isTerminated()) {
+            executorService = Executors.newSingleThreadExecutor();
+        }
 
         //Initialize the buttons list
         Button stream1 = (Button) findViewById(R.id.stream1);
@@ -204,7 +191,7 @@ public class ClockActivity extends AppCompatActivity {
         Log.d(TAG_STATE, "onDestroy");
         stop();
         mMediaPlayer = null;
-        clockRunner.interrupt();
+        executorService.shutdown();
         super.onDestroy();
     }
     @Override
@@ -214,9 +201,8 @@ public class ClockActivity extends AppCompatActivity {
         if (mMediaPlayer == null) {
             initMediaPlayer();
         }
-        if (!clockRunner.isAlive()) {
-            clockRunner = new ClockRunner();
-            clockRunner.start();
+        if (executorService.isShutdown() || executorService.isTerminated()) {
+            executorService = Executors.newSingleThreadExecutor();
         }
     }
 
@@ -224,19 +210,17 @@ public class ClockActivity extends AppCompatActivity {
     protected void onStop() {
         Log.d(TAG_STATE, "onStop");
         super.onStop();
-        Log.d(TAG_RADIOCLOCK, clockRunner.getState().toString());
-        clockRunner.interrupt();
-        Log.d(TAG_RADIOCLOCK, clockRunner.getState().toString());
+        executorService.shutdown();
     }
 
     @Override
     protected void onStart() {
         Log.d(TAG_STATE, "onStart");
         super.onStart();
-        Log.d(TAG_RADIOCLOCK, clockRunner.getState().toString());
-        if (clockRunner.isInterrupted()) {
-            clockRunner.run(); 
+        if (executorService.isShutdown() || executorService.isTerminated()) {
+            executorService = Executors.newSingleThreadExecutor();
         }
+        executorService.execute(clockRunner);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -295,6 +279,17 @@ public class ClockActivity extends AppCompatActivity {
         return 0;
     }
 
+    private void lightButton() {
+        for (Button button: buttons) {
+            button.setTextColor(getResources().getColor(R.color.button_color_off));
+            GradientDrawable buttonShape = (GradientDrawable)button.getBackground();
+            buttonShape.setStroke(1, getResources().getColor(R.color.button_color));
+        }
+        mButtonClicked.setTextColor(getResources().getColor(R.color.color_clock));
+        GradientDrawable buttonShape = (GradientDrawable)mButtonClicked.getBackground();
+        buttonShape.setStroke(1, getResources().getColor(R.color.color_clock));
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // Media Player
     ///////////////////////////////////////////////////////////////////////////
@@ -314,10 +309,7 @@ public class ClockActivity extends AppCompatActivity {
          @Override
         public void onPrepared() {
             mMediaPlayer.start();
-            for (Button button: buttons) {
-                button.setTextColor(getResources().getColor(R.color.button_color_off));
-             }
-             mButtonClicked.setTextColor(getResources().getColor(R.color.color_clock));
+             lightButton();
              mPlayingStreamNo = mButtonClicked.getId();
              mPlayingStreamTag = mButtonClicked.getTag().toString();
              enableButtons();
@@ -378,6 +370,9 @@ public class ClockActivity extends AppCompatActivity {
         enableButtons();
         if (mButtonClicked != null) {
             mButtonClicked.setTextColor(getResources().getColor(R.color.button_color_off));
+            GradientDrawable buttonShape = (GradientDrawable)mButtonClicked.getBackground();
+            buttonShape.setStroke(1, getResources().getColor(R.color.button_color));
+
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
@@ -417,6 +412,7 @@ public class ClockActivity extends AppCompatActivity {
                 Intent home = new Intent(Intent.ACTION_MAIN);
                 home.addCategory(Intent.CATEGORY_HOME);
                 home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                executorService.shutdown();
                 startActivity(home);
             default:
                 return super.onOptionsItemSelected(item);

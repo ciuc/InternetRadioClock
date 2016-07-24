@@ -5,6 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="button.color.off">#cfd8dc</color>
     <color name="color.clock">#00ff00</color>
-
+    <color name="button.color">#424242</color>
     <color name="black_overlay">#66000000</color>
 </resources>
