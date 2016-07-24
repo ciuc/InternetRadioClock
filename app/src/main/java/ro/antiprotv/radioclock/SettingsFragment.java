@@ -1,3 +1,8 @@
+/**
+ * Copyright Cristian "ciuc" Starasciuc 2016
+ * Licensed under the Apache license 2.0
+ * cristi.ciuc@gmail.com
+ */
 package ro.antiprotv.radioclock;
 
 import android.content.SharedPreferences;

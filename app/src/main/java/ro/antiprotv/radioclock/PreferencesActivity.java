@@ -1,3 +1,7 @@
+/**
+ * Copyright Cristian "ciuc" Starasciuc 2016
+ * cristi.ciuc@gmail.com
+ */
 package ro.antiprotv.radioclock;
 
 import android.preference.PreferenceActivity;

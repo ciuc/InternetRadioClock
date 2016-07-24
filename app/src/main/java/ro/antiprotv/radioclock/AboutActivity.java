@@ -1,10 +1,13 @@
+/**
+ * Copyright Cristian "ciuc" Starasciuc 2016
+ * cristi.ciuc@gmail.com
+ */
 package ro.antiprotv.radioclock;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -13,10 +16,17 @@ import android.widget.TextView;
  */
 public class AboutActivity extends AppCompatActivity {
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        Log.d("xxx", "ccc");
-        super.onCreate(savedInstanceState, persistentState);
-        TextView mContentView = (TextView) findViewById(R.id.fullscreen_content);
-        setContentView(mContentView);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("AboutActivity", "oncreate");
+        setContentView(R.layout.activity_about);
+        TextView foo = (TextView) findViewById(R.id.aboutText);
+        foo.setText(Html.fromHtml(getString(R.string.about_text)));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("AboutActivity", "oinstart");
     }
 }

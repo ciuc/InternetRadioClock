@@ -1,3 +1,10 @@
+/**
+ * Copyright Cristian "ciuc" Starasciuc 2016
+ *
+ * Licensed under the Apache license 2.0
+ *
+ * cristi.ciuc@gmail.com
+ */
 package ro.antiprotv.radioclock;
 
 import android.annotation.SuppressLint;
@@ -6,8 +13,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.media.MediaCodec;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
@@ -27,13 +32,9 @@ import android.widget.Toast;
 
 
 import com.devbrackets.android.exomedia.EMAudioPlayer;
-import com.devbrackets.android.exomedia.core.listener.InternalErrorListener;
 import com.devbrackets.android.exomedia.listener.OnErrorListener;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
-import com.google.android.exoplayer.MediaCodecTrackRenderer;
-import com.google.android.exoplayer.audio.AudioTrack;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,8 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.RunnableFuture;
-import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
