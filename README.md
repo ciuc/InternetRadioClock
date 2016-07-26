@@ -4,3 +4,4 @@
 <p>I tried to keep it as simple as possible, but if you have any ideas or you think it can be improved, write me an email at cristi.ciuc@gmail.com</p>
 <p>The code is opensource and it can be found on github: https://github.com/ciuc/InternetRadioClock</p>
 <p>The pretty cool font used is: True Type Fonts: DIGITAL-7 version 1.02; credit goes to <a href="http://www.styleseven.com">Style-7</a> and you can find it here: <a href="http://www.1001fonts.com/digital-7-font.html">www.1001fonts.com/digital-7-font.html</a>.</p>
+<p>And, of course, I use Timber <a href="https://github.com/JakeWharton/timber">https://github.com/JakeWharton/timber</a>
