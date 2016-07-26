@@ -1,8 +1,8 @@
 /**
  * Copyright Cristian "ciuc" Starasciuc 2016
- *
+ * <p/>
  * Licensed under the Apache license 2.0
- *
+ * <p/>
  * cristi.ciuc@gmail.com
  */
 package ro.antiprotv.radioclock;
@@ -14,11 +14,11 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -29,7 +29,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.devbrackets.android.exomedia.EMAudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnErrorListener;
@@ -43,6 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import timber.log.Timber;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -69,8 +70,8 @@ public class ClockActivity extends AppCompatActivity {
      */
     private static final int UI_ANIMATION_DELAY = 300;
 
-    public static final String TAG_RADIOCLOCK = "RadioClock";
-    public static final String TAG_STATE = "State";
+    public static final String TAG_RADIOCLOCK = "ClockActivity: %s";
+    public static final String TAG_STATE = "ClockActivity | State: %s";
     private TextView mContentView;
     private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private EMAudioPlayer mMediaPlayer;
@@ -96,7 +97,6 @@ public class ClockActivity extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                //Log.d(TAG_RADIOCLOCK, "Starting clock thread: " + isInterrupted());
                 while (!Thread.currentThread().isInterrupted()) {
                     Thread.sleep(1000);
                     runOnUiThread(new Runnable() {
@@ -107,7 +107,7 @@ public class ClockActivity extends AppCompatActivity {
                     });
                 }
             } catch (InterruptedException e) {
-                Log.d(TAG_RADIOCLOCK, "Thread interrupted");
+                Timber.d(TAG_RADIOCLOCK, "Thread interrupted");
             }
         }
     }
@@ -121,6 +121,10 @@ public class ClockActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        //Set up Timber
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = (TextView) findViewById(R.id.fullscreen_content);
@@ -146,7 +150,7 @@ public class ClockActivity extends AppCompatActivity {
         findViewById(R.id.stream3).setOnClickListener(playOnClickListener);
 
         mContentView.setTypeface(digital7);
-        mContentView.setTextSize(TypedValue.COMPLEX_UNIT_FRACTION,200);
+        mContentView.setTextSize(TypedValue.COMPLEX_UNIT_FRACTION, 200);
 
         clockRunner = new ClockRunner();
         if (executorService.isShutdown() || executorService.isTerminated()) {
@@ -157,7 +161,7 @@ public class ClockActivity extends AppCompatActivity {
         Button stream1 = (Button) findViewById(R.id.stream1);
         Button stream2 = (Button) findViewById(R.id.stream2);
         Button stream3 = (Button) findViewById(R.id.stream3);
-        buttons = Arrays.asList(new Button[]{stream1,stream2,stream3});
+        buttons = Arrays.asList(new Button[]{stream1, stream2, stream3});
 
         //make sure the buttons are enabled
         enableButtons();
@@ -187,15 +191,16 @@ public class ClockActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG_STATE, "onDestroy");
+        Timber.d(TAG_STATE, "onDestroy");
         stop();
         mMediaPlayer = null;
         executorService.shutdown();
         super.onDestroy();
     }
+
     @Override
     protected void onRestart() {
-        Log.d(TAG_STATE, "onRestart");
+        Timber.d(TAG_STATE, "onRestart");
         super.onRestart();
         if (mMediaPlayer == null) {
             initMediaPlayer();
@@ -207,14 +212,14 @@ public class ClockActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        Log.d(TAG_STATE, "onStop");
+        Timber.d(TAG_STATE, "onStop");
         super.onStop();
         executorService.shutdown();
     }
 
     @Override
     protected void onStart() {
-        Log.d(TAG_STATE, "onStart");
+        Timber.d(TAG_STATE, "onStart");
         super.onStart();
         if (executorService.isShutdown() || executorService.isTerminated()) {
             executorService = Executors.newSingleThreadExecutor();
@@ -230,7 +235,7 @@ public class ClockActivity extends AppCompatActivity {
 
         @Override
         public void onClick(final View view) {
-            Log.d(TAG_RADIOCLOCK, "Play clicked: " + view.getTag());
+            Timber.d(TAG_RADIOCLOCK, "Play clicked: " + view.getTag());
             mButtonClicked = (Button) view;
             disableButtons();
             if (mMediaPlayer != null) {
@@ -253,24 +258,26 @@ public class ClockActivity extends AppCompatActivity {
 
     /* convenience methods to deal with button UI */
     private void disableButtons() {
-        for (Button button: buttons) {
+        for (Button button : buttons) {
             button.setEnabled(false);
         }
     }
+
     private void enableButtons() {
-        for (Button button: buttons) {
+        for (Button button : buttons) {
             button.setEnabled(true);
         }
     }
 
     private void resetButtons() {
-        for (Button button: buttons) {
+        for (Button button : buttons) {
             button.setEnabled(true);
             button.setTextColor(getResources().getColor(R.color.button_color_off));
         }
     }
+
     private int findButtonByTag(String tag) {
-        for (Button button: buttons) {
+        for (Button button : buttons) {
             if (button.getTag().equals(tag)) {
                 return button.getId();
             }
@@ -279,13 +286,13 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     private void lightButton() {
-        for (Button button: buttons) {
+        for (Button button : buttons) {
             button.setTextColor(getResources().getColor(R.color.button_color_off));
-            GradientDrawable buttonShape = (GradientDrawable)button.getBackground();
+            GradientDrawable buttonShape = (GradientDrawable) button.getBackground();
             buttonShape.setStroke(1, getResources().getColor(R.color.button_color));
         }
         mButtonClicked.setTextColor(getResources().getColor(R.color.color_clock));
-        GradientDrawable buttonShape = (GradientDrawable)mButtonClicked.getBackground();
+        GradientDrawable buttonShape = (GradientDrawable) mButtonClicked.getBackground();
         buttonShape.setStroke(1, getResources().getColor(R.color.color_clock));
     }
 
@@ -298,21 +305,23 @@ public class ClockActivity extends AppCompatActivity {
         mMediaPlayer.setOnPreparedListener(new CustomOnPreparedListener());
         mMediaPlayer.setOnErrorListener(new CustomOnErrorListener());
     }
+
     private void resetMediaPlayer() {
         if (mMediaPlayer != null) {
             stop();
             mMediaPlayer = null;
         }
     }
-    private class CustomOnPreparedListener implements OnPreparedListener{
-         @Override
+
+    private class CustomOnPreparedListener implements OnPreparedListener {
+        @Override
         public void onPrepared() {
             mMediaPlayer.start();
-             lightButton();
-             mPlayingStreamNo = mButtonClicked.getId();
-             mPlayingStreamTag = mButtonClicked.getTag().toString();
-             enableButtons();
-             Log.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag);
+            lightButton();
+            mPlayingStreamNo = mButtonClicked.getId();
+            mPlayingStreamTag = mButtonClicked.getTag().toString();
+            enableButtons();
+            Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag);
 
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(mPlayingStreamTag));
         }
@@ -337,20 +346,20 @@ public class ClockActivity extends AppCompatActivity {
         String url;
         switch (buttonId) {
             case R.id.stream1:
-                url=mUrls.get(getResources().getString(R.string.setting_key_stream1));
+                url = mUrls.get(getResources().getString(R.string.setting_key_stream1));
                 break;
             case R.id.stream2:
-                url=mUrls.get(getResources().getString(R.string.setting_key_stream2));
+                url = mUrls.get(getResources().getString(R.string.setting_key_stream2));
                 break;
             case R.id.stream3:
-                url=mUrls.get(getResources().getString(R.string.setting_key_stream3));
+                url = mUrls.get(getResources().getString(R.string.setting_key_stream3));
                 break;
             default:
                 url = "http://live.guerrillaradio.ro:8010/guerrilla.aac";
                 break;
         }
         Toast.makeText(ClockActivity.this, "Playing " + url, Toast.LENGTH_SHORT).show();
-        Log.d(TAG_RADIOCLOCK, "url " + url);
+        Timber.d(TAG_RADIOCLOCK, "url " + url);
         if (url != null) {
             mMediaPlayer.setDataSource(getBaseContext(), Uri.parse(url));
         } else {//Something went wrong, resetting
@@ -359,7 +368,7 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    private void stop(){
+    private void stop() {
         if (mMediaPlayer != null) {
             if (mMediaPlayer.isPlaying()) {
                 Toast.makeText(ClockActivity.this, "Stopping stream", Toast.LENGTH_SHORT).show();
@@ -369,7 +378,7 @@ public class ClockActivity extends AppCompatActivity {
         enableButtons();
         if (mButtonClicked != null) {
             mButtonClicked.setTextColor(getResources().getColor(R.color.button_color_off));
-            GradientDrawable buttonShape = (GradientDrawable)mButtonClicked.getBackground();
+            GradientDrawable buttonShape = (GradientDrawable) mButtonClicked.getBackground();
             buttonShape.setStroke(1, getResources().getColor(R.color.button_color));
 
         }
@@ -396,7 +405,7 @@ public class ClockActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.settings:
-                Log.d(TAG_RADIOCLOCK, "Settings clicked");
+                Timber.d(TAG_RADIOCLOCK, "Settings clicked");
                 Intent intent = new Intent();
                 intent.setClassName(this, "ro.antiprotv.radioclock.PreferencesActivity");
                 startActivity(intent);
@@ -422,13 +431,13 @@ public class ClockActivity extends AppCompatActivity {
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
             mUrls.put(key, prefs.getString(key, "aaa"));
 
-            Log.d(TAG_RADIOCLOCK,"tag: " + mPlayingStreamTag + "; key" + key);
+            Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag + "; key" + key);
 
-                if (key.equals(mPlayingStreamTag)) {
-                    stop();
-                    play(findButtonByTag(key));
-                }
+            if (key.equals(mPlayingStreamTag)) {
+                stop();
+                play(findButtonByTag(key));
             }
+        }
     };
 
     ///////////////////////////////////////////////////////////////////////////
@@ -441,6 +450,7 @@ public class ClockActivity extends AppCompatActivity {
             show();
         }
     }
+
     private final Runnable mHideRunnable = new Runnable() {
         @Override
         public void run() {

@@ -11,6 +11,8 @@ import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
 
+import timber.log.Timber;
+
 /**
  * Created by ciuc on 7/19/16.
  */
@@ -18,7 +20,10 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("AboutActivity", "oncreate");
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
+        Timber.d("AboutActivity | State: %s", "onCreate");
         setContentView(R.layout.activity_about);
         TextView foo = (TextView) findViewById(R.id.aboutText);
         foo.setText(Html.fromHtml(getString(R.string.about_text)));
@@ -27,6 +32,6 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("AboutActivity", "oinstart");
+        Timber.d("AboutActivity | State: %s", "onStart");
     }
 }
