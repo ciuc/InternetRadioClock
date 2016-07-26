@@ -276,13 +276,13 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    private int findButtonByTag(String tag) {
+    private Button findButtonByTag(String tag) {
         for (Button button : buttons) {
             if (button.getTag().equals(tag)) {
-                return button.getId();
+                return button;
             }
         }
-        return 0;
+        return null;
     }
 
     private void lightButton() {
@@ -291,6 +291,7 @@ public class ClockActivity extends AppCompatActivity {
             GradientDrawable buttonShape = (GradientDrawable) button.getBackground();
             buttonShape.setStroke(1, getResources().getColor(R.color.button_color));
         }
+        Timber.d(TAG_RADIOCLOCK, mButtonClicked);
         mButtonClicked.setTextColor(getResources().getColor(R.color.color_clock));
         GradientDrawable buttonShape = (GradientDrawable) mButtonClicked.getBackground();
         buttonShape.setStroke(1, getResources().getColor(R.color.color_clock));
@@ -431,11 +432,15 @@ public class ClockActivity extends AppCompatActivity {
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
             mUrls.put(key, prefs.getString(key, "aaa"));
 
-            Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag + "; key" + key);
+            Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag + "; key " + key);
 
             if (key.equals(mPlayingStreamTag)) {
                 stop();
-                play(findButtonByTag(key));
+                //since we stopped, the clicked button is reset
+                //set this one here
+                //TODO: find a better solution
+                mButtonClicked = findButtonByTag(key);
+                play(findButtonByTag(key).getId());
             }
         }
     };
