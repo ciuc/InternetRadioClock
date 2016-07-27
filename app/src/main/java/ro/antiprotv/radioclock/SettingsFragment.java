@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 
 /**
  * Created by ciuc on 7/12/16.
@@ -18,8 +19,8 @@ public class SettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
-        getPreferenceScreen()
-                .getSharedPreferences().registerOnSharedPreferenceChangeListener(mListener);
+        PreferenceManager.getDefaultSharedPreferences(this.getActivity().getBaseContext())
+                .registerOnSharedPreferenceChangeListener(mListener);
         for (String key : getPreferenceScreen().getSharedPreferences().getAll().keySet()) {
             if (findPreference(key) != null) {
                 findPreference(key).setSummary(getPreferenceScreen().getSharedPreferences().getString(key, ""));

@@ -167,9 +167,10 @@ public class ClockActivity extends AppCompatActivity {
         enableButtons();
 
         //Initialize the preferences
-        mUrls.put(getResources().getString(R.string.setting_key_stream1), getPreferences(Context.MODE_PRIVATE).getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
-        mUrls.put(getResources().getString(R.string.setting_key_stream2), getPreferences(Context.MODE_PRIVATE).getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
-        mUrls.put(getResources().getString(R.string.setting_key_stream3), getPreferences(Context.MODE_PRIVATE).getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mUrls.put(getResources().getString(R.string.setting_key_stream1), prefs.getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
+        mUrls.put(getResources().getString(R.string.setting_key_stream2), prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
+        mUrls.put(getResources().getString(R.string.setting_key_stream3), prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
 
         //Initialize the player
         if (mMediaPlayer == null) {
@@ -318,6 +319,7 @@ public class ClockActivity extends AppCompatActivity {
         @Override
         public void onPrepared() {
             mMediaPlayer.start();
+
             lightButton();
             mPlayingStreamNo = mButtonClicked.getId();
             mPlayingStreamTag = mButtonClicked.getTag().toString();
@@ -331,7 +333,6 @@ public class ClockActivity extends AppCompatActivity {
     private class CustomOnErrorListener implements OnErrorListener {
         @Override
         public boolean onError() {
-            Toast.makeText(ClockActivity.this, "Error playing stream", Toast.LENGTH_SHORT).show();
             Toast.makeText(ClockActivity.this, "Error playing stream", Toast.LENGTH_SHORT).show();
             resetMediaPlayer();
             initMediaPlayer();
@@ -359,6 +360,7 @@ public class ClockActivity extends AppCompatActivity {
                 url = "http://live.guerrillaradio.ro:8010/guerrilla.aac";
                 break;
         }
+
         Toast.makeText(ClockActivity.this, "Playing " + url, Toast.LENGTH_SHORT).show();
         Timber.d(TAG_RADIOCLOCK, "url " + url);
         if (url != null) {
