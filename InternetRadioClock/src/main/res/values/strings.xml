@@ -4,6 +4,7 @@
     <string name="button.name.stream1">1</string>
     <string name="button.name.stream2">2</string>
     <string name="button.name.stream3">3</string>
+    <string name="button.name.stream4">4</string>
 
     <!--settings-->
 
@@ -14,20 +15,32 @@
     <string name="setting.key.stream1">setting.key.stream1</string>
     <string name="setting.key.stream2">setting.key.stream2</string>
     <string name="setting.key.stream3">setting.key.stream3</string>
+    <string name="setting.key.stream4">setting.key.stream4</string>
 
+    <string name="setting.key.label1">setting.key.label1</string>
+    <string name="setting.key.label2">setting.key.label2</string>
+    <string name="setting.key.label3">setting.key.label3</string>
+    <string name="setting.key.label4">setting.key.label4</string>
 
     <string name="setting.name.stream1">Memory 1</string>
     <string name="setting.name.stream2">Memory 2</string>
     <string name="setting.name.stream3">Memory 3</string>
+    <string name="setting.name.stream4">Memory 4</string>
+
+    <string name="setting.name.label1">Button 1 Label</string>
+    <string name="setting.name.label2">Button 2 Label</string>
+    <string name="setting.name.label3">Button 3 Label</string>
+    <string name="setting.name.label4">Button 4 Label</string>
 
     <string name="setting.default.stream1">http://live.guerrillaradio.ro:8010/guerrilla.aac</string>
     <string name="setting.default.stream2">http://live.tananana.ro:8010/stream-48.aac</string>
     <string name="setting.default.stream3">http://streams.radiobob.de/bob-live/aac-64/mediaplayer</string>
+    <string name="setting.default.stream4">http://80.86.106.143:9128/rockfm.aacp</string>
 
     <string name="about.text"><![CDATA[
     <h1>Internet Radio Clock<h1>
-<p>This simple app just displays the clock and has 3 buttons associated each with a radio stream and came from the desire to be able to see the clock in  my kithcen and listen to the Radio Guerrilla morning show at a touch of a button, while living abroad. :)</p>
-<p>Out of the box it comes configured with Radio Guerrilla and Tananana from Romania and RadioBOB from Germany, because these were the radios that I listened to the most. The streams are configurable from the settings section.</p>
+<p>This simple app just displays the clock and has 4 buttons associated each with a radio stream and came from the desire to be able to see the clock in  my kithcen and listen to the Radio Guerrilla morning show at a touch of a button, while living abroad. :)</p>
+<p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania and RadioBOB from Germany, because these were the radios that I listened to the most. The streams are configurable from the settings section.</p>
 <p>I tried to keep it as simple as possible, but if you have any ideas or you think it can be improved, write me at my gmail address cristi.ciuc</p>
 <p>The code is opensource and it can be found on github: https://github.com/ciuc/InternetRadioClock</p>
 ]]>

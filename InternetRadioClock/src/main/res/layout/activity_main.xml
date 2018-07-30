@@ -71,7 +71,17 @@
                 android:clickable="false"
                 android:background="@drawable/memory"
                 android:textColor="@color/button.color.off" />
-
+            <Button
+                android:id="@+id/stream4"
+                android:tag="setting.key.stream4"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/button.name.stream4"
+                android:clickable="false"
+                android:background="@drawable/memory"
+                android:textColor="@color/button.color.off" />
         </LinearLayout>
 
         <LinearLayout

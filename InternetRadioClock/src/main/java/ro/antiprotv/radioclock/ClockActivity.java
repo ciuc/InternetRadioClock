@@ -16,6 +16,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -148,6 +149,8 @@ public class ClockActivity extends AppCompatActivity {
         findViewById(R.id.stream2).setOnClickListener(playOnClickListener);
         findViewById(R.id.stream3).setOnTouchListener(mDelayHideTouchListener);
         findViewById(R.id.stream3).setOnClickListener(playOnClickListener);
+        findViewById(R.id.stream4).setOnTouchListener(mDelayHideTouchListener);
+        findViewById(R.id.stream4).setOnClickListener(playOnClickListener);
 
         mContentView.setTypeface(digital7);
         mContentView.setTextSize(TypedValue.COMPLEX_UNIT_FRACTION, 200);
@@ -157,11 +160,7 @@ public class ClockActivity extends AppCompatActivity {
             executorService = Executors.newSingleThreadExecutor();
         }
 
-        //Initialize the buttons list
-        Button stream1 = (Button) findViewById(R.id.stream1);
-        Button stream2 = (Button) findViewById(R.id.stream2);
-        Button stream3 = (Button) findViewById(R.id.stream3);
-        buttons = Arrays.asList(new Button[]{stream1, stream2, stream3});
+
 
         //make sure the buttons are enabled
         enableButtons();
@@ -171,6 +170,18 @@ public class ClockActivity extends AppCompatActivity {
         mUrls.put(getResources().getString(R.string.setting_key_stream1), prefs.getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
         mUrls.put(getResources().getString(R.string.setting_key_stream2), prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
         mUrls.put(getResources().getString(R.string.setting_key_stream3), prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
+        mUrls.put(getResources().getString(R.string.setting_key_stream4), prefs.getString(getResources().getString(R.string.setting_key_stream4), getResources().getString(R.string.setting_default_stream4)));
+
+        //Initialize the buttons list
+        Button stream1 = (Button) findViewById(R.id.stream1);
+        Button stream2 = (Button) findViewById(R.id.stream2);
+        Button stream3 = (Button) findViewById(R.id.stream3);
+        Button stream4 = (Button) findViewById(R.id.stream4);
+        stream1.setText(prefs.getString(getResources().getString(R.string.setting_key_label1), getResources().getString(R.string.button_name_stream1)));
+        stream2.setText(prefs.getString(getResources().getString(R.string.setting_key_label2), getResources().getString(R.string.button_name_stream2)));
+        stream3.setText(prefs.getString(getResources().getString(R.string.setting_key_label3), getResources().getString(R.string.button_name_stream3)));
+        stream4.setText(prefs.getString(getResources().getString(R.string.setting_key_label4), getResources().getString(R.string.button_name_stream4)));
+        buttons = Arrays.asList(stream1, stream2, stream3, stream4);
 
         //Initialize the player
         if (mMediaPlayer == null) {
@@ -356,6 +367,9 @@ public class ClockActivity extends AppCompatActivity {
             case R.id.stream3:
                 url = mUrls.get(getResources().getString(R.string.setting_key_stream3));
                 break;
+            case R.id.stream4:
+                url = mUrls.get(getResources().getString(R.string.setting_key_stream4));
+                break;
             default:
                 url = "http://live.guerrillaradio.ro:8010/guerrilla.aac";
                 break;
@@ -432,6 +446,23 @@ public class ClockActivity extends AppCompatActivity {
 
     private final SharedPreferences.OnSharedPreferenceChangeListener mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+
+            if (key.equals(getResources().getString(R.string.setting_key_label1))) {
+                buttons.get(0).setText(prefs.getString(getResources().getString(R.string.setting_key_label1), getResources().getString(R.string.button_name_stream1)));
+                return;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_label2))) {
+                buttons.get(1).setText(prefs.getString(getResources().getString(R.string.setting_key_label2), getResources().getString(R.string.button_name_stream2)));
+                return;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_label3))) {
+                buttons.get(2).setText(prefs.getString(getResources().getString(R.string.setting_key_label3), getResources().getString(R.string.button_name_stream3)));
+                return;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_label4))) {
+                buttons.get(3).setText(prefs.getString(getResources().getString(R.string.setting_key_label4), getResources().getString(R.string.button_name_stream4)));
+                return;
+            }
             mUrls.put(key, prefs.getString(key, "aaa"));
 
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag + "; key " + key);
@@ -547,6 +578,5 @@ public class ClockActivity extends AppCompatActivity {
     //--/////////////////////////////////////////////////////////////////////////
     // END Delaying removal of nav bar (android studio default stuff)
     //--/////////////////////////////////////////////////////////////////////////
-
 
 }
