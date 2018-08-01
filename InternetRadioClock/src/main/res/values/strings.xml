@@ -37,6 +37,27 @@
     <string name="setting.default.stream3">http://streams.radiobob.de/bob-live/aac-64/mediaplayer</string>
     <string name="setting.default.stream4">http://80.86.106.143:9128/rockfm.aacp</string>
 
+    <!-- advanced settings -->
+    <string-array name="clock_colors">
+        <item>green</item>
+        <item>red</item>
+        <item>blue</item>
+        <item>yellow</item>
+        <item>white</item>
+        <item>grey</item>
+    </string-array>
+    <string-array name="clock_color_codes">
+        <item>#00ff00</item>
+        <item>#ff0000</item>
+        <item>#0000ff</item>
+        <item>#ffff00</item>
+        <item>#ffffff</item>
+        <item>#333333</item>
+    </string-array>
+    <string name="setting.key.clockColor">setting.key.clockColor</string>
+    <string name="setting.name.clockColor">Clock Color</string>
+    <string name="setting.default.clockColor">#00ff00</string>
+
     <string name="about.text"><![CDATA[
     <h1>Internet Radio Clock<h1>
 <p>This simple app just displays the clock and has 4 buttons associated each with a radio stream and came from the desire to be able to see the clock in  my kithcen and listen to the Radio Guerrilla morning show at a touch of a button, while living abroad. :)</p>

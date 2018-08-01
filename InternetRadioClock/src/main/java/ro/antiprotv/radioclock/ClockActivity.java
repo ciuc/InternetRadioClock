@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -119,6 +120,8 @@ public class ClockActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Initialize the preferences
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setContentView(R.layout.activity_main);
 
@@ -154,6 +157,7 @@ public class ClockActivity extends AppCompatActivity {
 
         mContentView.setTypeface(digital7);
         mContentView.setTextSize(TypedValue.COMPLEX_UNIT_FRACTION, 200);
+        mContentView.setTextColor(Color.parseColor(prefs.getString(getResources().getString(R.string.setting_key_clockColor), getResources().getString(R.string.setting_default_clockColor))));
 
         clockRunner = new ClockRunner();
         if (executorService.isShutdown() || executorService.isTerminated()) {
@@ -165,8 +169,7 @@ public class ClockActivity extends AppCompatActivity {
         //make sure the buttons are enabled
         enableButtons();
 
-        //Initialize the preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
         mUrls.put(getResources().getString(R.string.setting_key_stream1), prefs.getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
         mUrls.put(getResources().getString(R.string.setting_key_stream2), prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
         mUrls.put(getResources().getString(R.string.setting_key_stream3), prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
@@ -463,6 +466,13 @@ public class ClockActivity extends AppCompatActivity {
                 buttons.get(3).setText(prefs.getString(getResources().getString(R.string.setting_key_label4), getResources().getString(R.string.button_name_stream4)));
                 return;
             }
+
+            if (key.equals(getResources().getString(R.string.setting_key_clockColor))) {
+                String colorCode = prefs.getString(getResources().getString(R.string.setting_key_clockColor), getResources().getString(R.string.setting_default_clockColor));
+                Timber.d(TAG_RADIOCLOCK, "Setting color clock to " + colorCode);
+                mContentView.setTextColor(Color.parseColor(colorCode));
+            }
+
             mUrls.put(key, prefs.getString(key, "aaa"));
 
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag + "; key " + key);

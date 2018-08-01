@@ -7,5 +7,8 @@
         android:fragment="ro.antiprotv.radioclock.SettingsFragment"
         android:title="Streams"
         android:summary="Configure the internet radio streams" />
-
+    <header
+        android:fragment="ro.antiprotv.radioclock.AdvancedSettingsFragment"
+        android:title="Advanced Settings"
+        android:summary="Configure some neat stuff" />
 </preference-headers>

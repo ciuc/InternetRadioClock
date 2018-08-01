@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
  * Created by ciuc on 7/12/16.
  */
 public class SettingsFragment extends PreferenceFragment {
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
