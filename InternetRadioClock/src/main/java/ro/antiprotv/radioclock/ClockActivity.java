@@ -9,6 +9,7 @@ package ro.antiprotv.radioclock;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import android.os.Handler;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
@@ -121,7 +123,7 @@ public class ClockActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Initialize the preferences
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setContentView(R.layout.activity_main);
 
@@ -156,7 +158,15 @@ public class ClockActivity extends AppCompatActivity {
         findViewById(R.id.stream4).setOnClickListener(playOnClickListener);
 
         mContentView.setTypeface(digital7);
-        mContentView.setTextSize(TypedValue.COMPLEX_UNIT_FRACTION, 200);
+
+        String clockSizeKey = getResources().getString(R.string.setting_key_clockSize);
+        String clockSize = getResources().getString(R.string.setting_default_clockSize);
+        Timber.d(TAG_RADIOCLOCK, clockSizeKey);
+        Timber.d(TAG_RADIOCLOCK, clockSize);
+
+        int size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
+
+        mContentView.setTextSize(size);
         mContentView.setTextColor(Color.parseColor(prefs.getString(getResources().getString(R.string.setting_key_clockColor), getResources().getString(R.string.setting_default_clockColor))));
 
         clockRunner = new ClockRunner();
@@ -165,8 +175,20 @@ public class ClockActivity extends AppCompatActivity {
         }
 
 
+        if (prefs.getBoolean("FIRST_TIME",true)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Check out the cool new settings and that you can assign labels to buttons ;)")
+                    .setTitle("Thanks for using this app!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    prefs.edit().putBoolean("FIRST_TIME", false).apply();
+                }
+            });
+            AlertDialog dialog = builder.create();
 
-        //make sure the buttons are enabled
+            dialog.show();
+        }
+
+
         enableButtons();
 
 
@@ -472,7 +494,15 @@ public class ClockActivity extends AppCompatActivity {
                 Timber.d(TAG_RADIOCLOCK, "Setting color clock to " + colorCode);
                 mContentView.setTextColor(Color.parseColor(colorCode));
             }
-
+            if (key.equals(getResources().getString(R.string.setting_key_clockSize))) {
+                String clockSizeKey = getResources().getString(R.string.setting_key_clockSize);
+                String clockSize = getResources().getString(R.string.setting_default_clockSize);
+                Timber.d(TAG_RADIOCLOCK, clockSizeKey);
+                Timber.d(TAG_RADIOCLOCK, clockSize);
+                int size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
+                Timber.d(TAG_RADIOCLOCK, "Setting size clock to " + size);
+                mContentView.setTextSize(size);
+            }
             mUrls.put(key, prefs.getString(key, "aaa"));
 
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag + "; key " + key);

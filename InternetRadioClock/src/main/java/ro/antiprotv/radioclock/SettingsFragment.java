@@ -32,7 +32,9 @@ public class SettingsFragment extends PreferenceFragment {
     private final SharedPreferences.OnSharedPreferenceChangeListener mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
             Preference pref = findPreference(key);
-            pref.setSummary(prefs.getString(key, ""));
+            if (pref != null) {
+                pref.setSummary(prefs.getString(key, ""));
+            }
         }
     };
 

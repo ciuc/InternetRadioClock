@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">InternetRadioClock</string>
 
+    <string name="dialog.button.ok">GOT IT!</string>
+
     <string name="button.name.stream1">1</string>
     <string name="button.name.stream2">2</string>
     <string name="button.name.stream3">3</string>
@@ -39,7 +41,7 @@
 
     <!-- advanced settings -->
     <string-array name="clock_colors">
-        <item>green</item>
+        <item>green (default)</item>
         <item>red</item>
         <item>blue</item>
         <item>yellow</item>
@@ -57,6 +59,26 @@
     <string name="setting.key.clockColor">setting.key.clockColor</string>
     <string name="setting.name.clockColor">Clock Color</string>
     <string name="setting.default.clockColor">#00ff00</string>
+
+    <string-array name="clock_sizes">
+        <item>20</item>
+        <item>50</item>
+        <item>100</item>
+        <item>150</item>
+        <item>200</item>
+        <item>250</item>
+    </string-array>
+    <string-array name="clock_human_sizes">
+        <item>XS</item>
+        <item>S</item>
+        <item>M (default)</item>
+        <item>L</item>
+        <item>XL</item>
+        <item>XXL</item>
+    </string-array>
+    <string name="setting.key.clockSize">setting.key.clockSize</string>
+    <string name="setting.name.clockSize">Clock Size</string>
+    <string name="setting.default.clockSize">100</string>
 
     <string name="about.text"><![CDATA[
     <h1>Internet Radio Clock<h1>
