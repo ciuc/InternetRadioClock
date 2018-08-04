@@ -503,7 +503,9 @@ public class ClockActivity extends AppCompatActivity {
                 Timber.d(TAG_RADIOCLOCK, "Setting size clock to " + size);
                 mContentView.setTextSize(size);
             }
-            mUrls.put(key, prefs.getString(key, "aaa"));
+            if (key.contains("stream")) {
+                mUrls.put(key, prefs.getString(key, "aaa"));
+            }
 
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag + "; key " + key);
 
