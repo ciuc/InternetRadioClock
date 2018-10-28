@@ -169,12 +169,12 @@ public class ClockActivity extends AppCompatActivity {
             clockExecutorService = Executors.newSingleThreadExecutor();
         }
 
-        if (prefs.getBoolean("FIRST_TIME",true)) {
+        if (prefs.getBoolean("SECOND_TIME",true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("")
+            builder.setMessage("Check out the advanced settings section for some cool stuff!")
                     .setTitle("Thanks for using this app!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    prefs.edit().putBoolean("FIRST_TIME", false).apply();
+                    prefs.edit().putBoolean("SECOND_TIME", false).apply();
                 }
             });
             AlertDialog dialog = builder.create();
