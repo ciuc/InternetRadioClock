@@ -16,6 +16,15 @@
         android:key="@string/setting.key.clockSize"
         android:title="@string/setting.name.clockSize" />
         <!--Preference android:title="Click to exit" android:key="exitlink"/-->
-
+    <EditTextPreference
+        android:key="@string/setting.key.label4"
+        android:title="@string/setting.name.label4"
+        android:defaultValue="@string/button.name.stream4"
+        android:maxLength="3"/>
+    <EditTextPreference
+        android:key="@string/setting.key.sleepMinutes"
+        android:title="@string/setting.name.sleepMinutes"
+        android:summary="@string/setting.summary.sleepMinutes"
+        android:inputType="number"/>
 
 </PreferenceScreen>

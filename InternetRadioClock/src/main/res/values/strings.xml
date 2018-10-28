@@ -23,11 +23,14 @@
     <string name="setting.key.label2">setting.key.label2</string>
     <string name="setting.key.label3">setting.key.label3</string>
     <string name="setting.key.label4">setting.key.label4</string>
+    <string name="setting.key.sleepMinutes">setting.key.sleepMinutes</string>
 
     <string name="setting.name.stream1">Memory 1</string>
     <string name="setting.name.stream2">Memory 2</string>
     <string name="setting.name.stream3">Memory 3</string>
     <string name="setting.name.stream4">Memory 4</string>
+    <string name="setting.name.sleepMinutes">Custom Sleep Time (minutes)</string>
+    <string name="setting.summary.sleepMinutes">Set your own custom sleep timer which will be added to the predefined ones.</string>
 
     <string name="setting.name.label1">Button 1 Label</string>
     <string name="setting.name.label2">Button 2 Label</string>
@@ -39,6 +42,7 @@
     <string name="setting.default.stream3">http://streams.radiobob.de/bob-live/aac-64/mediaplayer</string>
     <string name="setting.default.stream4">http://80.86.106.143:9128/rockfm.aacp</string>
 
+    <string name="text.sleep.timer">Sleep in %d minutes</string>
     <!-- advanced settings -->
     <string-array name="clock_colors">
         <item>green (default)</item>
@@ -84,6 +88,7 @@
     <h1>Internet Radio Clock<h1>
 <p>This simple app just displays the clock and has 4 buttons associated each with a radio stream and came from the desire to be able to see the clock in  my kithcen and listen to the Radio Guerrilla morning show at a touch of a button, while living abroad. :)</p>
 <p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania and RadioBOB from Germany, because these were the radios that I listened to the most. The streams are configurable from the settings section.</p>
+<p>Also there is a sleep button that cycles through some predefined sleep timers; there is even a setting that alows you to setup your own timer</p>
 <p>I tried to keep it as simple as possible, but if you have any ideas or you think it can be improved, write me at my gmail address cristi.ciuc</p>
 <p>The code is opensource and it can be found on github: https://github.com/ciuc/InternetRadioClock</p>
 ]]>

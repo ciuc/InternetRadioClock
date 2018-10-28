@@ -31,9 +31,4 @@
         android:key="@string/setting.key.stream4"
         android:title="@string/setting.name.stream4"
         android:defaultValue="@string/setting.default.stream4"  />
-    <EditTextPreference
-        android:key="@string/setting.key.label4"
-        android:title="@string/setting.name.label4"
-        android:defaultValue="@string/button.name.stream4"
-        android:maxLength="3"/>
 </PreferenceScreen>

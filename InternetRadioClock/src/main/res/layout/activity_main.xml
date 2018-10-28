@@ -33,7 +33,7 @@
             style="?metaButtonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_gravity="bottom"
             android:background="@color/black_overlay"
             android:orientation="horizontal"
             tools:ignore="UselessParent">
@@ -82,14 +82,32 @@
                 android:clickable="false"
                 android:background="@drawable/memory"
                 android:textColor="@color/button.color.off" />
+            <ImageButton
+                android:id="@+id/sleep"
+                android:tag="@string/setting.key.sleepMinutes"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="55dp"
+                android:clickable="false"
+                app:srcCompat="@drawable/sleep_timer_off_white_24dp"
+                android:background="@drawable/memory"
+                android:textColor="@color/button.color.off" />
+
+            <TextView
+                android:id="@+id/sleep_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill"
+                android:textColor="@color/button.color.off"
+                android:textSize="10sp" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            >
+            android:orientation="horizontal">
 
         </LinearLayout>
     </FrameLayout>

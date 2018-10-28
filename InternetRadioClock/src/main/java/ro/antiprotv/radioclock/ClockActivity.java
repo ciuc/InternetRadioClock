@@ -8,7 +8,6 @@
 package ro.antiprotv.radioclock;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,19 +17,17 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,8 +47,7 @@ import java.util.concurrent.Executors;
 import timber.log.Timber;
 
 /**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
+ * Main Activity. Just displays the clock and buttons
  */
 public class ClockActivity extends AppCompatActivity {
     /**
@@ -81,7 +77,6 @@ public class ClockActivity extends AppCompatActivity {
     private EMAudioPlayer mMediaPlayer;
     private Typeface digital7;
     private List<Button> buttons = new ArrayList<Button>();
-
     //the button we have clicked on
     private Button mButtonClicked;
     //remember the playing stream number and tag
@@ -94,7 +89,7 @@ public class ClockActivity extends AppCompatActivity {
     private final HashMap<String, String> mUrls = new HashMap<String, String>();
 
     //Threads
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
+    ExecutorService clockExecutorService = Executors.newSingleThreadExecutor();
     private ClockRunner clockRunner;
 
     private class ClockRunner implements Runnable {
@@ -170,14 +165,13 @@ public class ClockActivity extends AppCompatActivity {
         mContentView.setTextColor(Color.parseColor(prefs.getString(getResources().getString(R.string.setting_key_clockColor), getResources().getString(R.string.setting_default_clockColor))));
 
         clockRunner = new ClockRunner();
-        if (executorService.isShutdown() || executorService.isTerminated()) {
-            executorService = Executors.newSingleThreadExecutor();
+        if (clockExecutorService.isShutdown() || clockExecutorService.isTerminated()) {
+            clockExecutorService = Executors.newSingleThreadExecutor();
         }
-
 
         if (prefs.getBoolean("FIRST_TIME",true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Check out the cool new settings and that you can assign labels to buttons ;)")
+            builder.setMessage("")
                     .setTitle("Thanks for using this app!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     prefs.edit().putBoolean("FIRST_TIME", false).apply();
@@ -188,9 +182,7 @@ public class ClockActivity extends AppCompatActivity {
             dialog.show();
         }
 
-
         enableButtons();
-
 
         mUrls.put(getResources().getString(R.string.setting_key_stream1), prefs.getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
         mUrls.put(getResources().getString(R.string.setting_key_stream2), prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
@@ -208,6 +200,13 @@ public class ClockActivity extends AppCompatActivity {
         stream4.setText(prefs.getString(getResources().getString(R.string.setting_key_label4), getResources().getString(R.string.button_name_stream4)));
         buttons = Arrays.asList(stream1, stream2, stream3, stream4);
 
+        //sleep timer
+        Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
+        if (customTimer != 0) {
+            timers.add(0, customTimer);
+        }
+        ImageButton sleep = (ImageButton) findViewById(R.id.sleep);
+        sleep.setOnClickListener(sleepOnClickListener);
         //Initialize the player
         if (mMediaPlayer == null) {
             initMediaPlayer();
@@ -229,9 +228,9 @@ public class ClockActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Timber.d(TAG_STATE, "onDestroy");
-        stop();
-        mMediaPlayer = null;
-        executorService.shutdown();
+        resetMediaPlayer();
+        clockExecutorService.shutdownNow();
+        sleepExecutorService.shutdownNow();
         super.onDestroy();
     }
 
@@ -242,8 +241,8 @@ public class ClockActivity extends AppCompatActivity {
         if (mMediaPlayer == null) {
             initMediaPlayer();
         }
-        if (executorService.isShutdown() || executorService.isTerminated()) {
-            executorService = Executors.newSingleThreadExecutor();
+        if (clockExecutorService.isShutdown() || clockExecutorService.isTerminated()) {
+            clockExecutorService = Executors.newSingleThreadExecutor();
         }
     }
 
@@ -251,17 +250,17 @@ public class ClockActivity extends AppCompatActivity {
     protected void onStop() {
         Timber.d(TAG_STATE, "onStop");
         super.onStop();
-        executorService.shutdown();
+        clockExecutorService.shutdown();
     }
 
     @Override
     protected void onStart() {
         Timber.d(TAG_STATE, "onStart");
         super.onStart();
-        if (executorService.isShutdown() || executorService.isTerminated()) {
-            executorService = Executors.newSingleThreadExecutor();
+        if (clockExecutorService.isShutdown() || clockExecutorService.isTerminated()) {
+            clockExecutorService = Executors.newSingleThreadExecutor();
         }
-        executorService.execute(clockRunner);
+        clockExecutorService.execute(clockRunner);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -278,7 +277,7 @@ public class ClockActivity extends AppCompatActivity {
             if (mMediaPlayer != null) {
                 if (mMediaPlayer.isPlaying()) {
                     if (mPlayingStreamNo == mButtonClicked.getId()) {
-                        stop();
+                        stopPlaying();
                     } else {
                         play(mButtonClicked.getId());
                     }
@@ -293,13 +292,20 @@ public class ClockActivity extends AppCompatActivity {
 
     };
 
-    /* convenience methods to deal with button UI */
+    /**
+     *  Set disabled to all buttons
+     *  (cycle through buttons and .setEnabled false)
+     */
     private void disableButtons() {
         for (Button button : buttons) {
             button.setEnabled(false);
         }
     }
 
+    /**
+     *  Set enabled to all buttons
+     *  (cycle through buttons and .setEnabled)
+     */
     private void enableButtons() {
         for (Button button : buttons) {
             button.setEnabled(true);
@@ -333,7 +339,75 @@ public class ClockActivity extends AppCompatActivity {
         GradientDrawable buttonShape = (GradientDrawable) mButtonClicked.getBackground();
         buttonShape.setStroke(1, getResources().getColor(R.color.color_clock));
     }
+    ///////////////////////////////////////////////////////////////////////////
+    //SLEEP
+    ///////////////////////////////////////////////////////////////////////////
+    //initialize the sleep timers default list (pressing button will cycle through those)
+    private final List<Integer> timers = new ArrayList<>(Arrays.asList(15,20,30));
+    private int sleepTimerIndex;
+    ExecutorService sleepExecutorService = Executors.newSingleThreadExecutor();
 
+    private final Button.OnClickListener sleepOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(final View view) {
+            TextView sleepTimerText = findViewById(R.id.sleep_timer);
+            ImageButton button = findViewById(R.id.sleep);
+            if (sleepTimerIndex == timers.size()) {
+                resetSleepTimer();
+                sleepExecutorService.shutdownNow();
+            } else {
+                //stop the timer thread
+                sleepExecutorService.shutdownNow();
+                button.setImageResource(R.drawable.sleep_timer_on_white_24dp);
+                Integer timer = timers.get(sleepTimerIndex);
+                sleepTimerText.setText(String.format(getResources().getString(R.string.text_sleep_timer),timer));
+                sleepTimerIndex++;
+                //now start the thread
+                SleepRunner sleepRunner = new SleepRunner(timer);
+                sleepExecutorService = Executors.newSingleThreadExecutor();
+                sleepExecutorService.execute(sleepRunner);
+            }
+
+        }
+    };
+
+    private void resetSleepTimer() {
+        TextView sleepTimerText = findViewById(R.id.sleep_timer);
+        ImageButton button = findViewById(R.id.sleep);
+        sleepTimerText.setText("");
+        button.setImageResource(R.drawable.sleep_timer_off_white_24dp);
+        sleepTimerIndex = 0;
+    }
+    private class SleepRunner implements Runnable {
+        int timer;
+        SleepRunner(int timer) {
+            Timber.d(TAG_RADIOCLOCK, "Starting thread with timer: " + timer);
+            this.timer = timer;
+        }
+        @Override
+        public void run() {
+            int seconds = timer * 60;
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
+                    for (int i = seconds; i >= 0; i--) {
+                        Timber.d(TAG_RADIOCLOCK, "Thread sleep; seconds: " + i);
+                        Thread.sleep(1000);
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(ClockActivity.this, "Time's up", Toast.LENGTH_SHORT).show();
+                            stopPlaying();
+                            resetSleepTimer();
+                        }
+                    });
+                    Thread.currentThread().interrupt();
+                }
+            } catch (InterruptedException e) {
+                Timber.d(TAG_RADIOCLOCK, "Sleep Thread interrupted ");
+            }
+        }
+    }
     ///////////////////////////////////////////////////////////////////////////
     // Media Player
     ///////////////////////////////////////////////////////////////////////////
@@ -346,7 +420,7 @@ public class ClockActivity extends AppCompatActivity {
 
     private void resetMediaPlayer() {
         if (mMediaPlayer != null) {
-            stop();
+            stopPlaying();
             mMediaPlayer = null;
         }
     }
@@ -410,7 +484,7 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    private void stop() {
+    private void stopPlaying() {
         if (mMediaPlayer != null) {
             if (mMediaPlayer.isPlaying()) {
                 Toast.makeText(ClockActivity.this, "Stopping stream", Toast.LENGTH_SHORT).show();
@@ -458,12 +532,7 @@ public class ClockActivity extends AppCompatActivity {
                 startActivity(about);
                 return true;
             case R.id.exit:
-                resetMediaPlayer();
-                Intent home = new Intent(Intent.ACTION_MAIN);
-                home.addCategory(Intent.CATEGORY_HOME);
-                home.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                executorService.shutdown();
-                startActivity(home);
+                finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -506,11 +575,18 @@ public class ClockActivity extends AppCompatActivity {
             if (key.contains("stream")) {
                 mUrls.put(key, prefs.getString(key, "aaa"));
             }
-
+            if (key.equals(getResources().getString(R.string.setting_key_sleepMinutes))) {
+                Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
+                if (customTimer == 0) {
+                    timers.remove(0);
+                } else {
+                    timers.add(0, customTimer);
+                }
+            }
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag + "; key " + key);
 
             if (key.equals(mPlayingStreamTag)) {
-                stop();
+                stopPlaying();
                 //since we stopped, the clicked button is reset
                 //set this one here
                 //TODO: find a better solution
