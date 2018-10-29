@@ -7,7 +7,10 @@
     <string name="button.name.stream2">2</string>
     <string name="button.name.stream3">3</string>
     <string name="button.name.stream4">4</string>
-
+    <string name="button.name.stream5">5</string>
+    <string name="button.name.stream6">6</string>
+    <string name="button.name.stream7">7</string>
+    <string name="button.name.stream8">8</string>
     <!--settings-->
 
     <string name="settings.menu.settings">Settings</string>
@@ -18,17 +21,32 @@
     <string name="setting.key.stream2">setting.key.stream2</string>
     <string name="setting.key.stream3">setting.key.stream3</string>
     <string name="setting.key.stream4">setting.key.stream4</string>
+    <string name="setting.key.stream5">setting.key.stream5</string>
+    <string name="setting.key.stream6">setting.key.stream6</string>
+    <string name="setting.key.stream7">setting.key.stream7</string>
+    <string name="setting.key.stream8">setting.key.stream8</string>
 
     <string name="setting.key.label1">setting.key.label1</string>
     <string name="setting.key.label2">setting.key.label2</string>
     <string name="setting.key.label3">setting.key.label3</string>
     <string name="setting.key.label4">setting.key.label4</string>
+    <string name="setting.key.label5">setting.key.label5</string>
+    <string name="setting.key.label6">setting.key.label6</string>
+    <string name="setting.key.label7">setting.key.label7</string>
+    <string name="setting.key.label8">setting.key.label8</string>
+
+
     <string name="setting.key.sleepMinutes">setting.key.sleepMinutes</string>
 
     <string name="setting.name.stream1">Memory 1</string>
     <string name="setting.name.stream2">Memory 2</string>
     <string name="setting.name.stream3">Memory 3</string>
     <string name="setting.name.stream4">Memory 4</string>
+    <string name="setting.name.stream5">Memory 5</string>
+    <string name="setting.name.stream6">Memory 6</string>
+    <string name="setting.name.stream7">Memory 7</string>
+    <string name="setting.name.stream8">Memory 8</string>
+
     <string name="setting.name.sleepMinutes">Custom Sleep Time (minutes)</string>
     <string name="setting.summary.sleepMinutes">Set your own custom sleep timer which will be added to the predefined ones.</string>
 
@@ -36,11 +54,19 @@
     <string name="setting.name.label2">Button 2 Label</string>
     <string name="setting.name.label3">Button 3 Label</string>
     <string name="setting.name.label4">Button 4 Label</string>
+    <string name="setting.name.label5">Button 5 Label</string>
+    <string name="setting.name.label6">Button 6 Label</string>
+    <string name="setting.name.label7">Button 7 Label</string>
+    <string name="setting.name.label8">Button 8 Label</string>
 
     <string name="setting.default.stream1">http://live.guerrillaradio.ro:8010/guerrilla.aac</string>
     <string name="setting.default.stream2">http://live.tananana.ro:8010/stream-48.aac</string>
     <string name="setting.default.stream3">http://streams.radiobob.de/bob-live/aac-64/mediaplayer</string>
     <string name="setting.default.stream4">http://80.86.106.143:9128/rockfm.aacp</string>
+    <string name="setting.default.stream5"></string>
+    <string name="setting.default.stream6"></string>
+    <string name="setting.default.stream7"></string>
+    <string name="setting.default.stream8"></string>
 
     <string name="text.sleep.timer">Sleep in %d minutes</string>
     <!-- advanced settings -->
@@ -88,7 +114,7 @@
     <h1>Internet Radio Clock<h1>
 <p>This simple app just displays the clock and has 4 buttons associated each with a radio stream and came from the desire to be able to see the clock in  my kithcen and listen to the Radio Guerrilla morning show at a touch of a button, while living abroad. :)</p>
 <p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania and RadioBOB from Germany, because these were the radios that I listened to the most. The streams are configurable from the settings section.</p>
-<p>Also there is a sleep button that cycles through some predefined sleep timers; there is even a setting that alows you to setup your own timer</p>
+<p>Also there is a sleep button that cycles through some predefined sleep timers; there is even a setting that alows you to setup your own timer.</p>
 <p>I tried to keep it as simple as possible, but if you have any ideas or you think it can be improved, write me at my gmail address cristi.ciuc</p>
 <p>The code is opensource and it can be found on github: https://github.com/ciuc/InternetRadioClock</p>
 ]]>

@@ -76,9 +76,9 @@ public class ClockActivity extends AppCompatActivity {
     private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private EMAudioPlayer mMediaPlayer;
     private Typeface digital7;
+
     private List<Button> buttons = new ArrayList<Button>();
-    //the button we have clicked on
-    private Button mButtonClicked;
+    private ButtonManager buttonManager;
     //remember the playing stream number and tag
     //they will have to be reset when stopping
     private int mPlayingStreamNo;
@@ -140,17 +140,7 @@ public class ClockActivity extends AppCompatActivity {
 
         digital7 = Typeface.createFromAsset(getAssets(), "fonts/digital-7.mono.ttf");
 
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        findViewById(R.id.stream1).setOnTouchListener(mDelayHideTouchListener);
-        findViewById(R.id.stream1).setOnClickListener(playOnClickListener);
-        findViewById(R.id.stream2).setOnTouchListener(mDelayHideTouchListener);
-        findViewById(R.id.stream2).setOnClickListener(playOnClickListener);
-        findViewById(R.id.stream3).setOnTouchListener(mDelayHideTouchListener);
-        findViewById(R.id.stream3).setOnClickListener(playOnClickListener);
-        findViewById(R.id.stream4).setOnTouchListener(mDelayHideTouchListener);
-        findViewById(R.id.stream4).setOnClickListener(playOnClickListener);
+        buttonManager = new ButtonManager(getApplicationContext(), mControlsView,prefs,mDelayHideTouchListener, playOnClickListener);
 
         mContentView.setTypeface(digital7);
 
@@ -182,23 +172,16 @@ public class ClockActivity extends AppCompatActivity {
             dialog.show();
         }
 
-        enableButtons();
-
         mUrls.put(getResources().getString(R.string.setting_key_stream1), prefs.getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
         mUrls.put(getResources().getString(R.string.setting_key_stream2), prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
         mUrls.put(getResources().getString(R.string.setting_key_stream3), prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
         mUrls.put(getResources().getString(R.string.setting_key_stream4), prefs.getString(getResources().getString(R.string.setting_key_stream4), getResources().getString(R.string.setting_default_stream4)));
+        mUrls.put(getResources().getString(R.string.setting_key_stream5), prefs.getString(getResources().getString(R.string.setting_key_stream5), getResources().getString(R.string.setting_default_stream5)));
+        mUrls.put(getResources().getString(R.string.setting_key_stream6), prefs.getString(getResources().getString(R.string.setting_key_stream6), getResources().getString(R.string.setting_default_stream6)));
+        mUrls.put(getResources().getString(R.string.setting_key_stream7), prefs.getString(getResources().getString(R.string.setting_key_stream7), getResources().getString(R.string.setting_default_stream7)));
+        mUrls.put(getResources().getString(R.string.setting_key_stream8), prefs.getString(getResources().getString(R.string.setting_key_stream8), getResources().getString(R.string.setting_default_stream8)));
 
-        //Initialize the buttons list
-        Button stream1 = (Button) findViewById(R.id.stream1);
-        Button stream2 = (Button) findViewById(R.id.stream2);
-        Button stream3 = (Button) findViewById(R.id.stream3);
-        Button stream4 = (Button) findViewById(R.id.stream4);
-        stream1.setText(prefs.getString(getResources().getString(R.string.setting_key_label1), getResources().getString(R.string.button_name_stream1)));
-        stream2.setText(prefs.getString(getResources().getString(R.string.setting_key_label2), getResources().getString(R.string.button_name_stream2)));
-        stream3.setText(prefs.getString(getResources().getString(R.string.setting_key_label3), getResources().getString(R.string.button_name_stream3)));
-        stream4.setText(prefs.getString(getResources().getString(R.string.setting_key_label4), getResources().getString(R.string.button_name_stream4)));
-        buttons = Arrays.asList(stream1, stream2, stream3, stream4);
+        buttons = buttonManager.initializeButtons(mUrls);
 
         //sleep timer
         Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
@@ -207,6 +190,8 @@ public class ClockActivity extends AppCompatActivity {
         }
         ImageButton sleep = (ImageButton) findViewById(R.id.sleep);
         sleep.setOnClickListener(sleepOnClickListener);
+        sleep.setOnTouchListener(mDelayHideTouchListener);
+
         //Initialize the player
         if (mMediaPlayer == null) {
             initMediaPlayer();
@@ -272,73 +257,27 @@ public class ClockActivity extends AppCompatActivity {
         @Override
         public void onClick(final View view) {
             Timber.d(TAG_RADIOCLOCK, "Play clicked: " + view.getTag());
-            mButtonClicked = (Button) view;
-            disableButtons();
+            buttonManager.setButtonClicked((Button) view);
+            buttonManager.disableButtons();
             if (mMediaPlayer != null) {
                 if (mMediaPlayer.isPlaying()) {
-                    if (mPlayingStreamNo == mButtonClicked.getId()) {
+                    if (mPlayingStreamNo == buttonManager.getButtonClicked().getId()) {
                         stopPlaying();
                     } else {
-                        play(mButtonClicked.getId());
+                        play(buttonManager.getButtonClicked().getId());
                     }
                 } else {
-                    play(mButtonClicked.getId());
+                    play(buttonManager.getButtonClicked().getId());
                 }
             } else {
                 initMediaPlayer();
-                enableButtons();
+                buttonManager.enableButtons();
             }
         }
 
     };
 
-    /**
-     *  Set disabled to all buttons
-     *  (cycle through buttons and .setEnabled false)
-     */
-    private void disableButtons() {
-        for (Button button : buttons) {
-            button.setEnabled(false);
-        }
-    }
 
-    /**
-     *  Set enabled to all buttons
-     *  (cycle through buttons and .setEnabled)
-     */
-    private void enableButtons() {
-        for (Button button : buttons) {
-            button.setEnabled(true);
-        }
-    }
-
-    private void resetButtons() {
-        for (Button button : buttons) {
-            button.setEnabled(true);
-            button.setTextColor(getResources().getColor(R.color.button_color_off));
-        }
-    }
-
-    private Button findButtonByTag(String tag) {
-        for (Button button : buttons) {
-            if (button.getTag().equals(tag)) {
-                return button;
-            }
-        }
-        return null;
-    }
-
-    private void lightButton() {
-        for (Button button : buttons) {
-            button.setTextColor(getResources().getColor(R.color.button_color_off));
-            GradientDrawable buttonShape = (GradientDrawable) button.getBackground();
-            buttonShape.setStroke(1, getResources().getColor(R.color.button_color));
-        }
-        Timber.d(TAG_RADIOCLOCK, mButtonClicked);
-        mButtonClicked.setTextColor(getResources().getColor(R.color.color_clock));
-        GradientDrawable buttonShape = (GradientDrawable) mButtonClicked.getBackground();
-        buttonShape.setStroke(1, getResources().getColor(R.color.color_clock));
-    }
     ///////////////////////////////////////////////////////////////////////////
     //SLEEP
     ///////////////////////////////////////////////////////////////////////////
@@ -430,10 +369,10 @@ public class ClockActivity extends AppCompatActivity {
         public void onPrepared() {
             mMediaPlayer.start();
 
-            lightButton();
-            mPlayingStreamNo = mButtonClicked.getId();
-            mPlayingStreamTag = mButtonClicked.getTag().toString();
-            enableButtons();
+            buttonManager.lightButton();
+            mPlayingStreamNo = buttonManager.getButtonClicked().getId();
+            mPlayingStreamTag = buttonManager.getButtonClicked().getTag().toString();
+            buttonManager.enableButtons();
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag);
 
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(mPlayingStreamTag));
@@ -446,7 +385,7 @@ public class ClockActivity extends AppCompatActivity {
             Toast.makeText(ClockActivity.this, "Error playing stream", Toast.LENGTH_SHORT).show();
             resetMediaPlayer();
             initMediaPlayer();
-            resetButtons();
+            buttonManager.resetButtons();
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
             }
@@ -480,7 +419,7 @@ public class ClockActivity extends AppCompatActivity {
             mMediaPlayer.setDataSource(getBaseContext(), Uri.parse(url));
         } else {//Something went wrong, resetting
             resetMediaPlayer();
-            enableButtons();
+            buttonManager.enableButtons();
         }
     }
 
@@ -491,17 +430,17 @@ public class ClockActivity extends AppCompatActivity {
             }
             mMediaPlayer.reset();
         }
-        enableButtons();
-        if (mButtonClicked != null) {
-            mButtonClicked.setTextColor(getResources().getColor(R.color.button_color_off));
-            GradientDrawable buttonShape = (GradientDrawable) mButtonClicked.getBackground();
+        buttonManager.enableButtons();
+        if (buttonManager.getButtonClicked() != null) {
+            buttonManager.getButtonClicked().setTextColor(getResources().getColor(R.color.button_color_off));
+            GradientDrawable buttonShape = (GradientDrawable) buttonManager.getButtonClicked().getBackground();
             buttonShape.setStroke(1, getResources().getColor(R.color.button_color));
 
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
         }
-        mButtonClicked = null;
+        buttonManager.setButtonClicked(null);
         mPlayingStreamNo = 0;
         mPlayingStreamTag = null;
     }
@@ -540,21 +479,25 @@ public class ClockActivity extends AppCompatActivity {
 
     private final SharedPreferences.OnSharedPreferenceChangeListener mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-
+            int buttonIndex = -1;
             if (key.equals(getResources().getString(R.string.setting_key_label1))) {
                 buttons.get(0).setText(prefs.getString(getResources().getString(R.string.setting_key_label1), getResources().getString(R.string.button_name_stream1)));
+                buttonIndex = 0;
                 return;
             }
             if (key.equals(getResources().getString(R.string.setting_key_label2))) {
                 buttons.get(1).setText(prefs.getString(getResources().getString(R.string.setting_key_label2), getResources().getString(R.string.button_name_stream2)));
+                buttonIndex = 1;
                 return;
             }
             if (key.equals(getResources().getString(R.string.setting_key_label3))) {
                 buttons.get(2).setText(prefs.getString(getResources().getString(R.string.setting_key_label3), getResources().getString(R.string.button_name_stream3)));
+                buttonIndex = 2;
                 return;
             }
             if (key.equals(getResources().getString(R.string.setting_key_label4))) {
                 buttons.get(3).setText(prefs.getString(getResources().getString(R.string.setting_key_label4), getResources().getString(R.string.button_name_stream4)));
+                buttonIndex = 3;
                 return;
             }
 
@@ -573,7 +516,9 @@ public class ClockActivity extends AppCompatActivity {
                 mContentView.setTextSize(size);
             }
             if (key.contains("stream")) {
-                mUrls.put(key, prefs.getString(key, "aaa"));
+                String url = prefs.getString(key, "");
+                mUrls.put(key, url);
+                buttonManager.hideUnhideButtons(mUrls);;
             }
             if (key.equals(getResources().getString(R.string.setting_key_sleepMinutes))) {
                 Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
@@ -590,8 +535,8 @@ public class ClockActivity extends AppCompatActivity {
                 //since we stopped, the clicked button is reset
                 //set this one here
                 //TODO: find a better solution
-                mButtonClicked = findButtonByTag(key);
-                play(findButtonByTag(key).getId());
+                buttonManager.setButtonClicked(buttonManager.findButtonByTag(key));
+                play(buttonManager.findButtonByTag(key).getId());
             }
         }
     };

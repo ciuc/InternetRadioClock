@@ -82,6 +82,53 @@
                 android:clickable="false"
                 android:background="@drawable/memory"
                 android:textColor="@color/button.color.off" />
+            <Button
+                android:id="@+id/stream5"
+                android:tag="@string/setting.key.stream5"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/button.name.stream5"
+                android:clickable="false"
+                android:background="@drawable/memory"
+                android:textColor="@color/button.color.off" />
+            <Button
+                android:id="@+id/stream6"
+                android:tag="@string/setting.key.stream6"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/button.name.stream6"
+                android:clickable="false"
+                android:background="@drawable/memory"
+                android:textColor="@color/button.color.off" />
+            <Button
+                android:id="@+id/stream7"
+                android:tag="@string/setting.key.stream7"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/button.name.stream7"
+                android:clickable="false"
+                android:background="@drawable/memory"
+                android:textColor="@color/button.color.off" />
+            <Button
+                android:id="@+id/stream8"
+                android:tag="@string/setting.key.stream8"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="@string/button.name.stream8"
+                android:clickable="false"
+                android:background="@drawable/memory"
+                android:textColor="@color/button.color.off" />
+
+
+
             <ImageButton
                 android:id="@+id/sleep"
                 android:tag="@string/setting.key.sleepMinutes"
