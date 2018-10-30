@@ -22,7 +22,8 @@ public class ButtonManager {
     private View.OnClickListener playListener;
     final Resources resources;
     List<Button> buttons;
-
+    List<Integer> settingKeys;
+    List<Integer> defaultNames;
     protected ButtonManager(Context ctx, View view, SharedPreferences prefs,View.OnTouchListener onTouchListener, View.OnClickListener playListener) {
         this.context = ctx;
         this.view = view;
@@ -32,7 +33,7 @@ public class ButtonManager {
         resources = context.getResources();
     }
 
-    protected List<Button> initializeButtons(HashMap<String, String> mUrls){
+    protected List<Button> initializeButtons(List<String> mUrls){
         Button stream1 = (Button) view.findViewById(R.id.stream1);
         Button stream2 = (Button) view.findViewById(R.id.stream2);
         Button stream3 = (Button) view.findViewById(R.id.stream3);
@@ -41,9 +42,9 @@ public class ButtonManager {
         Button stream6 = (Button) view.findViewById(R.id.stream6);
         Button stream7 = (Button) view.findViewById(R.id.stream7);
         Button stream8 = (Button) view.findViewById(R.id.stream8);
-        buttons = Arrays.asList(stream1, stream2, stream3, stream4);
+        buttons = Arrays.asList(stream1, stream2, stream3, stream4, stream5, stream6, stream7, stream8);
 
-        List<Integer> settingKeys = Arrays.asList(
+        settingKeys = Arrays.asList(
                 R.string.setting_key_label1,
                 R.string.setting_key_label2,
                 R.string.setting_key_label3,
@@ -53,7 +54,7 @@ public class ButtonManager {
                 R.string.setting_key_label7,
                 R.string.setting_key_label8
         );
-        List<Integer> defaultNames = Arrays.asList(
+        defaultNames = Arrays.asList(
                 R.string.button_name_stream1,
                 R.string.button_name_stream2,
                 R.string.button_name_stream3,
@@ -75,17 +76,7 @@ public class ButtonManager {
         return buttons;
     }
 
-    protected void hideUnhideButtons(HashMap<String, String> mUrls) {
-        List<String> urls = Arrays.asList(
-                mUrls.get(resources.getString(R.string.setting_key_stream1)),
-                mUrls.get(resources.getString(R.string.setting_key_stream2)),
-                mUrls.get(resources.getString(R.string.setting_key_stream3)),
-                mUrls.get(resources.getString(R.string.setting_key_stream4)),
-                mUrls.get(resources.getString(R.string.setting_key_stream5)),
-                mUrls.get(resources.getString(R.string.setting_key_stream6)),
-                mUrls.get(resources.getString(R.string.setting_key_stream7)),
-                mUrls.get(resources.getString(R.string.setting_key_stream8))
-        );
+    protected void hideUnhideButtons(List<String> urls) {
         for (int i = 0; i < buttons.size(); i++) {
                 Button b = buttons.get(i);
                 String url = urls.get(i);
@@ -108,6 +99,11 @@ public class ButtonManager {
         this.mButtonClicked = mButtonClicked;
     }
 
+    protected void setText(int index, SharedPreferences newPrefs){
+        //prefs.getString(getResources().getString(R.string.setting_key_label4), getResources().getString(R.string.button_name_stream4)
+        buttons.get(index).setText(newPrefs.getString(resources.getString(settingKeys.get(index)), resources.getString(defaultNames.get(index))));
+        this.prefs = newPrefs;
+    }
     /**
      *  Set disabled to all buttons
      *  (cycle through buttons and .setEnabled false)

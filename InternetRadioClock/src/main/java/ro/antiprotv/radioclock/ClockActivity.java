@@ -86,7 +86,7 @@ public class ClockActivity extends AppCompatActivity {
 
     //the map of urls; it is a map of the setting key > url (String)
     //url(setting_key_stream1 >  http://something)
-    private final HashMap<String, String> mUrls = new HashMap<String, String>();
+    private final List<String> mUrls = new ArrayList<>();
 
     //Threads
     ExecutorService clockExecutorService = Executors.newSingleThreadExecutor();
@@ -172,14 +172,14 @@ public class ClockActivity extends AppCompatActivity {
             dialog.show();
         }
 
-        mUrls.put(getResources().getString(R.string.setting_key_stream1), prefs.getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
-        mUrls.put(getResources().getString(R.string.setting_key_stream2), prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
-        mUrls.put(getResources().getString(R.string.setting_key_stream3), prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
-        mUrls.put(getResources().getString(R.string.setting_key_stream4), prefs.getString(getResources().getString(R.string.setting_key_stream4), getResources().getString(R.string.setting_default_stream4)));
-        mUrls.put(getResources().getString(R.string.setting_key_stream5), prefs.getString(getResources().getString(R.string.setting_key_stream5), getResources().getString(R.string.setting_default_stream5)));
-        mUrls.put(getResources().getString(R.string.setting_key_stream6), prefs.getString(getResources().getString(R.string.setting_key_stream6), getResources().getString(R.string.setting_default_stream6)));
-        mUrls.put(getResources().getString(R.string.setting_key_stream7), prefs.getString(getResources().getString(R.string.setting_key_stream7), getResources().getString(R.string.setting_default_stream7)));
-        mUrls.put(getResources().getString(R.string.setting_key_stream8), prefs.getString(getResources().getString(R.string.setting_key_stream8), getResources().getString(R.string.setting_default_stream8)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream4), getResources().getString(R.string.setting_default_stream4)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream5), ""));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream6), ""));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream7), ""));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream8), ""));
 
         buttons = buttonManager.initializeButtons(mUrls);
 
@@ -367,6 +367,7 @@ public class ClockActivity extends AppCompatActivity {
     private class CustomOnPreparedListener implements OnPreparedListener {
         @Override
         public void onPrepared() {
+            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ClockActivity.this);
             mMediaPlayer.start();
 
             buttonManager.lightButton();
@@ -375,7 +376,7 @@ public class ClockActivity extends AppCompatActivity {
             buttonManager.enableButtons();
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag);
 
-            getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(mPlayingStreamTag));
+            getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + prefs.getString(mPlayingStreamTag,""));
         }
     }
 
@@ -395,24 +396,38 @@ public class ClockActivity extends AppCompatActivity {
 
     private void play(int buttonId) {
         String url;
+        //index in th list
+        int index = -1;
         switch (buttonId) {
             case R.id.stream1:
-                url = mUrls.get(getResources().getString(R.string.setting_key_stream1));
+                index = 0;
                 break;
             case R.id.stream2:
-                url = mUrls.get(getResources().getString(R.string.setting_key_stream2));
+                index = 1;
                 break;
             case R.id.stream3:
-                url = mUrls.get(getResources().getString(R.string.setting_key_stream3));
+                index = 2;
                 break;
             case R.id.stream4:
-                url = mUrls.get(getResources().getString(R.string.setting_key_stream4));
+                index = 3;
+                break;
+            case R.id.stream5:
+                index = 4;
+                break;
+            case R.id.stream6:
+                index = 5;
+                break;
+            case R.id.stream7:
+                index = 6;
+                break;
+            case R.id.stream8:
+                index = 7;
                 break;
             default:
                 url = "http://live.guerrillaradio.ro:8010/guerrilla.aac";
                 break;
         }
-
+        url = mUrls.get(index);
         Toast.makeText(ClockActivity.this, "Playing " + url, Toast.LENGTH_SHORT).show();
         Timber.d(TAG_RADIOCLOCK, "url " + url);
         if (url != null) {
@@ -480,27 +495,34 @@ public class ClockActivity extends AppCompatActivity {
     private final SharedPreferences.OnSharedPreferenceChangeListener mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
             int buttonIndex = -1;
+
             if (key.equals(getResources().getString(R.string.setting_key_label1))) {
-                buttons.get(0).setText(prefs.getString(getResources().getString(R.string.setting_key_label1), getResources().getString(R.string.button_name_stream1)));
                 buttonIndex = 0;
-                return;
             }
             if (key.equals(getResources().getString(R.string.setting_key_label2))) {
-                buttons.get(1).setText(prefs.getString(getResources().getString(R.string.setting_key_label2), getResources().getString(R.string.button_name_stream2)));
                 buttonIndex = 1;
-                return;
             }
             if (key.equals(getResources().getString(R.string.setting_key_label3))) {
-                buttons.get(2).setText(prefs.getString(getResources().getString(R.string.setting_key_label3), getResources().getString(R.string.button_name_stream3)));
                 buttonIndex = 2;
-                return;
             }
             if (key.equals(getResources().getString(R.string.setting_key_label4))) {
-                buttons.get(3).setText(prefs.getString(getResources().getString(R.string.setting_key_label4), getResources().getString(R.string.button_name_stream4)));
                 buttonIndex = 3;
-                return;
             }
-
+            if (key.equals(getResources().getString(R.string.setting_key_label5))) {
+                buttonIndex = 4;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_label6))) {
+                buttonIndex = 5;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_label7))) {
+                buttonIndex = 6;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_label8))) {
+                buttonIndex = 7;
+            }
+            if (key.contains("setting.key.label")){
+                buttonManager.setText(buttonIndex, prefs);
+            }
             if (key.equals(getResources().getString(R.string.setting_key_clockColor))) {
                 String colorCode = prefs.getString(getResources().getString(R.string.setting_key_clockColor), getResources().getString(R.string.setting_default_clockColor));
                 Timber.d(TAG_RADIOCLOCK, "Setting color clock to " + colorCode);
@@ -515,11 +537,37 @@ public class ClockActivity extends AppCompatActivity {
                 Timber.d(TAG_RADIOCLOCK, "Setting size clock to " + size);
                 mContentView.setTextSize(size);
             }
+            int streamIndex = -1;
+            if (key.equals(getResources().getString(R.string.setting_key_stream1))){
+                streamIndex = 0;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_stream2))){
+                streamIndex = 1;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_stream3))){
+                streamIndex = 2;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_stream4))){
+                streamIndex = 3;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_stream5))){
+                streamIndex = 4;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_stream6))){
+                streamIndex = 5;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_stream7))){
+                streamIndex = 6;
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_stream8))){
+                streamIndex = 7;
+            }
             if (key.contains("stream")) {
                 String url = prefs.getString(key, "");
-                mUrls.put(key, url);
+                mUrls.set(streamIndex, url);
                 buttonManager.hideUnhideButtons(mUrls);;
             }
+
             if (key.equals(getResources().getString(R.string.setting_key_sleepMinutes))) {
                 Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
                 if (customTimer == 0) {
