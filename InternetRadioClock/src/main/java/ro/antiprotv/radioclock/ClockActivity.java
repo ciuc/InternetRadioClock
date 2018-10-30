@@ -159,12 +159,13 @@ public class ClockActivity extends AppCompatActivity {
             clockExecutorService = Executors.newSingleThreadExecutor();
         }
 
-        if (prefs.getBoolean("SECOND_TIME",true)) {
+        if (prefs.getBoolean("THIRD_TIME",true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Check out the advanced settings section for some cool stuff!")
+            builder.setMessage("You can set the clock size and color from the advanced settings section. " +
+                    "Also you can add more buttons from the streams section: by setting the stream url they will appear automatically.\n (Deleting the stream url will make the button dissapear.)")
                     .setTitle("Thanks for using this app!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    prefs.edit().putBoolean("SECOND_TIME", false).apply();
+                    prefs.edit().putBoolean("THIRD_TIME", false).apply();
                 }
             });
             AlertDialog dialog = builder.create();
