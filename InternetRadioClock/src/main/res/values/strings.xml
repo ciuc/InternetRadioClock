@@ -110,6 +110,8 @@
     <string name="setting.name.clockSize">Clock Size</string>
     <string name="setting.default.clockSize">100</string>
 
+    <string name="back">Back</string>
+
     <string name="about.text"><![CDATA[
     <h1>Internet Radio Clock<h1>
 <p>This simple app just displays the clock and has 4 buttons associated each with a radio stream and came from the desire to be able to see the clock in  my kithcen and listen to the Radio Guerrilla morning show at a touch of a button, while living abroad. :)</p>

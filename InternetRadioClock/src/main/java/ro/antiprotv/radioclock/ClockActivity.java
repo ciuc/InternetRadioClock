@@ -127,7 +127,7 @@ public class ClockActivity extends AppCompatActivity {
             Timber.plant(new Timber.DebugTree());
         }
         mVisible = true;
-        mControlsView = findViewById(R.id.fullscreen_content_controls);
+        mControlsView = findViewById(R.id.mainLayout);
         mContentView = (TextView) findViewById(R.id.fullscreen_content);
 
         // Set up the user interaction to manually show or hide the system UI.
