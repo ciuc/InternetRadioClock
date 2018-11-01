@@ -189,9 +189,16 @@ public class ClockActivity extends AppCompatActivity {
         if (customTimer != 0) {
             timers.add(0, customTimer);
         }
+        //we use 2 buttons here when buttons are 8 we use the one top right, if < 8 bottom right
+        //the 2 buttons just hide/unhide
         ImageButton sleep = (ImageButton) findViewById(R.id.sleep);
+        ImageButton sleep8 = (ImageButton) findViewById(R.id.sleep8);
         sleep.setOnClickListener(sleepOnClickListener);
         sleep.setOnTouchListener(mDelayHideTouchListener);
+        sleep8.setOnClickListener(sleepOnClickListener);
+        sleep8.setOnTouchListener(mDelayHideTouchListener);
+        //we hide/unhide
+        hideUnhideSleepButtons();
 
         //Initialize the player
         if (mMediaPlayer == null) {
@@ -291,7 +298,9 @@ public class ClockActivity extends AppCompatActivity {
         @Override
         public void onClick(final View view) {
             TextView sleepTimerText = findViewById(R.id.sleep_timer);
+            TextView sleepTimerText8 = findViewById(R.id.sleep_timer8);
             ImageButton button = findViewById(R.id.sleep);
+            ImageButton button8 = findViewById(R.id.sleep8);
             if (sleepTimerIndex == timers.size()) {
                 resetSleepTimer();
                 sleepExecutorService.shutdownNow();
@@ -299,8 +308,10 @@ public class ClockActivity extends AppCompatActivity {
                 //stop the timer thread
                 sleepExecutorService.shutdownNow();
                 button.setImageResource(R.drawable.sleep_timer_on_white_24dp);
+                button8.setImageResource(R.drawable.sleep_timer_on_white_24dp);
                 Integer timer = timers.get(sleepTimerIndex);
                 sleepTimerText.setText(String.format(getResources().getString(R.string.text_sleep_timer),timer));
+                sleepTimerText8.setText(String.format(getResources().getString(R.string.text_sleep_timer),timer));
                 sleepTimerIndex++;
                 //now start the thread
                 SleepRunner sleepRunner = new SleepRunner(timer);
@@ -313,9 +324,13 @@ public class ClockActivity extends AppCompatActivity {
 
     private void resetSleepTimer() {
         TextView sleepTimerText = findViewById(R.id.sleep_timer);
+        TextView sleepTimerText8 = findViewById(R.id.sleep_timer8);
         ImageButton button = findViewById(R.id.sleep);
+        ImageButton button8 = findViewById(R.id.sleep8);
         sleepTimerText.setText("");
+        sleepTimerText8.setText("");
         button.setImageResource(R.drawable.sleep_timer_off_white_24dp);
+        button8.setImageResource(R.drawable.sleep_timer_off_white_24dp);
         sleepTimerIndex = 0;
     }
     private class SleepRunner implements Runnable {
@@ -347,6 +362,25 @@ public class ClockActivity extends AppCompatActivity {
                 Timber.d(TAG_RADIOCLOCK, "Sleep Thread interrupted ");
             }
         }
+    }
+    private void hideUnhideSleepButtons() {
+        TextView sleepTimerText = findViewById(R.id.sleep_timer);
+        TextView sleepTimerText8 = findViewById(R.id.sleep_timer8);
+        ImageButton button = findViewById(R.id.sleep);
+        ImageButton button8 = findViewById(R.id.sleep8);
+        for (String url : mUrls) {
+            if (url.isEmpty()) {
+                sleepTimerText.setVisibility(View.VISIBLE);
+                button.setVisibility(View.VISIBLE);
+                sleepTimerText8.setVisibility(View.GONE);
+                button8.setVisibility(View.GONE);
+                return;
+            }
+        }
+        sleepTimerText8.setVisibility(View.VISIBLE);
+        button8.setVisibility(View.VISIBLE);
+        sleepTimerText.setVisibility(View.GONE);
+        button.setVisibility(View.GONE);
     }
     ///////////////////////////////////////////////////////////////////////////
     // Media Player
@@ -566,7 +600,8 @@ public class ClockActivity extends AppCompatActivity {
             if (key.contains("stream")) {
                 String url = prefs.getString(key, "");
                 mUrls.set(streamIndex, url);
-                buttonManager.hideUnhideButtons(mUrls);;
+                buttonManager.hideUnhideButtons(mUrls);
+                hideUnhideSleepButtons();
             }
 
             if (key.equals(getResources().getString(R.string.setting_key_sleepMinutes))) {
