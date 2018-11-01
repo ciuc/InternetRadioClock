@@ -32,7 +32,11 @@ public class StreamFinderActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         streams = new ArrayList<>();
-        streams.add(new Stream("Guerrilla", "www.guerrila.ro", "Romania", "Rock, Classic"));
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        streams.add(new Stream("Guerrilla", prefs.getString(getResources().getString(R.string.setting_default_stream1),"xxx"), "Romania", "Rock, Classic"));
+        streams.add(new Stream("TNN", prefs.getString(getResources().getString(R.string.setting_default_stream2),"xxx"), "Romania", "Rock, Classic"));
+        streams.add(new Stream("BOB", prefs.getString(getResources().getString(R.string.setting_default_stream3),"xxx"), "Romania", "Rock, Classic"));
+        streams.add(new Stream("RCK", prefs.getString(getResources().getString(R.string.setting_default_stream4),"xxx"), "Romania", "Rock, Classic"));
 
         adapter = new StreamListAdapter(this, streams);
         recyclerView.setAdapter(adapter);
