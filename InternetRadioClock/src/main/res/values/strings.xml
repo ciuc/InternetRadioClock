@@ -16,6 +16,7 @@
     <string name="settings.menu.settings">Settings</string>
     <string name="settings.menu.about">About</string>
     <string name="settings.menu.exit">Exit</string>
+    <string name="settings.menu.streamFinder">Stream Finder</string>
 
     <string name="setting.key.stream1">setting.key.stream1</string>
     <string name="setting.key.stream2">setting.key.stream2</string>
@@ -86,6 +87,18 @@
         <item>#ffffff</item>
         <item>#333333</item>
     </string-array>
+
+    <string-array name="memories">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+
     <string name="setting.key.clockColor">setting.key.clockColor</string>
     <string name="setting.name.clockColor">Clock Color</string>
     <string name="setting.default.clockColor">#00ff00</string>
@@ -111,6 +124,8 @@
     <string name="setting.default.clockSize">100</string>
 
     <string name="back">Back</string>
+    <string name="find">Go Find!</string>
+    <string name="assign_to">Assign to memory</string>
 
     <string name="about.text"><![CDATA[
     <h1>Internet Radio Clock<h1>
@@ -121,5 +136,6 @@
 <p>The code is opensource and it can be found on github: https://github.com/ciuc/InternetRadioClock</p>
 ]]>
     </string>
+    <string name="title_activity_stream_finder">StreamFinder</string>
 
 </resources>

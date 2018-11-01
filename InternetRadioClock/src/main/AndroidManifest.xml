@@ -20,6 +20,7 @@
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -29,12 +30,21 @@
             android:name=".PreferencesActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Preferences"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
         <activity
             android:name=".AboutActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="About"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".StreamFinderActivity"
+            android:label="@string/title_activity_stream_finder"
+            android:parentActivityName=".ClockActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ro.antiprotv.radioclock.ClockActivity" />
+        </activity>
     </application>
 
 </manifest>
