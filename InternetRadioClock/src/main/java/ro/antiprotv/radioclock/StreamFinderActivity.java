@@ -9,10 +9,17 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import timber.log.Timber;
 
 public class StreamFinderActivity extends AppCompatActivity {
     List<Stream> streams;
@@ -45,16 +52,35 @@ public class StreamFinderActivity extends AppCompatActivity {
         findStreamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                fillInStreams();
+
+                    getStreams();
+
             }
         });
 
 
     }
 
-    private void fillInStreams() {
-        streams.add(new Stream("Rock Fm", "USA", "www.rock.us", "Cool music"));
-        adapter.notifyDataSetChanged();
+    private void getStreams (){
+        HttpRequestManager requestManager = new HttpRequestManager(this);
+        requestManager.getStations("Romania");
+    }
+    protected void fillInStreams(JSONArray jsonStations) {
+        if (jsonStations != null) {
+            Timber.d("response has: %d stations", jsonStations.length());
+            for (int i = 0; i < jsonStations.length(); i++) {
+                try {
+                    JSONObject station = (JSONObject) jsonStations.get(i);
+                    streams.add(new Stream(station.getString("name"), station.getString("url"), station.getString("country"), station.getString("country")));
+                } catch (JSONException e) {
+                    //TODO:HANDLE THIS!
+                    e.printStackTrace();
+                }
+            }
+            adapter.notifyDataSetChanged();
+        } else {
+            Toast.makeText(this, "Error retrieveing station list!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     protected void assignUrlToMemory(String url, String key) {
