@@ -31,7 +31,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.devbrackets.android.exomedia.EMAudioPlayer;
+import com.devbrackets.android.exomedia.AudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnErrorListener;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 
@@ -74,7 +74,7 @@ public class ClockActivity extends AppCompatActivity {
     public static final String TAG_STATE = "ClockActivity | State: %s";
     private TextView mContentView;
     private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-    private EMAudioPlayer mMediaPlayer;
+    private AudioPlayer mMediaPlayer;
     private Typeface digital7;
 
     private List<Button> buttons = new ArrayList<Button>();
@@ -387,7 +387,7 @@ public class ClockActivity extends AppCompatActivity {
     ///////////////////////////////////////////////////////////////////////////
     //init
     private void initMediaPlayer() {
-        mMediaPlayer = new EMAudioPlayer(getBaseContext());
+        mMediaPlayer = new AudioPlayer(getBaseContext());
         mMediaPlayer.setOnPreparedListener(new CustomOnPreparedListener());
         mMediaPlayer.setOnErrorListener(new CustomOnErrorListener());
     }
@@ -403,6 +403,7 @@ public class ClockActivity extends AppCompatActivity {
         @Override
         public void onPrepared() {
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ClockActivity.this);
+            Timber.d(TAG_RADIOCLOCK, "Attempting to start mediaplayer ");
             mMediaPlayer.start();
 
             buttonManager.lightButton();
@@ -410,15 +411,16 @@ public class ClockActivity extends AppCompatActivity {
             mPlayingStreamTag = buttonManager.getButtonClicked().getTag().toString();
             buttonManager.enableButtons();
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag);
-
+            Toast.makeText(ClockActivity.this, "Playing " + prefs.getString(mPlayingStreamTag,""), Toast.LENGTH_SHORT).show();
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + prefs.getString(mPlayingStreamTag,""));
         }
     }
 
     private class CustomOnErrorListener implements OnErrorListener {
         @Override
-        public boolean onError() {
+        public boolean onError(Exception e) {
             Toast.makeText(ClockActivity.this, "Error playing stream", Toast.LENGTH_SHORT).show();
+            Timber.e("Error playing stream: %s", e.getMessage());
             resetMediaPlayer();
             initMediaPlayer();
             buttonManager.resetButtons();
@@ -463,10 +465,11 @@ public class ClockActivity extends AppCompatActivity {
                 break;
         }
         url = mUrls.get(index);
-        Toast.makeText(ClockActivity.this, "Playing " + url, Toast.LENGTH_SHORT).show();
+        buttonManager.resetButtons();
+        Toast.makeText(ClockActivity.this, "Connecting to " + url, Toast.LENGTH_SHORT).show();
         Timber.d(TAG_RADIOCLOCK, "url " + url);
         if (url != null) {
-            mMediaPlayer.setDataSource(getBaseContext(), Uri.parse(url));
+            mMediaPlayer.setDataSource(Uri.parse(url));
         } else {//Something went wrong, resetting
             resetMediaPlayer();
             buttonManager.enableButtons();
@@ -481,12 +484,8 @@ public class ClockActivity extends AppCompatActivity {
             mMediaPlayer.reset();
         }
         buttonManager.enableButtons();
-        if (buttonManager.getButtonClicked() != null) {
-            buttonManager.getButtonClicked().setTextColor(getResources().getColor(R.color.button_color_off));
-            GradientDrawable buttonShape = (GradientDrawable) buttonManager.getButtonClicked().getBackground();
-            buttonShape.setStroke(1, getResources().getColor(R.color.button_color));
+        buttonManager.unlightButton();
 
-        }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
         }

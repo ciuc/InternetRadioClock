@@ -128,6 +128,8 @@ public class ButtonManager {
         for (Button button : buttons) {
             button.setEnabled(true);
             button.setTextColor(resources.getColor(R.color.button_color_off));
+            GradientDrawable buttonShape = (GradientDrawable) button.getBackground();
+            buttonShape.setStroke(1, resources.getColor(R.color.button_color));
         }
     }
 
@@ -141,15 +143,19 @@ public class ButtonManager {
     }
 
     protected void lightButton() {
-        for (Button button : buttons) {
-            button.setTextColor(resources.getColor(R.color.button_color_off));
-            GradientDrawable buttonShape = (GradientDrawable) button.getBackground();
-            buttonShape.setStroke(1, resources.getColor(R.color.button_color));
-        }
+        resetButtons();
         Timber.d(ClockActivity.TAG_RADIOCLOCK, mButtonClicked);
         mButtonClicked.setTextColor(resources.getColor(R.color.color_clock));
         GradientDrawable buttonShape = (GradientDrawable) mButtonClicked.getBackground();
         buttonShape.setStroke(1, resources.getColor(R.color.color_clock));
     }
 
+    protected void unlightButton() {
+        Button clicked = getButtonClicked();
+        if (clicked != null) {
+            clicked.setTextColor(context.getResources().getColor(R.color.button_color_off));
+            GradientDrawable buttonShape = (GradientDrawable) clicked.getBackground();
+            buttonShape.setStroke(1, context.getResources().getColor(R.color.button_color));
+        }
+    }
 }
