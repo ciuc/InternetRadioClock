@@ -29,7 +29,7 @@
             android:name=".PreferencesActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Preferences"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".AboutActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
