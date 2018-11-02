@@ -33,10 +33,10 @@ public class StreamFinderActivity extends AppCompatActivity {
 
         streams = new ArrayList<>();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        streams.add(new Stream("Guerrilla", prefs.getString(getResources().getString(R.string.setting_default_stream1),"xxx"), "Romania", "Rock, Classic"));
-        streams.add(new Stream("TNN", prefs.getString(getResources().getString(R.string.setting_default_stream2),"xxx"), "Romania", "Rock, Classic"));
-        streams.add(new Stream("BOB", prefs.getString(getResources().getString(R.string.setting_default_stream3),"xxx"), "Romania", "Rock, Classic"));
-        streams.add(new Stream("RCK", prefs.getString(getResources().getString(R.string.setting_default_stream4),"xxx"), "Romania", "Rock, Classic"));
+        streams.add(new Stream("Guerrilla", getResources().getString(R.string.setting_default_stream1),"Romania", "Rock, Classic"));
+        streams.add(new Stream("TNN", getResources().getString(R.string.setting_default_stream2), "Romania", "Rock, Classic"));
+        streams.add(new Stream("BOB", getResources().getString(R.string.setting_default_stream3), "Romania", "Rock, Classic"));
+        streams.add(new Stream("RCK", getResources().getString(R.string.setting_default_stream4), "Romania", "Rock, Classic"));
 
         adapter = new StreamListAdapter(this, streams);
         recyclerView.setAdapter(adapter);
