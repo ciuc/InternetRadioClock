@@ -73,7 +73,7 @@ public class ClockActivity extends AppCompatActivity {
     public static final String TAG_RADIOCLOCK = "ClockActivity: %s";
     public static final String TAG_STATE = "ClockActivity | State: %s";
     private TextView mContentView;
-    private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private AudioPlayer mMediaPlayer;
     private Typeface digital7;
 
@@ -153,6 +153,11 @@ public class ClockActivity extends AppCompatActivity {
 
         mContentView.setTextSize(size);
         mContentView.setTextColor(Color.parseColor(prefs.getString(getResources().getString(R.string.setting_key_clockColor), getResources().getString(R.string.setting_default_clockColor))));
+
+        boolean displaySeconds = prefs.getBoolean(getResources().getString(R.string.setting_key_seconds), true);
+        if (!displaySeconds) {
+            sdf = new SimpleDateFormat("HH:mm");
+        }
 
         clockRunner = new ClockRunner();
         if (clockExecutorService.isShutdown() || clockExecutorService.isTerminated()) {
