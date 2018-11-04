@@ -61,7 +61,7 @@
 
             <Button
                 android:id="@+id/stream1"
-                android:tag="setting.key.stream1"
+                android:tag="@string/setting.key.stream1"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
                 android:textColor="@color/button.color.off" />
             <Button
                 android:id="@+id/stream2"
-                android:tag="setting.key.stream2"
+                android:tag="@string/setting.key.stream2"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                 android:textColor="@color/button.color.off" />
             <Button
                 android:id="@+id/stream3"
-                android:tag="setting.key.stream3"
+                android:tag="@string/setting.key.stream3"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                 android:textColor="@color/button.color.off" />
             <Button
                 android:id="@+id/stream4"
-                android:tag="setting.key.stream4"
+                android:tag="@string/setting.key.stream4"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

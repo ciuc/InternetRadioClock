@@ -50,9 +50,7 @@ public class StreamListAdapter extends RecyclerView.Adapter {
         streamViewHolder.stream = stream;
         streamViewHolder.url = stream.getUrl();
         streamViewHolder.nameView.setText(stream.getName());
-        streamViewHolder.countryView.setText(stream.getCountry());
-        streamViewHolder.tagsView.setText(stream.getTags());
-        streamViewHolder.languageView.setText(stream.getLanguage());
+        streamViewHolder.countryView.setText(String.format("[FROM: %s | IN: %s | PLAYING: %s]", stream.getCountry(), stream.getLanguage(), stream.getTags()));
     }
 
     @Override
@@ -64,8 +62,6 @@ public class StreamListAdapter extends RecyclerView.Adapter {
 
         private final TextView nameView;
         private final TextView countryView;
-        private final TextView tagsView;
-        private final TextView languageView;
         private final View view;
         private String url;
 
@@ -75,9 +71,7 @@ public class StreamListAdapter extends RecyclerView.Adapter {
             super(view);
             this.view = view;
             this.nameView = view.findViewById(R.id.name);
-            this.countryView = view.findViewById(R.id.country);
-            this.tagsView = view.findViewById(R.id.tags);
-            this.languageView = view.findViewById(R.id.language);
+            this.countryView = view.findViewById(R.id.radio_description);
             this.view.setOnCreateContextMenuListener(this);
 
             final Button assignToMemoryButton1 = view.findViewById(R.id.sf_assign_button_stream1);
