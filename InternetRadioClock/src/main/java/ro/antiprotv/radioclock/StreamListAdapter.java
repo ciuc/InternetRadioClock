@@ -91,22 +91,6 @@ public class StreamListAdapter extends RecyclerView.Adapter {
             final Button assignToMemoryButton8 = view.findViewById(R.id.sf_assign_button_stream8);
             assignToMemoryButton8.setOnClickListener(new OnAssignToMemoryClickListener("8"));
 
-            final LinearLayout radioInfo = view.findViewById(R.id.radio_info);
-            final TextView name = view.findViewById(R.id.name);
-            name.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d(StreamListAdapter.class.getName(), radioInfo.toString());
-                    if (radioInfo.isShown()) {
-                        slide_up(streamFinderActivity, radioInfo);
-                        radioInfo.setVisibility(View.GONE);
-                    } else {
-                        slide_down(streamFinderActivity, radioInfo);
-                        radioInfo.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-
         }
 
         @Override
@@ -142,27 +126,5 @@ public class StreamListAdapter extends RecyclerView.Adapter {
             }
         }
 
-    }
-
-    public static void slide_down(StreamFinderActivity ctx, View v) {
-        Animation a = AnimationUtils.loadAnimation(ctx, R.anim.slide_down);
-        if (a != null) {
-            a.reset();
-            if (v != null) {
-                v.clearAnimation();
-                v.startAnimation(a);
-            }
-        }
-    }
-
-    public static void slide_up(StreamFinderActivity ctx, View v) {
-        Animation a = AnimationUtils.loadAnimation(ctx, R.anim.slide_up);
-        if (a != null) {
-            a.reset();
-            if (v != null) {
-                v.clearAnimation();
-                v.startAnimation(a);
-            }
-        }
     }
 }
