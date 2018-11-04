@@ -626,6 +626,13 @@ public class ClockActivity extends AppCompatActivity {
                 buttonManager.setButtonClicked(buttonManager.findButtonByTag(key));
                 play(buttonManager.findButtonByTag(key).getId());
             }
+            if (key.equals(getResources().getString(R.string.setting_key_seconds))){
+                if (prefs.getBoolean(getResources().getString(R.string.setting_key_seconds), true)) {
+                    sdf = new SimpleDateFormat("HH:mm:ss");
+                } else {
+                    sdf = new SimpleDateFormat("HH:mm");
+                }
+            }
         }
     };
 

@@ -13,6 +13,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 
+import java.util.Map;
 import java.util.prefs.Preferences;
 
 /**
@@ -24,13 +25,15 @@ public class AdvancedSettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.advanced_preferences);
-/*
 
+        //need to check the stupid seconds display: if there is not a setting, check it!
+        //for some reason "checked" in xml does not work
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity().getBaseContext());
-
+        Map<String, ? > allPrefs = prefs.getAll();
+        if(!allPrefs.containsKey(getResources().getString(R.string.setting_key_seconds))) {
             SwitchPreference secondsSwitch = (SwitchPreference) findPreference(getResources().getString(R.string.setting_key_seconds));
             secondsSwitch.setChecked(true);
-*/
+        }
 
     }
 }

@@ -51,7 +51,7 @@
     <string name="setting.name.sleepMinutes">Custom Sleep Time (minutes)</string>
     <string name="setting.summary.sleepMinutes">Set your own custom sleep timer which will be added to the predefined ones.</string>
     <string name="setting.name.seconds">Display Seconds</string>
-    <string name="setting.summary.seconds">Disable if you want the clock to display only hour and minutes</string>
+    <string name="setting.summary.seconds">Disable if you want the clock to not display seconds.\n(Might require restart!)</string>
 
     <string name="setting.name.label1">Button 1 Label</string>
     <string name="setting.name.label2">Button 2 Label</string>
