@@ -24,4 +24,18 @@
 
     <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="stream_finder_act_linear_layout_criteria">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">2pt</item>
+    </style>
+
+    <style name="streamFinder_act_spinner">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">1pt</item>
+        <item name="android:spinnerMode">dialog</item>
+    </style>
+
 </resources>
