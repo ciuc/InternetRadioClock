@@ -50,6 +50,12 @@ import timber.log.Timber;
  * Main Activity. Just displays the clock and buttons
  */
 public class ClockActivity extends AppCompatActivity {
+    //default URLS
+    final static List<String> DEFAULT_URLS = Arrays.asList("http://live.guerrillaradio.ro:8010/guerrilla.aac",
+            "http://live.tananana.ro:8010/stream-48.aac",
+            "http://streams.radiobob.de/bob-live/aac-64/mediaplayer",
+            "http://80.86.106.143:9128/rockfm.aacp");
+
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -178,10 +184,10 @@ public class ClockActivity extends AppCompatActivity {
             dialog.show();
         }
 
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream4), getResources().getString(R.string.setting_default_stream4)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream1), DEFAULT_URLS.get(0)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream2), DEFAULT_URLS.get(1)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream3), DEFAULT_URLS.get(2)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream4), DEFAULT_URLS.get(3)));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream5), ""));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream6), ""));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream7), ""));
@@ -416,7 +422,9 @@ public class ClockActivity extends AppCompatActivity {
             mPlayingStreamTag = buttonManager.getButtonClicked().getTag().toString();
             buttonManager.enableButtons();
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag);
-            Toast.makeText(ClockActivity.this, "Playing " + prefs.getString(mPlayingStreamTag,""), Toast.LENGTH_SHORT).show();
+            //default url do not show, b/c they are not present in prefs at first
+            String defaultKey = mPlayingStreamTag.replace("setting.key.stream", "");
+            Toast.makeText(ClockActivity.this, "Playing " + prefs.getString(mPlayingStreamTag,getResources().getString(R.id)), Toast.LENGTH_SHORT).show();
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + prefs.getString(mPlayingStreamTag,""));
         }
     }
