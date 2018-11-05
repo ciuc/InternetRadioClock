@@ -34,7 +34,8 @@
             android:name=".AboutActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="About"
-            android:screenOrientation="landscape"></activity>
+            android:screenOrientation="landscape"
+            android:launchMode="singleInstance"></activity>
     </application>
 
 </manifest>
