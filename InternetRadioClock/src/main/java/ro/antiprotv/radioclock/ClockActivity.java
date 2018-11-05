@@ -73,7 +73,7 @@ public class ClockActivity extends AppCompatActivity {
     public static final String TAG_RADIOCLOCK = "ClockActivity: %s";
     public static final String TAG_STATE = "ClockActivity | State: %s";
     private TextView mContentView;
-    private final SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private AudioPlayer mMediaPlayer;
     private Typeface digital7;
 
@@ -154,18 +154,23 @@ public class ClockActivity extends AppCompatActivity {
         mContentView.setTextSize(size);
         mContentView.setTextColor(Color.parseColor(prefs.getString(getResources().getString(R.string.setting_key_clockColor), getResources().getString(R.string.setting_default_clockColor))));
 
+        boolean displaySeconds = prefs.getBoolean(getResources().getString(R.string.setting_key_seconds), true);
+        if (!displaySeconds) {
+            sdf = new SimpleDateFormat("HH:mm");
+        }
+
         clockRunner = new ClockRunner();
         if (clockExecutorService.isShutdown() || clockExecutorService.isTerminated()) {
             clockExecutorService = Executors.newSingleThreadExecutor();
         }
 
-        if (prefs.getBoolean("THIRD_TIME",true)) {
+        if (prefs.getBoolean("FOURTH_TIME",true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("You can set the clock size and color from the advanced settings section. " +
+            builder.setMessage("You can set the clock size and color or disable seconds from the advanced settings section.\n" +
                     "Also you can add more buttons from the streams section: by setting the stream url they will appear automatically.\n (Deleting the stream url will make the button dissapear.)")
                     .setTitle("Thanks for using this app!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    prefs.edit().putBoolean("THIRD_TIME", false).apply();
+                    prefs.edit().putBoolean("FOURTH_TIME", false).apply();
                 }
             });
             AlertDialog dialog = builder.create();
@@ -402,7 +407,6 @@ public class ClockActivity extends AppCompatActivity {
     private class CustomOnPreparedListener implements OnPreparedListener {
         @Override
         public void onPrepared() {
-            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ClockActivity.this);
             Timber.d(TAG_RADIOCLOCK, "Attempting to start mediaplayer ");
             mMediaPlayer.start();
 
@@ -411,8 +415,11 @@ public class ClockActivity extends AppCompatActivity {
             mPlayingStreamTag = buttonManager.getButtonClicked().getTag().toString();
             buttonManager.enableButtons();
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag);
-            Toast.makeText(ClockActivity.this, "Playing " + prefs.getString(mPlayingStreamTag,""), Toast.LENGTH_SHORT).show();
-            getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + prefs.getString(mPlayingStreamTag,""));
+            //default url do not show, b/c they are not present in prefs at first
+            String defaultKey = mPlayingStreamTag.replace("setting.key.stream", "");
+            int index = Integer.parseInt(defaultKey) -1;
+            Toast.makeText(ClockActivity.this, "Playing " + mUrls.get(index), Toast.LENGTH_SHORT).show();
+            getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
         }
     }
 
@@ -625,6 +632,13 @@ public class ClockActivity extends AppCompatActivity {
                 //TODO: find a better solution
                 buttonManager.setButtonClicked(buttonManager.findButtonByTag(key));
                 play(buttonManager.findButtonByTag(key).getId());
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_seconds))){
+                if (prefs.getBoolean(getResources().getString(R.string.setting_key_seconds), true)) {
+                    sdf = new SimpleDateFormat("HH:mm:ss");
+                } else {
+                    sdf = new SimpleDateFormat("HH:mm");
+                }
             }
         }
     };
