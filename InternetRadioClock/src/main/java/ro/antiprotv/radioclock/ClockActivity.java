@@ -50,12 +50,6 @@ import timber.log.Timber;
  * Main Activity. Just displays the clock and buttons
  */
 public class ClockActivity extends AppCompatActivity {
-    //default URLS
-    final static List<String> DEFAULT_URLS = Arrays.asList("http://live.guerrillaradio.ro:8010/guerrilla.aac",
-            "http://live.tananana.ro:8010/stream-48.aac",
-            "http://streams.radiobob.de/bob-live/aac-64/mediaplayer",
-            "http://80.86.106.143:9128/rockfm.aacp");
-
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -170,13 +164,13 @@ public class ClockActivity extends AppCompatActivity {
             clockExecutorService = Executors.newSingleThreadExecutor();
         }
 
-        if (prefs.getBoolean("THIRD_TIME",true)) {
+        if (prefs.getBoolean("FOURTH_TIME",true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("You can set the clock size and color from the advanced settings section. " +
+            builder.setMessage("You can set the clock size and color or disable seconds from the advanced settings section.\n" +
                     "Also you can add more buttons from the streams section: by setting the stream url they will appear automatically.\n (Deleting the stream url will make the button dissapear.)")
                     .setTitle("Thanks for using this app!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    prefs.edit().putBoolean("THIRD_TIME", false).apply();
+                    prefs.edit().putBoolean("FOURTH_TIME", false).apply();
                 }
             });
             AlertDialog dialog = builder.create();
@@ -184,10 +178,10 @@ public class ClockActivity extends AppCompatActivity {
             dialog.show();
         }
 
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream1), DEFAULT_URLS.get(0)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream2), DEFAULT_URLS.get(1)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream3), DEFAULT_URLS.get(2)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream4), DEFAULT_URLS.get(3)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream4), getResources().getString(R.string.setting_default_stream4)));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream5), ""));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream6), ""));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream7), ""));
@@ -413,7 +407,6 @@ public class ClockActivity extends AppCompatActivity {
     private class CustomOnPreparedListener implements OnPreparedListener {
         @Override
         public void onPrepared() {
-            final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ClockActivity.this);
             Timber.d(TAG_RADIOCLOCK, "Attempting to start mediaplayer ");
             mMediaPlayer.start();
 
@@ -424,8 +417,9 @@ public class ClockActivity extends AppCompatActivity {
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag);
             //default url do not show, b/c they are not present in prefs at first
             String defaultKey = mPlayingStreamTag.replace("setting.key.stream", "");
-            Toast.makeText(ClockActivity.this, "Playing " + prefs.getString(mPlayingStreamTag,getResources().getString(R.id)), Toast.LENGTH_SHORT).show();
-            getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + prefs.getString(mPlayingStreamTag,""));
+            int index = Integer.parseInt(defaultKey) -1;
+            Toast.makeText(ClockActivity.this, "Playing " + mUrls.get(index), Toast.LENGTH_SHORT).show();
+            getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
         }
     }
 

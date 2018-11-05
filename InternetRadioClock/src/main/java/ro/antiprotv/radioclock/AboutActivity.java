@@ -38,7 +38,7 @@ public class AboutActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent clock = new Intent();
                 clock.setClassName(AboutActivity.this, "ro.antiprotv.radioclock.ClockActivity");
-                startActivity(clock);
+                onBackPressed();
             }
         });
     }

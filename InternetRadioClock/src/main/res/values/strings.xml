@@ -119,7 +119,9 @@
     <h1>Internet Radio Clock<h1>
 <p>This simple app just displays the clock and has 4 buttons associated each with a radio stream and came from the desire to be able to see the clock in  my kithcen and listen to the Radio Guerrilla morning show at a touch of a button, while living abroad. :)</p>
 <p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania and RadioBOB from Germany, because these were the radios that I listened to the most. The streams are configurable from the settings section.</p>
-<p>Also there is a sleep button that cycles through some predefined sleep timers; there is even a setting that alows you to setup your own timer.</p>
+<p>You can configure more buttons from the streams section: simply add the url to a button and it will appear automagically. Deleting the url will make the button disapear.</p>
+<p>From the advanced section you can configure some neat stuff like the color and size of the clock and you can disable the display of the seconds, which will allow a bigger clock.</p>
+<p>Also there is a sleep button that cycles through some predefined sleep timers; there is even a setting that allows you to setup your own timer.</p>
 <p>I tried to keep it as simple as possible, but if you have any ideas or you think it can be improved, write me at my gmail address cristi.ciuc</p>
 <p>The code is opensource and it can be found on github: https://github.com/ciuc/InternetRadioClock</p>
 ]]>
