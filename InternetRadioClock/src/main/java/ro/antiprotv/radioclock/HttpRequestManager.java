@@ -1,5 +1,6 @@
 package ro.antiprotv.radioclock;
 
+import android.net.Uri;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -24,17 +25,16 @@ public class HttpRequestManager {
     protected void getStations(String country, String name, String language, String tags) {
         RequestQueue queue = Volley.newRequestQueue(context);
         Timber.d("requesting stations for %s %s %s %s", country, name, language, tags);
-        StringBuilder requestParams = new StringBuilder("http://www.antiprotv.ro/radioclock/api.php?x=list&country=" + country);
+        StringBuilder requestParams = new StringBuilder("http://www.antiprotv.ro/radioclock/api.php?x=list&country=" + Uri.encode(country));
         if (!name.isEmpty()) {
             requestParams.append("&name=" + name);
         }
         if (!language.isEmpty() && !language.equals("Any")) {
-            requestParams.append("&language=" + language);
+            requestParams.append("&language=" + Uri.encode(language));
         }
         if (!tags.isEmpty()) {
-            requestParams.append("&tags=" + tags);
-        }
-        ;
+            requestParams.append("&tags=" + Uri.encode(tags));
+        };
         Timber.d("URL: %s", requestParams.toString());
         ResponseListener responseListener = new ResponseListener(context);
         JsonArrayRequest request = new JsonArrayRequest(requestParams.toString(),
