@@ -42,6 +42,7 @@
             android:name=".StreamFinderActivity"
             android:label="@string/title_activity_stream_finder"
             android:parentActivityName=".ClockActivity"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

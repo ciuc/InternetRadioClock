@@ -36,8 +36,6 @@ public class AboutActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent clock = new Intent();
-                clock.setClassName(AboutActivity.this, "ro.antiprotv.radioclock.ClockActivity");
                 onBackPressed();
             }
         });

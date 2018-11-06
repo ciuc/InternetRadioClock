@@ -17,10 +17,13 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -88,28 +91,63 @@ public class ClockActivity extends AppCompatActivity {
     //url(setting_key_stream1 >  http://something)
     private final List<String> mUrls = new ArrayList<>();
 
-    //Threads
-    ExecutorService clockExecutorService = Executors.newSingleThreadExecutor();
-    private ClockRunner clockRunner;
-
-    private class ClockRunner implements Runnable {
+    //Threading stuff
+    Handler threadHandler = null;
+    //We create this ui handler to update the clock
+    //We need this in order to not block the UI
+    Handler uiHandler = new Handler() {
+        int gravityIndex = 0;
         @Override
-        public void run() {
-            try {
-                while (!Thread.currentThread().isInterrupted()) {
-                    Thread.sleep(1000);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mContentView.setText(sdf.format(new Date()));
-                        }
-                    });
+        public void handleMessage(Message msg) {
+
+            mContentView.setText(sdf.format(new Date()));
+            if (msg.what == MOVE_TEXT) {
+                mContentView.setGravity(GRAVITIES.get(gravityIndex));
+                gravityIndex++;
+                if (gravityIndex == GRAVITIES.size()) {
+                    gravityIndex = 0;
                 }
-            } catch (InterruptedException e) {
-                Timber.d(TAG_RADIOCLOCK, "Thread interrupted");
             }
         }
+    };
+
+    private static final int DO_NOT_MOVE_TEXT = 1;
+    private static final int MOVE_TEXT = 2;
+    private static final List<Integer> GRAVITIES = Arrays.asList(Gravity.TOP, Gravity.BOTTOM, Gravity.LEFT, Gravity.RIGHT);
+    private class  ClockUpdater implements Runnable{
+        public void run() {
+            Looper.prepare();
+            Timber.d("Starting thread");
+            threadHandler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    int count = 0;
+                    while (semaphore) {
+                        Timber.d("Inside loop");
+                        {
+                            try {
+                                Thread.sleep(1000);
+                                count ++;
+                            } catch (Exception e) {
+                                Timber.e("Error: ", e.toString());
+                            }
+                        }
+                        Timber.d("Sending message to ui %d", count);
+                        uiHandler.sendEmptyMessage(DO_NOT_MOVE_TEXT);
+                        if (count > 5) {
+                            count = 0;
+                            Timber.d("Move text");
+                            uiHandler.sendEmptyMessage(MOVE_TEXT);
+                        }
+                    }
+                };
+            };
+            Looper.loop();
+
+        }
     }
+    private Thread clockUpdater;
+    private boolean semaphore = true;
     ///////////////////////////////////////////////////////////////////////////
     // State methods
     ///////////////////////////////////////////////////////////////////////////
@@ -159,10 +197,10 @@ public class ClockActivity extends AppCompatActivity {
             sdf = new SimpleDateFormat("HH:mm");
         }
 
-        clockRunner = new ClockRunner();
-        if (clockExecutorService.isShutdown() || clockExecutorService.isTerminated()) {
-            clockExecutorService = Executors.newSingleThreadExecutor();
-        }
+        //Thread for communicating with the ui handler
+        //We start it here , and we sendMessage to the threadHandler in onStart (we might have a race and get threadHandler null if we try it here)
+        clockUpdater = new Thread(new ClockUpdater());
+        clockUpdater.start();
 
         if (prefs.getBoolean("FOURTH_TIME",true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -227,8 +265,13 @@ public class ClockActivity extends AppCompatActivity {
     protected void onDestroy() {
         Timber.d(TAG_STATE, "onDestroy");
         resetMediaPlayer();
-        clockExecutorService.shutdownNow();
+        semaphore = false;
+        if (clockUpdater != null && !clockUpdater.isInterrupted()) {
+            clockUpdater.interrupt();
+        }
+        clockUpdater = null;
         sleepExecutorService.shutdownNow();
+        threadHandler = null;
         super.onDestroy();
     }
 
@@ -239,26 +282,26 @@ public class ClockActivity extends AppCompatActivity {
         if (mMediaPlayer == null) {
             initMediaPlayer();
         }
-        if (clockExecutorService.isShutdown() || clockExecutorService.isTerminated()) {
-            clockExecutorService = Executors.newSingleThreadExecutor();
-        }
+        semaphore = true;
     }
 
     @Override
     protected void onStop() {
         Timber.d(TAG_STATE, "onStop");
         super.onStop();
-        clockExecutorService.shutdown();
+        semaphore = false;
+        threadHandler.removeMessages(0);
     }
 
     @Override
     protected void onStart() {
         Timber.d(TAG_STATE, "onStart");
         super.onStart();
-        if (clockExecutorService.isShutdown() || clockExecutorService.isTerminated()) {
-            clockExecutorService = Executors.newSingleThreadExecutor();
+        //semaphore = true;
+        if (!threadHandler.hasMessages(0)) {
+
+            threadHandler.sendEmptyMessage(0);
         }
-        clockExecutorService.execute(clockRunner);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -522,6 +565,7 @@ public class ClockActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.about:
+                Timber.d(TAG_RADIOCLOCK, "about clicked");
                 Intent about = new Intent();
                 about.setClassName(this, "ro.antiprotv.radioclock.AboutActivity");
                 startActivity(about);
