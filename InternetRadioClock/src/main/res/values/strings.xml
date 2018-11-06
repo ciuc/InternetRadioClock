@@ -39,6 +39,7 @@
 
     <string name="setting.key.sleepMinutes">setting.key.sleepMinutes</string>
     <string name="setting.key.seconds">setting.key.seconds</string>
+    <string name="setting.key.clockMove">setting.key.clockMove</string>
 
     <string name="setting.name.stream1">Memory 1</string>
     <string name="setting.name.stream2">Memory 2</string>
@@ -53,6 +54,8 @@
     <string name="setting.summary.sleepMinutes">Set your own custom sleep timer which will be added to the predefined ones.</string>
     <string name="setting.name.seconds">Display Seconds</string>
     <string name="setting.summary.seconds">Disable if you want the clock to not display seconds.\n(Might require restart!)</string>
+    <string name="setting.name.clockMove">Enable clock movement on the screen (screensaver-like)</string>
+    <string name="setting.summary.clockMove">If you have an AMOLED display DO NOT TURN THIS FEATURE OFF!</string>
 
     <string name="setting.name.label1">Button 1 Label</string>
     <string name="setting.name.label2">Button 2 Label</string>

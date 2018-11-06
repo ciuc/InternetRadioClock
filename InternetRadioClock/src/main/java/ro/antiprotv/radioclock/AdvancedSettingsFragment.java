@@ -34,6 +34,10 @@ public class AdvancedSettingsFragment extends PreferenceFragment {
             SwitchPreference secondsSwitch = (SwitchPreference) findPreference(getResources().getString(R.string.setting_key_seconds));
             secondsSwitch.setChecked(true);
         }
+        if(!allPrefs.containsKey(getResources().getString(R.string.setting_key_clockMove))) {
+            SwitchPreference clkMvSwitch = (SwitchPreference) findPreference(getResources().getString(R.string.setting_key_clockMove));
+            clkMvSwitch.setChecked(true);
+        }
 
     }
 }

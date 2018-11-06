@@ -91,63 +91,8 @@ public class ClockActivity extends AppCompatActivity {
     //url(setting_key_stream1 >  http://something)
     private final List<String> mUrls = new ArrayList<>();
 
-    //Threading stuff
-    Handler threadHandler = null;
-    //We create this ui handler to update the clock
-    //We need this in order to not block the UI
-    Handler uiHandler = new Handler() {
-        int gravityIndex = 0;
-        @Override
-        public void handleMessage(Message msg) {
+    ClockUpdater clockUpdater;
 
-            mContentView.setText(sdf.format(new Date()));
-            if (msg.what == MOVE_TEXT) {
-                mContentView.setGravity(GRAVITIES.get(gravityIndex));
-                gravityIndex++;
-                if (gravityIndex == GRAVITIES.size()) {
-                    gravityIndex = 0;
-                }
-            }
-        }
-    };
-
-    private static final int DO_NOT_MOVE_TEXT = 1;
-    private static final int MOVE_TEXT = 2;
-    private static final List<Integer> GRAVITIES = Arrays.asList(Gravity.TOP, Gravity.BOTTOM, Gravity.LEFT, Gravity.RIGHT);
-    private class  ClockUpdater implements Runnable{
-        public void run() {
-            Looper.prepare();
-            Timber.d("Starting thread");
-            threadHandler = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    int count = 0;
-                    while (semaphore) {
-                        Timber.d("Inside loop");
-                        {
-                            try {
-                                Thread.sleep(1000);
-                                count ++;
-                            } catch (Exception e) {
-                                Timber.e("Error: ", e.toString());
-                            }
-                        }
-                        Timber.d("Sending message to ui %d", count);
-                        uiHandler.sendEmptyMessage(DO_NOT_MOVE_TEXT);
-                        if (count > 5) {
-                            count = 0;
-                            Timber.d("Move text");
-                            uiHandler.sendEmptyMessage(MOVE_TEXT);
-                        }
-                    }
-                };
-            };
-            Looper.loop();
-
-        }
-    }
-    private Thread clockUpdater;
-    private boolean semaphore = true;
     ///////////////////////////////////////////////////////////////////////////
     // State methods
     ///////////////////////////////////////////////////////////////////////////
@@ -196,10 +141,12 @@ public class ClockActivity extends AppCompatActivity {
         if (!displaySeconds) {
             sdf = new SimpleDateFormat("HH:mm");
         }
+        //Thread - clock
 
+        boolean moveText = prefs.getBoolean(getResources().getString(R.string.setting_key_clockMove), true);
         //Thread for communicating with the ui handler
         //We start it here , and we sendMessage to the threadHandler in onStart (we might have a race and get threadHandler null if we try it here)
-        clockUpdater = new Thread(new ClockUpdater());
+        clockUpdater = new ClockUpdater(sdf, mContentView);
         clockUpdater.start();
 
         if (prefs.getBoolean("FOURTH_TIME",true)) {
@@ -209,6 +156,22 @@ public class ClockActivity extends AppCompatActivity {
                     .setTitle("Thanks for using this app!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     prefs.edit().putBoolean("FOURTH_TIME", false).apply();
+                }
+            });
+            AlertDialog dialog = builder.create();
+
+            dialog.show();
+        }
+
+        if (prefs.getBoolean("AMOLED_WARN",true)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Having an image on the screen for a long time might damage your AMOLED screen.\n" +
+                    "The text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen it is highly discouraged to do so.")
+                    .setTitle("AMOLED WARNING")
+                    .setIcon(R.drawable.ic_warning_black_24dp)
+            .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    prefs.edit().putBoolean("AMOLED_WARN", false).apply();
                 }
             });
             AlertDialog dialog = builder.create();
@@ -265,13 +228,13 @@ public class ClockActivity extends AppCompatActivity {
     protected void onDestroy() {
         Timber.d(TAG_STATE, "onDestroy");
         resetMediaPlayer();
-        semaphore = false;
+        clockUpdater.setSemaphore(false);
         if (clockUpdater != null && !clockUpdater.isInterrupted()) {
             clockUpdater.interrupt();
         }
+        clockUpdater.setThreadHandler(null);
         clockUpdater = null;
         sleepExecutorService.shutdownNow();
-        threadHandler = null;
         super.onDestroy();
     }
 
@@ -282,15 +245,15 @@ public class ClockActivity extends AppCompatActivity {
         if (mMediaPlayer == null) {
             initMediaPlayer();
         }
-        semaphore = true;
+        clockUpdater.setSemaphore(true);
     }
 
     @Override
     protected void onStop() {
         Timber.d(TAG_STATE, "onStop");
         super.onStop();
-        semaphore = false;
-        threadHandler.removeMessages(0);
+        clockUpdater.setSemaphore(false);
+        clockUpdater.getThreadHandler().removeMessages(0);
     }
 
     @Override
@@ -298,9 +261,8 @@ public class ClockActivity extends AppCompatActivity {
         Timber.d(TAG_STATE, "onStart");
         super.onStart();
         //semaphore = true;
-        if (!threadHandler.hasMessages(0)) {
-
-            threadHandler.sendEmptyMessage(0);
+        if (!clockUpdater.getThreadHandler().hasMessages(0)) {
+            clockUpdater.getThreadHandler().sendEmptyMessage(0);
         }
     }
 
@@ -683,6 +645,11 @@ public class ClockActivity extends AppCompatActivity {
                 } else {
                     sdf = new SimpleDateFormat("HH:mm");
                 }
+                clockUpdater.setSdf(sdf);
+            }
+            if (key.equals(getResources().getString(R.string.setting_key_clockMove))){
+                clockUpdater.setMoveText(prefs.getBoolean(getResources().getString(R.string.setting_key_clockMove), true));
+                mContentView.setGravity(Gravity.CENTER);
             }
         }
     };
