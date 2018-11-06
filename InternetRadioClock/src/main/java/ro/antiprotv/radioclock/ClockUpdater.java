@@ -56,9 +56,10 @@ public class ClockUpdater extends Thread{
     private boolean moveText = true;
     private static final List<Integer> GRAVITIES = Arrays.asList(Gravity.TOP, Gravity.BOTTOM, Gravity.LEFT, Gravity.RIGHT, Gravity.CENTER, Gravity.BOTTOM | Gravity.RIGHT);
 
-    ClockUpdater(SimpleDateFormat sdf, TextView tv){
+    ClockUpdater(SimpleDateFormat sdf, TextView tv, boolean moveText){
         this.sdf = sdf;
         this.mContentView = tv;
+        this.moveText = moveText;
     }
     //We create this ui handler to update the clock
     //We need this in order to not block the UI

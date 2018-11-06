@@ -146,7 +146,7 @@ public class ClockActivity extends AppCompatActivity {
         boolean moveText = prefs.getBoolean(getResources().getString(R.string.setting_key_clockMove), true);
         //Thread for communicating with the ui handler
         //We start it here , and we sendMessage to the threadHandler in onStart (we might have a race and get threadHandler null if we try it here)
-        clockUpdater = new ClockUpdater(sdf, mContentView);
+        clockUpdater = new ClockUpdater(sdf, mContentView, moveText);
         clockUpdater.start();
 
         if (prefs.getBoolean("FOURTH_TIME",true)) {
