@@ -40,7 +40,6 @@ public class StreamFinderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stream_finder);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.title_streamFinder);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final RecyclerView recyclerView = findViewById(R.id.stream_list_view);

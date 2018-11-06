@@ -18,8 +18,7 @@
         android:keepScreenOn="true"
         android:textColor="@color/color.clock"
         android:textSize="150sp"
-        android:textStyle="bold"
-        android:text="12:00"/>
+        android:textStyle="bold"/>
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->

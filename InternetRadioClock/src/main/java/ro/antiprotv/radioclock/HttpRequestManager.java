@@ -49,16 +49,12 @@ public class HttpRequestManager {
 
                 switch (statusCode) {
                     case 404:
-                    Toast.makeText(context, String.format("No radios matching the criteria! Please try again ", statusCode), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, String.format("No radios matching the criteria! Please try again. ", statusCode), Toast.LENGTH_LONG).show();
                     break;
                     case 500:
                     Toast.makeText(context, String.format("Something went wrong while retrieving list. Please try again later. (error %d) ", statusCode), Toast.LENGTH_LONG).show();
                     break;
                 }
-
-                //TODO: show error dialog
-
-
             }
         });
 
@@ -80,6 +76,7 @@ public class HttpRequestManager {
 
         @Override
         public void onResponse(JSONArray response) {
+            Toast.makeText(context, String.format("Found %d radios...", response.length()), Toast.LENGTH_LONG).show();
             activity.fillInStreams(response);
         }
     }

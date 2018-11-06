@@ -27,12 +27,17 @@
 
         <!-- Settings activity -->
         <activity
-            android:name=".PreferencesActivity"
+            android:name=".ConfigureButtonsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Preferences"
             android:screenOrientation="portrait">
         </activity>
-
+        <activity
+            android:name=".SettingsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Preferences"
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".AboutActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

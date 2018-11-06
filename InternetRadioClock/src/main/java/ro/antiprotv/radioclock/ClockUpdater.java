@@ -100,7 +100,7 @@ public class ClockUpdater extends Thread{
                         }
                         Timber.d("Sending message to ui %d", count);
                         uiHandler.sendEmptyMessage(DO_NOT_MOVE_TEXT);
-                        if (moveText && count > 5) {
+                        if (moveText && count > 300) {
                             count = 0;
                             Timber.d("Move text");
                             uiHandler.sendEmptyMessage(MOVE_TEXT);

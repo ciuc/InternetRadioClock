@@ -100,7 +100,7 @@ public class ClockActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Initialize the preferences
+        //Initialize the preferences_buttons
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         setContentView(R.layout.activity_main);
@@ -151,8 +151,8 @@ public class ClockActivity extends AppCompatActivity {
 
         if (prefs.getBoolean("FOURTH_TIME",true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("You can set the clock size and color or disable seconds from the advanced settings section.\n" +
-                    "Also you can add more buttons from the streams section: by setting the stream url they will appear automatically.\n (Deleting the stream url will make the button dissapear.)")
+            builder.setMessage("You can set the clock size and color or disable seconds from the settings.\n" +
+                    "Also you can add more buttons from the \"Configure Buttons\" section: by setting the stream url they will appear automatically.\n (Deleting the stream url will make the button dissapear.)")
                     .setTitle("Thanks for using this app!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     prefs.edit().putBoolean("FOURTH_TIME", false).apply();
@@ -169,7 +169,7 @@ public class ClockActivity extends AppCompatActivity {
                     "The text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen it is highly discouraged to do so.")
                     .setTitle("AMOLED WARNING")
                     .setIcon(R.drawable.ic_warning_black_24dp)
-            .setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+            .setPositiveButton(R.string.dialog_button_ok_amoled, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     prefs.edit().putBoolean("AMOLED_WARN", false).apply();
                 }
@@ -520,11 +520,17 @@ public class ClockActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.settings:
+            case R.id.buttons:
                 Timber.d(TAG_RADIOCLOCK, "Settings clicked");
                 Intent intent = new Intent();
-                intent.setClassName(this, "ro.antiprotv.radioclock.PreferencesActivity");
+                intent.setClassName(this, "ro.antiprotv.radioclock.ConfigureButtonsActivity");
                 startActivity(intent);
+                return true;
+            case R.id.settings:
+                Timber.d(TAG_RADIOCLOCK, "Settings clicked");
+                Intent settings = new Intent();
+                settings.setClassName(this, "ro.antiprotv.radioclock.SettingsActivity");
+                startActivity(settings);
                 return true;
             case R.id.about:
                 Timber.d(TAG_RADIOCLOCK, "about clicked");

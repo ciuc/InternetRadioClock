@@ -25,13 +25,13 @@
         android:key="@string/setting.key.seconds"
         android:title="@string/setting.name.seconds"
         android:summary="@string/setting.summary.seconds"
-        android:checked="true"
+        android:defaultValue="true"
         />
     <SwitchPreference
         android:id="@+id/switch_enable_clock_move"
         android:key="@string/setting.key.clockMove"
         android:title="@string/setting.name.clockMove"
         android:summary="@string/setting.summary.clockMove"
-        android:checked="true"
+        android:defaultValue="true"
         />
 </PreferenceScreen>
