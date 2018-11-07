@@ -151,8 +151,7 @@ public class ClockActivity extends AppCompatActivity {
 
         if (prefs.getBoolean("FOURTH_TIME",true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("You can set the clock size and color or disable seconds from the settings.\n" +
-                    "Also you can add more buttons from the \"Configure Buttons\" section: by setting the stream url they will appear automatically.\n (Deleting the stream url will make the button dissapear.)")
+            builder.setMessage("Check out the \"About\" section to find out what you can do with this thing.")
                     .setTitle("Thanks for using this app!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     prefs.edit().putBoolean("FOURTH_TIME", false).apply();
@@ -166,7 +165,7 @@ public class ClockActivity extends AppCompatActivity {
         if (prefs.getBoolean("AMOLED_WARN",true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Having an image on the screen for a long time might damage your AMOLED screen.\n" +
-                    "The text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen it is highly discouraged to do so.")
+                    "The text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen you are highly discouraged to do so.")
                     .setTitle("AMOLED WARNING")
                     .setIcon(R.drawable.ic_warning_black_24dp)
             .setPositiveButton(R.string.dialog_button_ok_amoled, new DialogInterface.OnClickListener() {

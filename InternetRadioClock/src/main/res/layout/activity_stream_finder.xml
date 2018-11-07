@@ -111,7 +111,7 @@
                     android:layout_height="50dp"
                     android:background="@android:color/transparent"
                     android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_help_outline_black_24dp" />
+                    app:srcCompat="@drawable/ic_help_outline_black_24dp" />
             </RelativeLayout>
 
         </LinearLayout>

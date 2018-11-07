@@ -317,27 +317,27 @@ If you want to assign a radio to a memory button, click on the button corespondi
         <item>Indie</item>
         <item>Punk</item>
         <item>Metal</item>
+        <item>Ambient</item>
+        <item>Blues</item>
+        <item>Chillout</item>
+        <item>Christmas</item>
+        <item>Classic</item>
+        <item>Comedy</item>
+        <item>Educational</item>
+        <item>Electronic</item>
         <item>Hip hop</item>
+        <item>Hits</item>
+        <item>House</item>
         <item>Rap</item>
+        <item>Latin</item>
         <item>Local</item>
         <item>News</item>
-        <item>Classic</item>
-        <item>House</item>
-        <item>Electronic</item>
-        <item>Chillout</item>
-        <item>Comedy</item>
         <item>Pop</item>
-        <item>Talk</item>
-        <item>Educational</item>
-        <item>Hits</item>
-        <item>Jazz</item>
-        <item>Blues</item>
-        <item>Latin</item>
-        <item>Space</item>
-        <item>Ambient</item>
-        <item>Ska</item>
         <item>Reggae</item>
-        <item>Christmas</item>
+        <item>Talk</item>
+        <item>Jazz</item>
+        <item>Ska</item>
+        <item>Space</item>
     </string-array>
     <string-array name="languages">
         <item>Any</item>
@@ -410,10 +410,14 @@ If you want to assign a radio to a memory button, click on the button corespondi
 
     <string name="about.text"><![CDATA[
     <h1>Internet Radio Clock<h1>
-<p>This simple app just displays the clock and has 4 buttons associated each with a radio stream and came from the desire to be able to see the clock in  my kithcen and listen to the Radio Guerrilla morning show at a touch of a button, while living abroad. :)</p>
-<p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania and RadioBOB from Germany, because these were the radios that I listened to the most. The streams are configurable from the settings section.</p>
-<p>You can configure more buttons from the streams section: simply add the url to a button and it will appear automagically. Deleting the url will make the button disapear.</p>
-<p>From the advanced section you can configure some neat stuff like the color and size of the clock and you can disable the display of the seconds, which will allow a bigger clock.</p>
+<p>This simple app just displays the clock and has 4 buttons associated each with a radio stream.</p>
+<p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania and RadioBOB from Germany, because these are the radios that I listen to the most.
+The streams are configurable from the Configure Buttons menu.</p>
+<p>You can configure more buttons from the same section: simply add the url to a button and it will appear automagically. Deleting the url will make the button disappear.</p>
+<p>The Stream Finder section allows you to search for radio streams from around the world and easily assign them to one of the buttons.
+Please bear in mind that the radio streams list is maintained by community effort and might not be 100% accurate.</p>
+<p>From the Settings section you can configure some neat stuff like the color and size of the clock, you can disable the display of the seconds, which will allow a bigger clock.</p>
+<p>The clock features a "screensaver-like" function which moves the clock on the screen - important if you have an AMOLED display (leaving an image on an AMOLED screen for a prolonged period of time might damage the screen). The movement can be disabled from the Settings screen.</p>
 <p>Also there is a sleep button that cycles through some predefined sleep timers; there is even a setting that allows you to setup your own timer.</p>
 <p>I tried to keep it as simple as possible, but if you have any ideas or you think it can be improved, write me at my gmail address cristi.ciuc</p>
 <p>The code is opensource and it can be found on github: https://github.com/ciuc/InternetRadioClock</p>
