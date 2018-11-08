@@ -79,8 +79,6 @@ public class ClockActivity extends AppCompatActivity {
     private List<Button> buttons = new ArrayList<Button>();
     private ButtonManager buttonManager;
     private SleepManager sleepManager;
-    //Register the receiver here since we want to call stuff from this activity
-    public BroadcastReceiver alarmReceiver;
 
     //remember the playing stream number and tag
     //they will have to be reset when stopping
@@ -98,6 +96,7 @@ public class ClockActivity extends AppCompatActivity {
     private int m=0;
 
     private boolean alarmPlaying;
+    private boolean alarmScheduled;
     private RadioAlarmManager alarmManager;
     ///////////////////////////////////////////////////////////////////////////
     // State methods
@@ -213,7 +212,7 @@ public class ClockActivity extends AppCompatActivity {
         sleepManager.hideUnhideSleepButtons();
 
 
-        alarmManager = new RadioAlarmManager(this);
+        alarmManager = new RadioAlarmManager(this, buttonManager);
         ImageButton alarmButton = (ImageButton) findViewById(R.id.alarm_icon);
         alarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,7 +231,6 @@ public class ClockActivity extends AppCompatActivity {
 
             }
         });
-        alarmReceiver = new AlarmReceiver(this, buttonManager, alarmManager);
 
         //Initialize the player
         if (mMediaPlayer == null) {
@@ -264,7 +262,7 @@ public class ClockActivity extends AppCompatActivity {
         clockUpdater = null;
         sleepManager.getSleepExecutorService().shutdownNow();
         try {
-            this.unregisterReceiver(this.alarmReceiver);
+            this.unregisterReceiver(this.alarmManager);
         } catch (IllegalArgumentException e) {
             Timber.e("receiver already unregistered");
         }
@@ -288,7 +286,7 @@ public class ClockActivity extends AppCompatActivity {
         clockUpdater.setSemaphore(false);
         clockUpdater.getThreadHandler().removeMessages(0);
         try {
-            this.unregisterReceiver(this.alarmReceiver);
+            this.unregisterReceiver(this.alarmManager);
         } catch (IllegalArgumentException e) {
             Timber.e("receiver already unregistered");
         }
@@ -302,8 +300,8 @@ public class ClockActivity extends AppCompatActivity {
         if (!clockUpdater.getThreadHandler().hasMessages(0)) {
             clockUpdater.getThreadHandler().sendEmptyMessage(0);
         }
-        IntentFilter filter = new IntentFilter("alarmReceiver");
-        this.registerReceiver(this.alarmReceiver, filter);
+        IntentFilter filter = new IntentFilter("alarmManager");
+        this.registerReceiver(this.alarmManager, filter);
     }
 
     @Override
@@ -311,7 +309,7 @@ public class ClockActivity extends AppCompatActivity {
         super.onResume();
         Timber.d(TAG_STATE, "onResume");
         IntentFilter filter = new IntentFilter("alarmReceiver");
-        this.registerReceiver(this.alarmReceiver, filter);
+        this.registerReceiver(this.alarmManager, filter);
     }
 
 
@@ -378,6 +376,7 @@ public class ClockActivity extends AppCompatActivity {
             int index = Integer.parseInt(defaultKey) -1;
             Toast.makeText(ClockActivity.this, "Playing " + mUrls.get(index), Toast.LENGTH_SHORT).show();
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
+            alarmPlaying = false;
         }
     }
 
@@ -392,12 +391,19 @@ public class ClockActivity extends AppCompatActivity {
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
             }
+            if (alarmPlaying) {
+                alarmManager.playDefaultAlarmOnStreamError();
+            }
             return false;
         }
     }
 
     protected void play(int buttonId) {
-        //TODO: if already playing - comes from alarm -do nothing
+        //if already playing and comes from alarm -do nothing
+        if (mMediaPlayer.isPlaying() && alarmPlaying) {
+            alarmManager.changeAlarmIconAndTextOnCancel();
+            return;
+        }
         String url;
         //index in th list
         int index = -1;
@@ -692,7 +698,7 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     @SuppressLint("InlinedApi")
-    private void show() {
+    protected void show() {
         // Show the system bar
         mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
@@ -716,6 +722,9 @@ public class ClockActivity extends AppCompatActivity {
     //--/////////////////////////////////////////////////////////////////////////
     public void setAlarmPlaying(boolean alarmPlaying) {
         this.alarmPlaying = alarmPlaying;
+    }
+    public void setAlarmScheduled(boolean alarmScheduled) {
+        this.alarmScheduled = alarmScheduled;
     }
 
 }

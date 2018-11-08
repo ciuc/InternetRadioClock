@@ -59,8 +59,30 @@
             android:background="@drawable/memory"
             android:visibility="gone"
             android:textColor="@color/button.color.off" />
-
-
+        <ImageButton
+            android:id="@+id/alarm_icon_snooze"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/alarm_icon"
+            android:layout_marginLeft="5dp"
+            android:clickable="false"
+            app:srcCompat="@drawable/ic_snooze_black_24dp"
+            android:background="@drawable/memory"
+            android:visibility="gone"
+            android:textColor="@color/button.color.off" />
+        <ImageButton
+            android:id="@+id/alarm_icon_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?metaButtonBarButtonStyle"
+            android:layout_toRightOf="@+id/alarm_icon_snooze"
+            android:layout_marginLeft="5dp"
+            android:clickable="false"
+            app:srcCompat="@drawable/ic_cancel_black_24dp"
+            android:background="@drawable/memory"
+            android:visibility="gone"
+            android:textColor="@color/button.color.off" />
         <ImageButton
             android:id="@+id/sleep8"
             android:tag="@string/setting.key.sleepMinutes"
