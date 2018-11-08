@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import ro.antiprotv.radioclock.ClockActivity;
+import ro.antiprotv.radioclock.R;
 import timber.log.Timber;
 
 public class SleepManager {

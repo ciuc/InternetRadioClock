@@ -13,6 +13,8 @@ import android.preference.SwitchPreference;
 
 import java.util.Map;
 
+import ro.antiprotv.radioclock.R;
+
 /**
  * Created by ciuc on 7/12/16.
  */

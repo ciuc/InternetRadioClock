@@ -12,8 +12,12 @@ import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
+import ro.antiprotv.radioclock.ClockActivity;
+import ro.antiprotv.radioclock.R;
 import timber.log.Timber;
 
 public class RadioAlarmManager {
@@ -21,12 +25,18 @@ public class RadioAlarmManager {
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
     private ClockActivity clockActivity;
+    private final ImageButton alarmButton;
+    private final TextView alarmText;
+    private final ImageButton alarmOffButton;
 
     public  RadioAlarmManager(ClockActivity context) {
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent("alarmReceiver");
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         clockActivity = context;
+        alarmButton = (ImageButton) clockActivity.findViewById(R.id.alarm_icon);
+        alarmText = (TextView) clockActivity.findViewById(R.id.alarm_time);
+        alarmOffButton = (ImageButton) clockActivity.findViewById(R.id.alarm_icon_turn_off);
     }
 
     public void setAlarm(int hour, int minute) {
@@ -49,33 +59,34 @@ public class RadioAlarmManager {
             tomorrow = true;
             next.add(Calendar.DAY_OF_MONTH, 1);
         }
-        Timber.d("Alarm set for: %s", next.getTime().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
+        Timber.d("Alarm set for: %s", sdf.format(next.getTime()));
 
         alarmMgr.setExact( AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), alarmIntent);
-        Toast.makeText(clockActivity, String.format("Alarm set for %s at %d:%d", (tomorrow)?"tomorrow":"today", hour, minute), Toast.LENGTH_SHORT).show();
-        final TextView alarmText = (TextView) clockActivity.findViewById(R.id.alarm_time);
+        Toast.makeText(clockActivity, String.format("Alarm set for %s at %s", (tomorrow)?"tomorrow":"today", sdf.format(next.getTime())), Toast.LENGTH_SHORT).show();
         alarmText.setText(String.format("Alarm set for %d:%d", hour, minute));
         alarmText.setVisibility(View.VISIBLE);
-
-        final ImageButton alarmButton = (ImageButton) clockActivity.findViewById(R.id.alarm_icon);
         alarmButton.setImageResource(R.drawable.ic_alarm_on_black_24dp);
-
-        final ImageButton alarmOffButton = (ImageButton) clockActivity.findViewById(R.id.alarm_icon_turn_off);
         alarmOffButton.setVisibility(View.VISIBLE);
         alarmOffButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Timber.d("Alarm canceled");
                 alarmMgr.cancel(alarmIntent);
-                alarmButton.setImageResource(R.drawable.ic_alarm_add_black_24dp);
-                alarmText.setVisibility(View.GONE);
-                alarmOffButton.setVisibility(View.GONE);
                 Toast.makeText(clockActivity, "Alarm canceled!", Toast.LENGTH_SHORT).show();
+                clockActivity.setAlarmPlaying(false);
+                changeAlarmIconAndTextOnCancel();
             }
         });
-
     }
 
+    protected void changeAlarmIconAndTextOnCancel() {
+        alarmButton.setImageResource(R.drawable.ic_alarm_add_black_24dp);
+        alarmText.setVisibility(View.GONE);
+        alarmOffButton.setVisibility(View.GONE);
+
+    }
     private void setAlarmText(Calendar cal) {
 
     }

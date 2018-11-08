@@ -45,7 +45,7 @@ public class ClockUpdater extends Thread{
         this.sdf = sdf;
     }
 
-    SimpleDateFormat sdf;
+    private SimpleDateFormat sdf;
     private static final int DO_NOT_MOVE_TEXT = 1;
     private static final int MOVE_TEXT = 2;
 

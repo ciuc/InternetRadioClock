@@ -12,6 +12,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.prefs.Preferences;
+
+import ro.antiprotv.radioclock.ClockActivity;
+import ro.antiprotv.radioclock.R;
 import timber.log.Timber;
 
 public class ButtonManager {

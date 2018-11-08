@@ -96,6 +96,9 @@ public class ClockActivity extends AppCompatActivity {
     //remember last picked hour
     private int h=0;
     private int m=0;
+
+    private boolean alarmPlaying;
+    private RadioAlarmManager alarmManager;
     ///////////////////////////////////////////////////////////////////////////
     // State methods
     ///////////////////////////////////////////////////////////////////////////
@@ -210,7 +213,7 @@ public class ClockActivity extends AppCompatActivity {
         sleepManager.hideUnhideSleepButtons();
 
 
-        final RadioAlarmManager alarmManager = new RadioAlarmManager(this);
+        alarmManager = new RadioAlarmManager(this);
         ImageButton alarmButton = (ImageButton) findViewById(R.id.alarm_icon);
         alarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,7 +232,7 @@ public class ClockActivity extends AppCompatActivity {
 
             }
         });
-        alarmReceiver = new AlarmReceiver(this, buttonManager);
+        alarmReceiver = new AlarmReceiver(this, buttonManager, alarmManager);
 
         //Initialize the player
         if (mMediaPlayer == null) {
@@ -711,5 +714,8 @@ public class ClockActivity extends AppCompatActivity {
     //--/////////////////////////////////////////////////////////////////////////
     // END Delaying removal of nav bar (android studio default stuff)
     //--/////////////////////////////////////////////////////////////////////////
+    public void setAlarmPlaying(boolean alarmPlaying) {
+        this.alarmPlaying = alarmPlaying;
+    }
 
 }
