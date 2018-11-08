@@ -8,17 +8,17 @@
 package ro.antiprotv.radioclock;
 
 import android.annotation.SuppressLint;
+import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -32,6 +32,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.devbrackets.android.exomedia.AudioPlayer;
@@ -40,12 +41,7 @@ import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import timber.log.Timber;
 
@@ -82,6 +78,10 @@ public class ClockActivity extends AppCompatActivity {
 
     private List<Button> buttons = new ArrayList<Button>();
     private ButtonManager buttonManager;
+    private SleepManager sleepManager;
+    //Register the receiver here since we want to call stuff from this activity
+    public BroadcastReceiver alarmReceiver;
+
     //remember the playing stream number and tag
     //they will have to be reset when stopping
     private int mPlayingStreamNo;
@@ -92,7 +92,10 @@ public class ClockActivity extends AppCompatActivity {
     private final List<String> mUrls = new ArrayList<>();
 
     ClockUpdater clockUpdater;
-
+    //Alarm stuff
+    //remember last picked hour
+    private int h=0;
+    private int m=0;
     ///////////////////////////////////////////////////////////////////////////
     // State methods
     ///////////////////////////////////////////////////////////////////////////
@@ -190,20 +193,43 @@ public class ClockActivity extends AppCompatActivity {
         buttons = buttonManager.initializeButtons(mUrls);
 
         //sleep timer
+        sleepManager = new SleepManager(this, mUrls);
         Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
         if (customTimer != 0) {
-            timers.add(0, customTimer);
+            sleepManager.getTimers().add(0, customTimer);
         }
         //we use 2 buttons here when buttons are 8 we use the one top right, if < 8 bottom right
         //the 2 buttons just hide/unhide
         ImageButton sleep = (ImageButton) findViewById(R.id.sleep);
         ImageButton sleep8 = (ImageButton) findViewById(R.id.sleep8);
-        sleep.setOnClickListener(sleepOnClickListener);
+        sleep.setOnClickListener(sleepManager.sleepOnClickListener);
         sleep.setOnTouchListener(mDelayHideTouchListener);
-        sleep8.setOnClickListener(sleepOnClickListener);
+        sleep8.setOnClickListener(sleepManager.sleepOnClickListener);
         sleep8.setOnTouchListener(mDelayHideTouchListener);
         //we hide/unhide
-        hideUnhideSleepButtons();
+        sleepManager.hideUnhideSleepButtons();
+
+
+        final RadioAlarmManager alarmManager = new RadioAlarmManager(this);
+        ImageButton alarmButton = (ImageButton) findViewById(R.id.alarm_icon);
+        alarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TimePickerDialog timePicker = new TimePickerDialog(view.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hh, int mm) {
+                        Timber.d("Setting alarm to %d: %d", hh, mm);
+                        h = hh;
+                        m = mm;
+                        alarmManager.setAlarm(hh,mm);
+                    }
+                }, h, m , true);
+                timePicker.show();
+
+
+            }
+        });
+        alarmReceiver = new AlarmReceiver(this, buttonManager);
 
         //Initialize the player
         if (mMediaPlayer == null) {
@@ -233,7 +259,12 @@ public class ClockActivity extends AppCompatActivity {
         }
         clockUpdater.setThreadHandler(null);
         clockUpdater = null;
-        sleepExecutorService.shutdownNow();
+        sleepManager.getSleepExecutorService().shutdownNow();
+        try {
+            this.unregisterReceiver(this.alarmReceiver);
+        } catch (IllegalArgumentException e) {
+            Timber.e("receiver already unregistered");
+        }
         super.onDestroy();
     }
 
@@ -253,6 +284,11 @@ public class ClockActivity extends AppCompatActivity {
         super.onStop();
         clockUpdater.setSemaphore(false);
         clockUpdater.getThreadHandler().removeMessages(0);
+        try {
+            this.unregisterReceiver(this.alarmReceiver);
+        } catch (IllegalArgumentException e) {
+            Timber.e("receiver already unregistered");
+        }
     }
 
     @Override
@@ -263,7 +299,18 @@ public class ClockActivity extends AppCompatActivity {
         if (!clockUpdater.getThreadHandler().hasMessages(0)) {
             clockUpdater.getThreadHandler().sendEmptyMessage(0);
         }
+        IntentFilter filter = new IntentFilter("alarmReceiver");
+        this.registerReceiver(this.alarmReceiver, filter);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Timber.d(TAG_STATE, "onResume");
+        IntentFilter filter = new IntentFilter("alarmReceiver");
+        this.registerReceiver(this.alarmReceiver, filter);
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////
     // Buttons
@@ -295,102 +342,6 @@ public class ClockActivity extends AppCompatActivity {
     };
 
 
-    ///////////////////////////////////////////////////////////////////////////
-    //SLEEP
-    ///////////////////////////////////////////////////////////////////////////
-    //initialize the sleep timers default list (pressing button will cycle through those)
-    private final List<Integer> timers = new ArrayList<>(Arrays.asList(15,20,30));
-    private int sleepTimerIndex;
-    ExecutorService sleepExecutorService = Executors.newSingleThreadExecutor();
-
-    private final Button.OnClickListener sleepOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(final View view) {
-            TextView sleepTimerText = findViewById(R.id.sleep_timer);
-            TextView sleepTimerText8 = findViewById(R.id.sleep_timer8);
-            ImageButton button = findViewById(R.id.sleep);
-            ImageButton button8 = findViewById(R.id.sleep8);
-            if (sleepTimerIndex == timers.size()) {
-                resetSleepTimer();
-                sleepExecutorService.shutdownNow();
-            } else {
-                //stop the timer thread
-                sleepExecutorService.shutdownNow();
-                button.setImageResource(R.drawable.sleep_timer_on_white_24dp);
-                button8.setImageResource(R.drawable.sleep_timer_on_white_24dp);
-                Integer timer = timers.get(sleepTimerIndex);
-                sleepTimerText.setText(String.format(getResources().getString(R.string.text_sleep_timer),timer));
-                sleepTimerText8.setText(String.format(getResources().getString(R.string.text_sleep_timer),timer));
-                sleepTimerIndex++;
-                //now start the thread
-                SleepRunner sleepRunner = new SleepRunner(timer);
-                sleepExecutorService = Executors.newSingleThreadExecutor();
-                sleepExecutorService.execute(sleepRunner);
-            }
-
-        }
-    };
-
-    private void resetSleepTimer() {
-        TextView sleepTimerText = findViewById(R.id.sleep_timer);
-        TextView sleepTimerText8 = findViewById(R.id.sleep_timer8);
-        ImageButton button = findViewById(R.id.sleep);
-        ImageButton button8 = findViewById(R.id.sleep8);
-        sleepTimerText.setText("");
-        sleepTimerText8.setText("");
-        button.setImageResource(R.drawable.sleep_timer_off_white_24dp);
-        button8.setImageResource(R.drawable.sleep_timer_off_white_24dp);
-        sleepTimerIndex = 0;
-    }
-    private class SleepRunner implements Runnable {
-        int timer;
-        SleepRunner(int timer) {
-            Timber.d(TAG_RADIOCLOCK, "Starting thread with timer: " + timer);
-            this.timer = timer;
-        }
-        @Override
-        public void run() {
-            int seconds = timer * 60;
-            try {
-                while (!Thread.currentThread().isInterrupted()) {
-                    for (int i = seconds; i >= 0; i--) {
-                        Timber.d(TAG_RADIOCLOCK, "Thread sleep; seconds: " + i);
-                        Thread.sleep(1000);
-                    }
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(ClockActivity.this, "Time's up", Toast.LENGTH_SHORT).show();
-                            stopPlaying();
-                            resetSleepTimer();
-                        }
-                    });
-                    Thread.currentThread().interrupt();
-                }
-            } catch (InterruptedException e) {
-                Timber.d(TAG_RADIOCLOCK, "Sleep Thread interrupted ");
-            }
-        }
-    }
-    private void hideUnhideSleepButtons() {
-        TextView sleepTimerText = findViewById(R.id.sleep_timer);
-        TextView sleepTimerText8 = findViewById(R.id.sleep_timer8);
-        ImageButton button = findViewById(R.id.sleep);
-        ImageButton button8 = findViewById(R.id.sleep8);
-        for (String url : mUrls) {
-            if (url.isEmpty()) {
-                sleepTimerText.setVisibility(View.VISIBLE);
-                button.setVisibility(View.VISIBLE);
-                sleepTimerText8.setVisibility(View.GONE);
-                button8.setVisibility(View.GONE);
-                return;
-            }
-        }
-        sleepTimerText8.setVisibility(View.VISIBLE);
-        button8.setVisibility(View.VISIBLE);
-        sleepTimerText.setVisibility(View.GONE);
-        button.setVisibility(View.GONE);
-    }
     ///////////////////////////////////////////////////////////////////////////
     // Media Player
     ///////////////////////////////////////////////////////////////////////////
@@ -442,7 +393,8 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    private void play(int buttonId) {
+    protected void play(int buttonId) {
+        //TODO: if already playing - comes from alarm -do nothing
         String url;
         //index in th list
         int index = -1;
@@ -487,7 +439,7 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    private void stopPlaying() {
+    protected void stopPlaying() {
         if (mMediaPlayer != null) {
             if (mMediaPlayer.isPlaying()) {
                 Toast.makeText(ClockActivity.this, "Stopping stream", Toast.LENGTH_SHORT).show();
@@ -500,7 +452,7 @@ public class ClockActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
         }
-        buttonManager.setButtonClicked(null);
+        //buttonManager.setButtonClicked(null);
         mPlayingStreamNo = 0;
         mPlayingStreamTag = null;
     }
@@ -623,15 +575,15 @@ public class ClockActivity extends AppCompatActivity {
                 String url = prefs.getString(key, "");
                 mUrls.set(streamIndex, url);
                 buttonManager.hideUnhideButtons(mUrls);
-                hideUnhideSleepButtons();
+                sleepManager.hideUnhideSleepButtons();
             }
 
             if (key.equals(getResources().getString(R.string.setting_key_sleepMinutes))) {
                 Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
                 if (customTimer == 0) {
-                    timers.remove(0);
+                    sleepManager.getTimers().remove(0);
                 } else {
-                    timers.add(0, customTimer);
+                    sleepManager.getTimers().add(0, customTimer);
                 }
             }
             Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag + "; key " + key);

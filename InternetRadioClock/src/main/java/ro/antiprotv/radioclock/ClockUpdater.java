@@ -89,7 +89,6 @@ public class ClockUpdater extends Thread{
                 public void handleMessage(Message msg) {
                     int count = 0;
                     while (semaphore) {
-                        Timber.d("Inside loop");
                         {
                             try {
                                 Thread.sleep(1000);
@@ -98,11 +97,9 @@ public class ClockUpdater extends Thread{
                                 Timber.e("Error: ", e.toString());
                             }
                         }
-                        Timber.d("Sending message to ui %d", count);
                         uiHandler.sendEmptyMessage(DO_NOT_MOVE_TEXT);
                         if (moveText && count > 300) {
                             count = 0;
-                            Timber.d("Move text");
                             uiHandler.sendEmptyMessage(MOVE_TEXT);
                         }
                     }

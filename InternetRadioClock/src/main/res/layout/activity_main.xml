@@ -30,6 +30,38 @@
         android:fitsSystemWindows="true"
         android:layout_alignParentBottom="true">
         <ImageButton
+            android:id="@+id/alarm_icon"
+            android:tag="@string/setting.key.alarmIcon"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:clickable="false"
+            app:srcCompat="@drawable/ic_alarm_add_black_24dp"
+            android:background="@drawable/memory"
+            android:textColor="@color/button.color.off" />
+        <TextView
+            android:id="@+id/alarm_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill"
+            android:textColor="@color/button.color.off"
+            android:textSize="10sp"
+            android:layout_toRightOf="@+id/alarm_icon"/>
+        <ImageButton
+            android:id="@+id/alarm_icon_turn_off"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_toRightOf="@+id/alarm_time"
+            android:clickable="false"
+            app:srcCompat="@drawable/ic_alarm_off_black_24dp"
+            android:background="@drawable/memory"
+            android:visibility="gone"
+            android:textColor="@color/button.color.off" />
+
+
+        <ImageButton
             android:id="@+id/sleep8"
             android:tag="@string/setting.key.sleepMinutes"
             style="?metaButtonBarButtonStyle"
@@ -49,6 +81,7 @@
             android:textColor="@color/button.color.off"
             android:textSize="10sp"
             android:layout_toLeftOf="@+id/sleep8"/>
+
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
             style="?metaButtonBarStyle"

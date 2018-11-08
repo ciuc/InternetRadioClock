@@ -15,4 +15,5 @@
 /build
 /captures
 keystore.properties
+release
 *.apk
