@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:summary="%s"
+        android:defaultValue="#00ff00"
+        android:entries="@array/clock_colors"
+        android:entryValues="@array/clock_color_codes"
+        android:key="@string/setting.key.clockColor.night"
+        android:title="@string/setting.name.clockColor" />
+
+    <ListPreference
+        android:summary="%s"
+        android:defaultValue="@string/setting.default.clockSize"
+        android:entries="@array/clock_human_sizes"
+        android:entryValues="@array/clock_sizes"
+        android:key="@string/setting.key.clockSize.night"
+        android:title="@string/setting.name.clockSize" />
+    <SwitchPreference
+        android:id="@+id/switch_display_seconds"
+        android:key="@string/setting.key.seconds.night"
+        android:title="@string/setting.name.seconds"
+        android:summary="@string/setting.summary.seconds"
+        android:defaultValue="true"/>
+    <SwitchPreference
+        android:id="@+id/switch_enable_clock_move.night"
+        android:key="@string/setting.key.clockMove.night"
+        android:title="@string/setting.name.clockMove"
+        android:summary="@string/setting.summary.clockMove"
+        android:defaultValue="true"
+        />
+</PreferenceScreen>

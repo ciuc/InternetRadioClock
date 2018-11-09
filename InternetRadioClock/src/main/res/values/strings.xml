@@ -44,6 +44,11 @@
     <string name="setting.key.seconds">setting.key.seconds</string>
     <string name="setting.key.clockMove">setting.key.clockMove</string>
 
+    <string name="setting.key.seconds.night">setting.key.seconds</string>
+    <string name="setting.key.clockMove.night">setting.key.clockMove</string>
+    <string name="setting.key.clockColor.night">setting.key.clockColor.night</string>
+    <string name="setting.key.clockSize.night">setting.key.clockSize.night</string>
+
     <string name="setting.name.stream1">Memory 1</string>
     <string name="setting.name.stream2">Memory 2</string>
     <string name="setting.name.stream3">Memory 3</string>
@@ -431,5 +436,6 @@ Please bear in mind that the radio streams list is maintained by community effor
     <string name="text_tomorrow">tomorrow</string>
     <string name="today">today</string>
     <string name="text_alarm_set_for">Alarm set for %1$s</string>
+    <string name="night_profile">Night Profile</string>
 
 </resources>
