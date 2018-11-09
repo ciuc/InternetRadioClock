@@ -425,5 +425,11 @@ Please bear in mind that the radio streams list is maintained by community effor
 ]]>
     </string>
     <string name="title_activity_stream_finder">StreamFinder</string>
+    <string name="snooze_toast_text">Snooze for %1%d minutes.</string>
+    <string name="text_alarm_canceled">Alarm canceled!</string>
+    <string name="text_alarm_playing">Alarm! playing memory %1$s...</string>
+    <string name="text_tomorrow">tomorrow</string>
+    <string name="today">today</string>
+    <string name="text_alarm_set_for">Alarm set for %1$s</string>
 
 </resources>

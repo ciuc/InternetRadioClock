@@ -67,7 +67,6 @@ public class ClockUpdater extends Thread{
         int gravityIndex = 0;
         @Override
         public void handleMessage(Message msg) {
-
             mContentView.setText(sdf.format(new Date()));
             if (msg.what == MOVE_TEXT) {
                 mContentView.setGravity(GRAVITIES.get(gravityIndex));

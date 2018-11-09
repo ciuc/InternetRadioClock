@@ -338,8 +338,9 @@ public class ClockActivity extends AppCompatActivity {
                 initMediaPlayer();
                 buttonManager.enableButtons();
             }
+            //I want to hide the snooze button on any interaction with the radio buttons
+            alarmManager.cancelSnooze();
         }
-
     };
 
 

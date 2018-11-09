@@ -8,40 +8,34 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.os.SystemClock;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
-import ro.antiprotv.radioclock.ClockActivity;
-import ro.antiprotv.radioclock.R;
 import timber.log.Timber;
 
 public class RadioAlarmManager extends BroadcastReceiver {
 
-    private AlarmManager alarmMgr;
-    private PendingIntent alarmIntent;
-    private ClockActivity clockActivity;
+    private final static int DEFAULT_SNOOZE = 10;//minutes
+    private final static int DEFAULT_ALARM_PLAY_TIME = 300;//Seconds (=5minutes)
     private final ImageButton alarmButton;
     private final ImageButton cancelButton;
     private final ImageButton snoozeButton;
     private final TextView alarmText;
     private final ImageButton alarmOffButton;
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
+    private ClockActivity clockActivity;
     private MediaPlayer player;
     private ButtonManager buttonManager;
 
-    public  RadioAlarmManager(ClockActivity context, ButtonManager buttonManager) {
+    public RadioAlarmManager(ClockActivity context, ButtonManager buttonManager) {
         this.buttonManager = buttonManager;
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent("alarmReceiver");
@@ -70,19 +64,19 @@ public class RadioAlarmManager extends BroadcastReceiver {
         Timber.d("NOW : %d", now.getTimeInMillis());
         Timber.d("THEN: %d", next.getTimeInMillis());
         boolean tomorrow = false;
-        if (next.getTimeInMillis() - now.getTimeInMillis() <=0) {
+        if (next.getTimeInMillis() - now.getTimeInMillis() <= 0) {
             tomorrow = true;
             next.add(Calendar.DAY_OF_MONTH, 1);
         }
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
         Timber.d("Alarm set for: %s", sdf.format(next.getTime()));
-        alarmMgr.setExact( AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), alarmIntent);
+        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), alarmIntent);
         clockActivity.setAlarmScheduled(true);
         //TESTING: enable this line to have the alarm in 5 secs;
-        //alarmMgr.setExact( AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+5000, alarmIntent);
-        Toast.makeText(clockActivity, String.format("Alarm set for %s at %s", (tomorrow)?"tomorrow":"today", sdf.format(next.getTime())), Toast.LENGTH_SHORT).show();
-        alarmText.setText(String.format("Alarm set for %s", sdf.format(next.getTime())));
+        //alarmMgr.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
+        Toast.makeText(clockActivity, String.format("Alarm set for %s at %s", (tomorrow) ? clockActivity.getString(R.string.text_tomorrow) : clockActivity.getString(R.string.today), sdf.format(next.getTime())), Toast.LENGTH_SHORT).show();
+        alarmText.setText(clockActivity.getString(R.string.text_alarm_set_for, sdf.format(next.getTime())));
         alarmText.setVisibility(View.VISIBLE);
         alarmButton.setImageResource(R.drawable.ic_alarm_on_black_24dp);
         alarmOffButton.setVisibility(View.VISIBLE);
@@ -91,7 +85,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
             public void onClick(View view) {
                 Timber.d("Alarm canceled");
                 alarmMgr.cancel(alarmIntent);
-                Toast.makeText(clockActivity, "Alarm canceled!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(clockActivity, R.string.text_alarm_canceled, Toast.LENGTH_SHORT).show();
                 clockActivity.setAlarmPlaying(false);
                 changeAlarmIconAndTextOnCancel();
             }
@@ -102,6 +96,27 @@ public class RadioAlarmManager extends BroadcastReceiver {
                 shutDownDefaultAlarm();
             }
         });
+        snoozeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snooze();
+            }
+        });
+        snoozeButton.setVisibility(View.GONE);
+    }
+
+    protected void snooze() {
+        shutDownDefaultAlarm();
+        Toast toast = Toast.makeText(clockActivity, clockActivity.getString(R.string.snooze_toast_text, 10), Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
+        toast.show();
+
+        clockActivity.stopPlaying();
+        Calendar now = Calendar.getInstance();
+        now.setTimeInMillis(System.currentTimeMillis());
+        //now.add(Calendar.SECOND, DEFAULT_SNOOZE);//FOR TESTING
+        now.add(Calendar.SECOND, DEFAULT_SNOOZE);//FOR PRODUCTION
+        setAlarm(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
     }
 
     protected void changeAlarmIconAndTextOnCancel() {
@@ -109,6 +124,10 @@ public class RadioAlarmManager extends BroadcastReceiver {
         alarmText.setVisibility(View.GONE);
         alarmOffButton.setVisibility(View.GONE);
 
+    }
+
+    protected void cancelSnooze() {
+        snoozeButton.setVisibility(View.GONE);
     }
     protected void playDefaultAlarmOnStreamError() {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
@@ -122,28 +141,11 @@ public class RadioAlarmManager extends BroadcastReceiver {
     }
 
     protected void shutDownDefaultAlarm() {
-        if (player.isPlaying()) {
+        if (player != null && player.isPlaying()) {
             player.stop();
         }
         cancelButton.setVisibility(View.GONE);
         snoozeButton.setVisibility(View.GONE);
-    }
-
-    private class MediaPlayerCanceller extends Thread {
-        public void run() {
-                    int count = 0;
-                    while (count < 300) {
-                        {
-                            try {
-                                Thread.sleep(1000);
-                                count ++;
-                            } catch (Exception e) {
-                                Timber.e("Error: ", e.toString());
-                            }
-                        }
-                    }
-                    shutDownDefaultAlarm();
-        }
     }
 
     @Override
@@ -156,10 +158,28 @@ public class RadioAlarmManager extends BroadcastReceiver {
         } else {
             memory = buttonManager.getButtonClicked().getId();
         }
-        Toast.makeText(context, "Alarm! playing: ", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getString(R.string.text_alarm_playing, memory), Toast.LENGTH_SHORT).show();
         changeAlarmIconAndTextOnCancel();
+        snoozeButton.setVisibility(View.VISIBLE);
         clockActivity.setAlarmPlaying(true);
         clockActivity.play(memory);
         clockActivity.show();
+    }
+
+    private class MediaPlayerCanceller extends Thread {
+        public void run() {
+            int count = 0;
+            while (count < DEFAULT_ALARM_PLAY_TIME) {
+                {
+                    try {
+                        Thread.sleep(1000);
+                        count++;
+                    } catch (Exception e) {
+                        Timber.e("Error: ", e.toString());
+                    }
+                }
+            }
+            shutDownDefaultAlarm();
+        }
     }
 }
