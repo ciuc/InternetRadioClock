@@ -1,6 +1,6 @@
-/**
- * Copyright Cristian "ciuc" Starasciuc 2016
- * cristi.ciuc@gmail.com
+/*
+  Copyright Cristian "ciuc" Starasciuc 2016
+  cristi.ciuc@gmail.com
  */
 package ro.antiprotv.radioclock;
 
@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -27,10 +29,10 @@ public class AboutActivity extends AppCompatActivity {
         }
         Timber.d("AboutActivity | State: %s", "onCreate");
         setContentView(R.layout.activity_about);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        TextView foo = (TextView) findViewById(R.id.aboutText);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        TextView foo = findViewById(R.id.aboutText);
         foo.setText(Html.fromHtml(getString(R.string.about_text)));
         Button back = findViewById(R.id.about_back);
         back.setOnClickListener(new View.OnClickListener() {

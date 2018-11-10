@@ -14,12 +14,12 @@ import timber.log.Timber;
 import static ro.antiprotv.radioclock.ClockActivity.PREF_NIGHT_MODE;
 import static ro.antiprotv.radioclock.ClockActivity.TAG_RADIOCLOCK;
 
-public class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private ClockActivity clockActivity;
-    private ButtonManager buttonManager;
-    private SleepManager sleepManager;
-    private ClockUpdater clockUpdater;
-    private SharedPreferences prefs;
+class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private final ClockActivity clockActivity;
+    private final ButtonManager buttonManager;
+    private final SleepManager sleepManager;
+    private final ClockUpdater clockUpdater;
+    private final SharedPreferences prefs;
 
     public SettingsManager(ClockActivity clockActivity, ButtonManager buttonManager, SleepManager sleepManager, ClockUpdater clockUpdater) {
         this.clockActivity = clockActivity;
@@ -153,7 +153,7 @@ public class SettingsManager implements SharedPreferences.OnSharedPreferenceChan
 
     }
 
-    protected void toggleNightMode() {
+    void toggleNightMode() {
         boolean nightMode = prefs.getBoolean(PREF_NIGHT_MODE, false);
         Timber.d("Current nightmode is %b", nightMode);
         //this will trigger the listener!!
@@ -165,7 +165,7 @@ public class SettingsManager implements SharedPreferences.OnSharedPreferenceChan
 
     }
 
-    protected void applyProfile() {
+    void applyProfile() {
         boolean nightMode = prefs.getBoolean(PREF_NIGHT_MODE, false);
         Timber.d("Applying profile : %s", nightMode);
         ImageButton nightButton = clockActivity.findViewById(R.id.night_mode_button);

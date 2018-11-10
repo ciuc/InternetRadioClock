@@ -2,6 +2,7 @@ package ro.antiprotv.radioclock;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -13,9 +14,9 @@ import android.widget.TextView;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class StreamListAdapter extends RecyclerView.Adapter {
+class StreamListAdapter extends RecyclerView.Adapter {
     private final LayoutInflater inflater;
-    StreamFinderActivity streamFinderActivity;
+    private final StreamFinderActivity streamFinderActivity;
     private List<Stream> streams;
     private Logger logger = Logger.getLogger(StreamListAdapter.class.getName());
 
@@ -25,22 +26,19 @@ public class StreamListAdapter extends RecyclerView.Adapter {
         this.streamFinderActivity = context;
     }
 
-    public List<Stream> getStreams() {
-        return streams;
-    }
-
     public void setStreams(List<Stream> streams) {
         this.streams = streams;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = inflater.inflate(R.layout.content_stream_list, parent, false);
         return new StreamViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         StreamViewHolder streamViewHolder = (StreamViewHolder) holder;
         Stream stream = streams.get(position);
         streamViewHolder.stream = stream;
@@ -95,7 +93,7 @@ public class StreamListAdapter extends RecyclerView.Adapter {
         }
 
         private class OnAssignToMemoryClickListener implements View.OnClickListener {
-            String streamNo;
+            final String streamNo;
 
             OnAssignToMemoryClickListener(String streamNo) {
                 this.streamNo = streamNo;

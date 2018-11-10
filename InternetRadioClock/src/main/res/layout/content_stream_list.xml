@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
-    android:background="#fff"
     android:padding="5dp"
     android:layout_marginBottom="5pt"
     android:orientation="vertical"
@@ -17,8 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:text="RockFM"
-        android:textColor="@color/colorPrimaryDark"
-        android:clickable="true"/>
+        android:textColor="@color/colorPrimaryDark" />
     <LinearLayout
         android:id="@+id/radio_info"
         android:layout_width="match_parent"
@@ -39,7 +36,7 @@
      <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Assign to:"
+            android:text="@string/assign_to"
             android:textColor="#000000"/>
     <Button
         android:id="@+id/sf_assign_button_stream1"

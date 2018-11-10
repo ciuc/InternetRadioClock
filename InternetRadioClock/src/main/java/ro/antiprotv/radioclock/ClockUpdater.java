@@ -16,18 +16,18 @@ import timber.log.Timber;
 /**
  * Thread to manage the clock (update the clock and move it)
  */
-public class ClockUpdater extends Thread {
+class ClockUpdater extends Thread {
     private static final int DO_NOT_MOVE_TEXT = 1;
     private static final int MOVE_TEXT = 2;
     private static final List<Integer> GRAVITIES = Arrays.asList(Gravity.TOP, Gravity.BOTTOM, Gravity.LEFT, Gravity.RIGHT, Gravity.CENTER, Gravity.BOTTOM | Gravity.RIGHT);
     private boolean semaphore = true;
     //Threading stuff
     private Handler threadHandler = null;
-    private TextView mContentView;
+    private final TextView mContentView;
     private SimpleDateFormat sdf;
     //We create this ui handler to update the clock
     //We need this in order to not block the UI
-    Handler uiHandler = new Handler() {
+    private final Handler uiHandler = new Handler() {
         int gravityIndex = 0;
 
         @Override
@@ -82,7 +82,6 @@ public class ClockUpdater extends Thread {
                 }
             }
 
-            ;
         };
         Looper.loop();
 
@@ -90,10 +89,6 @@ public class ClockUpdater extends Thread {
 
     public void setSemaphore(boolean semaphore) {
         this.semaphore = semaphore;
-    }
-
-    public SimpleDateFormat getSdf() {
-        return sdf;
     }
 
     public void setSdf(SimpleDateFormat sdf) {

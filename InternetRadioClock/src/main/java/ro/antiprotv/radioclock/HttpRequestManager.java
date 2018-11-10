@@ -13,29 +13,28 @@ import org.json.JSONArray;
 
 import timber.log.Timber;
 
-public class HttpRequestManager {
+class HttpRequestManager {
 
-    private StreamFinderActivity context;
+    private final StreamFinderActivity context;
 
     HttpRequestManager(StreamFinderActivity ctx) {
         this.context = ctx;
 
     }
 
-    protected void getStations(String country, String name, String language, String tags) {
+    void getStations(String country, String name, String language, String tags) {
         RequestQueue queue = Volley.newRequestQueue(context);
         Timber.d("requesting stations for %s %s %s %s", country, name, language, tags);
-        StringBuilder requestParams = new StringBuilder("http://www.antiprotv.ro/radioclock/api.php?x=list&country=" + Uri.encode(country));
+        StringBuilder requestParams = new StringBuilder("http://www.antiprotv.ro/radioclock/api.php?x=list&country=").append(Uri.encode(country));
         if (!name.isEmpty()) {
-            requestParams.append("&name=" + name);
+            requestParams.append("&name=").append(name);
         }
         if (!language.isEmpty() && !language.equals("Any")) {
-            requestParams.append("&language=" + Uri.encode(language));
+            requestParams.append("&language=").append(Uri.encode(language));
         }
         if (!tags.isEmpty()) {
-            requestParams.append("&tags=" + Uri.encode(tags));
+            requestParams.append("&tags=").append(Uri.encode(tags));
         }
-        ;
         Timber.d("URL: %s", requestParams.toString());
         ResponseListener responseListener = new ResponseListener(context);
         JsonArrayRequest request = new JsonArrayRequest(requestParams.toString(),
@@ -50,7 +49,7 @@ public class HttpRequestManager {
 
                 switch (statusCode) {
                     case 404:
-                        Toast.makeText(context, String.format("No radios matching the criteria! Please try again. ", statusCode), Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "No radios matching the criteria! Please try again.", Toast.LENGTH_LONG).show();
                         break;
                     case 500:
                         Toast.makeText(context, String.format("Something went wrong while retrieving list. Please try again later. (error %d) ", statusCode), Toast.LENGTH_LONG).show();
@@ -64,15 +63,11 @@ public class HttpRequestManager {
     }
 
     private class ResponseListener implements Response.Listener<JSONArray> {
-        StreamFinderActivity activity;
+        final StreamFinderActivity activity;
         JSONArray response;
 
         ResponseListener(StreamFinderActivity activity) {
             this.activity = activity;
-        }
-
-        public JSONArray getResponse() {
-            return response;
         }
 
         @Override
@@ -82,5 +77,4 @@ public class HttpRequestManager {
         }
     }
 
-    ;
 }

@@ -1,6 +1,6 @@
-/**
- * Copyright Cristian "ciuc" Starasciuc 2016
- * cristi.ciuc@gmail.com
+/*
+  Copyright Cristian "ciuc" Starasciuc 2016
+  cristi.ciuc@gmail.com
  */
 package ro.antiprotv.radioclock;
 
@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
+import java.util.Objects;
 
 /**
  * Created by ciuc on 7/17/16.
@@ -18,9 +20,9 @@ public class ConfigureButtonsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configure_buttons);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.configure_buttons_content, new ConfigureButtonsFragment())

@@ -1,9 +1,9 @@
-/**
- * Copyright Cristian "ciuc" Starasciuc 2016
- * <p/>
- * Licensed under the Apache license 2.0
- * <p/>
- * cristi.ciuc@gmail.com
+/*
+  Copyright Cristian "ciuc" Starasciuc 2016
+  <p/>
+  Licensed under the Apache license 2.0
+  <p/>
+  cristi.ciuc@gmail.com
  */
 package ro.antiprotv.radioclock;
 
@@ -39,6 +39,7 @@ import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -83,8 +84,8 @@ public class ClockActivity extends AppCompatActivity {
         }
 
     };
-    public SharedPreferences prefs;
-    ClockUpdater clockUpdater;
+    private SharedPreferences prefs;
+    private ClockUpdater clockUpdater;
     private View mControlsView;
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
@@ -122,9 +123,7 @@ public class ClockActivity extends AppCompatActivity {
             hide();
         }
     };
-    private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private AudioPlayer mMediaPlayer;
-    private Typeface digital7;
     private ButtonManager buttonManager;
     private SleepManager sleepManager;
     //remember the playing stream number and tag
@@ -139,7 +138,6 @@ public class ClockActivity extends AppCompatActivity {
     // State methods
     ///////////////////////////////////////////////////////////////////////////
     private boolean alarmPlaying;
-    private boolean alarmScheduled;
     private RadioAlarmManager alarmManager;
     private final Button.OnClickListener playOnClickListener = new View.OnClickListener() {
 
@@ -200,7 +198,7 @@ public class ClockActivity extends AppCompatActivity {
                 toggle();
             }
         });
-        digital7 = Typeface.createFromAsset(getAssets(), "fonts/digital-7.mono.ttf");
+        Typeface digital7 = Typeface.createFromAsset(getAssets(), "fonts/digital-7.mono.ttf");
         mContentView.setTypeface(digital7);
 
         initializeUrls();
@@ -215,7 +213,6 @@ public class ClockActivity extends AppCompatActivity {
         clockUpdater = new ClockUpdater(mContentView);
         clockUpdater.start();
 
-        boolean nightMode = prefs.getBoolean(ClockActivity.PREF_NIGHT_MODE, false);
         preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater);
         ((SettingsManager) preferenceChangeListener).applyProfile();
 
@@ -235,7 +232,7 @@ public class ClockActivity extends AppCompatActivity {
 
     private void initializeAlarmFunction() {
         alarmManager = new RadioAlarmManager(this, buttonManager);
-        ImageButton alarmButton = (ImageButton) findViewById(R.id.alarm_icon);
+        ImageButton alarmButton = findViewById(R.id.alarm_icon);
         alarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -255,13 +252,13 @@ public class ClockActivity extends AppCompatActivity {
 
     private void initializeSleepFunction() {
         //sleep timer
-        sleepManager = new SleepManager(this, mUrls);
+        sleepManager = new SleepManager(this);
         Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
         if (customTimer != 0) {
             sleepManager.getTimers().add(0, customTimer);
         }
         //sleep buttons
-        ImageButton sleep = (ImageButton) findViewById(R.id.sleep);
+        ImageButton sleep = findViewById(R.id.sleep);
         sleep.setOnClickListener(sleepManager.sleepOnClickListener);
         sleep.setOnTouchListener(mDelayHideTouchListener);
     }
@@ -408,7 +405,7 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    protected void play(int buttonId) {
+    void play(int buttonId) {
         //if already playing and comes from alarm -do nothing
         if (mMediaPlayer.isPlaying() && alarmPlaying) {
             alarmManager.changeAlarmIconAndTextOnCancel();
@@ -443,7 +440,6 @@ public class ClockActivity extends AppCompatActivity {
                 index = 7;
                 break;
             default:
-                url = "http://live.guerrillaradio.ro:8010/guerrilla.aac";
                 break;
         }
         url = mUrls.get(index);
@@ -458,7 +454,7 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    protected void stopPlaying() {
+    void stopPlaying() {
         if (mMediaPlayer != null) {
             if (mMediaPlayer.isPlaying()) {
                 Toast.makeText(ClockActivity.this, "Stopping stream", Toast.LENGTH_SHORT).show();
@@ -552,7 +548,7 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     @SuppressLint("InlinedApi")
-    protected void show() {
+    void show() {
         // Show the system bar
         mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
@@ -577,10 +573,6 @@ public class ClockActivity extends AppCompatActivity {
     //--/////////////////////////////////////////////////////////////////////////
     public void setAlarmPlaying(boolean alarmPlaying) {
         this.alarmPlaying = alarmPlaying;
-    }
-
-    public void setAlarmScheduled(boolean alarmScheduled) {
-        this.alarmScheduled = alarmScheduled;
     }
 
     public TextView getmContentView() {
@@ -610,7 +602,7 @@ public class ClockActivity extends AppCompatActivity {
             String defaultKey = mPlayingStreamTag.replace("setting.key.stream", "");
             int index = Integer.parseInt(defaultKey) - 1;
             Toast.makeText(ClockActivity.this, "Playing " + mUrls.get(index), Toast.LENGTH_SHORT).show();
-            getSupportActionBar().setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
+            Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
             alarmPlaying = false;
         }
     }

@@ -12,20 +12,20 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class ButtonManager {
-    final Resources resources;
-    List<Button> buttons;
-    List<Integer> settingKeys;
-    List<Integer> defaultNames;
-    private Context context;
-    private View view;
+class ButtonManager {
+    private final Resources resources;
+    private List<Button> buttons;
+    private List<Integer> settingKeys;
+    private List<Integer> defaultNames;
+    private final Context context;
+    private final View view;
     private SharedPreferences prefs;
-    private View.OnTouchListener onTouchListener;
-    private View.OnClickListener playListener;
+    private final View.OnTouchListener onTouchListener;
+    private final View.OnClickListener playListener;
     //the button we have clicked on
     private Button mButtonClicked;
 
-    protected ButtonManager(Context ctx, View view, SharedPreferences prefs, View.OnTouchListener onTouchListener, View.OnClickListener playListener) {
+    ButtonManager(Context ctx, View view, SharedPreferences prefs, View.OnTouchListener onTouchListener, View.OnClickListener playListener) {
         this.context = ctx;
         this.view = view;
         this.prefs = prefs;
@@ -34,15 +34,15 @@ public class ButtonManager {
         resources = context.getResources();
     }
 
-    protected List<Button> initializeButtons(List<String> mUrls) {
-        Button stream1 = (Button) view.findViewById(R.id.stream1);
-        Button stream2 = (Button) view.findViewById(R.id.stream2);
-        Button stream3 = (Button) view.findViewById(R.id.stream3);
-        Button stream4 = (Button) view.findViewById(R.id.stream4);
-        Button stream5 = (Button) view.findViewById(R.id.stream5);
-        Button stream6 = (Button) view.findViewById(R.id.stream6);
-        Button stream7 = (Button) view.findViewById(R.id.stream7);
-        Button stream8 = (Button) view.findViewById(R.id.stream8);
+    void initializeButtons(List<String> mUrls) {
+        Button stream1 = view.findViewById(R.id.stream1);
+        Button stream2 = view.findViewById(R.id.stream2);
+        Button stream3 = view.findViewById(R.id.stream3);
+        Button stream4 = view.findViewById(R.id.stream4);
+        Button stream5 = view.findViewById(R.id.stream5);
+        Button stream6 = view.findViewById(R.id.stream6);
+        Button stream7 = view.findViewById(R.id.stream7);
+        Button stream8 = view.findViewById(R.id.stream8);
         buttons = Arrays.asList(stream1, stream2, stream3, stream4, stream5, stream6, stream7, stream8);
 
         settingKeys = Arrays.asList(
@@ -74,10 +74,9 @@ public class ButtonManager {
         }
         hideUnhideButtons(mUrls);
         enableButtons();
-        return buttons;
     }
 
-    protected void hideUnhideButtons(List<String> urls) {
+    void hideUnhideButtons(List<String> urls) {
         for (int i = 0; i < buttons.size(); i++) {
             Button b = buttons.get(i);
             String url = urls.get(i);
@@ -98,7 +97,7 @@ public class ButtonManager {
         this.mButtonClicked = mButtonClicked;
     }
 
-    protected void setText(int index, SharedPreferences newPrefs) {
+    void setText(int index, SharedPreferences newPrefs) {
         //prefs.getString(getResources().getString(R.string.setting_key_label4), getResources().getString(R.string.button_name_stream4)
         buttons.get(index).setText(newPrefs.getString(resources.getString(settingKeys.get(index)), resources.getString(defaultNames.get(index))));
         this.prefs = newPrefs;
@@ -108,7 +107,7 @@ public class ButtonManager {
      * Set disabled to all buttons
      * (cycle through buttons and .setEnabled false)
      */
-    protected void disableButtons() {
+    void disableButtons() {
         for (Button button : buttons) {
             button.setEnabled(false);
         }
@@ -118,13 +117,13 @@ public class ButtonManager {
      * Set enabled to all buttons
      * (cycle through buttons and .setEnabled)
      */
-    protected void enableButtons() {
+    void enableButtons() {
         for (Button button : buttons) {
             button.setEnabled(true);
         }
     }
 
-    protected void resetButtons() {
+    void resetButtons() {
         for (Button button : buttons) {
             button.setEnabled(true);
             button.setTextColor(resources.getColor(R.color.button_color_off));
@@ -133,7 +132,7 @@ public class ButtonManager {
         }
     }
 
-    protected Button findButtonByTag(String tag) {
+    Button findButtonByTag(String tag) {
         for (Button button : buttons) {
             if (button.getTag().equals(tag)) {
                 return button;
@@ -142,7 +141,7 @@ public class ButtonManager {
         return null;
     }
 
-    protected void lightButton() {
+    void lightButton() {
         resetButtons();
         Timber.d(ClockActivity.TAG_RADIOCLOCK, mButtonClicked);
         mButtonClicked.setTextColor(resources.getColor(R.color.color_clock));
@@ -150,7 +149,7 @@ public class ButtonManager {
         buttonShape.setStroke(1, resources.getColor(R.color.color_clock));
     }
 
-    protected void unlightButton() {
+    void unlightButton() {
         Button clicked = getButtonClicked();
         if (clicked != null) {
             clicked.setTextColor(context.getResources().getColor(R.color.button_color_off));

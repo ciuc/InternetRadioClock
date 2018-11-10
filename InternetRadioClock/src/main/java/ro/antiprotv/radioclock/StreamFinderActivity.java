@@ -24,22 +24,22 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import timber.log.Timber;
 
 public class StreamFinderActivity extends AppCompatActivity {
-    List<Stream> streams;
-    StreamListAdapter adapter;
-    private Logger logger = Logger.getLogger(StreamFinderActivity.class.getName());
+    private List<Stream> streams;
+    private StreamListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stream_finder);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
         final RecyclerView recyclerView = findViewById(R.id.stream_list_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -79,7 +79,7 @@ public class StreamFinderActivity extends AppCompatActivity {
         requestManager.getStations(country, name, language, tags);
     }
 
-    protected void fillInStreams(JSONArray jsonStations) {
+    void fillInStreams(JSONArray jsonStations) {
         if (jsonStations != null) {
             Timber.d("response has: %d stations", jsonStations.length());
             streams.clear();
@@ -99,9 +99,9 @@ public class StreamFinderActivity extends AppCompatActivity {
         }
     }
 
-    protected void assignUrlToMemory(String url, String key) {
+    void assignUrlToMemory(String url, String key) {
 
-        int index = new Integer(key);
+        int index = Integer.valueOf(key);
         switch (index) {
             case 1:
                 key = getResources().getString(R.string.setting_key_stream1);

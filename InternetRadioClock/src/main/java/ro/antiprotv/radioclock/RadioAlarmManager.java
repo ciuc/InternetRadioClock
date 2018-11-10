@@ -29,11 +29,11 @@ public class RadioAlarmManager extends BroadcastReceiver {
     private final ImageButton snoozeButton;
     private final TextView alarmText;
     private final ImageButton alarmOffButton;
-    private AlarmManager alarmMgr;
-    private PendingIntent alarmIntent;
-    private ClockActivity clockActivity;
+    private final AlarmManager alarmMgr;
+    private final PendingIntent alarmIntent;
+    private final ClockActivity clockActivity;
     private MediaPlayer player;
-    private ButtonManager buttonManager;
+    private final ButtonManager buttonManager;
 
     public RadioAlarmManager(ClockActivity context, ButtonManager buttonManager) {
         this.buttonManager = buttonManager;
@@ -41,11 +41,11 @@ public class RadioAlarmManager extends BroadcastReceiver {
         Intent intent = new Intent("alarmReceiver");
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         clockActivity = context;
-        alarmButton = (ImageButton) clockActivity.findViewById(R.id.alarm_icon);
-        alarmText = (TextView) clockActivity.findViewById(R.id.alarm_time);
-        alarmOffButton = (ImageButton) clockActivity.findViewById(R.id.alarm_icon_turn_off);
-        cancelButton = (ImageButton) clockActivity.findViewById(R.id.alarm_icon_cancel);
-        snoozeButton = (ImageButton) clockActivity.findViewById(R.id.alarm_icon_snooze);
+        alarmButton = clockActivity.findViewById(R.id.alarm_icon);
+        alarmText = clockActivity.findViewById(R.id.alarm_time);
+        alarmOffButton = clockActivity.findViewById(R.id.alarm_icon_turn_off);
+        cancelButton = clockActivity.findViewById(R.id.alarm_icon_cancel);
+        snoozeButton = clockActivity.findViewById(R.id.alarm_icon_snooze);
     }
 
     public void setAlarm(int hour, int minute) {
@@ -72,7 +72,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
 
         Timber.d("Alarm set for: %s", sdf.format(next.getTime()));
         alarmMgr.setExact(AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), alarmIntent);
-        clockActivity.setAlarmScheduled(true);
         //TESTING: enable this line to have the alarm in 5 secs;
         //alarmMgr.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
         Toast.makeText(clockActivity, String.format("Alarm set for %s at %s", (tomorrow) ? clockActivity.getString(R.string.text_tomorrow) : clockActivity.getString(R.string.today), sdf.format(next.getTime())), Toast.LENGTH_SHORT).show();
@@ -105,7 +104,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         snoozeButton.setVisibility(View.GONE);
     }
 
-    protected void snooze() {
+    private void snooze() {
         shutDownDefaultAlarm();
         Toast toast = Toast.makeText(clockActivity, clockActivity.getString(R.string.snooze_toast_text, 10), Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
@@ -119,18 +118,18 @@ public class RadioAlarmManager extends BroadcastReceiver {
         setAlarm(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
     }
 
-    protected void changeAlarmIconAndTextOnCancel() {
+    void changeAlarmIconAndTextOnCancel() {
         alarmButton.setImageResource(R.drawable.ic_alarm_add_black_24dp);
         alarmText.setVisibility(View.GONE);
         alarmOffButton.setVisibility(View.GONE);
 
     }
 
-    protected void cancelSnooze() {
+    void cancelSnooze() {
         snoozeButton.setVisibility(View.GONE);
     }
 
-    protected void playDefaultAlarmOnStreamError() {
+    void playDefaultAlarmOnStreamError() {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         player = MediaPlayer.create(clockActivity, notification);
         player.start();
@@ -141,7 +140,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         cancelButton.setVisibility(View.VISIBLE);
     }
 
-    protected void shutDownDefaultAlarm() {
+    private void shutDownDefaultAlarm() {
         if (player != null && player.isPlaying()) {
             player.stop();
         }
@@ -152,7 +151,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         //what do we play?
-        int memory = 0;
+        int memory;
         if (buttonManager.getButtonClicked() == null) {
             memory = R.id.stream1;
             buttonManager.setButtonClicked((Button) clockActivity.findViewById(R.id.stream1));

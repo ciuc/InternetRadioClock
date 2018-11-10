@@ -78,10 +78,6 @@
     <string name="setting.default.stream2">http://live.tananana.ro:8010/stream-48.aac</string>
     <string name="setting.default.stream3">http://streams.radiobob.de/bob-live/aac-64/mediaplayer</string>
     <string name="setting.default.stream4">http://80.86.106.143:9128/rockfm.aacp</string>
-    <string name="setting.default.stream5"></string>
-    <string name="setting.default.stream6"></string>
-    <string name="setting.default.stream7"></string>
-    <string name="setting.default.stream8"></string>
 
     <string name="text.sleep.timer">Sleep in %d minutes</string>
     <!-- advanced settings -->
@@ -102,17 +98,6 @@
         <item>#ffffff</item>
         <item>#333333</item>
         <item>#800080</item>
-    </string-array>
-
-    <string-array name="memories">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-        <item>8</item>
     </string-array>
 
     <string name="setting.key.clockColor">setting.key.clockColor</string>
@@ -162,7 +147,6 @@ If you want to assign a radio to a memory button, click on the button corespondi
     <string name="streamFinder.label.genre">Genre: </string>
     <string name="streamFinder.label.language">Language: </string>
     <string name="streamFinder.label.name">Name: </string>
-    <string name="divider"> | </string>
     <string-array name="countries">
         <item>Romania</item>
         <item>Albania</item>
@@ -432,13 +416,12 @@ Please bear in mind that the radio streams list is maintained by community effor
 ]]>
     </string>
     <string name="title_activity_stream_finder">StreamFinder</string>
-    <string name="snooze_toast_text">Snooze for %1%d minutes.</string>
+    <string name="snooze_toast_text">Snooze for %1$d minutes.</string>
     <string name="text_alarm_canceled">Alarm canceled!</string>
-    <string name="text_alarm_playing">Alarm! playing memory %1$s...</string>
+    <string name="text_alarm_playing">Alarm! playing memory %1$d...</string>
     <string name="text_tomorrow">tomorrow</string>
     <string name="today">today</string>
     <string name="text_alarm_set_for">Alarm set for %1$s</string>
-    <string name="night_profile">Night Profile</string>
     <string name="menu_night_profile">Night Profile</string>
     <string name="title_night_profile">Night Profile</string>
 

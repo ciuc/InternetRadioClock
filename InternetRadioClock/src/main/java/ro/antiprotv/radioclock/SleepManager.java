@@ -14,17 +14,16 @@ import java.util.concurrent.Executors;
 
 import timber.log.Timber;
 
-public class SleepManager {
+class SleepManager {
     //initialize the sleep timers default list (pressing button will cycle through those)
     private final List<Integer> timers = new ArrayList<>(Arrays.asList(15, 20, 30));
     private int sleepTimerIndex;
 
     private ExecutorService sleepExecutorService = Executors.newSingleThreadExecutor();
-    private ClockActivity context;
-    private List<String> mUrls;
+    private final ClockActivity context;
     private ImageButton button;
     private TextView sleepTimerText;
-    protected final Button.OnClickListener sleepOnClickListener = new View.OnClickListener() {
+    final Button.OnClickListener sleepOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(final View view) {
             sleepTimerText = context.findViewById(R.id.sleep_timer);
@@ -48,9 +47,8 @@ public class SleepManager {
         }
     };
 
-    protected SleepManager(ClockActivity context, List<String> mUrls) {
+    SleepManager(ClockActivity context) {
         this.context = context;
-        this.mUrls = mUrls;
     }
 
     private void resetSleepTimer() {
@@ -70,7 +68,7 @@ public class SleepManager {
     }
 
     private class SleepRunner implements Runnable {
-        int timer;
+        final int timer;
 
         SleepRunner(int timer) {
             Timber.d(ClockActivity.TAG_RADIOCLOCK, "Starting thread with timer: " + timer);
