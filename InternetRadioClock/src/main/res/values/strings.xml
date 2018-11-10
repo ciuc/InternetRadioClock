@@ -127,7 +127,7 @@
 
     <string name="back">Back</string>
     <string name="find">Go Find!</string>
-    <string name="assign_to">Assign to memory:</string>
+    <string name="assign_to">Assign\nto memory:</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
 

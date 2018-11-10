@@ -212,12 +212,11 @@ public class ClockActivity extends AppCompatActivity {
         //We start it here , and we sendMessage to the threadHandler in onStart (we might have a race and get threadHandler null if we try it here)
         clockUpdater = new ClockUpdater(mContentView);
         clockUpdater.start();
+        initializeSleepFunction();
+        initializeAlarmFunction();
 
         preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater);
         ((SettingsManager) preferenceChangeListener).applyProfile();
-
-        initializeSleepFunction();
-        initializeAlarmFunction();
 
         //Initialize the player
         //TODO: maybe initialize on first run
