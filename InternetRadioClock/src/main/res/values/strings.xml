@@ -403,15 +403,45 @@ If you want to assign a radio to a memory button, click on the button corespondi
 
     <string name="about.text"><![CDATA[
     <h1>Internet Radio Clock<h1>
-<p>This simple app just displays the clock and has 4 buttons associated each with a radio stream.</p>
-<p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania and RadioBOB from Germany, because these are the radios that I listen to the most.
-The streams are configurable from the Configure Buttons menu.</p>
-<p>You can configure more buttons from the same section: simply add the url to a button and it will appear automagically. Deleting the url will make the button disappear.</p>
-<p>The Stream Finder section allows you to search for radio streams from around the world and easily assign them to one of the buttons.
-Please bear in mind that the radio streams list is maintained by community effort and might not be 100% accurate.</p>
-<p>From the Settings section you can configure some neat stuff like the color and size of the clock, you can disable the display of the seconds, which will allow a bigger clock.</p>
-<p>The clock features a "screensaver-like" function which moves the clock on the screen - important if you have an AMOLED display (leaving an image on an AMOLED screen for a prolonged period of time might damage the screen). The movement can be disabled from the Settings screen.</p>
-<p>Also there is a sleep button that cycles through some predefined sleep timers; there is even a setting that allows you to setup your own timer.</p>
+<p>This simple app just displays the clock in full screen mode and has 5 buttons associated each with a radio stream.</p>
+<p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania, RadioBOB from Germany and Zodiac from Ireland. These can be changed and you can have up to 8 buttons.</p>
+<p>
+<b>Configure buttons</b>
+<ul>
+<li>edit a memory button (the stream url)
+<li>assign a label to a button (will be displayed instead of the number)
+<li>enable up to 8 buttons (simply add the url of your favourite radio stream)
+</ul>
+<b>Stream Finder</b>
+<ul>
+<li>you can search a radio stream using the dropdown boxes and the name text - the name does not need to be exact</li>
+<li>please bear in mind that the list is not complete and might not be 100% accurate; if you have a radio that you want me to add in the list please send me an email</li>
+</ul>
+<b>Settings</b><br>
+in this section you can set some neat stuff:
+<ul>
+<li>clock color</li>
+<li>clock size</li>
+<li>enable/disable the display of seconds</li>
+<li>enable/disable the movement of the clock on the screen; by default the clock moves around the screen corners - important if you have an AMOLED display (leaving an image on an AMOLED screen for a prolonged period of time might damage the screen)</li>
+<li>custom sleep timer: the app features a sleep button that cycles through some predefined sleep timers (15, 20, 30 minutes); you can add your preferred one here
+-> You can activate the sleep timer from the sleep button on the main screen. </li>
+</ul>
+<b>Night Profile</b>
+<ul>
+<li>you can define a different set of settings and activate them at a touch of a button (for instance you might set a bigger clock without seconds and color red for the night while during the day it will be smaller, green and with seconds)</li>
+
+<b>Alarm</b>
+<ul>
+<li>you can set an alarm which will wake up the radio at the defined time. It will play the last played radio. If the internet connection is down, it will play the default alarm sound.</li>
+<li>there is also o snooze function</li>
+</ul>
+<p>
+<b>*** WARNING: please do not use this app as your main alarm clock. Always use your usual alarm clock to wake you up. ***</b>
+</p>
+
+</p>
+
 <p>I tried to keep it as simple as possible, but if you have any ideas or you think it can be improved, write me at my gmail address cristi.ciuc</p>
 <p>The code is opensource and it can be found on github: https://github.com/ciuc/InternetRadioClock</p>
 ]]>
