@@ -23,7 +23,7 @@ public class NightProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         getFragmentManager().beginTransaction()
-                .replace(R.id.settings_content, new SettingsFragment())
+                .replace(R.id.night_profile_content, new NightProfileFragment())
                 .commit();
 
     }

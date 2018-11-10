@@ -38,10 +38,17 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
+            android:name=".NightProfileActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Preferences"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
             android:name=".AboutActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="About"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape">
+        </activity>
         <activity
             android:name=".StreamFinderActivity"
             android:label="@string/title_activity_stream_finder"

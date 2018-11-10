@@ -9,7 +9,6 @@ package ro.antiprotv.radioclock;
 
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
-import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -23,7 +22,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -70,13 +68,14 @@ public class ClockActivity extends AppCompatActivity {
     private static final int UI_ANIMATION_DELAY = 300;
 
     public static final String TAG_RADIOCLOCK = "ClockActivity: %s";
-    public static final String TAG_STATE = "ClockActivity | State: %s";
+    private static final String TAG_STATE = "ClockActivity | State: %s";
+
     private TextView mContentView;
+
     private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     private AudioPlayer mMediaPlayer;
     private Typeface digital7;
 
-    private List<Button> buttons = new ArrayList<Button>();
     private ButtonManager buttonManager;
     private SleepManager sleepManager;
 
@@ -98,6 +97,10 @@ public class ClockActivity extends AppCompatActivity {
     private boolean alarmPlaying;
     private boolean alarmScheduled;
     private RadioAlarmManager alarmManager;
+
+    public final static String PREF_NIGHT_MODE = "NIGHT_MODE";
+    public SharedPreferences prefs;
+    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
     ///////////////////////////////////////////////////////////////////////////
     // State methods
     ///////////////////////////////////////////////////////////////////////////
@@ -105,9 +108,9 @@ public class ClockActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //SOME INITIALIZATIONS
         //Initialize the preferences_buttons
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
 
         //Set up Timber
@@ -116,7 +119,7 @@ public class ClockActivity extends AppCompatActivity {
         }
         mVisible = true;
         mControlsView = findViewById(R.id.mainLayout);
-        mContentView = (TextView) findViewById(R.id.fullscreen_content);
+        mContentView = findViewById(R.id.fullscreen_content);
 
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
@@ -125,12 +128,10 @@ public class ClockActivity extends AppCompatActivity {
                 toggle();
             }
         });
-
         digital7 = Typeface.createFromAsset(getAssets(), "fonts/digital-7.mono.ttf");
+        mContentView.setTypeface(digital7);
 
         buttonManager = new ButtonManager(getApplicationContext(), mControlsView,prefs,mDelayHideTouchListener, playOnClickListener);
-
-        mContentView.setTypeface(digital7);
 
         String clockSizeKey = getResources().getString(R.string.setting_key_clockSize);
         String clockSize = getResources().getString(R.string.setting_default_clockSize);
@@ -147,7 +148,6 @@ public class ClockActivity extends AppCompatActivity {
             sdf = new SimpleDateFormat("HH:mm");
         }
         //Thread - clock
-
         boolean moveText = prefs.getBoolean(getResources().getString(R.string.setting_key_clockMove), true);
         //Thread for communicating with the ui handler
         //We start it here , and we sendMessage to the threadHandler in onStart (we might have a race and get threadHandler null if we try it here)
@@ -192,7 +192,7 @@ public class ClockActivity extends AppCompatActivity {
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream7), ""));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream8), ""));
 
-        buttons = buttonManager.initializeButtons(mUrls);
+        buttonManager.initializeButtons(mUrls);
 
         //sleep timer
         sleepManager = new SleepManager(this, mUrls);
@@ -200,17 +200,10 @@ public class ClockActivity extends AppCompatActivity {
         if (customTimer != 0) {
             sleepManager.getTimers().add(0, customTimer);
         }
-        //we use 2 buttons here when buttons are 8 we use the one top right, if < 8 bottom right
-        //the 2 buttons just hide/unhide
+        //sleep buttons
         ImageButton sleep = (ImageButton) findViewById(R.id.sleep);
-        ImageButton sleep8 = (ImageButton) findViewById(R.id.sleep8);
         sleep.setOnClickListener(sleepManager.sleepOnClickListener);
         sleep.setOnTouchListener(mDelayHideTouchListener);
-        sleep8.setOnClickListener(sleepManager.sleepOnClickListener);
-        sleep8.setOnTouchListener(mDelayHideTouchListener);
-        //we hide/unhide
-        sleepManager.hideUnhideSleepButtons();
-
 
         alarmManager = new RadioAlarmManager(this, buttonManager);
         ImageButton alarmButton = (ImageButton) findViewById(R.id.alarm_icon);
@@ -236,8 +229,11 @@ public class ClockActivity extends AppCompatActivity {
         if (mMediaPlayer == null) {
             initMediaPlayer();
         }
-        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(mListener);
-
+        //preferences and profile
+        preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater);
+        ImageButton nightModeButton = findViewById(R.id.night_mode_button);
+        nightModeButton.setOnClickListener(nightModeOnClickListener);
+        nightModeButton.setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -310,8 +306,14 @@ public class ClockActivity extends AppCompatActivity {
         Timber.d(TAG_STATE, "onResume");
         IntentFilter filter = new IntentFilter("alarmReceiver");
         this.registerReceiver(this.alarmManager, filter);
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(preferenceChangeListener);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Buttons
@@ -343,6 +345,15 @@ public class ClockActivity extends AppCompatActivity {
         }
     };
 
+    private final Button.OnClickListener nightModeOnClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(final View view) {
+            Timber.d(TAG_RADIOCLOCK, "night mode: " + view.getTag());
+            boolean nightMode = prefs.getBoolean(PREF_NIGHT_MODE, false);
+            ((SettingsManager) preferenceChangeListener).toggleNightMode(nightMode);
+        }
+    };
 
     ///////////////////////////////////////////////////////////////////////////
     // Media Player
@@ -469,11 +480,20 @@ public class ClockActivity extends AppCompatActivity {
     ///////////////////////////////////////////////////////////////////////////
     // Settings
     ///////////////////////////////////////////////////////////////////////////
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+        /*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        MenuItem settings = menu.findItem(R.id.settings);
+        MenuItem night = menu.findItem(R.id.night);
+        if (prefs.getBoolean(PREF_NIGHT_MODE, false)) {
+            settings.setEnabled(false);
+            night.setEnabled(true);
+        } else {
+            settings.setEnabled(true);
+            night.setEnabled(false);
+        }*/
         return true;
     }
 
@@ -493,6 +513,12 @@ public class ClockActivity extends AppCompatActivity {
                 settings.setClassName(this, "ro.antiprotv.radioclock.SettingsActivity");
                 startActivity(settings);
                 return true;
+            case R.id.night:
+                Timber.d(TAG_RADIOCLOCK, "Settings clicked");
+                Intent night = new Intent();
+                night.setClassName(this, "ro.antiprotv.radioclock.NightProfileActivity");
+                startActivity(night);
+                return true;
             case R.id.about:
                 Timber.d(TAG_RADIOCLOCK, "about clicked");
                 Intent about = new Intent();
@@ -510,116 +536,6 @@ public class ClockActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    private final SharedPreferences.OnSharedPreferenceChangeListener mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-            int buttonIndex = -1;
-
-            if (key.equals(getResources().getString(R.string.setting_key_label1))) {
-                buttonIndex = 0;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_label2))) {
-                buttonIndex = 1;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_label3))) {
-                buttonIndex = 2;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_label4))) {
-                buttonIndex = 3;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_label5))) {
-                buttonIndex = 4;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_label6))) {
-                buttonIndex = 5;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_label7))) {
-                buttonIndex = 6;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_label8))) {
-                buttonIndex = 7;
-            }
-            if (key.contains("setting.key.label")){
-                buttonManager.setText(buttonIndex, prefs);
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_clockColor))) {
-                String colorCode = prefs.getString(getResources().getString(R.string.setting_key_clockColor), getResources().getString(R.string.setting_default_clockColor));
-                Timber.d(TAG_RADIOCLOCK, "Setting color clock to " + colorCode);
-                mContentView.setTextColor(Color.parseColor(colorCode));
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_clockSize))) {
-                String clockSizeKey = getResources().getString(R.string.setting_key_clockSize);
-                String clockSize = getResources().getString(R.string.setting_default_clockSize);
-                Timber.d(TAG_RADIOCLOCK, clockSizeKey);
-                Timber.d(TAG_RADIOCLOCK, clockSize);
-                int size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
-                Timber.d(TAG_RADIOCLOCK, "Setting size clock to " + size);
-                mContentView.setTextSize(size);
-            }
-            int streamIndex = -1;
-            if (key.equals(getResources().getString(R.string.setting_key_stream1))){
-                streamIndex = 0;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_stream2))){
-                streamIndex = 1;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_stream3))){
-                streamIndex = 2;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_stream4))){
-                streamIndex = 3;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_stream5))){
-                streamIndex = 4;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_stream6))){
-                streamIndex = 5;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_stream7))){
-                streamIndex = 6;
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_stream8))){
-                streamIndex = 7;
-            }
-            if (key.contains("stream")) {
-                String url = prefs.getString(key, "");
-                mUrls.set(streamIndex, url);
-                buttonManager.hideUnhideButtons(mUrls);
-                sleepManager.hideUnhideSleepButtons();
-            }
-
-            if (key.equals(getResources().getString(R.string.setting_key_sleepMinutes))) {
-                Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
-                if (customTimer == 0) {
-                    sleepManager.getTimers().remove(0);
-                } else {
-                    sleepManager.getTimers().add(0, customTimer);
-                }
-            }
-            Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag + "; key " + key);
-
-            if (key.equals(mPlayingStreamTag)) {
-                stopPlaying();
-                //since we stopped, the clicked button is reset
-                //set this one here
-                //TODO: find a better solution
-                buttonManager.setButtonClicked(buttonManager.findButtonByTag(key));
-                play(buttonManager.findButtonByTag(key).getId());
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_seconds))){
-                if (prefs.getBoolean(getResources().getString(R.string.setting_key_seconds), true)) {
-                    sdf = new SimpleDateFormat("HH:mm:ss");
-                } else {
-                    sdf = new SimpleDateFormat("HH:mm");
-                }
-                clockUpdater.setSdf(sdf);
-            }
-            if (key.equals(getResources().getString(R.string.setting_key_clockMove))){
-                clockUpdater.setMoveText(prefs.getBoolean(getResources().getString(R.string.setting_key_clockMove), true));
-                mContentView.setGravity(Gravity.CENTER);
-            }
-        }
-    };
 
     ///////////////////////////////////////////////////////////////////////////
     // Delaying removal of nav bar (android studio default stuff)
@@ -726,6 +642,15 @@ public class ClockActivity extends AppCompatActivity {
     }
     public void setAlarmScheduled(boolean alarmScheduled) {
         this.alarmScheduled = alarmScheduled;
+    }
+    public TextView getmContentView() {
+        return mContentView;
+    }
+    public List<String> getmUrls() {
+        return mUrls;
+    }
+    public String getmPlayingStreamTag() {
+        return mPlayingStreamTag;
     }
 
 }

@@ -84,7 +84,7 @@
             android:visibility="gone"
             android:textColor="@color/button.color.off" />
         <ImageButton
-            android:id="@+id/sleep8"
+            android:id="@+id/sleep"
             android:tag="@string/setting.key.sleepMinutes"
             style="?metaButtonBarButtonStyle"
             android:layout_width="wrap_content"
@@ -96,13 +96,26 @@
             android:textColor="@color/button.color.off" />
 
         <TextView
-            android:id="@+id/sleep_timer8"
+            android:id="@+id/sleep_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="fill"
             android:textColor="@color/button.color.off"
             android:textSize="10sp"
-            android:layout_toLeftOf="@+id/sleep8"/>
+            android:layout_toLeftOf="@+id/sleep"/>
+
+        <ImageButton
+            android:id="@+id/night_mode_button"
+            android:tag="@string/setting.key.sleepMinutes"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/sleep_timer"
+            android:layout_marginRight="5dp"
+            android:clickable="false"
+            app:srcCompat="@drawable/ic_night_24dp"
+            android:background="@drawable/memory"
+            android:textColor="@color/button.color.off" />
 
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
@@ -203,36 +216,6 @@
                 android:clickable="false"
                 android:background="@drawable/memory"
                 android:textColor="@color/button.color.off" />
-            <!-- used when fewer 8 buttons enabled -->
-            <RelativeLayout
-                android:id="@+id/sleepLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
-                android:layout_alignParentBottom="true">
-                <ImageButton
-                    android:id="@+id/sleep"
-                    android:tag="@string/setting.key.sleepMinutes"
-                    style="?metaButtonBarButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_margin="2pt"
-                    android:clickable="false"
-                    app:srcCompat="@drawable/sleep_timer_off_white_24dp"
-                    android:background="@drawable/memory"
-                    android:textColor="@color/button.color.off" />
-                <TextView
-                    android:id="@+id/sleep_timer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="fill"
-                    android:textColor="@color/button.color.off"
-                    android:textSize="10sp"
-                    android:layout_toLeftOf="@+id/sleep"/>
-            </RelativeLayout>
-
-
         </LinearLayout>
 
 

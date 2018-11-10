@@ -25,6 +25,8 @@ public class SleepManager {
     private ExecutorService sleepExecutorService = Executors.newSingleThreadExecutor();
     private ClockActivity context;
     private List<String> mUrls;
+    private ImageButton button;
+    private TextView sleepTimerText;
 
 
     protected SleepManager(ClockActivity context, List<String> mUrls) {
@@ -35,10 +37,8 @@ public class SleepManager {
     protected final Button.OnClickListener sleepOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(final View view) {
-            TextView sleepTimerText = context.findViewById(R.id.sleep_timer);
-            TextView sleepTimerText8 = context.findViewById(R.id.sleep_timer8);
-            ImageButton button = context.findViewById(R.id.sleep);
-            ImageButton button8 = context.findViewById(R.id.sleep8);
+            sleepTimerText = context.findViewById(R.id.sleep_timer);
+            button = context.findViewById(R.id.sleep);
             if (sleepTimerIndex == timers.size()) {
                 resetSleepTimer();
                 sleepExecutorService.shutdownNow();
@@ -46,10 +46,8 @@ public class SleepManager {
                 //stop the timer thread
                 sleepExecutorService.shutdownNow();
                 button.setImageResource(R.drawable.sleep_timer_on_white_24dp);
-                button8.setImageResource(R.drawable.sleep_timer_on_white_24dp);
                 Integer timer = timers.get(sleepTimerIndex);
                 sleepTimerText.setText(String.format(view.getResources().getString(R.string.text_sleep_timer),timer));
-                sleepTimerText8.setText(String.format(view.getResources().getString(R.string.text_sleep_timer),timer));
                 sleepTimerIndex++;
                 //now start the thread
                 SleepRunner sleepRunner = new SleepRunner(timer);
@@ -61,14 +59,10 @@ public class SleepManager {
     };
 
     private void resetSleepTimer() {
-        TextView sleepTimerText = context.findViewById(R.id.sleep_timer);
-        TextView sleepTimerText8 = context.findViewById(R.id.sleep_timer8);
-        ImageButton button = context.findViewById(R.id.sleep);
-        ImageButton button8 = context.findViewById(R.id.sleep8);
+        sleepTimerText = context.findViewById(R.id.sleep_timer);
+        button = context.findViewById(R.id.sleep);
         sleepTimerText.setText("");
-        sleepTimerText8.setText("");
         button.setImageResource(R.drawable.sleep_timer_off_white_24dp);
-        button8.setImageResource(R.drawable.sleep_timer_off_white_24dp);
         sleepTimerIndex = 0;
     }
     private class SleepRunner implements Runnable {
@@ -101,25 +95,7 @@ public class SleepManager {
             }
         }
     }
-    protected void hideUnhideSleepButtons() {
-        TextView sleepTimerText = context.findViewById(R.id.sleep_timer);
-        TextView sleepTimerText8 = context.findViewById(R.id.sleep_timer8);
-        ImageButton button = context.findViewById(R.id.sleep);
-        ImageButton button8 = context.findViewById(R.id.sleep8);
-        for (String url : mUrls) {
-            if (url.isEmpty()) {
-                sleepTimerText.setVisibility(View.VISIBLE);
-                button.setVisibility(View.VISIBLE);
-                sleepTimerText8.setVisibility(View.GONE);
-                button8.setVisibility(View.GONE);
-                return;
-            }
-        }
-        sleepTimerText8.setVisibility(View.VISIBLE);
-        button8.setVisibility(View.VISIBLE);
-        sleepTimerText.setVisibility(View.GONE);
-        button.setVisibility(View.GONE);
-    }
+
 
     public List<Integer> getTimers() {
         return timers;

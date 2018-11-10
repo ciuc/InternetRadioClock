@@ -16,7 +16,7 @@ public class NightProfileFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences_settings);
+        addPreferencesFromResource(R.xml.preferences_night_profile);
 
     }
 }
