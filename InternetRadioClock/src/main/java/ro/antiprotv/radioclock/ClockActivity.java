@@ -138,17 +138,6 @@ public class ClockActivity extends AppCompatActivity {
 
         displayDialogsOnOpen();
 
-
-/*        String clockSizeKey = getResources().getString(R.string.setting_key_clockSize);
-        String clockSize = getResources().getString(R.string.setting_default_clockSize);
-        int size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
-        mContentView.setTextSize(size);
-        mContentView.setTextColor(Color.parseColor(prefs.getString(getResources().getString(R.string.setting_key_clockColor), getResources().getString(R.string.setting_default_clockColor))));
-*/
-/*        boolean displaySeconds = prefs.getBoolean(getResources().getString(R.string.setting_key_seconds), true);
-        if (!displaySeconds) {
-            sdf = new SimpleDateFormat("HH:mm");
-        }*/
         //Thread - clock
         //Thread for communicating with the ui handler
         //We start it here , and we sendMessage to the threadHandler in onStart (we might have a race and get threadHandler null if we try it here)
@@ -163,11 +152,11 @@ public class ClockActivity extends AppCompatActivity {
         initializeAlarmFunction();
 
         //Initialize the player
+        //TODO: maybe initialize on first run
         if (mMediaPlayer == null) {
             initMediaPlayer();
         }
         //preferences and profile
-
         ImageButton nightModeButton = findViewById(R.id.night_mode_button);
         nightModeButton.setOnClickListener(nightModeOnClickListener);
         nightModeButton.setOnTouchListener(mDelayHideTouchListener);
@@ -495,16 +484,6 @@ public class ClockActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-        /*SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        MenuItem settings = menu.findItem(R.id.settings);
-        MenuItem night = menu.findItem(R.id.night);
-        if (prefs.getBoolean(PREF_NIGHT_MODE, false)) {
-            settings.setEnabled(false);
-            night.setEnabled(true);
-        } else {
-            settings.setEnabled(true);
-            night.setEnabled(false);
-        }*/
         return true;
     }
 
