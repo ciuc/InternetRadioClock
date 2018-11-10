@@ -268,7 +268,7 @@ public class ClockActivity extends AppCompatActivity {
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream4), getResources().getString(R.string.setting_default_stream4)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream5), ""));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream5), getResources().getString(R.string.setting_default_stream4)));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream6), ""));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream7), ""));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream8), ""));

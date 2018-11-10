@@ -78,6 +78,7 @@
     <string name="setting.default.stream2">http://live.tananana.ro:8010/stream-48.aac</string>
     <string name="setting.default.stream3">http://streams.radiobob.de/bob-live/aac-64/mediaplayer</string>
     <string name="setting.default.stream4">http://80.86.106.143:9128/rockfm.aacp</string>
+    <string name="setting.default.stream5">http://www.radioking.com/play/radio-zodiac-ireland</string>
 
     <string name="text.sleep.timer">Sleep in %d minutes</string>
     <!-- advanced settings -->
