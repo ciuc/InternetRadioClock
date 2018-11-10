@@ -134,9 +134,7 @@ public class ClockActivity extends AppCompatActivity {
     //remember last picked hour
     private int h = 0;
     private int m = 0;
-    ///////////////////////////////////////////////////////////////////////////
-    // State methods
-    ///////////////////////////////////////////////////////////////////////////
+
     private boolean alarmPlaying;
     private RadioAlarmManager alarmManager;
     private final Button.OnClickListener playOnClickListener = new View.OnClickListener() {
@@ -174,6 +172,9 @@ public class ClockActivity extends AppCompatActivity {
         }
     };
 
+    ///////////////////////////////////////////////////////////////////////////
+    // State methods
+    ///////////////////////////////////////////////////////////////////////////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -230,6 +231,90 @@ public class ClockActivity extends AppCompatActivity {
         nightModeButton.setOnTouchListener(mDelayHideTouchListener);
     }
 
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        Timber.d(TAG_STATE, "onPostCreate");
+        // Trigger the initial hide() shortly after the activity has been
+        // created, to briefly hint to the user that UI controls
+        // are available.
+        delayedHide(100);
+    }
+
+    @Override
+    protected void onStart() {
+        Timber.d(TAG_STATE, "onStart");
+        super.onStart();
+        //semaphore = true;
+        if (!clockUpdater.getThreadHandler().hasMessages(0)) {
+            clockUpdater.getThreadHandler().sendEmptyMessage(0);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Timber.d(TAG_STATE, "onResume");
+        IntentFilter filter = new IntentFilter("alarmReceiver");
+        this.registerReceiver(this.alarmManager, filter);
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+        IntentFilter alarmFilter = new IntentFilter("alarmManager");
+        this.registerReceiver(this.alarmManager, alarmFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        Timber.d(TAG_STATE, "onStop");
+        super.onStop();
+        clockUpdater.setSemaphore(false);
+        clockUpdater.getThreadHandler().removeMessages(0);
+        try {
+            this.unregisterReceiver(this.alarmManager);
+        } catch (IllegalArgumentException e) {
+            Timber.e("receiver already unregistered");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        Timber.d(TAG_STATE, "onDestroy");
+        resetMediaPlayer();
+        if (clockUpdater != null && !clockUpdater.isInterrupted()) {
+            clockUpdater.interrupt();
+        }
+        clockUpdater.setThreadHandler(null);
+        clockUpdater = null;
+        sleepManager.getSleepExecutorService().shutdownNow();
+        try {
+            this.unregisterReceiver(this.alarmManager);
+        } catch (IllegalArgumentException e) {
+            Timber.e("receiver already unregistered");
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onRestart() {
+        Timber.d(TAG_STATE, "onRestart");
+        super.onRestart();
+        if (mMediaPlayer == null) {
+            initMediaPlayer();
+        }
+        clockUpdater.setSemaphore(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Timber.d(TAG_STATE, "onPause");
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
+    }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //INITIALIZATIONS
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     private void initializeAlarmFunction() {
         alarmManager = new RadioAlarmManager(this, buttonManager);
         ImageButton alarmButton = findViewById(R.id.alarm_icon);
@@ -268,7 +353,7 @@ public class ClockActivity extends AppCompatActivity {
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream4), getResources().getString(R.string.setting_default_stream4)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream5), getResources().getString(R.string.setting_default_stream4)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream5), getResources().getString(R.string.setting_default_stream5)));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream6), ""));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream7), ""));
         mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream8), ""));
@@ -305,92 +390,9 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide(100);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Buttons
-    ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    protected void onDestroy() {
-        Timber.d(TAG_STATE, "onDestroy");
-        resetMediaPlayer();
-        clockUpdater.setSemaphore(false);
-        if (clockUpdater != null && !clockUpdater.isInterrupted()) {
-            clockUpdater.interrupt();
-        }
-        clockUpdater.setThreadHandler(null);
-        clockUpdater = null;
-        sleepManager.getSleepExecutorService().shutdownNow();
-        try {
-            this.unregisterReceiver(this.alarmManager);
-        } catch (IllegalArgumentException e) {
-            Timber.e("receiver already unregistered");
-        }
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onRestart() {
-        Timber.d(TAG_STATE, "onRestart");
-        super.onRestart();
-        if (mMediaPlayer == null) {
-            initMediaPlayer();
-        }
-        clockUpdater.setSemaphore(true);
-    }
-
-    @Override
-    protected void onStop() {
-        Timber.d(TAG_STATE, "onStop");
-        super.onStop();
-        clockUpdater.setSemaphore(false);
-        clockUpdater.getThreadHandler().removeMessages(0);
-        try {
-            this.unregisterReceiver(this.alarmManager);
-        } catch (IllegalArgumentException e) {
-            Timber.e("receiver already unregistered");
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        Timber.d(TAG_STATE, "onStart");
-        super.onStart();
-        //semaphore = true;
-        if (!clockUpdater.getThreadHandler().hasMessages(0)) {
-            clockUpdater.getThreadHandler().sendEmptyMessage(0);
-        }
-        IntentFilter filter = new IntentFilter("alarmManager");
-        this.registerReceiver(this.alarmManager, filter);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Timber.d(TAG_STATE, "onResume");
-        IntentFilter filter = new IntentFilter("alarmReceiver");
-        this.registerReceiver(this.alarmManager, filter);
-        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(preferenceChangeListener);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(preferenceChangeListener);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Media Player
-    ///////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //init
     private void initMediaPlayer() {
         mMediaPlayer = new AudioPlayer(getBaseContext());
@@ -467,14 +469,50 @@ public class ClockActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
         }
-        //buttonManager.setButtonClicked(null);
         mPlayingStreamNo = 0;
         mPlayingStreamTag = null;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Settings
-    ///////////////////////////////////////////////////////////////////////////
+    private class CustomOnPreparedListener implements OnPreparedListener {
+        @Override
+        public void onPrepared() {
+            Timber.d(TAG_RADIOCLOCK, "Attempting to start mediaplayer ");
+            mMediaPlayer.start();
+
+            buttonManager.lightButton();
+            mPlayingStreamNo = buttonManager.getButtonClicked().getId();
+            mPlayingStreamTag = buttonManager.getButtonClicked().getTag().toString();
+            buttonManager.enableButtons();
+            Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag);
+            //default url do not show, b/c they are not present in prefs at first
+            String defaultKey = mPlayingStreamTag.replace("setting.key.stream", "");
+            int index = Integer.parseInt(defaultKey) - 1;
+            Toast.makeText(ClockActivity.this, "Playing " + mUrls.get(index), Toast.LENGTH_SHORT).show();
+            Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
+            alarmPlaying = false;
+        }
+    }
+
+    private class CustomOnErrorListener implements OnErrorListener {
+        @Override
+        public boolean onError(Exception e) {
+            Toast.makeText(ClockActivity.this, "Error playing stream", Toast.LENGTH_SHORT).show();
+            Timber.e("Error playing stream: %s", e.getMessage());
+            resetMediaPlayer();
+            initMediaPlayer();
+            buttonManager.resetButtons();
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+            }
+            if (alarmPlaying) {
+                alarmManager.playDefaultAlarmOnStreamError();
+            }
+            return false;
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // MENU
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -585,44 +623,6 @@ public class ClockActivity extends AppCompatActivity {
 
     public String getmPlayingStreamTag() {
         return mPlayingStreamTag;
-    }
-
-    private class CustomOnPreparedListener implements OnPreparedListener {
-        @Override
-        public void onPrepared() {
-            Timber.d(TAG_RADIOCLOCK, "Attempting to start mediaplayer ");
-            mMediaPlayer.start();
-
-            buttonManager.lightButton();
-            mPlayingStreamNo = buttonManager.getButtonClicked().getId();
-            mPlayingStreamTag = buttonManager.getButtonClicked().getTag().toString();
-            buttonManager.enableButtons();
-            Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag);
-            //default url do not show, b/c they are not present in prefs at first
-            String defaultKey = mPlayingStreamTag.replace("setting.key.stream", "");
-            int index = Integer.parseInt(defaultKey) - 1;
-            Toast.makeText(ClockActivity.this, "Playing " + mUrls.get(index), Toast.LENGTH_SHORT).show();
-            Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
-            alarmPlaying = false;
-        }
-    }
-
-    private class CustomOnErrorListener implements OnErrorListener {
-        @Override
-        public boolean onError(Exception e) {
-            Toast.makeText(ClockActivity.this, "Error playing stream", Toast.LENGTH_SHORT).show();
-            Timber.e("Error playing stream: %s", e.getMessage());
-            resetMediaPlayer();
-            initMediaPlayer();
-            buttonManager.resetButtons();
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-            }
-            if (alarmPlaying) {
-                alarmManager.playDefaultAlarmOnStreamError();
-            }
-            return false;
-        }
     }
 
 }

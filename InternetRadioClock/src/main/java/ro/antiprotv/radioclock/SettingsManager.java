@@ -170,14 +170,6 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
         Timber.d("Applying profile : %s", nightMode);
         ImageButton nightButton = clockActivity.findViewById(R.id.night_mode_button);
         if (nightMode) {
-            //Clock color
-            String colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor_night), clockActivity.getResources().getString(R.string.setting_default_clockColor));
-            clockActivity.getmContentView().setTextColor(Color.parseColor(colorCode));
-            //clock size
-            String clockSizeKey = clockActivity.getResources().getString(R.string.setting_key_clockSize_night);
-            String clockSize = clockActivity.getResources().getString(R.string.setting_default_clockSize);
-            int size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
-            clockActivity.getmContentView().setTextSize(size);
             //clock seconds
             SimpleDateFormat sdf;
             if (prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_seconds_night), true)) {
@@ -186,6 +178,14 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
                 sdf = new SimpleDateFormat("HH:mm");
             }
             clockUpdater.setSdf(sdf);
+            //Clock color
+            String colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor_night), clockActivity.getResources().getString(R.string.setting_default_clockColor));
+            clockActivity.getmContentView().setTextColor(Color.parseColor(colorCode));
+            //clock size
+            String clockSizeKey = clockActivity.getResources().getString(R.string.setting_key_clockSize_night);
+            String clockSize = clockActivity.getResources().getString(R.string.setting_default_clockSize);
+            int size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
+            clockActivity.getmContentView().setTextSize(size);
             //clock move
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clockMove_night), true));
             clockActivity.getmContentView().setGravity(Gravity.CENTER);
@@ -194,14 +194,6 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             Timber.d("SET COLOR STROKE ON");
             buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.color_clock));
         } else {
-            //Clock color
-            String colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor), clockActivity.getResources().getString(R.string.setting_default_clockColor));
-            clockActivity.getmContentView().setTextColor(Color.parseColor(colorCode));
-            //clock size
-            String clockSizeKey = clockActivity.getResources().getString(R.string.setting_key_clockSize);
-            String clockSize = clockActivity.getResources().getString(R.string.setting_default_clockSize);
-            int size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
-            clockActivity.getmContentView().setTextSize(size);
             //clock seconds
             SimpleDateFormat sdf;
             if (prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_seconds), true)) {
@@ -210,6 +202,14 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
                 sdf = new SimpleDateFormat("HH:mm");
             }
             clockUpdater.setSdf(sdf);
+            //Clock color
+            String colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor), clockActivity.getResources().getString(R.string.setting_default_clockColor));
+            clockActivity.getmContentView().setTextColor(Color.parseColor(colorCode));
+            //clock size
+            String clockSizeKey = clockActivity.getResources().getString(R.string.setting_key_clockSize);
+            String clockSize = clockActivity.getResources().getString(R.string.setting_default_clockSize);
+            int size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
+            clockActivity.getmContentView().setTextSize(size);
             //clock move
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clockMove), true));
             clockActivity.getmContentView().setGravity(Gravity.CENTER);
