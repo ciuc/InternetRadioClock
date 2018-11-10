@@ -114,7 +114,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         Calendar now = Calendar.getInstance();
         now.setTimeInMillis(System.currentTimeMillis());
         //now.add(Calendar.SECOND, DEFAULT_SNOOZE);//FOR TESTING
-        now.add(Calendar.SECOND, DEFAULT_SNOOZE);//FOR PRODUCTION
+        now.add(Calendar.MINUTE, DEFAULT_SNOOZE);//FOR PRODUCTION
         setAlarm(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
     }
 
@@ -140,7 +140,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         cancelButton.setVisibility(View.VISIBLE);
     }
 
-    private void shutDownDefaultAlarm() {
+    void shutDownDefaultAlarm() {
         if (player != null && player.isPlaying()) {
             player.stop();
         }

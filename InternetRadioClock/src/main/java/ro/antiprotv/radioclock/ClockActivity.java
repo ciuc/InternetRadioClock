@@ -264,17 +264,20 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        Timber.d(TAG_STATE, "onPause");
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
+    }
+
+    @Override
     protected void onStop() {
         Timber.d(TAG_STATE, "onStop");
         super.onStop();
         clockUpdater.setSemaphore(false);
         clockUpdater.getThreadHandler().removeMessages(0);
-        try {
-            this.unregisterReceiver(this.alarmManager);
-        } catch (IllegalArgumentException e) {
-            Timber.e("receiver already unregistered");
-        }
     }
+
 
     @Override
     protected void onDestroy() {
@@ -303,14 +306,6 @@ public class ClockActivity extends AppCompatActivity {
         }
         clockUpdater.setSemaphore(true);
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Timber.d(TAG_STATE, "onPause");
-        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
-    }
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //INITIALIZATIONS
@@ -413,6 +408,8 @@ public class ClockActivity extends AppCompatActivity {
             alarmManager.changeAlarmIconAndTextOnCancel();
             return;
         }
+        //we might have a default alarm playing, so need to shut it off
+        alarmManager.shutDownDefaultAlarm();
         String url;
         //index in th list
         int index = -1;
