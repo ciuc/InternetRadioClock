@@ -18,8 +18,6 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import timber.log.Timber;
-
 public class RadioAlarmManager extends BroadcastReceiver {
 
     private final static int DEFAULT_SNOOZE = 10;//minutes
@@ -61,8 +59,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
         next.set(Calendar.SECOND, 0);
 
 
-        Timber.d("NOW : %d", now.getTimeInMillis());
-        Timber.d("THEN: %d", next.getTimeInMillis());
         boolean tomorrow = false;
         if (next.getTimeInMillis() - now.getTimeInMillis() <= 0) {
             tomorrow = true;
@@ -70,7 +66,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
         }
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
-        Timber.d("Alarm set for: %s", sdf.format(next.getTime()));
         alarmMgr.setExact(AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), alarmIntent);
         //TESTING: enable this line to have the alarm in 5 secs;
         //alarmMgr.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
@@ -82,7 +77,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
         alarmOffButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Timber.d("Alarm canceled");
                 alarmMgr.cancel(alarmIntent);
                 Toast.makeText(clockActivity, R.string.text_alarm_canceled, Toast.LENGTH_SHORT).show();
                 clockActivity.setAlarmPlaying(false);
@@ -175,7 +169,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
                         Thread.sleep(1000);
                         count++;
                     } catch (Exception e) {
-                        Timber.e("Error: ", e.toString());
+                        //TODO: have no idea what to do here!
                     }
                 }
             }

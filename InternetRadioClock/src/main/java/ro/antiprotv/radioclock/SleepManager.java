@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import timber.log.Timber;
-
 class SleepManager {
     //initialize the sleep timers default list (pressing button will cycle through those)
     private final List<Integer> timers = new ArrayList<>(Arrays.asList(15, 20, 30));
@@ -71,7 +69,6 @@ class SleepManager {
         final int timer;
 
         SleepRunner(int timer) {
-            Timber.d(ClockActivity.TAG_RADIOCLOCK, "Starting thread with timer: " + timer);
             this.timer = timer;
         }
 
@@ -81,7 +78,6 @@ class SleepManager {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     for (int i = seconds; i >= 0; i--) {
-                        Timber.d(ClockActivity.TAG_RADIOCLOCK, "Thread sleep; seconds: " + i);
                         Thread.sleep(1000);
                     }
                     context.runOnUiThread(new Runnable() {
@@ -95,7 +91,6 @@ class SleepManager {
                     Thread.currentThread().interrupt();
                 }
             } catch (InterruptedException e) {
-                Timber.d(ClockActivity.TAG_RADIOCLOCK, "Sleep Thread interrupted ");
             }
         }
     }

@@ -11,8 +11,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import timber.log.Timber;
-
 /**
  * Thread to manage the clock (update the clock and move it)
  */
@@ -60,7 +58,6 @@ class ClockUpdater extends Thread {
 
     public void run() {
         Looper.prepare();
-        Timber.d("Starting thread");
         threadHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -71,7 +68,6 @@ class ClockUpdater extends Thread {
                             Thread.sleep(1000);
                             count++;
                         } catch (Exception e) {
-                            Timber.e("Error: ", e.toString());
                         }
                     }
                     uiHandler.sendEmptyMessage(DO_NOT_MOVE_TEXT);

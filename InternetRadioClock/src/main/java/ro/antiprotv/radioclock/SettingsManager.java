@@ -9,8 +9,6 @@ import android.widget.ImageButton;
 
 import java.text.SimpleDateFormat;
 
-import timber.log.Timber;
-
 import static ro.antiprotv.radioclock.ClockActivity.PREF_NIGHT_MODE;
 import static ro.antiprotv.radioclock.ClockActivity.TAG_RADIOCLOCK;
 
@@ -101,7 +99,6 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
                 sleepManager.getTimers().add(0, customTimer);
             }
         }
-        Timber.d(TAG_RADIOCLOCK, "tag: " + clockActivity.getmPlayingStreamTag() + "; key " + key);
 
         if (key.equals(clockActivity.getmPlayingStreamTag())) {
             clockActivity.stopPlaying();
@@ -155,10 +152,8 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
 
     void toggleNightMode() {
         boolean nightMode = prefs.getBoolean(PREF_NIGHT_MODE, false);
-        Timber.d("Current nightmode is %b", nightMode);
         //this will trigger the listener!!
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
-        Timber.d("setting nightmode to %b", !nightMode);
         prefs.edit().putBoolean(ClockActivity.PREF_NIGHT_MODE, !nightMode).apply();
         applyProfile();
 
@@ -167,7 +162,6 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
 
     void applyProfile() {
         boolean nightMode = prefs.getBoolean(PREF_NIGHT_MODE, false);
-        Timber.d("Applying profile : %s", nightMode);
         ImageButton nightButton = clockActivity.findViewById(R.id.night_mode_button);
         if (nightMode) {
             //clock seconds
@@ -191,7 +185,6 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             clockActivity.getmContentView().setGravity(Gravity.CENTER);
             GradientDrawable buttonShape = (GradientDrawable) nightButton.getBackground();
             buttonShape.mutate();
-            Timber.d("SET COLOR STROKE ON");
             buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.color_clock));
         } else {
             //clock seconds
@@ -214,7 +207,6 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clockMove), true));
             clockActivity.getmContentView().setGravity(Gravity.CENTER);
             GradientDrawable buttonShape = (GradientDrawable) nightButton.getBackground();
-            Timber.d("SET COLOR STROKE OFF");
             buttonShape.mutate();
             buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.button_color));
         }

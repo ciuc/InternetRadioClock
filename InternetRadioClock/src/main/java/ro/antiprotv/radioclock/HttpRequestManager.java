@@ -11,8 +11,6 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 
-import timber.log.Timber;
-
 class HttpRequestManager {
 
     private final StreamFinderActivity context;
@@ -24,7 +22,6 @@ class HttpRequestManager {
 
     void getStations(String country, String name, String language, String tags) {
         RequestQueue queue = Volley.newRequestQueue(context);
-        Timber.d("requesting stations for %s %s %s %s", country, name, language, tags);
         StringBuilder requestParams = new StringBuilder("http://www.antiprotv.ro/radioclock/api.php?x=list&country=").append(Uri.encode(country));
         if (!name.isEmpty()) {
             requestParams.append("&name=").append(name);
@@ -35,7 +32,6 @@ class HttpRequestManager {
         if (!tags.isEmpty()) {
             requestParams.append("&tags=").append(Uri.encode(tags));
         }
-        Timber.d("URL: %s", requestParams.toString());
         ResponseListener responseListener = new ResponseListener(context);
         JsonArrayRequest request = new JsonArrayRequest(requestParams.toString(),
                 responseListener, new Response.ErrorListener() {
@@ -44,7 +40,6 @@ class HttpRequestManager {
                 int statusCode = 500;
                 if (error.networkResponse != null) {
                     statusCode = error.networkResponse.statusCode;
-                    Timber.e("Error %d", error.networkResponse.statusCode);
                 }
 
                 switch (statusCode) {

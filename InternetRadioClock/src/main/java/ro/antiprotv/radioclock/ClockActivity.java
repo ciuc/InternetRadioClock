@@ -41,8 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import timber.log.Timber;
-
 /**
  * Main Activity. Just displays the clock and buttons
  */
@@ -141,7 +139,6 @@ public class ClockActivity extends AppCompatActivity {
 
         @Override
         public void onClick(final View view) {
-            Timber.d(TAG_RADIOCLOCK, "Play clicked: " + view.getTag());
             buttonManager.setButtonClicked((Button) view);
             buttonManager.disableButtons();
             if (mMediaPlayer != null) {
@@ -167,7 +164,6 @@ public class ClockActivity extends AppCompatActivity {
 
         @Override
         public void onClick(final View view) {
-            Timber.d(TAG_RADIOCLOCK, "night mode clicked ");
             ((SettingsManager) preferenceChangeListener).toggleNightMode();
         }
     };
@@ -178,16 +174,19 @@ public class ClockActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Timber.d(TAG_STATE, "onCreate");
+        //Timber.d(TAG_STATE, "onCreate");
         //SOME INITIALIZATIONS
         //Initialize the preferences_buttons
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
 
+        /*
+        LEAVE THIS HERE, SO IF WE ENABLE TIMBER FOR DEBUGGING, WE JUST UNCOMMENT
+         */
         //Set up Timber
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
+        //if (BuildConfig.DEBUG) {
+        //    Timber.plant(new Timber.DebugTree());
+        //}
         mVisible = true;
         mControlsView = findViewById(R.id.mainLayout);
         mContentView = findViewById(R.id.fullscreen_content);
@@ -235,7 +234,7 @@ public class ClockActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        Timber.d(TAG_STATE, "onPostCreate");
+        //Timber.d(TAG_STATE, "onPostCreate");
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
@@ -244,35 +243,33 @@ public class ClockActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        Timber.d(TAG_STATE, "onStart");
+        //Timber.d(TAG_STATE, "onStart");
         super.onStart();
         //semaphore = true;
         if (!clockUpdater.getThreadHandler().hasMessages(0)) {
             clockUpdater.getThreadHandler().sendEmptyMessage(0);
         }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Timber.d(TAG_STATE, "onResume");
+        //Timber.d(TAG_STATE, "onResume");
         IntentFilter filter = new IntentFilter("alarmReceiver");
         this.registerReceiver(this.alarmManager, filter);
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(preferenceChangeListener);
-        IntentFilter alarmFilter = new IntentFilter("alarmManager");
-        this.registerReceiver(this.alarmManager, alarmFilter);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Timber.d(TAG_STATE, "onPause");
-        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
+        //Timber.d(TAG_STATE, "onPause");
     }
 
     @Override
     protected void onStop() {
-        Timber.d(TAG_STATE, "onStop");
+        //Timber.d(TAG_STATE, "onStop");
         super.onStop();
         clockUpdater.setSemaphore(false);
         clockUpdater.getThreadHandler().removeMessages(0);
@@ -281,7 +278,7 @@ public class ClockActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Timber.d(TAG_STATE, "onDestroy");
+        //Timber.d(TAG_STATE, "onDestroy");
         resetMediaPlayer();
         if (clockUpdater != null && !clockUpdater.isInterrupted()) {
             clockUpdater.interrupt();
@@ -292,14 +289,15 @@ public class ClockActivity extends AppCompatActivity {
         try {
             this.unregisterReceiver(this.alarmManager);
         } catch (IllegalArgumentException e) {
-            Timber.e("receiver already unregistered");
+            //move along
         }
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
         super.onDestroy();
     }
 
     @Override
     protected void onRestart() {
-        Timber.d(TAG_STATE, "onRestart");
+        //Timber.d(TAG_STATE, "onRestart");
         super.onRestart();
         if (mMediaPlayer == null) {
             initMediaPlayer();
@@ -319,7 +317,6 @@ public class ClockActivity extends AppCompatActivity {
                 TimePickerDialog timePicker = new TimePickerDialog(view.getContext(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hh, int mm) {
-                        Timber.d("Setting alarm to %d: %d", hh, mm);
                         h = hh;
                         m = mm;
                         alarmManager.setAlarm(hh, mm);
@@ -444,7 +441,6 @@ public class ClockActivity extends AppCompatActivity {
         url = mUrls.get(index);
         buttonManager.resetButtons();
         Toast.makeText(ClockActivity.this, "Connecting to " + url, Toast.LENGTH_SHORT).show();
-        Timber.d(TAG_RADIOCLOCK, "url " + url);
         if (url != null) {
             mMediaPlayer.setDataSource(Uri.parse(url));
         } else {//Something went wrong, resetting
@@ -473,14 +469,12 @@ public class ClockActivity extends AppCompatActivity {
     private class CustomOnPreparedListener implements OnPreparedListener {
         @Override
         public void onPrepared() {
-            Timber.d(TAG_RADIOCLOCK, "Attempting to start mediaplayer ");
             mMediaPlayer.start();
 
             buttonManager.lightButton();
             mPlayingStreamNo = buttonManager.getButtonClicked().getId();
             mPlayingStreamTag = buttonManager.getButtonClicked().getTag().toString();
             buttonManager.enableButtons();
-            Timber.d(TAG_RADIOCLOCK, "tag: " + mPlayingStreamTag);
             //default url do not show, b/c they are not present in prefs at first
             String defaultKey = mPlayingStreamTag.replace("setting.key.stream", "");
             int index = Integer.parseInt(defaultKey) - 1;
@@ -494,7 +488,6 @@ public class ClockActivity extends AppCompatActivity {
         @Override
         public boolean onError(Exception e) {
             Toast.makeText(ClockActivity.this, "Error playing stream", Toast.LENGTH_SHORT).show();
-            Timber.e("Error playing stream: %s", e.getMessage());
             resetMediaPlayer();
             initMediaPlayer();
             buttonManager.resetButtons();
@@ -522,25 +515,21 @@ public class ClockActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.buttons:
-                Timber.d(TAG_RADIOCLOCK, "Settings clicked");
                 Intent intent = new Intent();
                 intent.setClassName(this, "ro.antiprotv.radioclock.ConfigureButtonsActivity");
                 startActivity(intent);
                 return true;
             case R.id.settings:
-                Timber.d(TAG_RADIOCLOCK, "Settings clicked");
                 Intent settings = new Intent();
                 settings.setClassName(this, "ro.antiprotv.radioclock.SettingsActivity");
                 startActivity(settings);
                 return true;
             case R.id.night:
-                Timber.d(TAG_RADIOCLOCK, "Settings clicked");
                 Intent night = new Intent();
                 night.setClassName(this, "ro.antiprotv.radioclock.NightProfileActivity");
                 startActivity(night);
                 return true;
             case R.id.about:
-                Timber.d(TAG_RADIOCLOCK, "about clicked");
                 Intent about = new Intent();
                 about.setClassName(this, "ro.antiprotv.radioclock.AboutActivity");
                 startActivity(about);

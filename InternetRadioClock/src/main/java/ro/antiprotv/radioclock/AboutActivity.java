@@ -15,8 +15,6 @@ import android.widget.TextView;
 
 import java.util.Objects;
 
-import timber.log.Timber;
-
 /**
  * Created by ciuc on 7/19/16.
  */
@@ -24,10 +22,6 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
-        Timber.d("AboutActivity | State: %s", "onCreate");
         setContentView(R.layout.activity_about);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -41,12 +35,6 @@ public class AboutActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Timber.d("AboutActivity | State: %s", "onStart");
     }
 
     @Override

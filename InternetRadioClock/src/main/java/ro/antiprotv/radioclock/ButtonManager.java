@@ -10,8 +10,6 @@ import android.widget.Button;
 import java.util.Arrays;
 import java.util.List;
 
-import timber.log.Timber;
-
 class ButtonManager {
     private final Resources resources;
     private List<Button> buttons;
@@ -143,7 +141,6 @@ class ButtonManager {
 
     void lightButton() {
         resetButtons();
-        Timber.d(ClockActivity.TAG_RADIOCLOCK, mButtonClicked);
         mButtonClicked.setTextColor(resources.getColor(R.color.color_clock));
         GradientDrawable buttonShape = (GradientDrawable) mButtonClicked.getBackground();
         buttonShape.setStroke(1, resources.getColor(R.color.color_clock));

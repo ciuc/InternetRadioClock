@@ -25,9 +25,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
-import timber.log.Timber;
 
 public class StreamFinderActivity extends AppCompatActivity {
     private List<Stream> streams;
@@ -81,7 +79,6 @@ public class StreamFinderActivity extends AppCompatActivity {
 
     void fillInStreams(JSONArray jsonStations) {
         if (jsonStations != null) {
-            Timber.d("response has: %d stations", jsonStations.length());
             streams.clear();
             for (int i = 0; i < jsonStations.length(); i++) {
                 try {
@@ -90,7 +87,7 @@ public class StreamFinderActivity extends AppCompatActivity {
                     streams.add(new Stream(station.getString("name").trim(), station.getString("url").trim(), station.getString("country").trim(), station.getString("tags").trim(), station.getString("language")));
                 } catch (JSONException e) {
                     //TODO:HANDLE THIS!
-                    e.printStackTrace();
+                    //e.printStackTrace();
                 }
             }
             adapter.notifyDataSetChanged();
