@@ -54,7 +54,7 @@ public class StreamFinderActivity extends AppCompatActivity {
         findStreamButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    getStreams();
+                getStreams();
             }
         });
         final ImageButton helpButton = findViewById(R.id.streamFinder_help);
@@ -62,23 +62,7 @@ public class StreamFinderActivity extends AppCompatActivity {
 
     }
 
-    private class OnHelpClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(view.getContext());
-            dialogBuilder.setTitle("About the StreamFinder");
-            dialogBuilder.setView(LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_streamfinder_help, null));
-            dialogBuilder.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            dialogBuilder.show();
-        }
-    }
-
-    private void getStreams (){
+    private void getStreams() {
         HttpRequestManager requestManager = new HttpRequestManager(this);
         Toast.makeText(this, "Retrieving radios. This might take a while...", Toast.LENGTH_SHORT).show();
         Spinner countrySpinner = findViewById(R.id.streamFinder_dropdown_country);
@@ -94,6 +78,7 @@ public class StreamFinderActivity extends AppCompatActivity {
         String tags = tagsSpinner.getSelectedItem().toString();
         requestManager.getStations(country, name, language, tags);
     }
+
     protected void fillInStreams(JSONArray jsonStations) {
         if (jsonStations != null) {
             Timber.d("response has: %d stations", jsonStations.length());
@@ -151,11 +136,27 @@ public class StreamFinderActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id== android.R.id.home ){
+        if (id == android.R.id.home) {
             onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private class OnHelpClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(view.getContext());
+            dialogBuilder.setTitle("About the StreamFinder");
+            dialogBuilder.setView(LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_streamfinder_help, null));
+            dialogBuilder.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            dialogBuilder.show();
+        }
     }
 
 }

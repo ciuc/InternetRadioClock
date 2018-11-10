@@ -129,6 +129,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     protected void cancelSnooze() {
         snoozeButton.setVisibility(View.GONE);
     }
+
     protected void playDefaultAlarmOnStreamError() {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         player = MediaPlayer.create(clockActivity, notification);

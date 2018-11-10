@@ -4,30 +4,28 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.GradientDrawable;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.prefs.Preferences;
 
-import ro.antiprotv.radioclock.ClockActivity;
-import ro.antiprotv.radioclock.R;
 import timber.log.Timber;
 
 public class ButtonManager {
+    final Resources resources;
+    List<Button> buttons;
+    List<Integer> settingKeys;
+    List<Integer> defaultNames;
     private Context context;
     private View view;
     private SharedPreferences prefs;
     private View.OnTouchListener onTouchListener;
     private View.OnClickListener playListener;
-    final Resources resources;
-    List<Button> buttons;
-    List<Integer> settingKeys;
-    List<Integer> defaultNames;
-    protected ButtonManager(Context ctx, View view, SharedPreferences prefs,View.OnTouchListener onTouchListener, View.OnClickListener playListener) {
+    //the button we have clicked on
+    private Button mButtonClicked;
+
+    protected ButtonManager(Context ctx, View view, SharedPreferences prefs, View.OnTouchListener onTouchListener, View.OnClickListener playListener) {
         this.context = ctx;
         this.view = view;
         this.prefs = prefs;
@@ -36,7 +34,7 @@ public class ButtonManager {
         resources = context.getResources();
     }
 
-    protected List<Button> initializeButtons(List<String> mUrls){
+    protected List<Button> initializeButtons(List<String> mUrls) {
         Button stream1 = (Button) view.findViewById(R.id.stream1);
         Button stream2 = (Button) view.findViewById(R.id.stream2);
         Button stream3 = (Button) view.findViewById(R.id.stream3);
@@ -81,19 +79,17 @@ public class ButtonManager {
 
     protected void hideUnhideButtons(List<String> urls) {
         for (int i = 0; i < buttons.size(); i++) {
-                Button b = buttons.get(i);
-                String url = urls.get(i);
-                if (b.getVisibility() == View.GONE && !url.isEmpty()) {
-                    b.setVisibility(View.VISIBLE);
-                } else if (b.getVisibility() == View.VISIBLE && url.isEmpty()) {
-                    b.setVisibility(View.GONE);
-                }
+            Button b = buttons.get(i);
+            String url = urls.get(i);
+            if (b.getVisibility() == View.GONE && !url.isEmpty()) {
+                b.setVisibility(View.VISIBLE);
+            } else if (b.getVisibility() == View.VISIBLE && url.isEmpty()) {
+                b.setVisibility(View.GONE);
+            }
 
         }
     }
 
-    //the button we have clicked on
-    private Button mButtonClicked;
     public Button getButtonClicked() {
         return mButtonClicked;
     }
@@ -102,14 +98,15 @@ public class ButtonManager {
         this.mButtonClicked = mButtonClicked;
     }
 
-    protected void setText(int index, SharedPreferences newPrefs){
+    protected void setText(int index, SharedPreferences newPrefs) {
         //prefs.getString(getResources().getString(R.string.setting_key_label4), getResources().getString(R.string.button_name_stream4)
         buttons.get(index).setText(newPrefs.getString(resources.getString(settingKeys.get(index)), resources.getString(defaultNames.get(index))));
         this.prefs = newPrefs;
     }
+
     /**
-     *  Set disabled to all buttons
-     *  (cycle through buttons and .setEnabled false)
+     * Set disabled to all buttons
+     * (cycle through buttons and .setEnabled false)
      */
     protected void disableButtons() {
         for (Button button : buttons) {
@@ -118,8 +115,8 @@ public class ButtonManager {
     }
 
     /**
-     *  Set enabled to all buttons
-     *  (cycle through buttons and .setEnabled)
+     * Set enabled to all buttons
+     * (cycle through buttons and .setEnabled)
      */
     protected void enableButtons() {
         for (Button button : buttons) {

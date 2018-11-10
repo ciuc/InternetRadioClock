@@ -13,24 +13,25 @@ import android.view.MenuItem;
  * Created by ciuc on 7/17/16.
  */
 public class ConfigureButtonsActivity extends AppCompatActivity {
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
 
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_configure_buttons);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_configure_buttons);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.configure_buttons_content, new ConfigureButtonsFragment())
-                    .commit();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.configure_buttons_content, new ConfigureButtonsFragment())
+                .commit();
 
-        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id== android.R.id.home ){
+        if (id == android.R.id.home) {
             onBackPressed();
             return true;
         }

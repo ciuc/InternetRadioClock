@@ -11,7 +11,6 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 
-import ro.antiprotv.radioclock.StreamFinderActivity;
 import timber.log.Timber;
 
 public class HttpRequestManager {
@@ -35,7 +34,8 @@ public class HttpRequestManager {
         }
         if (!tags.isEmpty()) {
             requestParams.append("&tags=" + Uri.encode(tags));
-        };
+        }
+        ;
         Timber.d("URL: %s", requestParams.toString());
         ResponseListener responseListener = new ResponseListener(context);
         JsonArrayRequest request = new JsonArrayRequest(requestParams.toString(),
@@ -50,11 +50,11 @@ public class HttpRequestManager {
 
                 switch (statusCode) {
                     case 404:
-                    Toast.makeText(context, String.format("No radios matching the criteria! Please try again. ", statusCode), Toast.LENGTH_LONG).show();
-                    break;
+                        Toast.makeText(context, String.format("No radios matching the criteria! Please try again. ", statusCode), Toast.LENGTH_LONG).show();
+                        break;
                     case 500:
-                    Toast.makeText(context, String.format("Something went wrong while retrieving list. Please try again later. (error %d) ", statusCode), Toast.LENGTH_LONG).show();
-                    break;
+                        Toast.makeText(context, String.format("Something went wrong while retrieving list. Please try again later. (error %d) ", statusCode), Toast.LENGTH_LONG).show();
+                        break;
                 }
             }
         });

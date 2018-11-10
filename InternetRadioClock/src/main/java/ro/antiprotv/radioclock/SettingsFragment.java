@@ -5,15 +5,8 @@
  */
 package ro.antiprotv.radioclock;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
-
-import java.util.Map;
-
-import ro.antiprotv.radioclock.R;
 
 /**
  * Created by ciuc on 7/12/16.

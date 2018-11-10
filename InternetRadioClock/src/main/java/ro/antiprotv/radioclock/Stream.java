@@ -6,15 +6,6 @@ public class Stream {
     private String url;
     private String country;
     private String tags;
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
     private String language;
 
     public Stream(String name, String url, String country, String tags, String language) {
@@ -22,6 +13,14 @@ public class Stream {
         this.url = url;
         this.country = country;
         this.tags = tags;
+        this.language = language;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
         this.language = language;
     }
 

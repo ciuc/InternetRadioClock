@@ -16,6 +16,15 @@ import android.preference.PreferenceManager;
  */
 public class ConfigureButtonsFragment extends PreferenceFragment {
 
+    private final SharedPreferences.OnSharedPreferenceChangeListener mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+            Preference pref = findPreference(key);
+            if (pref != null) {
+                pref.setSummary(prefs.getString(key, ""));
+            }
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,14 +38,5 @@ public class ConfigureButtonsFragment extends PreferenceFragment {
             }
         }
     }
-
-    private final SharedPreferences.OnSharedPreferenceChangeListener mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-            Preference pref = findPreference(key);
-            if (pref != null) {
-                pref.setSummary(prefs.getString(key, ""));
-            }
-        }
-    };
 
 }

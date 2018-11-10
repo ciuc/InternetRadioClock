@@ -1,6 +1,5 @@
 package ro.antiprotv.radioclock;
 
-import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -13,13 +12,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import ro.antiprotv.radioclock.ClockActivity;
-import ro.antiprotv.radioclock.R;
 import timber.log.Timber;
 
 public class SleepManager {
     //initialize the sleep timers default list (pressing button will cycle through those)
-    private final List<Integer> timers = new ArrayList<>(Arrays.asList(15,20,30));
+    private final List<Integer> timers = new ArrayList<>(Arrays.asList(15, 20, 30));
     private int sleepTimerIndex;
 
     private ExecutorService sleepExecutorService = Executors.newSingleThreadExecutor();
@@ -27,13 +24,6 @@ public class SleepManager {
     private List<String> mUrls;
     private ImageButton button;
     private TextView sleepTimerText;
-
-
-    protected SleepManager(ClockActivity context, List<String> mUrls) {
-        this.context = context;
-        this.mUrls = mUrls;
-    }
-
     protected final Button.OnClickListener sleepOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(final View view) {
@@ -47,7 +37,7 @@ public class SleepManager {
                 sleepExecutorService.shutdownNow();
                 button.setImageResource(R.drawable.sleep_timer_on_white_24dp);
                 Integer timer = timers.get(sleepTimerIndex);
-                sleepTimerText.setText(String.format(view.getResources().getString(R.string.text_sleep_timer),timer));
+                sleepTimerText.setText(String.format(view.getResources().getString(R.string.text_sleep_timer), timer));
                 sleepTimerIndex++;
                 //now start the thread
                 SleepRunner sleepRunner = new SleepRunner(timer);
@@ -58,6 +48,11 @@ public class SleepManager {
         }
     };
 
+    protected SleepManager(ClockActivity context, List<String> mUrls) {
+        this.context = context;
+        this.mUrls = mUrls;
+    }
+
     private void resetSleepTimer() {
         sleepTimerText = context.findViewById(R.id.sleep_timer);
         button = context.findViewById(R.id.sleep);
@@ -65,12 +60,23 @@ public class SleepManager {
         button.setImageResource(R.drawable.sleep_timer_off_white_24dp);
         sleepTimerIndex = 0;
     }
+
+    public List<Integer> getTimers() {
+        return timers;
+    }
+
+    public ExecutorService getSleepExecutorService() {
+        return sleepExecutorService;
+    }
+
     private class SleepRunner implements Runnable {
         int timer;
+
         SleepRunner(int timer) {
             Timber.d(ClockActivity.TAG_RADIOCLOCK, "Starting thread with timer: " + timer);
             this.timer = timer;
         }
+
         @Override
         public void run() {
             int seconds = timer * 60;
@@ -94,14 +100,6 @@ public class SleepManager {
                 Timber.d(ClockActivity.TAG_RADIOCLOCK, "Sleep Thread interrupted ");
             }
         }
-    }
-
-
-    public List<Integer> getTimers() {
-        return timers;
-    }
-    public ExecutorService getSleepExecutorService() {
-        return sleepExecutorService;
     }
 
 }
