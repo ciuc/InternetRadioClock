@@ -108,6 +108,7 @@ public class ClockActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Timber.d(TAG_STATE, "onCreate");
         //SOME INITIALIZATIONS
         //Initialize the preferences_buttons
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -131,29 +132,92 @@ public class ClockActivity extends AppCompatActivity {
         digital7 = Typeface.createFromAsset(getAssets(), "fonts/digital-7.mono.ttf");
         mContentView.setTypeface(digital7);
 
+        initializeUrls();
         buttonManager = new ButtonManager(getApplicationContext(), mControlsView,prefs,mDelayHideTouchListener, playOnClickListener);
+        buttonManager.initializeButtons(mUrls);
 
-        String clockSizeKey = getResources().getString(R.string.setting_key_clockSize);
+        displayDialogsOnOpen();
+
+
+/*        String clockSizeKey = getResources().getString(R.string.setting_key_clockSize);
         String clockSize = getResources().getString(R.string.setting_default_clockSize);
-        Timber.d(TAG_RADIOCLOCK, clockSizeKey);
-        Timber.d(TAG_RADIOCLOCK, clockSize);
-
         int size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
-
         mContentView.setTextSize(size);
         mContentView.setTextColor(Color.parseColor(prefs.getString(getResources().getString(R.string.setting_key_clockColor), getResources().getString(R.string.setting_default_clockColor))));
-
-        boolean displaySeconds = prefs.getBoolean(getResources().getString(R.string.setting_key_seconds), true);
+*/
+/*        boolean displaySeconds = prefs.getBoolean(getResources().getString(R.string.setting_key_seconds), true);
         if (!displaySeconds) {
             sdf = new SimpleDateFormat("HH:mm");
-        }
+        }*/
         //Thread - clock
-        boolean moveText = prefs.getBoolean(getResources().getString(R.string.setting_key_clockMove), true);
         //Thread for communicating with the ui handler
         //We start it here , and we sendMessage to the threadHandler in onStart (we might have a race and get threadHandler null if we try it here)
-        clockUpdater = new ClockUpdater(sdf, mContentView, moveText);
+        clockUpdater = new ClockUpdater(mContentView);
         clockUpdater.start();
 
+        boolean nightMode = prefs.getBoolean(ClockActivity.PREF_NIGHT_MODE, false);
+        preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater);
+        ((SettingsManager) preferenceChangeListener).applyProfile();
+
+        initializeSleepFunction();
+        initializeAlarmFunction();
+
+        //Initialize the player
+        if (mMediaPlayer == null) {
+            initMediaPlayer();
+        }
+        //preferences and profile
+
+        ImageButton nightModeButton = findViewById(R.id.night_mode_button);
+        nightModeButton.setOnClickListener(nightModeOnClickListener);
+        nightModeButton.setOnTouchListener(mDelayHideTouchListener);
+    }
+
+    private void initializeAlarmFunction() {
+        alarmManager = new RadioAlarmManager(this, buttonManager);
+        ImageButton alarmButton = (ImageButton) findViewById(R.id.alarm_icon);
+        alarmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TimePickerDialog timePicker = new TimePickerDialog(view.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hh, int mm) {
+                        Timber.d("Setting alarm to %d: %d", hh, mm);
+                        h = hh;
+                        m = mm;
+                        alarmManager.setAlarm(hh,mm);
+                    }
+                }, h, m , true);
+                timePicker.show();
+            }
+        });
+    }
+
+    private void initializeSleepFunction() {
+        //sleep timer
+        sleepManager = new SleepManager(this, mUrls);
+        Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
+        if (customTimer != 0) {
+            sleepManager.getTimers().add(0, customTimer);
+        }
+        //sleep buttons
+        ImageButton sleep = (ImageButton) findViewById(R.id.sleep);
+        sleep.setOnClickListener(sleepManager.sleepOnClickListener);
+        sleep.setOnTouchListener(mDelayHideTouchListener);
+    }
+
+    private void initializeUrls() {
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream4), getResources().getString(R.string.setting_default_stream4)));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream5), ""));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream6), ""));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream7), ""));
+        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream8), ""));
+    }
+
+    private void displayDialogsOnOpen() {
         if (prefs.getBoolean("FOURTH_TIME",true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Check out the \"About\" section to find out what you can do with this thing.")
@@ -173,67 +237,15 @@ public class ClockActivity extends AppCompatActivity {
                     "The text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen you are highly discouraged to do so.")
                     .setTitle("AMOLED WARNING")
                     .setIcon(R.drawable.ic_warning_black_24dp)
-            .setPositiveButton(R.string.dialog_button_ok_amoled, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    prefs.edit().putBoolean("AMOLED_WARN", false).apply();
-                }
-            });
+                    .setPositiveButton(R.string.dialog_button_ok_amoled, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            prefs.edit().putBoolean("AMOLED_WARN", false).apply();
+                        }
+                    });
             AlertDialog dialog = builder.create();
 
             dialog.show();
         }
-
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream1), getResources().getString(R.string.setting_default_stream1)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream2), getResources().getString(R.string.setting_default_stream2)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream3), getResources().getString(R.string.setting_default_stream3)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream4), getResources().getString(R.string.setting_default_stream4)));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream5), ""));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream6), ""));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream7), ""));
-        mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream8), ""));
-
-        buttonManager.initializeButtons(mUrls);
-
-        //sleep timer
-        sleepManager = new SleepManager(this, mUrls);
-        Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
-        if (customTimer != 0) {
-            sleepManager.getTimers().add(0, customTimer);
-        }
-        //sleep buttons
-        ImageButton sleep = (ImageButton) findViewById(R.id.sleep);
-        sleep.setOnClickListener(sleepManager.sleepOnClickListener);
-        sleep.setOnTouchListener(mDelayHideTouchListener);
-
-        alarmManager = new RadioAlarmManager(this, buttonManager);
-        ImageButton alarmButton = (ImageButton) findViewById(R.id.alarm_icon);
-        alarmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TimePickerDialog timePicker = new TimePickerDialog(view.getContext(), new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int hh, int mm) {
-                        Timber.d("Setting alarm to %d: %d", hh, mm);
-                        h = hh;
-                        m = mm;
-                        alarmManager.setAlarm(hh,mm);
-                    }
-                }, h, m , true);
-                timePicker.show();
-
-
-            }
-        });
-
-        //Initialize the player
-        if (mMediaPlayer == null) {
-            initMediaPlayer();
-        }
-        //preferences and profile
-        preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater);
-        ImageButton nightModeButton = findViewById(R.id.night_mode_button);
-        nightModeButton.setOnClickListener(nightModeOnClickListener);
-        nightModeButton.setOnTouchListener(mDelayHideTouchListener);
     }
 
     @Override
@@ -349,9 +361,8 @@ public class ClockActivity extends AppCompatActivity {
 
         @Override
         public void onClick(final View view) {
-            Timber.d(TAG_RADIOCLOCK, "night mode: " + view.getTag());
-            boolean nightMode = prefs.getBoolean(PREF_NIGHT_MODE, false);
-            ((SettingsManager) preferenceChangeListener).toggleNightMode(nightMode);
+            Timber.d(TAG_RADIOCLOCK, "night mode clicked ");
+            ((SettingsManager) preferenceChangeListener).toggleNightMode();
         }
     };
 

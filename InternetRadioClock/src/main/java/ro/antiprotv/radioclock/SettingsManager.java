@@ -121,9 +121,9 @@ public class SettingsManager implements SharedPreferences.OnSharedPreferenceChan
 
         if (nightMode) {
             keyClockColor = R.string.setting_key_clockColor_night;
-            keyClockSize = R.string.setting_key_clockSize;
-            keyClockSeconds = R.string.setting_key_seconds;
-            keyClockMove = R.string.setting_key_clockMove;
+            keyClockSize = R.string.setting_key_clockSize_night;
+            keyClockSeconds = R.string.setting_key_seconds_night;
+            keyClockMove = R.string.setting_key_clockMove_night;
         }
 
         if (key.equals(clockActivity.getResources().getString(keyClockColor))) {
@@ -153,29 +153,22 @@ public class SettingsManager implements SharedPreferences.OnSharedPreferenceChan
 
     }
 
-    protected void toggleNightMode(boolean nightMode) {
-        ImageButton nightButton = clockActivity.findViewById(R.id.night_mode_button);
+    protected void toggleNightMode() {
+        boolean nightMode = prefs.getBoolean(PREF_NIGHT_MODE, false);
         Timber.d("Current nightmode is %b", nightMode);
-        nightMode = !nightMode;
-        if (nightMode) {
-            GradientDrawable buttonShape = (GradientDrawable) nightButton.getBackground();
-            Timber.d("SET COLOR STROKE");
-            buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.color_clock));
-        } else {
-            GradientDrawable buttonShape = (GradientDrawable) nightButton.getBackground();
-            buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.button_color));
-        }
         //this will trigger the listener!!
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
-        Timber.d("setting nightmode to %b", nightMode);
-        prefs.edit().putBoolean(ClockActivity.PREF_NIGHT_MODE, nightMode).apply();
-        applyProfile(prefs.getBoolean(PREF_NIGHT_MODE, false));
-        //clockActivity.invalidateOptionsMenu();
+        Timber.d("setting nightmode to %b", !nightMode);
+        prefs.edit().putBoolean(ClockActivity.PREF_NIGHT_MODE, !nightMode).apply();
+        applyProfile();
 
 
     }
 
-    protected void applyProfile(boolean nightMode) {
+    protected void applyProfile() {
+        boolean nightMode = prefs.getBoolean(PREF_NIGHT_MODE, false);
+        Timber.d("Applying profile : %s", nightMode);
+        ImageButton nightButton = clockActivity.findViewById(R.id.night_mode_button);
         if (nightMode) {
             //Clock color
             String colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor_night), clockActivity.getResources().getString(R.string.setting_default_clockColor));
@@ -196,6 +189,10 @@ public class SettingsManager implements SharedPreferences.OnSharedPreferenceChan
             //clock move
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clockMove_night), true));
             clockActivity.getmContentView().setGravity(Gravity.CENTER);
+            GradientDrawable buttonShape = (GradientDrawable) nightButton.getBackground();
+            buttonShape.mutate();
+            Timber.d("SET COLOR STROKE ON");
+            buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.color_clock));
         } else {
             //Clock color
             String colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor), clockActivity.getResources().getString(R.string.setting_default_clockColor));
@@ -216,6 +213,10 @@ public class SettingsManager implements SharedPreferences.OnSharedPreferenceChan
             //clock move
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clockMove), true));
             clockActivity.getmContentView().setGravity(Gravity.CENTER);
+            GradientDrawable buttonShape = (GradientDrawable) nightButton.getBackground();
+            Timber.d("SET COLOR STROKE OFF");
+            buttonShape.mutate();
+            buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.button_color));
         }
 
     }

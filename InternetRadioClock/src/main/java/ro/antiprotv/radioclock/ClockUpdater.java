@@ -17,49 +17,25 @@ import timber.log.Timber;
  * Thread to manage the clock (update the clock and move it)
  */
 public class ClockUpdater extends Thread{
-    private Thread clockUpdater;
-
-    public void setSemaphore(boolean semaphore) {
-        this.semaphore = semaphore;
-    }
-
     private boolean semaphore = true;
-
     public Handler getThreadHandler() {
         return threadHandler;
-    }
-
-    public void setThreadHandler(Handler threadHandler) {
-        this.threadHandler = threadHandler;
     }
 
     //Threading stuff
     private Handler threadHandler = null;
     private TextView mContentView;
 
-    public SimpleDateFormat getSdf() {
-        return sdf;
-    }
-
-    public void setSdf(SimpleDateFormat sdf) {
-        this.sdf = sdf;
-    }
-
     private SimpleDateFormat sdf;
     private static final int DO_NOT_MOVE_TEXT = 1;
     private static final int MOVE_TEXT = 2;
-
-    public void setMoveText(boolean moveText) {
-        this.moveText = moveText;
-    }
-
     private boolean moveText = true;
     private static final List<Integer> GRAVITIES = Arrays.asList(Gravity.TOP, Gravity.BOTTOM, Gravity.LEFT, Gravity.RIGHT, Gravity.CENTER, Gravity.BOTTOM | Gravity.RIGHT);
 
-    ClockUpdater(SimpleDateFormat sdf, TextView tv, boolean moveText){
-        this.sdf = sdf;
+    ClockUpdater(TextView tv){
+        //this.sdf = sdf;
         this.mContentView = tv;
-        this.moveText = moveText;
+        //this.moveText = moveText;
     }
     //We create this ui handler to update the clock
     //We need this in order to not block the UI
@@ -108,5 +84,19 @@ public class ClockUpdater extends Thread{
 
         }
 
-
+    public void setSemaphore(boolean semaphore) {
+        this.semaphore = semaphore;
+    }
+    public void setThreadHandler(Handler threadHandler) {
+        this.threadHandler = threadHandler;
+    }
+    public SimpleDateFormat getSdf() {
+        return sdf;
+    }
+    public void setSdf(SimpleDateFormat sdf) {
+        this.sdf = sdf;
+    }
+    public void setMoveText(boolean moveText) {
+        this.moveText = moveText;
+    }
 }
