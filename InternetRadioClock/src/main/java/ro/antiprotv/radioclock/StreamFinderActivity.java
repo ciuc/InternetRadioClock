@@ -1,5 +1,6 @@
 package ro.antiprotv.radioclock;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -57,6 +59,9 @@ public class StreamFinderActivity extends AppCompatActivity {
         });
         final ImageButton helpButton = findViewById(R.id.streamFinder_help);
         helpButton.setOnClickListener(new OnHelpClickListener());
+
+        final ImageButton hideKeyboard = findViewById(R.id.streamFinder_hidek);
+        hideKeyboard.setOnClickListener(new KeyboardHideOnClickListener(this));
 
     }
 
@@ -153,6 +158,26 @@ public class StreamFinderActivity extends AppCompatActivity {
                 }
             });
             dialogBuilder.show();
+        }
+    }
+
+    private class KeyboardHideOnClickListener implements View.OnClickListener{
+        StreamFinderActivity activity;
+        KeyboardHideOnClickListener(StreamFinderActivity activity) {
+            this.activity = activity;
+
+        }
+
+        @Override
+        public void onClick(View view) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            //Find the currently focused view, so we can grab the correct window token from it.
+            View currentFocus = activity.getCurrentFocus();
+            //If no view currently has focus, create a new one, just so we can grab a window token from it
+            if (currentFocus == null) {
+                currentFocus = new View(activity);
+            }
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
