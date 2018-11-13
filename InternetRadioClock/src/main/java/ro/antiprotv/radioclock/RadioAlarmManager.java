@@ -17,6 +17,10 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class RadioAlarmManager extends BroadcastReceiver {
 
@@ -32,6 +36,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     private final ClockActivity clockActivity;
     private final ButtonManager buttonManager;
     private MediaPlayer player;
+    ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     public RadioAlarmManager(ClockActivity context, ButtonManager buttonManager) {
         this.buttonManager = buttonManager;
@@ -97,8 +102,18 @@ public class RadioAlarmManager extends BroadcastReceiver {
     }
 
     private void hideSnoozeAndCancel() {
-        snoozeButton.setVisibility(View.GONE);
-        cancelButton.setVisibility(View.GONE);
+        //not sure how necessary is this here, but we seem to have a race condition
+        //in which the runnable started by the Executor (MedaPlayerCanceler)
+        //finishes before both actions are completed
+        //which makes no sense at the moment
+        clockActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                cancelButton.setVisibility(View.GONE);
+                snoozeButton.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     private void showSnoozeAndCancel() {
@@ -151,8 +166,8 @@ public class RadioAlarmManager extends BroadcastReceiver {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         player = MediaPlayer.create(clockActivity, notification);
         player.start();
-        Thread t = new MediaPlayerCanceller();
-        t.start();
+        executor.schedule(new MediaPlayerCanceller(), DEFAULT_ALARM_PLAY_TIME, TimeUnit.MINUTES);//PROD
+        //executor.schedule(new MediaPlayerCanceller(), 5, TimeUnit.SECONDS);//TEST
         clockActivity.setAlarmPlaying(false);
         showSnoozeAndCancel();
     }
@@ -182,13 +197,8 @@ public class RadioAlarmManager extends BroadcastReceiver {
         clockActivity.show();
     }
 
-    private class MediaPlayerCanceller extends Thread {
+    private class MediaPlayerCanceller implements Runnable {
         public void run() {
-            try {
-                Thread.sleep(DEFAULT_ALARM_PLAY_TIME * 1000);
-            } catch (Exception e) {
-                //TODO: have no idea what to do here!
-            }
             shutDownDefaultAlarm();
         }
     }
