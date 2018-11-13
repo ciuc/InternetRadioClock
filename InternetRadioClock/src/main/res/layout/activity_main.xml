@@ -64,7 +64,7 @@
             style="?metaButtonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/alarm_icon"
+            android:layout_toRightOf="@+id/alarm_time"
             android:layout_marginLeft="5dp"
             android:clickable="false"
             app:srcCompat="@drawable/ic_snooze_black_24dp"

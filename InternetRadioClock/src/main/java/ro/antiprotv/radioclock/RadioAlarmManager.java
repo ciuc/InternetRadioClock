@@ -30,8 +30,8 @@ public class RadioAlarmManager extends BroadcastReceiver {
     private final AlarmManager alarmMgr;
     private final PendingIntent alarmIntent;
     private final ClockActivity clockActivity;
-    private MediaPlayer player;
     private final ButtonManager buttonManager;
+    private MediaPlayer player;
 
     public RadioAlarmManager(ClockActivity context, ButtonManager buttonManager) {
         this.buttonManager = buttonManager;
@@ -44,6 +44,25 @@ public class RadioAlarmManager extends BroadcastReceiver {
         alarmOffButton = clockActivity.findViewById(R.id.alarm_icon_turn_off);
         cancelButton = clockActivity.findViewById(R.id.alarm_icon_cancel);
         snoozeButton = clockActivity.findViewById(R.id.alarm_icon_snooze);
+        alarmOffButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cancelAlarm();
+            }
+        });
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shutDownDefaultAlarm();
+                shutDownRadioAlarm();
+            }
+        });
+        snoozeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snooze();
+            }
+        });
     }
 
     public void setAlarm(int hour, int minute) {
@@ -74,28 +93,25 @@ public class RadioAlarmManager extends BroadcastReceiver {
         alarmText.setVisibility(View.VISIBLE);
         alarmButton.setImageResource(R.drawable.ic_alarm_on_black_24dp);
         alarmOffButton.setVisibility(View.VISIBLE);
-        alarmOffButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alarmMgr.cancel(alarmIntent);
-                Toast.makeText(clockActivity, R.string.text_alarm_canceled, Toast.LENGTH_SHORT).show();
-                clockActivity.setAlarmPlaying(false);
-                changeAlarmIconAndTextOnCancel();
-            }
-        });
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shutDownDefaultAlarm();
-            }
-        });
-        snoozeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                snooze();
-            }
-        });
+        hideSnoozeAndCancel();
+    }
+
+    private void hideSnoozeAndCancel() {
         snoozeButton.setVisibility(View.GONE);
+        cancelButton.setVisibility(View.GONE);
+    }
+
+    private void showSnoozeAndCancel() {
+        snoozeButton.setVisibility(View.VISIBLE);
+        cancelButton.setVisibility(View.VISIBLE);
+    }
+
+
+    private void cancelAlarm() {
+        alarmMgr.cancel(alarmIntent);
+        Toast.makeText(clockActivity, R.string.text_alarm_canceled, Toast.LENGTH_SHORT).show();
+        clockActivity.setAlarmPlaying(false);
+        changeAlarmIconAndTextOnCancel();
     }
 
     private void snooze() {
@@ -104,7 +120,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
         toast.show();
 
-        clockActivity.stopPlaying();
+        shutDownDefaultAlarm();
         Calendar now = Calendar.getInstance();
         now.setTimeInMillis(System.currentTimeMillis());
         //now.add(Calendar.SECOND, DEFAULT_SNOOZE);//FOR TESTING
@@ -112,15 +128,23 @@ public class RadioAlarmManager extends BroadcastReceiver {
         setAlarm(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
     }
 
+    private void shutDownRadioAlarm() {
+        clockActivity.stopPlaying();
+        hideSnoozeAndCancel();
+    }
+
+    /**
+     * restores the alarm view
+     * to its original state
+     */
     void changeAlarmIconAndTextOnCancel() {
         alarmButton.setImageResource(R.drawable.ic_alarm_add_black_24dp);
         alarmText.setVisibility(View.GONE);
         alarmOffButton.setVisibility(View.GONE);
-
     }
 
     void cancelSnooze() {
-        snoozeButton.setVisibility(View.GONE);
+        hideSnoozeAndCancel();
     }
 
     void playDefaultAlarmOnStreamError() {
@@ -130,16 +154,14 @@ public class RadioAlarmManager extends BroadcastReceiver {
         Thread t = new MediaPlayerCanceller();
         t.start();
         clockActivity.setAlarmPlaying(false);
-        snoozeButton.setVisibility(View.VISIBLE);
-        cancelButton.setVisibility(View.VISIBLE);
+        showSnoozeAndCancel();
     }
 
     void shutDownDefaultAlarm() {
         if (player != null && player.isPlaying()) {
             player.stop();
+            hideSnoozeAndCancel();
         }
-        cancelButton.setVisibility(View.GONE);
-        snoozeButton.setVisibility(View.GONE);
     }
 
     @Override
@@ -154,7 +176,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         }
         Toast.makeText(context, context.getString(R.string.text_alarm_playing, memory), Toast.LENGTH_SHORT).show();
         changeAlarmIconAndTextOnCancel();
-        snoozeButton.setVisibility(View.VISIBLE);
+        showSnoozeAndCancel();
         clockActivity.setAlarmPlaying(true);
         clockActivity.play(memory);
         clockActivity.show();
@@ -162,16 +184,10 @@ public class RadioAlarmManager extends BroadcastReceiver {
 
     private class MediaPlayerCanceller extends Thread {
         public void run() {
-            int count = 0;
-            while (count < DEFAULT_ALARM_PLAY_TIME) {
-                {
-                    try {
-                        Thread.sleep(1000);
-                        count++;
-                    } catch (Exception e) {
-                        //TODO: have no idea what to do here!
-                    }
-                }
+            try {
+                Thread.sleep(DEFAULT_ALARM_PLAY_TIME * 1000);
+            } catch (Exception e) {
+                //TODO: have no idea what to do here!
             }
             shutDownDefaultAlarm();
         }
