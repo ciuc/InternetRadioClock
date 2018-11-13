@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -90,7 +91,11 @@ public class RadioAlarmManager extends BroadcastReceiver {
         }
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
-        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), alarmIntent);
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            alarmMgr.setExact(AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), alarmIntent);
+        } else {
+            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), alarmIntent);
+        }
         //TESTING: enable this line to have the alarm in 5 secs;
         //alarmMgr.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
         Toast.makeText(clockActivity, String.format("Alarm set for %s at %s", (tomorrow) ? clockActivity.getString(R.string.text_tomorrow) : clockActivity.getString(R.string.today), sdf.format(next.getTime())), Toast.LENGTH_SHORT).show();
