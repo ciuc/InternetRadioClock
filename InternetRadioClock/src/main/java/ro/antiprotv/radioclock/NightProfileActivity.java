@@ -27,7 +27,9 @@ public class NightProfileActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction()
                 .replace(R.id.night_profile_content, new NightProfileFragment())
                 .commit();
-
+        getFragmentManager().beginTransaction()
+                .replace(R.id.night_profile_alarm_content, new NightProfileAlarmFragment())
+                .commit();
     }
 
     @Override

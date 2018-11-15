@@ -48,6 +48,7 @@
     <string name="setting.key.clockMove.night">setting.key.clockMove.night</string>
     <string name="setting.key.clockColor.night">setting.key.clockColor.night</string>
     <string name="setting.key.clockSize.night">setting.key.clockSize.night</string>
+    <string name="setting.key.night.alarm.enable">setting.key.night.alarm.enable</string>
 
     <string name="setting.name.stream1">Memory 1</string>
     <string name="setting.name.stream2">Memory 2</string>
@@ -64,6 +65,8 @@
     <string name="setting.summary.seconds">Disable if you want the clock to not display seconds.\n(Might require restart!)</string>
     <string name="setting.name.clockMove">Enable clock movement on the screen (screensaver-like)</string>
     <string name="setting.summary.clockMove">If you have an AMOLED display DO NOT TURN THIS FEATURE OFF!</string>
+    <string name="setting.name.night.alarm.enable">Enable Alarm</string>
+
 
     <string name="setting.name.label1">Button 1 Label</string>
     <string name="setting.name.label2">Button 2 Label</string>
@@ -455,5 +458,8 @@ in this section you can set some neat stuff:
     <string name="text_alarm_set_for">Alarm set for %1$s</string>
     <string name="menu_night_profile">Night Profile</string>
     <string name="title_night_profile">Night Profile</string>
+    <string name="setting.key.alarm.night.time">setting.key.alarm.night.time</string>
+    <string name="setting.key.night.alarm.hour">setting.key.night.alarm.hour</string>
+    <string name="setting.key.night.alarm.minute">setting.key.night.alarm.minute</string>
 
 </resources>
