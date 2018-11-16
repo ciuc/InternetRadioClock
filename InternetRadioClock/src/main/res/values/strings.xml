@@ -17,7 +17,7 @@
     <string name="settings.menu.buttons">Configure Buttons</string>
     <string name="settings.menu.settings">Settings</string>
     <string name="settings.menu.about">About</string>
-    <string name="settings.menu.cheers">Cheers, mate!</string>
+    <string name="settings.menu.cheers">Cheers!</string>
     <string name="settings.menu.exit">Exit</string>
     <string name="settings.menu.streamFinder">Stream Finder (Beta)</string>
 
@@ -449,13 +449,13 @@ in this section you can set some neat stuff:
     </string>
 
     <string name="cheers.text"><![CDATA[
-<h1>Beer for the Masses!</h1>
+<p>First of all, thanks for downloading and using the Internet Radio Clock.</p>
 <p>I\'ve created this app in my spare time, just for fun, but also trying to keep a good overall quality, and constantly improving it.</p>
-<p>This app is and it will always remain free and <b>with no ads</b>. All of its features will always be included with <b>no in-app purchases</b>.</p>
-<p>If you like it, drink a beer for me. If you\'d also like me to drink a beer for you, my PayPal handle is:</p>
+<p>This app is and will always remain <b>free</b> and <b>with no ads</b>. All of its features will always be included with <b>no in-app purchases</b>.</p>
+<p>If you like it, drink a beer for me. If you\'d also like me to drink a beer for you, my <b>PayPal</b> handle is:</p>
 <p><b>ciuc143@yahoo.com</b></p>
 
-<p>Cheers, mate!</p>
+<p>Cheers!</p>
 
 ]]>
     </string>

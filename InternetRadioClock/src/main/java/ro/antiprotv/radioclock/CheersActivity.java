@@ -4,10 +4,7 @@
  */
 package ro.antiprotv.radioclock;
 
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.text.emoji.EmojiCompat;
-import android.support.text.emoji.FontRequestEmojiCompatConfig;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
