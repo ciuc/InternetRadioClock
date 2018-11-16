@@ -50,6 +50,12 @@
             android:screenOrientation="landscape">
         </activity>
         <activity
+            android:name=".CheersActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Cheers"
+            android:screenOrientation="landscape">
+        </activity>
+        <activity
             android:name=".StreamFinderActivity"
             android:label="@string/title_activity_stream_finder"
             android:parentActivityName=".ClockActivity"

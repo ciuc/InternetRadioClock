@@ -17,6 +17,7 @@
     <string name="settings.menu.buttons">Configure Buttons</string>
     <string name="settings.menu.settings">Settings</string>
     <string name="settings.menu.about">About</string>
+    <string name="settings.menu.cheers">Cheers, mate!</string>
     <string name="settings.menu.exit">Exit</string>
     <string name="settings.menu.streamFinder">Stream Finder (Beta)</string>
 
@@ -446,6 +447,19 @@ in this section you can set some neat stuff:
 <p>The code is opensource and it can be found on github: https://github.com/ciuc/InternetRadioClock</p>
 ]]>
     </string>
+
+    <string name="cheers.text"><![CDATA[
+<h1>Beer for the Masses!</h1>
+<p>I\'ve created this app in my spare time, just for fun, but also trying to keep a good overall quality, and constantly improving it.</p>
+<p>This app is and it will always remain free and <b>with no ads</b>. All of its features will always be included with <b>no in-app purchases</b>.</p>
+<p>If you like it, drink a beer for me. If you\'d also like me to drink a beer for you, my PayPal handle is:</p>
+<p><b>ciuc143@yahoo.com</b></p>
+
+<p>Cheers, mate!</p>
+
+]]>
+    </string>
+
     <string name="title_activity_stream_finder">StreamFinder</string>
     <string name="snooze_toast_text">Snooze for %1$d minutes.</string>
     <string name="text_alarm_canceled">Alarm canceled!</string>

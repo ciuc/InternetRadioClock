@@ -5,21 +5,27 @@
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/settings.menu.buttons"
         app:showAsAction="never"/>
-    <item android:id="@+id/settings"
-        android:icon="@android:drawable/ic_menu_preferences"
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_settings_black_24dp"
         android:title="@string/settings.menu.settings"
-        app:showAsAction="never"/>
+        app:showAsAction="always" />
     <item android:id="@+id/night"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/menu_night_profile"
         app:showAsAction="never"/>
-    <item android:id="@+id/streamFinder"
+    <item
+        android:id="@+id/streamFinder"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/settings.menu.streamFinder"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
     <item android:id="@+id/about"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/settings.menu.about"
+        app:showAsAction="never"/>
+    <item android:id="@+id/cheers"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/settings.menu.cheers"
         app:showAsAction="never"/>
     <item android:id="@+id/exit"
         android:icon="@android:drawable/ic_menu_preferences"

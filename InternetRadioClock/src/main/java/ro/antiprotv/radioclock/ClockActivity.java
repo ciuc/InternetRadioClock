@@ -533,6 +533,11 @@ public class ClockActivity extends AppCompatActivity {
                 about.setClassName(this, "ro.antiprotv.radioclock.AboutActivity");
                 startActivity(about);
                 return true;
+            case R.id.cheers:
+                Intent cheers = new Intent();
+                cheers.setClassName(this, "ro.antiprotv.radioclock.CheersActivity");
+                startActivity(cheers);
+                return true;
             case R.id.streamFinder:
                 Intent streamFinder = new Intent();
                 streamFinder.setClassName(this, "ro.antiprotv.radioclock.StreamFinderActivity");
