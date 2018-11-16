@@ -38,6 +38,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     private final ButtonManager buttonManager;
     private MediaPlayer player;
     ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    protected boolean isScheduled;
 
     public RadioAlarmManager(ClockActivity context, ButtonManager buttonManager) {
         this.buttonManager = buttonManager;
@@ -104,6 +105,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         alarmButton.setImageResource(R.drawable.ic_alarm_on_black_24dp);
         alarmOffButton.setVisibility(View.VISIBLE);
         hideSnoozeAndCancel();
+        isScheduled = true;
     }
 
     private void hideSnoozeAndCancel() {
@@ -127,11 +129,12 @@ public class RadioAlarmManager extends BroadcastReceiver {
     }
 
 
-    private void cancelAlarm() {
+    protected void cancelAlarm() {
         alarmMgr.cancel(alarmIntent);
         Toast.makeText(clockActivity, R.string.text_alarm_canceled, Toast.LENGTH_SHORT).show();
         clockActivity.setAlarmPlaying(false);
         changeAlarmIconAndTextOnCancel();
+        isScheduled = false;
     }
 
     private void snooze() {

@@ -215,7 +215,7 @@ public class ClockActivity extends AppCompatActivity {
         initializeSleepFunction();
         initializeAlarmFunction();
 
-        preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater);
+        preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater, alarmManager);
         ((SettingsManager) preferenceChangeListener).applyProfile();
 
         //Initialize the player

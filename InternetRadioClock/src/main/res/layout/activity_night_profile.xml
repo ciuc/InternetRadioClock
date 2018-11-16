@@ -33,7 +33,8 @@
 <TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="Set alarm"
+    android:text="@string/text_night_mode_set_alarm"
+    android:padding="10dp"
     android:textSize="30dp"/>
 
     <LinearLayout

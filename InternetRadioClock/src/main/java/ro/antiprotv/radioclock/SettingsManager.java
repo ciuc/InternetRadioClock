@@ -1,5 +1,6 @@
 package ro.antiprotv.radioclock;
 
+import android.app.AlarmManager;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -17,14 +18,24 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
     private final ButtonManager buttonManager;
     private final SleepManager sleepManager;
     private final ClockUpdater clockUpdater;
+    private final RadioAlarmManager alarmManager;
     private final SharedPreferences prefs;
+    private String keyHour;
+    private String keyMinute;
+    private String keyAlarmNightEnabled;
 
-    public SettingsManager(ClockActivity clockActivity, ButtonManager buttonManager, SleepManager sleepManager, ClockUpdater clockUpdater) {
+
+    public SettingsManager(ClockActivity clockActivity, ButtonManager buttonManager, SleepManager sleepManager, ClockUpdater clockUpdater, RadioAlarmManager alarmManager) {
         this.clockActivity = clockActivity;
         this.buttonManager = buttonManager;
         this.sleepManager = sleepManager;
         this.clockUpdater = clockUpdater;
+        this.alarmManager = alarmManager;
         prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
+
+        keyHour = clockActivity.getResources().getString(R.string.setting_key_night_alarm_hour);
+        keyMinute = clockActivity.getResources().getString(R.string.setting_key_night_alarm_minute);
+        keyAlarmNightEnabled = clockActivity.getResources().getString(R.string.setting_key_night_alarm_enable);
     }
 
     @Override
@@ -121,6 +132,12 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             keyClockSize = R.string.setting_key_clockSize_night;
             keyClockSeconds = R.string.setting_key_seconds_night;
             keyClockMove = R.string.setting_key_clockMove_night;
+
+            //ALARM IN NIGHT MODE
+            //IF in night mode AND enable alarm AND  ALARM SET we set the alarm immediately
+            if (key.equals(keyAlarmNightEnabled) || key.equals(keyHour)){
+                toggleNightAlarm();
+            }
         }
 
         if (key.equals(clockActivity.getResources().getString(keyClockColor))) {
@@ -148,6 +165,8 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             clockActivity.getmContentView().setGravity(Gravity.CENTER);
         }
 
+
+
     }
 
     void toggleNightMode() {
@@ -158,6 +177,17 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
         applyProfile();
 
 
+    }
+
+    private void toggleNightAlarm() {
+        boolean alarmEnabled = prefs.getBoolean(keyAlarmNightEnabled, false);
+        if (alarmEnabled) {
+            if (prefs.contains(keyHour) && prefs.contains(keyMinute)) {
+                alarmManager.setAlarm(prefs.getInt(keyHour, 0), prefs.getInt(keyMinute, 0));
+            }
+        } else if (alarmManager.isScheduled){
+            alarmManager.cancelAlarm();
+        }
     }
 
     void applyProfile() {
@@ -186,6 +216,10 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             GradientDrawable buttonShape = (GradientDrawable) nightButton.getBackground();
             buttonShape.mutate();
             buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.color_clock));
+
+            //ALARM
+            toggleNightAlarm();
+
         } else {
             //clock seconds
             SimpleDateFormat sdf;
@@ -209,6 +243,8 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             GradientDrawable buttonShape = (GradientDrawable) nightButton.getBackground();
             buttonShape.mutate();
             buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.button_color));
+            //ALARM
+            toggleNightAlarm();
         }
 
     }

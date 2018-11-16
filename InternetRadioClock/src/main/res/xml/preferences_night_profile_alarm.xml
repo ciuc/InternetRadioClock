@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:id="@+id/switch_enable_alarm"
+        android:key="@string/setting.key.night.alarm.enable"
+        android:title="@string/setting.name.night.alarm.enable"
+        android:summary="@string/summary_switch_enable_alarm"
+        android:defaultValue="false"/>
+    <ro.antiprotv.radioclock.TimePreference
+        android:id="@+id/setting.night.alarm.time"
+        android:key="@string/setting.key.alarm.night.time"
+        android:dependency="@string/setting.key.night.alarm.enable"
+        android:title="@string/night_mode_timepref_title"
+        android:summary=""
+
+        />
+</PreferenceScreen>

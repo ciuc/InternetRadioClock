@@ -12,6 +12,7 @@ public class TimePreference extends DialogPreference {
     private int lastHour=0;
     private int lastMinute=0;
     private TimePicker picker=null;
+    Context context;
 
     public static int getHour(String time) {
         String[] pieces=time.split(":");
@@ -27,27 +28,26 @@ public class TimePreference extends DialogPreference {
 
     public TimePreference(Context ctxt, AttributeSet attrs) {
         super(ctxt, attrs);
-
-        setPositiveButtonText("Set");
-        setNegativeButtonText("Cancel");
+        this.context = ctxt;
+        //setPositiveButtonText("Set");
+        //setNegativeButtonText("Cancel");
     }
 
     @Override
     protected View onCreateDialogView() {
         picker=new TimePicker(getContext());
         picker.setIs24HourView(true);
-
         return(picker);
     }
 
     @Override
     protected void onBindDialogView(View v) {
         super.onBindDialogView(v);
-
         lastHour = getSharedPreferences().getInt(v.getContext().getString(R.string.setting_key_night_alarm_hour), 0);
         lastMinute = getSharedPreferences().getInt(v.getContext().getString(R.string.setting_key_night_alarm_minute), 0);
         picker.setCurrentHour(lastHour);
         picker.setCurrentMinute(lastMinute);
+
     }
 
     @Override
@@ -63,39 +63,15 @@ public class TimePreference extends DialogPreference {
             if (callChangeListener(time)) {
                 persistString(time);
                 setNightModeAlarm(lastHour, lastMinute);
-                setSummary(String.format("%d:%d", lastHour, lastMinute));
+                setSummary(String.format("%02d:%02d", lastHour, lastMinute));
             }
         }
     }
 
     private void setNightModeAlarm(int hour, int minute) {
         SharedPreferences prefs = getSharedPreferences();
-        prefs.edit().putInt("night.alarm.hour", hour).apply();
-        prefs.edit().putInt("night.alarm.minute", minute).apply();
+        prefs.edit().putInt(context.getResources().getString(R.string.setting_key_night_alarm_hour), hour).apply();
+        prefs.edit().putInt(context.getResources().getString(R.string.setting_key_night_alarm_minute), minute).apply();
     }
 
-    @Override
-    protected Object onGetDefaultValue(TypedArray a, int index) {
-        return(a.getString(index));
-    }
-
-    @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-        String time=null;
-
-        if (restoreValue) {
-            if (defaultValue==null) {
-                time=getPersistedString("00:00");
-            }
-            else {
-                time=getPersistedString(defaultValue.toString());
-            }
-        }
-        else {
-            time=defaultValue.toString();
-        }
-
-        lastHour=getHour(time);
-        lastMinute=getMinute(time);
-    }
 }
