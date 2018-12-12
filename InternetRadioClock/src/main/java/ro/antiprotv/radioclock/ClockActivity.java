@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import timber.log.Timber;
+
 /**
  * Main Activity. Just displays the clock and buttons
  */
@@ -184,9 +186,9 @@ public class ClockActivity extends AppCompatActivity {
         LEAVE THIS HERE, SO IF WE ENABLE TIMBER FOR DEBUGGING, WE JUST UNCOMMENT
          */
         //Set up Timber
-        //if (BuildConfig.DEBUG) {
-        //    Timber.plant(new Timber.DebugTree());
-        //}
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
         mVisible = true;
         mControlsView = findViewById(R.id.mainLayout);
         mContentView = findViewById(R.id.fullscreen_content);
@@ -284,7 +286,7 @@ public class ClockActivity extends AppCompatActivity {
         }
         clockUpdater.setThreadHandler(null);
         clockUpdater = null;
-        sleepManager.getSleepExecutorService().shutdownNow();
+        sleepManager.stop();
         try {
             this.unregisterReceiver(this.alarmManager);
         } catch (IllegalArgumentException e) {

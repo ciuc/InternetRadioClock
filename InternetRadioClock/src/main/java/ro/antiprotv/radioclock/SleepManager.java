@@ -11,48 +11,60 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 class SleepManager {
     //initialize the sleep timers default list (pressing button will cycle through those)
     private final List<Integer> timers = new ArrayList<>(Arrays.asList(15, 20, 30));
     private int sleepTimerIndex;
 
-    private ExecutorService sleepExecutorService = Executors.newSingleThreadExecutor();
+    private ExecutorService sleepExecutorService = Executors.newScheduledThreadPool(2);
     private final ClockActivity context;
     private ImageButton button;
     private TextView sleepTimerText;
+    private ScheduledFuture sleepFuture;
+    private ScheduledFuture sleepCounterFuture;
+    private SleepCounterUpdater sleepCounterUpdater = new SleepCounterUpdater();
     final Button.OnClickListener sleepOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(final View view) {
-            sleepTimerText = context.findViewById(R.id.sleep_timer);
-            button = context.findViewById(R.id.sleep);
             if (sleepTimerIndex == timers.size()) {
                 resetSleepTimer();
-                sleepExecutorService.shutdownNow();
+                sleepFuture.cancel(true);
+                sleepCounterUpdater.setStartFrom(0);
             } else {
                 //stop the timer thread
-                sleepExecutorService.shutdownNow();
+                if (sleepFuture != null) {
+                    sleepFuture.cancel(true);
+                }
                 button.setImageResource(R.drawable.sleep_timer_on_white_24dp);
-                Integer timer = timers.get(sleepTimerIndex);
+                sleepTimerText.setVisibility(View.VISIBLE);
+                long timer = timers.get(sleepTimerIndex);
                 sleepTimerText.setText(String.format(view.getResources().getString(R.string.text_sleep_timer), timer));
                 sleepTimerIndex++;
                 //now start the thread
-                SleepRunner sleepRunner = new SleepRunner(timer);
-                sleepExecutorService = Executors.newSingleThreadExecutor();
-                sleepExecutorService.execute(sleepRunner);
-            }
+                SleepRunner sleepRunner = new SleepRunner();
+                sleepFuture = ((ScheduledExecutorService) sleepExecutorService).schedule(sleepRunner, timer, TimeUnit.MINUTES);
 
+                sleepCounterUpdater.setStartFrom(timer);
+                if (sleepCounterFuture == null || sleepCounterFuture.isDone()) {
+                    sleepCounterFuture = ((ScheduledExecutorService) sleepExecutorService).scheduleAtFixedRate(sleepCounterUpdater, 1, 1, TimeUnit.MINUTES);
+                }
+            }
         }
     };
 
     SleepManager(ClockActivity context) {
         this.context = context;
+        sleepTimerText = context.findViewById(R.id.sleep_timer);
+        button = context.findViewById(R.id.sleep);
     }
 
     private void resetSleepTimer() {
-        sleepTimerText = context.findViewById(R.id.sleep_timer);
-        button = context.findViewById(R.id.sleep);
         sleepTimerText.setText("");
+        sleepTimerText.setVisibility(View.GONE);
         button.setImageResource(R.drawable.sleep_timer_off_white_24dp);
         sleepTimerIndex = 0;
     }
@@ -61,36 +73,59 @@ class SleepManager {
         return timers;
     }
 
-    public ExecutorService getSleepExecutorService() {
-        return sleepExecutorService;
+    /**
+     * Cleanup method - to execute when application exits
+     */
+    public void stop() {
+        sleepExecutorService.shutdownNow();
     }
 
+    /**
+     * THis task is responsible with executing the "sleep"
+     * IT will stop playing the music
+     * and do some cleanup of the UI
+     */
     private class SleepRunner implements Runnable {
-        final int timer;
 
-        SleepRunner(int timer) {
-            this.timer = timer;
+        @Override
+        public void run() {
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "Time's up", Toast.LENGTH_SHORT).show();
+                        context.stopPlaying();
+                        resetSleepTimer();
+                    }
+                });
+        }
+    }
+
+    /**
+     * This task is responssible for updating the sleep timer with the remaining time till sleep.
+     * It is scheduled first time and it will run continously - the only thing the click logic does is to update the timer.
+     * Due to the nature of the cycling through the predefined timers, I've found somewhat cumbersome to stop-reschedule the task (very unreliable).
+     * Exiting the app will stop this future.
+     */
+    private class SleepCounterUpdater implements Runnable {
+        long startFrom;
+
+        public void setStartFrom(long start) {
+            this.startFrom = start;
+        }
+
+        public long getTimer(){
+            return startFrom;
         }
 
         @Override
         public void run() {
-            int seconds = timer * 60;
-            try {
-                while (!Thread.currentThread().isInterrupted()) {
-                    for (int i = seconds; i >= 0; i--) {
-                        Thread.sleep(1000);
+            if (startFrom > 0) {
+                context.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        sleepTimerText.setText(String.format(context.getResources().getString(R.string.text_sleep_timer), startFrom--));
                     }
-                    context.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, "Time's up", Toast.LENGTH_SHORT).show();
-                            context.stopPlaying();
-                            resetSleepTimer();
-                        }
-                    });
-                    Thread.currentThread().interrupt();
-                }
-            } catch (InterruptedException e) {
+                });
             }
         }
     }
