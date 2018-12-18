@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public class RadioAlarmManager extends BroadcastReceiver {
 
-    private final static int DEFAULT_SNOOZE = 10;//minutes
+    private final static String DEFAULT_SNOOZE = "10";//minutes
     private final static int DEFAULT_ALARM_PLAY_TIME = 300;//Seconds (=5minutes)
     private final ImageButton alarmButton;
     private final ImageButton cancelButton;
@@ -108,7 +109,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
 
     private void hideSnoozeAndCancel() {
         //not sure how necessary is this here, but we seem to have a race condition
-        //in which the runnable started by the Executor (MedaPlayerCanceler)
+        //in which the runnable started by the Executor (MediaPlayerCanceler)
         //finishes before both actions are completed
         //which makes no sense at the moment
         clockActivity.runOnUiThread(new Runnable() {
@@ -135,8 +136,10 @@ public class RadioAlarmManager extends BroadcastReceiver {
     }
 
     private void snooze() {
+        //prepare snooze:
+        int snooze = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(clockActivity).getString(clockActivity.getResources().getString(R.string.setting_key_snoozeMinutes), DEFAULT_SNOOZE));
         shutDownDefaultAlarm();
-        Toast toast = Toast.makeText(clockActivity, clockActivity.getString(R.string.snooze_toast_text, 10), Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(clockActivity, clockActivity.getString(R.string.snooze_toast_text, snooze), Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
         toast.show();
 
@@ -144,7 +147,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         Calendar now = Calendar.getInstance();
         now.setTimeInMillis(System.currentTimeMillis());
         //now.add(Calendar.SECOND, DEFAULT_SNOOZE);//FOR TESTING
-        now.add(Calendar.MINUTE, DEFAULT_SNOOZE);//FOR PRODUCTION
+        now.add(Calendar.MINUTE, snooze);//FOR PRODUCTION
         setAlarm(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
     }
 

@@ -41,6 +41,7 @@
 
 
     <string name="setting.key.sleepMinutes">setting.key.sleepMinutes</string>
+    <string name="setting.key.snoozeMinutes">setting.key.snoozeMinutes</string>
     <string name="setting.key.alarmIcon">setting.key.alarmIcon</string>
     <string name="setting.key.seconds">setting.key.seconds</string>
     <string name="setting.key.clockMove">setting.key.clockMove</string>
@@ -60,7 +61,9 @@
     <string name="setting.name.stream8">Memory 8</string>
 
     <string name="setting.name.sleepMinutes">Custom Sleep Time (minutes)</string>
+    <string name="setting.name.snoozeMinutes">Custom Snooze Time (minutes)</string>
     <string name="setting.summary.sleepMinutes">Set your own custom sleep timer which will be added to the predefined ones.</string>
+    <string name="setting.summary.snoozeMinutes">Set your preferred snooze time.</string>
     <string name="setting.name.seconds">Display Seconds</string>
     <string name="setting.summary.seconds">Disable if you want the clock to not display seconds.\n(Might require restart!)</string>
     <string name="setting.name.clockMove">Enable clock movement on the screen (screensaver-like)</string>

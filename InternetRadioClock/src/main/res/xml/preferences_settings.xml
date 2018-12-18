@@ -20,6 +20,12 @@
         android:title="@string/setting.name.sleepMinutes"
         android:summary="@string/setting.summary.sleepMinutes"
         android:inputType="number"/>
+    <EditTextPreference
+        android:key="@string/setting.key.snoozeMinutes"
+        android:title="@string/setting.name.snoozeMinutes"
+        android:summary="@string/setting.summary.snoozeMinutes"
+        android:inputType="number"
+        android:defaultValue="10"/>
     <SwitchPreference
         android:id="@+id/switch_display_seconds"
         android:key="@string/setting.key.seconds"
