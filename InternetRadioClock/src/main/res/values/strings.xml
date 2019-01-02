@@ -430,6 +430,7 @@ in this section you can set some neat stuff:
 <li>enable/disable the movement of the clock on the screen; by default the clock moves around the screen corners - important if you have an AMOLED display (leaving an image on an AMOLED screen for a prolonged period of time might damage the screen)</li>
 <li>custom sleep timer: the app features a sleep button that cycles through some predefined sleep timers (15, 20, 30 minutes); you can add your preferred one here
 -> You can activate the sleep timer from the sleep button on the main screen. </li>
+<li>custom snooze time: you can set your own snooze timer (by default it is set to 10 minutes)</li>
 </ul>
 <b>Night Profile</b>
 <ul>
@@ -438,12 +439,10 @@ in this section you can set some neat stuff:
 <b>Alarm</b>
 <ul>
 <li>you can set an alarm which will wake up the radio at the defined time. It will play the last played radio. If the internet connection is down, it will play the default alarm sound.</li>
-<li>there is also o snooze function</li>
+<li>there is also a snooze function</li>
 </ul>
 <p>
 <b>*** WARNING: please do not use this app as your main alarm clock. Always use your usual alarm clock to wake you up. ***</b>
-</p>
-
 </p>
 
 <p>I tried to keep it as simple as possible, but if you have any ideas or you think it can be improved, write me at my gmail address cristi.ciuc</p>
