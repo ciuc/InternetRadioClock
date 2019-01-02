@@ -101,38 +101,14 @@ public class StreamFinderActivity extends AppCompatActivity {
         }
     }
 
-    void assignUrlToMemory(String url, String key) {
+    void assignUrlToMemory(String url, int streamNo, String label) {
 
-        int index = Integer.valueOf(key);
-        switch (index) {
-            case 1:
-                key = getResources().getString(R.string.setting_key_stream1);
-                break;
-            case 2:
-                key = getResources().getString(R.string.setting_key_stream2);
-                break;
-            case 3:
-                key = getResources().getString(R.string.setting_key_stream3);
-                break;
-            case 4:
-                key = getResources().getString(R.string.setting_key_stream4);
-                break;
-            case 5:
-                key = getResources().getString(R.string.setting_key_stream5);
-                break;
-            case 6:
-                key = getResources().getString(R.string.setting_key_stream6);
-                break;
-            case 7:
-                key = getResources().getString(R.string.setting_key_stream7);
-                break;
-            case 8:
-                key = getResources().getString(R.string.setting_key_stream8);
-                break;
-        }
+        String key = "setting.key.stream"+String.valueOf(streamNo);
+        String labelKey = "setting.key.label"+String.valueOf(streamNo);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.edit().putString(key, url).apply();
-        Toast.makeText(this, String.format("%s assigned to memory %d", url, index), Toast.LENGTH_SHORT).show();
+        prefs.edit().putString(labelKey, label).apply();
+        Toast.makeText(this, String.format("%s assigned to memory %d", url, streamNo), Toast.LENGTH_SHORT).show();
     }
 
     @Override
