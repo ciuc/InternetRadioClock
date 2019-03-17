@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -515,15 +516,18 @@ public class ClockActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.buttons:
-                Intent intent = new Intent();
-                intent.setClassName(this, "ro.antiprotv.radioclock.ConfigureButtonsActivity");
-                startActivity(intent);
-                return true;
             case R.id.settings:
                 Intent settings = new Intent();
                 settings.setClassName(this, "ro.antiprotv.radioclock.SettingsActivity");
                 startActivity(settings);
+                return true;
+            case R.id.reverse:
+                setRequestedOrientation(-1* (getRequestedOrientation() - 8));
+                return true;
+            case R.id.buttons:
+                Intent intent = new Intent();
+                intent.setClassName(this, "ro.antiprotv.radioclock.ConfigureButtonsActivity");
+                startActivity(intent);
                 return true;
             case R.id.night:
                 Intent night = new Intent();
