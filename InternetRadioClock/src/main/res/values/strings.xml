@@ -414,7 +414,7 @@ If you want to assign a radio to a memory button, click on the button corespondi
 <p>This simple app just displays the clock in full screen mode and has 5 buttons associated each with a radio stream.</p>
 <p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania, RadioBOB from Germany and Zodiac from Ireland. These can be changed and you can have up to 8 buttons.</p>
 <p>
-<b>Reverse</b><br>
+<b>Reverse <span style="color:red;">(new in 3.2)</span> </b><br>
 Change screen orientation. Depending on the placement of the volume buttons, this might come in handy.<br>
 <br>
 <b>Settings</b><br>
@@ -427,16 +427,17 @@ in this section you can set some neat stuff:
 <li>custom sleep timer: the app features a sleep button that cycles through some predefined sleep timers (15, 20, 30 minutes); you can add your preferred one here
 -> You can activate the sleep timer from the sleep button on the main screen. </li>
 <li>custom snooze time: you can set your own snooze timer (by default it is set to 10 minutes)</li>
+<li><span style="color:red"><b>(new in 3.2)</b></span> reverse stream/alarm buttons: put radio buttons at the top and the alarm buttons on the bottom. This might be helpful for certain phone holders.</li>
 </ul>
 <b>Configure buttons</b>
 <ul>
-<li>edit a memory button (the stream url)
-<li>assign a label to a button (will be displayed instead of the number)
-<li>enable up to 8 buttons (simply add the url of your favourite radio stream)
+<li>edit a memory button (the stream url)</li>
+<li>assign a label to a button (will be displayed instead of the number) - <span style="color:red"><b>new in 3.2</b></span>:you can also do this by long clicking on a button</li>
+<li>enable up to 8 buttons (simply add the url of your favourite radio stream)</li>
 </ul>
 <b>Stream Finder</b>
 <ul>
-<li>you can search a radio stream using the dropdown boxes and the name text - the name does not need to be exact</li>
+<li>you can search a radio stream using the dropdown boxes and the name text (the name does not need to be exact) and you can assign the radio to a memory. The app will even suggest a label ;)</li>
 <li>please bear in mind that the list is not complete and might not be 100% accurate; if you have a radio that you want me to add in the list please send me an email</li>
 </ul>
 <b>Night Profile</b>
