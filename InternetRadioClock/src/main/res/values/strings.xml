@@ -19,7 +19,7 @@
     <string name="settings.menu.about">About</string>
     <string name="settings.menu.cheers">Cheers!</string>
     <string name="settings.menu.exit">Exit</string>
-    <string name="settings.menu.streamFinder">Stream Finder (Beta)</string>
+    <string name="settings.menu.streamFinder">Stream Finder</string>
 
     <string name="setting.key.stream1">setting.key.stream1</string>
     <string name="setting.key.stream2">setting.key.stream2</string>
@@ -108,6 +108,10 @@
     <string name="setting.key.clockColor">setting.key.clockColor</string>
     <string name="setting.name.clockColor">Clock Color</string>
     <string name="setting.default.clockColor">#00ff00</string>
+
+    <string name="setting.key.reverseButtons">setting.key.reverseButtons</string>
+    <string name="setting.name.reverseButtons">Reverse stream/alarm buttons</string>
+    <string name="setting.summary.reverseButtons">Put radio buttons up and alarm buttons at the bottom (requires restart)</string>
 
     <string-array name="clock_sizes">
         <item>20</item>

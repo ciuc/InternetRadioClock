@@ -181,7 +181,14 @@ public class ClockActivity extends AppCompatActivity {
         //SOME INITIALIZATIONS
         //Initialize the preferences_buttons
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        setContentView(R.layout.activity_main);
+
+        //if reverse enabled we load the reverse layout
+        boolean reverse = prefs.getBoolean(getResources().getString(R.string.setting_key_reverseButtons), false);
+        if (reverse) {
+            setContentView(R.layout.activity_main_reverse);
+        } else {
+            setContentView(R.layout.activity_main);
+        }
 
         /*
         LEAVE THIS HERE, SO IF WE ENABLE TIMBER FOR DEBUGGING, WE JUST UNCOMMENT

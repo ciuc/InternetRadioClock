@@ -156,8 +156,6 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
         prefs.edit().putBoolean(ClockActivity.PREF_NIGHT_MODE, !nightMode).apply();
         applyProfile();
-
-
     }
 
     void applyProfile() {
