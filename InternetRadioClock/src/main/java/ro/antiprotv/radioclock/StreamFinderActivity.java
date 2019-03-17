@@ -47,7 +47,7 @@ public class StreamFinderActivity extends AppCompatActivity {
         streams = new ArrayList<>();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        adapter = new StreamListAdapter(this, streams);
+        adapter = new StreamListAdapter(this, new ButtonManager(this), streams);
         recyclerView.setAdapter(adapter);
 
         final Button findStreamButton = findViewById(R.id.find_stream);
@@ -101,15 +101,7 @@ public class StreamFinderActivity extends AppCompatActivity {
         }
     }
 
-    void assignUrlToMemory(String url, int streamNo, String label) {
 
-        String key = "setting.key.stream"+String.valueOf(streamNo);
-        String labelKey = "setting.key.label"+String.valueOf(streamNo);
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.edit().putString(key, url).apply();
-        prefs.edit().putString(labelKey, label).apply();
-        Toast.makeText(this, String.format("%s assigned to memory %d", url, streamNo), Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

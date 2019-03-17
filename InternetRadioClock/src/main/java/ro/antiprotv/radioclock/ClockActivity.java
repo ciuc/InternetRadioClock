@@ -9,6 +9,7 @@ package ro.antiprotv.radioclock;
 
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -19,9 +20,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,6 +32,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -162,6 +166,7 @@ public class ClockActivity extends AppCompatActivity {
             alarmManager.cancelSnooze();
         }
     };
+
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
     private final Button.OnClickListener nightModeOnClickListener = new View.OnClickListener() {
 
@@ -361,12 +366,12 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     private void displayDialogsOnOpen() {
-        if (prefs.getBoolean("FOURTH_TIME", true)) {
+        if (prefs.getBoolean("FIFTH_TIME", true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Check out the \"About\" section to find out what you can do with this thing.")
+            builder.setMessage("Check out the \"About\" section to see what's new and to find out what you can do with this thing.")
                     .setTitle("Thanks for using this app!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    prefs.edit().putBoolean("FOURTH_TIME", false).apply();
+                    prefs.edit().putBoolean("FIFTH_TIME", false).apply();
                 }
             });
             AlertDialog dialog = builder.create();

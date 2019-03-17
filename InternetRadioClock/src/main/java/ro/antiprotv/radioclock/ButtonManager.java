@@ -1,11 +1,18 @@
 package ro.antiprotv.radioclock;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.GradientDrawable;
+import android.preference.PreferenceManager;
+import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,9 +27,13 @@ class ButtonManager {
     private SharedPreferences prefs;
     private final View.OnTouchListener onTouchListener;
     private final View.OnClickListener playListener;
+    private View.OnLongClickListener addEditLabelClickListener;
     //the button we have clicked on
     private Button mButtonClicked;
 
+    ButtonManager(Context ctx) {
+        this(ctx, null, null, null, null);
+    }
     ButtonManager(Context ctx, View view, SharedPreferences prefs, View.OnTouchListener onTouchListener, View.OnClickListener playListener) {
         this.context = ctx;
         this.view = view;
@@ -69,6 +80,8 @@ class ButtonManager {
             b.setText(prefs.getString(resources.getString(settingKeys.get(i)), resources.getString(defaultNames.get(i))));
             b.setOnClickListener(playListener);
             b.setOnTouchListener(onTouchListener);
+            b.setOnLongClickListener(addEditLabelClickListener);
+            b.setOnLongClickListener(new AddLabelOnLongClickListener(i+1));
         }
         hideUnhideButtons(mUrls);
         enableButtons();
@@ -96,9 +109,55 @@ class ButtonManager {
     }
 
     void setText(int index, SharedPreferences newPrefs) {
-        //prefs.getString(getResources().getString(R.string.setting_key_label4), getResources().getString(R.string.button_name_stream4)
         buttons.get(index).setText(newPrefs.getString(resources.getString(settingKeys.get(index)), resources.getString(defaultNames.get(index))));
         this.prefs = newPrefs;
+    }
+
+    void assignUrlToMemory(String url, int streamNo, String label) {
+        String key = "setting.key.stream"+String.valueOf(streamNo);
+        String labelKey = "setting.key.label"+String.valueOf(streamNo);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putString(key, url).apply();
+        prefs.edit().putString(labelKey, label).apply();
+        Toast.makeText(context, String.format("%s assigned to memory %d", url, streamNo), Toast.LENGTH_SHORT).show();
+    }
+
+    private class AddLabelOnLongClickListener implements View.OnLongClickListener {
+        int streamNo;
+
+        AddLabelOnLongClickListener(int stream) {
+            streamNo = stream;
+        }
+        @Override
+        public boolean onLongClick(View view) {
+            final Button button = (Button) view;
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            LinearLayout layout = (LinearLayout) LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_edit_radio_label, null);
+            final TextInputEditText labelInput = layout.findViewById(R.id.streamFinder_textinput_labelDialog_label);
+            labelInput.setText(button.getText());
+            labelInput.setSelectAllOnFocus(true);
+            builder.setView(layout);
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    setButtonLabel(streamNo, labelInput.getText().toString());
+                }
+            });
+            builder.show();
+            return true;
+        }
+    };
+
+    void setButtonLabel(int streamNo, String label) {
+        String labelKey = "setting.key.label"+String.valueOf(streamNo);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putString(labelKey, label).apply();
     }
 
     /**

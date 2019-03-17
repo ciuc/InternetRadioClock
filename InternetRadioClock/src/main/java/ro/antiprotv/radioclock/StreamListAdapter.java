@@ -19,13 +19,15 @@ import java.util.logging.Logger;
 class StreamListAdapter extends RecyclerView.Adapter {
     private final LayoutInflater inflater;
     private final StreamFinderActivity streamFinderActivity;
+    private final ButtonManager buttonManager;
     private List<Stream> streams;
     private Logger logger = Logger.getLogger(StreamListAdapter.class.getName());
 
-    public StreamListAdapter(StreamFinderActivity context, List<Stream> streams) {
+    public StreamListAdapter(StreamFinderActivity context, ButtonManager buttonManager, List<Stream> streams) {
         inflater = LayoutInflater.from(context);
         this.streams = streams;
         this.streamFinderActivity = context;
+        this.buttonManager = buttonManager;
     }
 
     public void setStreams(List<Stream> streams) {
@@ -121,7 +123,7 @@ class StreamListAdapter extends RecyclerView.Adapter {
                 dialogBuilder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        streamFinderActivity.assignUrlToMemory(stream.getUrl(), streamNo, labelInput.getText().toString());
+                        buttonManager.assignUrlToMemory(stream.getUrl(), streamNo, labelInput.getText().toString());
                     }
                 });
                 dialogBuilder.show();
