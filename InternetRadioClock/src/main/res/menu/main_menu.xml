@@ -6,6 +6,11 @@
         android:title="@string/settings.menu.buttons"
         app:showAsAction="never"/>
     <item
+        android:id="@+id/close"
+        android:icon="@drawable/ic_close_white_24dp"
+        android:title="@string/settings.menu.settings"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/reverse"
         android:icon="@drawable/ic_reverse_white_24dp"
         android:title="@string/settings.menu.settings"

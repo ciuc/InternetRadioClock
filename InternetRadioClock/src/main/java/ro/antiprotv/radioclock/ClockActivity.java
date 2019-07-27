@@ -536,6 +536,9 @@ public class ClockActivity extends AppCompatActivity {
             case R.id.reverse:
                 setRequestedOrientation(-1* (getRequestedOrientation() - 8));
                 return true;
+            case R.id.close:
+                finish();
+                return true;
             case R.id.buttons:
                 Intent intent = new Intent();
                 intent.setClassName(this, "ro.antiprotv.radioclock.ConfigureButtonsActivity");
