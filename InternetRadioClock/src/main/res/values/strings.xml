@@ -138,6 +138,7 @@
     <string name="assign_to">Assign\nto memory:</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
+    <string name="remove">Remove this button!</string>
 
     <string name="title.streams">Configure Buttons</string>
     <string name="title.settings">Settings</string>
