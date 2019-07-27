@@ -149,6 +149,12 @@ class ButtonManager {
                     setButtonLabel(streamNo, labelInput.getText().toString());
                 }
             });
+            builder.setNeutralButton(R.string.remove, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    setButtonUrl(streamNo, "");
+                }
+            });
             builder.show();
             return true;
         }
@@ -158,6 +164,12 @@ class ButtonManager {
         String labelKey = "setting.key.label"+String.valueOf(streamNo);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().putString(labelKey, label).apply();
+    }
+
+    void setButtonUrl(int streamNo, String url) {
+        String labelKey = "setting.key.stream"+String.valueOf(streamNo);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putString(labelKey, url).apply();
     }
 
     /**
