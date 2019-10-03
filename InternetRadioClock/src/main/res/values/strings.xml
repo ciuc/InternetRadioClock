@@ -145,10 +145,9 @@
 
     <string name="title.streamFinder">InternetRadioClock: Stream Finder</string>
     <string name="streamFinder.hint">The list with radio streams is retrieved from the internet. It is maintained by community efforts and might not be 100% accurate.\n
-\n
-There are aver 15.000 radios so this is why you need to provide at least a country and a genre as search criteria, otherwise the list would be huge.\n
-\n
-If you want to assign a radio to a memory button, click on the button coresponding to the desired memory.
+\nThere are aver 15.000 radios so this is why you need to provide at least a country as search criteria, otherwise the list would be huge.\n
+\nYou can add more search criteria like a category or the name of the radio.\n
+\nIf you want to assign a radio to a memory button, click on the button coresponding to the desired memory.
     </string>
     <string name="streamFinder.prompt.country">Choose country</string>
     <string name="streamFinder.prompt.language">Choose language</string>
@@ -314,6 +313,7 @@ If you want to assign a radio to a memory button, click on the button corespondi
         <item>Zambia</item>
     </string-array>
     <string-array name="genres">
+        <item>Any</item>
         <item>Rock</item>
         <item>Alternative</item>
         <item>Indie</item>

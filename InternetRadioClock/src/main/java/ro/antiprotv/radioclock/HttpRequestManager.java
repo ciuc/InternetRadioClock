@@ -29,7 +29,7 @@ class HttpRequestManager {
         if (!language.isEmpty() && !language.equals("Any")) {
             requestParams.append("&language=").append(Uri.encode(language));
         }
-        if (!tags.isEmpty()) {
+        if (!tags.isEmpty() && !tags.equals("Any")) {
             requestParams.append("&tags=").append(Uri.encode(tags));
         }
         ResponseListener responseListener = new ResponseListener(context);
