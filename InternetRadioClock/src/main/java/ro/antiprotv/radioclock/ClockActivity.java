@@ -9,13 +9,11 @@ package ro.antiprotv.radioclock;
 
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -185,7 +183,7 @@ public class ClockActivity extends AppCompatActivity {
             //Timber.d("Running progressive volume task");
             if (mMediaPlayer.getVolumeLeft() >= 1) {
                 //Timber.d("Canceling progressive volume task");
-                progressiveTaskFuture.cancel(true);
+                cancelProgressiveVolumeTaskFuture();
                 return;
             }
             volumeManager.volumeUp(0.15f);
@@ -444,8 +442,12 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    private ScheduledFuture progressiveTaskFuture;
-
+    private ScheduledFuture progressiveVolumeTaskFuture;
+    public void cancelProgressiveVolumeTaskFuture() {
+        if (progressiveVolumeTaskFuture != null && !progressiveVolumeTaskFuture.isCancelled()) {
+            progressiveVolumeTaskFuture.cancel(true);
+        }
+    }
     void play(int buttonId) {
         //if already playing and comes from alarm -do nothing
         if (mMediaPlayer.isPlaying() && alarmPlaying) {
@@ -455,13 +457,10 @@ public class ClockActivity extends AppCompatActivity {
         //we might have a default alarm playing, so need to shut it off
         alarmManager.shutDownDefaultAlarm();
         if (alarmPlaying && prefs.getBoolean(getResources().getString(R.string.setting_key_alarmProgressiveSound), false)) {
-            if (progressiveTaskFuture != null){
-                //Timber.d("Canceling progressive volume task");
-                progressiveTaskFuture.cancel(true  );
-            }
+            cancelProgressiveVolumeTaskFuture();
             volumeManager.setVolume(0.05f);
             //Timber.d("Scheduling progressive volume task");
-            progressiveTaskFuture = executorService.scheduleAtFixedRate(new AlarmProgressiveVolume(), 10, 10, TimeUnit.SECONDS);
+            progressiveVolumeTaskFuture = executorService.scheduleAtFixedRate(new AlarmProgressiveVolume(), 10, 10, TimeUnit.SECONDS);
         }
         String url;
         //index in th list
@@ -520,10 +519,7 @@ public class ClockActivity extends AppCompatActivity {
         }
         mPlayingStreamNo = 0;
         mPlayingStreamTag = null;
-        if (progressiveTaskFuture != null) {
-            //Timber.d("Canceling progressive volume task");
-            progressiveTaskFuture.cancel(true);
-        }
+        cancelProgressiveVolumeTaskFuture();
     }
 
     private class CustomOnPreparedListener implements OnPreparedListener {
@@ -628,7 +624,8 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    private void hide() {
+    public void hide() {
+        cancelProgressiveVolumeTaskFuture();
         // Hide UI first
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {

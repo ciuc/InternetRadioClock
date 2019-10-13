@@ -31,6 +31,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     private final ImageButton alarmButton;
     private final ImageButton cancelButton;
     private final ImageButton snoozeButton;
+    private final ImageButton closeButton;
     private final TextView alarmText;
     private final ImageButton alarmOffButton;
     private final AlarmManager alarmMgr;
@@ -51,6 +52,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         alarmOffButton = clockActivity.findViewById(R.id.alarm_icon_turn_off);
         cancelButton = clockActivity.findViewById(R.id.alarm_icon_cancel);
         snoozeButton = clockActivity.findViewById(R.id.alarm_icon_snooze);
+        closeButton = clockActivity.findViewById(R.id.alarm_icon_close);
         alarmOffButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,13 +63,22 @@ public class RadioAlarmManager extends BroadcastReceiver {
             @Override
             public void onClick(View view) {
                 shutDownDefaultAlarm();
-                shutDownRadioAlarm();
+                shutDownRadioAlarm(true);
             }
         });
         snoozeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 snooze();
+            }
+        });
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shutDownDefaultAlarm();
+                shutDownRadioAlarm(false);
+                clockActivity.hide();
+                clockActivity.cancelProgressiveVolumeTaskFuture();
             }
         });
     }
@@ -98,7 +109,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
             alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), alarmIntent);
         }
         //TESTING: enable this line to have the alarm in 5 secs;
-        //alarmMgr.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2000, alarmIntent);
+        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2000, alarmIntent);
         Toast.makeText(clockActivity, String.format("Alarm set for %s at %s", (tomorrow) ? clockActivity.getString(R.string.text_tomorrow) : clockActivity.getString(R.string.today), sdf.format(next.getTime())), Toast.LENGTH_SHORT).show();
         alarmText.setText(clockActivity.getString(R.string.text_alarm_set_for, sdf.format(next.getTime())));
         alarmText.setVisibility(View.VISIBLE);
@@ -112,11 +123,14 @@ public class RadioAlarmManager extends BroadcastReceiver {
         //in which the runnable started by the Executor (MediaPlayerCanceler)
         //finishes before both actions are completed
         //which makes no sense at the moment
+        //LE: I guess this is b/c it fails silently
+        //when it tries to manipulate UI
         clockActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 cancelButton.setVisibility(View.GONE);
                 snoozeButton.setVisibility(View.GONE);
+                closeButton.setVisibility(View.GONE);
             }
         });
 
@@ -125,10 +139,11 @@ public class RadioAlarmManager extends BroadcastReceiver {
     private void showSnoozeAndCancel() {
         snoozeButton.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.VISIBLE);
+        closeButton.setVisibility(View.VISIBLE);
     }
 
 
-    private void cancelAlarm() {
+    public void cancelAlarm() {
         alarmMgr.cancel(alarmIntent);
         Toast.makeText(clockActivity, R.string.text_alarm_canceled, Toast.LENGTH_SHORT).show();
         clockActivity.setAlarmPlaying(false);
@@ -143,7 +158,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 0);
         toast.show();
 
-        shutDownRadioAlarm();
+        shutDownRadioAlarm(true);
         Calendar now = Calendar.getInstance();
         now.setTimeInMillis(System.currentTimeMillis());
         //now.add(Calendar.SECOND, DEFAULT_SNOOZE);//FOR TESTING
@@ -151,8 +166,10 @@ public class RadioAlarmManager extends BroadcastReceiver {
         setAlarm(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
     }
 
-    private void shutDownRadioAlarm() {
-        clockActivity.stopPlaying();
+    private void shutDownRadioAlarm(boolean stopPlaying) {
+        if (stopPlaying) {
+            clockActivity.stopPlaying();
+        }
         hideSnoozeAndCancel();
     }
 
