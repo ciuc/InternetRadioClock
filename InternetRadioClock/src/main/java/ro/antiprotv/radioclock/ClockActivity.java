@@ -55,6 +55,7 @@ public class ClockActivity extends AppCompatActivity {
     public static final String TAG_RADIOCLOCK = "ClockActivity: %s";
     public final static String PREF_NIGHT_MODE = "NIGHT_MODE";
     public final static String LAST_PLAYED = "LAST_PLAYED";
+    public final static String LAST_VOLUME = "LAST_VOLUME";
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -260,7 +261,13 @@ public class ClockActivity extends AppCompatActivity {
 
         //Volume
         volumeManager = new VolumeManager(this, mControlsView, mMediaPlayer);
-
+        //A bit of circular dependecies here. So init the volume here, instead in the initMediaPlayer() method
+        if (prefs.getBoolean(getResources().getString(R.string.setting_key_rememberLastVolume), false)){
+            float volume = prefs.getFloat(LAST_VOLUME,1);
+            volumeManager.setVolume(volume);
+        } else {
+            volumeManager.setVolume(1);
+        }
         //Play at start?
         //button clicked is either last played, or the first; will also set
         if (prefs.getBoolean(getResources().getString(R.string.setting_key_playAtStart), false)){

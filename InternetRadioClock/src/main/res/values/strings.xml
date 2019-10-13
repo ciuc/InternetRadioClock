@@ -92,6 +92,9 @@
     <string name="setting.name.playAtStart">Play when opening</string>
     <string name="setting.summary.playAtStart">Starts playing last radio directly when opening the application.</string>
 
+    <string name="setting.key.rememberLastVolume">setting.key.rememberLastVolume</string>
+    <string name="setting.name.rememberLastVolume">Remember last volume</string>
+    <string name="setting.summary.rememberLastVolume">Start playing with the last volume setting.</string>
 
     <string name="text.sleep.timer">Sleep in %d minutes</string>
     <!-- advanced settings -->
@@ -423,6 +426,7 @@
     <h1>Internet Radio Clock<h1>
 <p>This simple app just displays the clock in full screen mode and has 5 buttons associated each with a radio stream.</p>
 <p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania, RadioBOB from Germany and Zodiac from Ireland. These can be changed and you can have up to 8 buttons.</p>
+<p><span style="color:red">NEW: alarm progressive sound; play directly when open; StreamFinder: allow empty tag</span></p>
 <p>
 <b>Reverse</b><br>
 Change screen orientation. Depending on the placement of the volume buttons, this might come in handy.<br>

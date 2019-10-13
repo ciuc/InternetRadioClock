@@ -1,7 +1,9 @@
 package ro.antiprotv.radioclock;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -22,6 +24,7 @@ import java.util.concurrent.Executors;
  */
 public class VolumeManager {
     private final View view;
+    private SharedPreferences prefs;
     private ImageButton volumeUpButton;
     private ImageButton volumeDownButton;
     private AudioPlayer mediaPlayer;
@@ -30,6 +33,7 @@ public class VolumeManager {
     private final DecimalFormat fmt = new DecimalFormat("#%");
 
     VolumeManager(Context ctx, View view, AudioPlayer mediaPlayer) {
+        prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         this.ctx = ctx;
         this.view = view;
         this.mediaPlayer = mediaPlayer;
@@ -38,9 +42,12 @@ public class VolumeManager {
         this.volumeText = view.findViewById(R.id.volume);
         volumeUpButton.setOnTouchListener(new VolumeUpOnClickListener());
         volumeDownButton.setOnTouchListener(new VolumeDownOnClickListener());
-        setVolume(1);
     }
 
+    /**
+     * increase volume by pct
+     * @param pct
+     */
     protected void volumeUp(float pct) {
         float volume = mediaPlayer.getVolumeLeft() + pct;
         //Timber.d(String.valueOf(volume));
@@ -57,6 +64,10 @@ public class VolumeManager {
         setVolume(volume);
     }
 
+    /**
+     * decrease volume by pct
+     * @param pct
+     */
     protected void volumeDown(float pct){
         float volume = mediaPlayer.getVolumeLeft() - pct;
         if (volume < 0) {
@@ -85,6 +96,7 @@ public class VolumeManager {
                 volumeText.setText(String.valueOf(fmt.format(volume)));
             }
         });
+        prefs.edit().putFloat(ClockActivity.LAST_VOLUME, volume).apply();
     }
     private class VolumeUpOnClickListener implements View.OnTouchListener{
 

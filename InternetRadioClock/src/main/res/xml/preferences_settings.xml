@@ -52,13 +52,20 @@
         android:key="@string/setting.key.alarmProgressiveSound"
         android:title="@string/setting.name.alarmProgressiveSound"
         android:summary="@string/setting.summary.alarmProgressiveSound"
-        android:defaultValue="false"
+        android:defaultValue="true"
         />
     <SwitchPreference
         android:id="@+id/play_at_start"
         android:key="@string/setting.key.playAtStart"
         android:title="@string/setting.name.playAtStart"
         android:summary="@string/setting.summary.playAtStart"
+        android:defaultValue="false"
+        />
+    <SwitchPreference
+        android:id="@+id/remember_last_volume"
+        android:key="@string/setting.key.rememberLastVolume"
+        android:title="@string/setting.name.rememberLastVolume"
+        android:summary="@string/setting.summary.rememberLastVolume"
         android:defaultValue="false"
         />
 </PreferenceScreen>
