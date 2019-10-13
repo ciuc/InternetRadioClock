@@ -14,17 +14,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,7 +30,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -41,10 +38,13 @@ import com.devbrackets.android.exomedia.AudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnErrorListener;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 //import timber.log.Timber;
 
@@ -54,6 +54,7 @@ import java.util.Objects;
 public class ClockActivity extends AppCompatActivity {
     public static final String TAG_RADIOCLOCK = "ClockActivity: %s";
     public final static String PREF_NIGHT_MODE = "NIGHT_MODE";
+    public final static String LAST_PLAYED = "LAST_PLAYED";
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -131,6 +132,7 @@ public class ClockActivity extends AppCompatActivity {
     private AudioPlayer mMediaPlayer;
     private ButtonManager buttonManager;
     private SleepManager sleepManager;
+    VolumeManager volumeManager;
     //remember the playing stream number and tag
     //they will have to be reset when stopping
     private int mPlayingStreamNo;
@@ -142,6 +144,7 @@ public class ClockActivity extends AppCompatActivity {
 
     private boolean alarmPlaying;
     private RadioAlarmManager alarmManager;
+    ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
     private final Button.OnClickListener playOnClickListener = new View.OnClickListener() {
 
         @Override
@@ -175,6 +178,18 @@ public class ClockActivity extends AppCompatActivity {
             ((SettingsManager) preferenceChangeListener).toggleNightMode();
         }
     };
+
+    private class AlarmProgressiveVolume implements Runnable{
+        public void run() {
+            //Timber.d("Running progressive volume task");
+            if (mMediaPlayer.getVolumeLeft() >= 1) {
+                //Timber.d("Canceling progressive volume task");
+                progressiveTaskFuture.cancel(true);
+                return;
+            }
+            volumeManager.volumeUp(0.15f);
+        }
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // State methods
@@ -242,6 +257,15 @@ public class ClockActivity extends AppCompatActivity {
         ImageButton nightModeButton = findViewById(R.id.night_mode_button);
         nightModeButton.setOnClickListener(nightModeOnClickListener);
         nightModeButton.setOnTouchListener(mDelayHideTouchListener);
+
+        //Volume
+        volumeManager = new VolumeManager(this, mControlsView, mMediaPlayer);
+
+        //Play at start?
+        //button clicked is either last played, or the first; will also set
+        if (prefs.getBoolean(getResources().getString(R.string.setting_key_playAtStart), false)){
+            play(buttonManager.getButtonClicked().getId());
+        }
     }
 
 
@@ -413,6 +437,8 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
+    private ScheduledFuture progressiveTaskFuture;
+
     void play(int buttonId) {
         //if already playing and comes from alarm -do nothing
         if (mMediaPlayer.isPlaying() && alarmPlaying) {
@@ -421,6 +447,15 @@ public class ClockActivity extends AppCompatActivity {
         }
         //we might have a default alarm playing, so need to shut it off
         alarmManager.shutDownDefaultAlarm();
+        if (alarmPlaying && prefs.getBoolean(getResources().getString(R.string.setting_key_alarmProgressiveSound), false)) {
+            if (progressiveTaskFuture != null){
+                //Timber.d("Canceling progressive volume task");
+                progressiveTaskFuture.cancel(true  );
+            }
+            volumeManager.setVolume(0.05f);
+            //Timber.d("Scheduling progressive volume task");
+            progressiveTaskFuture = executorService.scheduleAtFixedRate(new AlarmProgressiveVolume(), 10, 10, TimeUnit.SECONDS);
+        }
         String url;
         //index in th list
         int index = -1;
@@ -478,6 +513,10 @@ public class ClockActivity extends AppCompatActivity {
         }
         mPlayingStreamNo = 0;
         mPlayingStreamTag = null;
+        if (progressiveTaskFuture != null) {
+            //Timber.d("Canceling progressive volume task");
+            progressiveTaskFuture.cancel(true);
+        }
     }
 
     private class CustomOnPreparedListener implements OnPreparedListener {

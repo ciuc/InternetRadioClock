@@ -47,4 +47,18 @@
         android:summary="@string/setting.summary.reverseButtons"
         android:defaultValue="false"
         />
+    <SwitchPreference
+        android:id="@+id/alarm_progressive_sound"
+        android:key="@string/setting.key.alarmProgressiveSound"
+        android:title="@string/setting.name.alarmProgressiveSound"
+        android:summary="@string/setting.summary.alarmProgressiveSound"
+        android:defaultValue="false"
+        />
+    <SwitchPreference
+        android:id="@+id/play_at_start"
+        android:key="@string/setting.key.playAtStart"
+        android:title="@string/setting.name.playAtStart"
+        android:summary="@string/setting.summary.playAtStart"
+        android:defaultValue="false"
+        />
 </PreferenceScreen>

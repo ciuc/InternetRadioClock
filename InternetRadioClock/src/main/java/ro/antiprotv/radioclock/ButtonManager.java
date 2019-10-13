@@ -101,11 +101,15 @@ class ButtonManager {
     }
 
     public Button getButtonClicked() {
+        if (mButtonClicked == null) {
+            mButtonClicked = findButtonByTag(prefs.getString(ClockActivity.LAST_PLAYED,"setting.key.stream1"));
+        }
         return mButtonClicked;
     }
 
     public void setButtonClicked(Button mButtonClicked) {
         this.mButtonClicked = mButtonClicked;
+        prefs.edit().putString(ClockActivity.LAST_PLAYED, mButtonClicked.getTag().toString()).apply();
     }
 
     void setText(int index, SharedPreferences newPrefs) {

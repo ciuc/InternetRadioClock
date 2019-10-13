@@ -123,7 +123,39 @@
             app:srcCompat="@drawable/ic_night_24dp"
             android:background="@drawable/memory"
             android:textColor="@color/button.color.off" />
-
+        <ImageButton
+            android:id="@+id/volumeup_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/night_mode_button"
+            android:layout_marginRight="5dp"
+            android:clickable="false"
+            app:srcCompat="@drawable/ic_volume_up_24dp"
+            android:background="@drawable/memory"
+            android:textColor="@color/button.color.off"
+            android:layout_alignParentBottom="true"/>
+        <ImageButton
+            android:id="@+id/volumedown_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/volumeup_button"
+            android:layout_marginRight="5dp"
+            android:clickable="false"
+            app:srcCompat="@drawable/ic_volume_down_24dp"
+            android:background="@drawable/memory"
+            android:textColor="@color/button.color.off"
+            android:layout_alignParentBottom="true"/>
+        <TextView
+            android:id="@+id/volume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill"
+            android:textColor="@color/button.color.off"
+            android:textSize="10sp"
+            android:layout_toLeftOf="@+id/volumedown_button"
+            android:layout_alignParentBottom="true"/>
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
             style="?metaButtonBarStyle"
