@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -78,7 +77,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
                 shutDownDefaultAlarm();
                 shutDownRadioAlarm(false);
                 clockActivity.hide();
-                clockActivity.cancelProgressiveVolumeTaskFuture();
             }
         });
     }
@@ -109,16 +107,16 @@ public class RadioAlarmManager extends BroadcastReceiver {
             alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), alarmIntent);
         }
         //TESTING: enable this line to have the alarm in 5 secs;
-        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2000, alarmIntent);
+        //alarmMgr.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2000, alarmIntent);
         Toast.makeText(clockActivity, String.format("Alarm set for %s at %s", (tomorrow) ? clockActivity.getString(R.string.text_tomorrow) : clockActivity.getString(R.string.today), sdf.format(next.getTime())), Toast.LENGTH_SHORT).show();
         alarmText.setText(clockActivity.getString(R.string.text_alarm_set_for, sdf.format(next.getTime())));
         alarmText.setVisibility(View.VISIBLE);
         alarmButton.setImageResource(R.drawable.ic_alarm_on_black_24dp);
         alarmOffButton.setVisibility(View.VISIBLE);
-        hideSnoozeAndCancel();
+        hideAlarmButtons();
     }
 
-    private void hideSnoozeAndCancel() {
+    private void hideAlarmButtons() {
         //not sure how necessary is this here, but we seem to have a race condition
         //in which the runnable started by the Executor (MediaPlayerCanceler)
         //finishes before both actions are completed
@@ -166,11 +164,11 @@ public class RadioAlarmManager extends BroadcastReceiver {
         setAlarm(now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE));
     }
 
-    private void shutDownRadioAlarm(boolean stopPlaying) {
+    public void shutDownRadioAlarm(boolean stopPlaying) {
         if (stopPlaying) {
             clockActivity.stopPlaying();
         }
-        hideSnoozeAndCancel();
+        hideAlarmButtons();
     }
 
     /**
@@ -184,7 +182,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     }
 
     void cancelSnooze() {
-        hideSnoozeAndCancel();
+        hideAlarmButtons();
     }
 
     void playDefaultAlarmOnStreamError() {
@@ -200,7 +198,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     void shutDownDefaultAlarm() {
         if (player != null && player.isPlaying()) {
             player.stop();
-            hideSnoozeAndCancel();
+            hideAlarmButtons();
         }
     }
 

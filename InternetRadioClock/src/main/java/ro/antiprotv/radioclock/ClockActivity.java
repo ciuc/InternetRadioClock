@@ -183,7 +183,7 @@ public class ClockActivity extends AppCompatActivity {
             //Timber.d("Running progressive volume task");
             if (mMediaPlayer.getVolumeLeft() >= 1) {
                 //Timber.d("Canceling progressive volume task");
-                cancelProgressiveVolumeTaskFuture();
+                cancelProgressiveVolumeTask();
                 return;
             }
             volumeManager.volumeUp(0.15f);
@@ -442,10 +442,10 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    private ScheduledFuture progressiveVolumeTaskFuture;
-    public void cancelProgressiveVolumeTaskFuture() {
-        if (progressiveVolumeTaskFuture != null && !progressiveVolumeTaskFuture.isCancelled()) {
-            progressiveVolumeTaskFuture.cancel(true);
+    private ScheduledFuture progressiveVolumeTask;
+    public void cancelProgressiveVolumeTask() {
+        if (progressiveVolumeTask != null && !progressiveVolumeTask.isCancelled()) {
+            progressiveVolumeTask.cancel(true);
         }
     }
     void play(int buttonId) {
@@ -457,10 +457,10 @@ public class ClockActivity extends AppCompatActivity {
         //we might have a default alarm playing, so need to shut it off
         alarmManager.shutDownDefaultAlarm();
         if (alarmPlaying && prefs.getBoolean(getResources().getString(R.string.setting_key_alarmProgressiveSound), false)) {
-            cancelProgressiveVolumeTaskFuture();
+            cancelProgressiveVolumeTask();
             volumeManager.setVolume(0.05f);
             //Timber.d("Scheduling progressive volume task");
-            progressiveVolumeTaskFuture = executorService.scheduleAtFixedRate(new AlarmProgressiveVolume(), 10, 10, TimeUnit.SECONDS);
+            progressiveVolumeTask = executorService.scheduleAtFixedRate(new AlarmProgressiveVolume(), 10, 10, TimeUnit.SECONDS);
         }
         String url;
         //index in th list
@@ -519,7 +519,7 @@ public class ClockActivity extends AppCompatActivity {
         }
         mPlayingStreamNo = 0;
         mPlayingStreamTag = null;
-        cancelProgressiveVolumeTaskFuture();
+        cancelProgressiveVolumeTask();
     }
 
     private class CustomOnPreparedListener implements OnPreparedListener {
@@ -625,7 +625,8 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     public void hide() {
-        cancelProgressiveVolumeTaskFuture();
+        cancelProgressiveVolumeTask();
+        alarmManager.shutDownRadioAlarm(false);
         // Hide UI first
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
