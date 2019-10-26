@@ -159,6 +159,17 @@
             android:textColor="@color/button.color.off"
             android:textSize="10sp"
             android:layout_toLeftOf="@+id/volumedown_button"/>
+        <ImageButton
+            android:id="@+id/main_help_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_toLeftOf="@+id/volume"
+            android:layout_marginRight="5dp"
+            android:clickable="false"
+            app:srcCompat="@drawable/ic_help_outline_white_24dp"
+            android:background="@android:color/transparent"
+            android:textColor="@color/button.color.off"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
 
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"

@@ -21,6 +21,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -190,6 +191,22 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
+    private class OnHelpClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            android.app.AlertDialog.Builder dialogBuilder = new android.app.AlertDialog.Builder(view.getContext());
+            dialogBuilder.setTitle("Tips & Tricks");
+            dialogBuilder.setView(LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_main_help, null));
+            dialogBuilder.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            dialogBuilder.show();
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // State methods
     ///////////////////////////////////////////////////////////////////////////
@@ -271,6 +288,9 @@ public class ClockActivity extends AppCompatActivity {
         if (prefs.getBoolean(getResources().getString(R.string.setting_key_playAtStart), false)){
             play(buttonManager.getButtonClicked().getId());
         }
+
+        final ImageButton helpButton = findViewById(R.id.main_help_button);
+        helpButton.setOnClickListener(new OnHelpClickListener());
     }
 
 
