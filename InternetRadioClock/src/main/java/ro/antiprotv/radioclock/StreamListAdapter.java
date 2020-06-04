@@ -141,8 +141,13 @@ class StreamListAdapter extends RecyclerView.Adapter {
                 name = name.replaceAll("[AEIOU ]","");
 
 
-                if (name.length() >= 3) {
-                    label = name.substring(0, 3);
+                if (name.length() >= 4) {
+                    label = name.substring(0, 4);
+                }
+                if (label.equals("")) {
+                    if (name.length() == 3) {
+                        label = name.substring(0, 3);
+                    }
                 }
                 return label;
             }

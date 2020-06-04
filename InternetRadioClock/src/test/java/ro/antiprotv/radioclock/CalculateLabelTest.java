@@ -12,6 +12,7 @@ public class CalculateLabelTest  {
         System.out.println(calculateLabel("TANANANA"));
         System.out.println(calculateLabel("Radio Guerrilla"));
         System.out.println(calculateLabel("106.4 FM radio block"));
+        System.out.println(calculateLabel("106.4 KJCM radio rock"));
         System.out.println(calculateLabel(""));
     }
 
@@ -27,8 +28,13 @@ public class CalculateLabelTest  {
         name = name.replaceAll("[AEIOU ]","");
 
 
-        if (name.length() >= 3) {
-            label = name.substring(0, 3);
+        if (name.length() >= 4) {
+            label = name.substring(0, 4);
+        }
+        if (label.equals("")) {
+            if (name.length() == 3) {
+                label = name.substring(0, 3);
+            }
         }
         return label;
     }

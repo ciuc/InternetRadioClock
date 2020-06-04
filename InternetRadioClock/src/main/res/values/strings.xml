@@ -144,6 +144,9 @@
     <string name="setting.key.clockSize">setting.key.clockSize</string>
     <string name="setting.name.clockSize">Clock Size</string>
     <string name="setting.default.clockSize">100</string>
+    <string name="setting.key.clock24">setting.key.clock24</string>
+    <string name="setting.name.clock24">Use 24h Clock</string>
+    <string name="setting.summary.clock24">Use either 24h or am/pm clock.</string>
 
     <string name="back">Back</string>
     <string name="find">Go Find!</string>
@@ -500,5 +503,7 @@ in this section you can set some neat stuff:
     <string name="text_alarm_set_for">Alarm set for %1$s</string>
     <string name="menu_night_profile">Night Profile</string>
     <string name="title_night_profile">Night Profile</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

@@ -32,6 +32,7 @@ import java.util.Objects;
 public class StreamFinderActivity extends AppCompatActivity {
     private List<Stream> streams;
     private StreamListAdapter adapter;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,12 @@ public class StreamFinderActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         streams = new ArrayList<>();
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        //Preselect spinners based on remembered settings
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Spinner countrySpinner = findViewById(R.id.streamFinder_dropdown_country);
+        countrySpinner.setSelection(prefs.getInt("finder.selected.country", 0));
+        Spinner languageSpinner = findViewById(R.id.streamFinder_dropdown_language);
+        languageSpinner.setSelection(prefs.getInt("finder.selected.language", 0));
 
         adapter = new StreamListAdapter(this, new ButtonManager(this), streams);
         recyclerView.setAdapter(adapter);
@@ -71,11 +77,14 @@ public class StreamFinderActivity extends AppCompatActivity {
         Spinner countrySpinner = findViewById(R.id.streamFinder_dropdown_country);
         //There is no null here, b/c there is always something selected
         String country = countrySpinner.getSelectedItem().toString();
+        prefs.edit().putInt("finder.selected.country", countrySpinner.getSelectedItemPosition()).apply();
+
         TextView nameTv = findViewById(R.id.streamFinder_textinput_name);
         String name = nameTv.getText() != null ? nameTv.getText().toString() : "";
         Spinner languageSpinner = findViewById(R.id.streamFinder_dropdown_language);
         //There is no null here, b/c there is always something selected
         String language = languageSpinner.getSelectedItem().toString();
+        prefs.edit().putInt("finder.selected.language", languageSpinner.getSelectedItemPosition()).apply();
         Spinner tagsSpinner = findViewById(R.id.streamFinder_dropdown_tags);
         //There is no null here, b/c there is always something selected
         String tags = tagsSpinner.getSelectedItem().toString();

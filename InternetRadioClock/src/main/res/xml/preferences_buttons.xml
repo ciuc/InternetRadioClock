@@ -8,7 +8,7 @@
         android:key="@string/setting.key.label1"
         android:title="@string/setting.name.label1"
         android:defaultValue="@string/button.name.stream1"
-        android:maxLength="3"/>
+        android:maxLength="4"/>
 
     <EditTextPreference
         android:key="@string/setting.key.stream2"
@@ -18,7 +18,7 @@
         android:key="@string/setting.key.label2"
         android:title="@string/setting.name.label2"
         android:defaultValue="@string/button.name.stream2"
-        android:maxLength="3"/>
+        android:maxLength="4"/>
 
     <EditTextPreference
         android:key="@string/setting.key.stream3"
@@ -28,7 +28,7 @@
         android:key="@string/setting.key.label3"
         android:title="@string/setting.name.label3"
         android:defaultValue="@string/button.name.stream3"
-        android:maxLength="3"/>
+        android:maxLength="4"/>
 
     <EditTextPreference
         android:key="@string/setting.key.stream4"
@@ -38,7 +38,7 @@
         android:key="@string/setting.key.label4"
         android:title="@string/setting.name.label4"
         android:defaultValue="@string/button.name.stream4"
-        android:maxLength="3"/>
+        android:maxLength="4"/>
 
     <EditTextPreference
         android:key="@string/setting.key.stream5"
@@ -47,7 +47,7 @@
         android:key="@string/setting.key.label5"
         android:title="@string/setting.name.label5"
         android:defaultValue="@string/button.name.stream5"
-        android:maxLength="3"/>
+        android:maxLength="4"/>
 
     <EditTextPreference
         android:key="@string/setting.key.stream6"
@@ -56,7 +56,7 @@
         android:key="@string/setting.key.label6"
         android:title="@string/setting.name.label6"
         android:defaultValue="@string/button.name.stream6"
-        android:maxLength="3"/>
+        android:maxLength="4"/>
 
     <EditTextPreference
         android:key="@string/setting.key.stream7"
@@ -65,7 +65,7 @@
         android:key="@string/setting.key.label7"
         android:title="@string/setting.name.label7"
         android:defaultValue="@string/button.name.stream7"
-        android:maxLength="3"/>
+        android:maxLength="4"/>
 
     <EditTextPreference
         android:key="@string/setting.key.stream8"
@@ -74,5 +74,5 @@
         android:key="@string/setting.key.label8"
         android:title="@string/setting.name.label8"
         android:defaultValue="@string/button.name.stream8"
-        android:maxLength="3"/>
+        android:maxLength="4"/>
 </PreferenceScreen>
