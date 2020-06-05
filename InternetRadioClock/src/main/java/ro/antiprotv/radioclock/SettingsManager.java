@@ -113,13 +113,11 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
         boolean nightMode = prefs.getBoolean(ClockActivity.PREF_NIGHT_MODE, false);
         int keyClockColor = R.string.setting_key_clockColor;
         int keyClockSize = R.string.setting_key_clockSize;
-        int keyClockSeconds = R.string.setting_key_seconds;
         int keyClockMove = R.string.setting_key_clockMove;
 
         if (nightMode) {
             keyClockColor = R.string.setting_key_clockColor_night;
             keyClockSize = R.string.setting_key_clockSize_night;
-            keyClockSeconds = R.string.setting_key_seconds_night;
             keyClockMove = R.string.setting_key_clockMove_night;
         }
 
@@ -134,24 +132,11 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             clockActivity.getmContentView().setTextSize(size);
         }
 
-        if (key.equals(clockActivity.getResources().getString(keyClockSeconds)) ||
-                key.equals(clockActivity.getResources().getString(R.string.setting_key_clock24))) {
-
-            String hourPattern;
-            boolean clock24 = prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clock24), true);
-            StringBuilder clockPattern = new StringBuilder();
-            if (clock24) {
-                clockPattern.append("HH:mm");
-            } else {
-                clockPattern.append("hh:mm");
-            }
-            if (prefs.getBoolean(clockActivity.getResources().getString(keyClockSeconds), true)) {
-                clockPattern.append(":ss");
-            }
-            if(!clock24) {
-                clockPattern.append(" a");
-            }
-            clockUpdater.setSdf(new SimpleDateFormat(clockPattern.toString()));
+        if (key.equals(clockActivity.getResources().getString(R.string.setting_key_seconds)) ||
+                key.equals(clockActivity.getResources().getString(R.string.setting_key_seconds_night)) ||
+                key.equals(clockActivity.getResources().getString(R.string.setting_key_clock24)) ||
+                key.equals(clockActivity.getResources().getString(R.string.setting_key_clock24ampm))) {
+            clockUpdater.setSdf(getClockFormat());
         }
         if (key.equals(clockActivity.getResources().getString(keyClockMove))) {
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(keyClockMove), true));
@@ -171,22 +156,13 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
     void applyProfile() {
         boolean nightMode = prefs.getBoolean(PREF_NIGHT_MODE, false);
         ImageButton nightButton = clockActivity.findViewById(R.id.night_mode_button);
-        SimpleDateFormat sdf;
-        StringBuilder clockPattern = new StringBuilder();
+
         String colorCode;
         String clockSize = clockActivity.getResources().getString(R.string.setting_default_clockSize);
         int size;
-        boolean clock24 = prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clock24), true);
-        if (clock24) {
-            clockPattern.append("HH:mm");
-        } else {
-            clockPattern.append("hh:mm");
-        }
+
         if (nightMode) {
             //clock seconds
-            if (prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_seconds_night), true)) {
-                clockPattern.append(":ss");
-            }
             //Clock color
             colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor_night), clockActivity.getResources().getString(R.string.setting_default_clockColor));
             //clock size
@@ -196,11 +172,6 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             //clock move
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clockMove_night), true));
         } else {
-            //clock seconds
-            if (prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_seconds), true)) {
-                clockPattern.append(":ss");
-            }
-
             //Clock color
             colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor), clockActivity.getResources().getString(R.string.setting_default_clockColor));
 
@@ -212,11 +183,8 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             //clock move
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clockMove), true));
         }
-        if (!clock24) {
-            clockPattern.append(" a");
-        }
-        sdf = new SimpleDateFormat(clockPattern.toString());
-        clockUpdater.setSdf(sdf);
+
+        clockUpdater.setSdf(getClockFormat());
         clockActivity.getmContentView().setTextColor(Color.parseColor(colorCode));
         clockActivity.getmContentView().setTextSize(size);
         clockActivity.getmContentView().setGravity(Gravity.CENTER);
@@ -224,5 +192,31 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
         buttonShape.mutate();
         buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.button_color));
 
+    }
+
+    protected SimpleDateFormat getClockFormat() {
+        boolean nightMode = prefs.getBoolean(ClockActivity.PREF_NIGHT_MODE, false);
+        boolean keyClockSeconds = prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_seconds), true);
+        if (nightMode) {
+            //clock seconds
+            keyClockSeconds = prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_seconds_night), true);
+        }
+
+        boolean clock12 = prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clock24), false);
+        StringBuilder clockPattern = new StringBuilder();
+        if (!clock12) {
+            clockPattern.append("HH:mm");
+        } else {
+            clockPattern.append("hh:mm");
+        }
+        if (keyClockSeconds) {
+            clockPattern.append(":ss");
+        }
+        if(clock12 && prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clock24ampm), true)) {
+
+            clockPattern.append(" a");
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(clockPattern.toString());
+        return sdf;
     }
 }

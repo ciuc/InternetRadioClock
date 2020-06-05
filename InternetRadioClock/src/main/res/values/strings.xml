@@ -96,6 +96,12 @@
     <string name="setting.name.rememberLastVolume">Remember last volume</string>
     <string name="setting.summary.rememberLastVolume">Start playing with the last volume setting.</string>
 
+
+    <string name="setting.key.lockOrientationLandscape">setting.key.lockOrientationLandscape</string>
+    <string name="setting.name.lockOrientationLandscape">Lock landscape</string>
+    <string name="setting.summary.lockOrientationLandscape">If disabled, clock will follow phone orientation. If enabled it will stay landscape. (Requires restart!)</string>
+
+
     <string name="text.sleep.timer">Sleep in %d minutes</string>
     <!-- advanced settings -->
     <string-array name="clock_colors">
@@ -145,8 +151,11 @@
     <string name="setting.name.clockSize">Clock Size</string>
     <string name="setting.default.clockSize">100</string>
     <string name="setting.key.clock24">setting.key.clock24</string>
-    <string name="setting.name.clock24">Use 24h Clock</string>
-    <string name="setting.summary.clock24">Use either 24h or am/pm clock.</string>
+    <string name="setting.name.clock24">Use 12h Clock</string>
+    <string name="setting.summary.clock24">Use am/pm or 24h clock.</string>
+    <string name="setting.key.clock24ampm">setting.key.clock24ampm</string>
+    <string name="setting.name.clock24ampm">Display am/pm</string>
+    <string name="setting.summary.clock24ampm">When using 12h clock, display am or pm or not.</string>
 
     <string name="back">Back</string>
     <string name="find">Go Find!</string>
@@ -436,7 +445,7 @@
     <h1>Internet Radio Clock<h1>
 <p>This simple app just displays the clock in full screen mode and has 5 buttons associated each with a radio stream.</p>
 <p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania, RadioBOB from Germany and Zodiac from Ireland. These can be changed and you can have up to 8 buttons.</p>
-<p><span style="color:red">NEW: alarm progressive sound; when alarm starts touch the screen (or the check button) to cancel it without stopping radio; play directly when open; (check settings). StreamFinder: now allows empty tag.</span></p>
+<p>alarm progressive sound; when alarm starts touch the screen (or the check button) to cancel it without stopping radio; play directly when open; (check settings). StreamFinder: now allows empty tag.</p>
 <p>
 <b>Reverse</b><br>
 Change screen orientation. Depending on the placement of the volume buttons, this might come in handy.<br>
@@ -447,11 +456,13 @@ in this section you can set some neat stuff:
 <li>clock color</li>
 <li>clock size</li>
 <li>enable/disable the display of seconds</li>
+<li><span style="color:red">new: </span> enable 12 hour clock with or without the display of am/pm</li>
 <li>enable/disable the movement of the clock on the screen; by default the clock moves around the screen corners - important if you have an AMOLED display (leaving an image on an AMOLED screen for a prolonged period of time might damage the screen)</li>
 <li>custom sleep timer: the app features a sleep button that cycles through some predefined sleep timers (15, 20, 30 minutes); you can add your preferred one here
 -> You can activate the sleep timer from the sleep button on the main screen. </li>
 <li>custom snooze time: you can set your own snooze timer (by default it is set to 10 minutes)</li>
 <li>reverse stream/alarm buttons: put radio buttons at the top and the alarm buttons on the bottom. This might be helpful for certain phone holders.</li>
+<li><span style="color:red">new: </span> unlock landscape mode so the clock will follow phone orientation</li>
 </ul>
 <b>Configure buttons</b>
 <ul>
@@ -463,6 +474,7 @@ in this section you can set some neat stuff:
 <ul>
 <li>you can search a radio stream using the dropdown boxes and the name text (the name does not need to be exact) and you can assign the radio to a memory. The app will even suggest a label ;)</li>
 <li>please bear in mind that the list is not complete and might not be 100% accurate; if you have a radio that you want me to add in the list please send me an email</li>
+<li><span style="color:red">new: </span>now the app will remember the last used country and language</li>
 </ul>
 <b>Night Profile</b>
 <ul>

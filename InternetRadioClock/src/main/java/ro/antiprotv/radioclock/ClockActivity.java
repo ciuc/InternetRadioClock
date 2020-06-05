@@ -13,6 +13,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -218,10 +220,18 @@ public class ClockActivity extends AppCompatActivity {
         //Initialize the preferences_buttons
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
+        if(prefs.getBoolean(getResources().getString(R.string.setting_key_lockOrientationLandscape), true)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+        int currentOrientation = getResources().getConfiguration().orientation;
         //if reverse enabled we load the reverse layout
         boolean reverse = prefs.getBoolean(getResources().getString(R.string.setting_key_reverseButtons), false);
-        if (reverse) {
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE && reverse) {
             setContentView(R.layout.activity_main_reverse);
+        } else if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE){
+            setContentView(R.layout.activity_main);
+        } else if(currentOrientation == Configuration.ORIENTATION_PORTRAIT) {
+            setContentView(R.layout.activity_main_portrait);
         } else {
             setContentView(R.layout.activity_main);
         }
