@@ -171,6 +171,10 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
 
             //clock move
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clockMove_night), true));
+
+            GradientDrawable buttonShape = (GradientDrawable) nightButton.getBackground();
+            buttonShape.mutate();
+            buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.color_clock));
         } else {
             //Clock color
             colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor), clockActivity.getResources().getString(R.string.setting_default_clockColor));
@@ -179,18 +183,20 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             String clockSizeKey = clockActivity.getResources().getString(R.string.setting_key_clockSize);
 
             size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
-            clockActivity.getmContentView().setTextSize(size);
+
             //clock move
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clockMove), true));
+
+            GradientDrawable buttonShape = (GradientDrawable) nightButton.getBackground();
+            buttonShape.mutate();
+            buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.button_color));
         }
 
         clockUpdater.setSdf(getClockFormat());
         clockActivity.getmContentView().setTextColor(Color.parseColor(colorCode));
         clockActivity.getmContentView().setTextSize(size);
         clockActivity.getmContentView().setGravity(Gravity.CENTER);
-        GradientDrawable buttonShape = (GradientDrawable) nightButton.getBackground();
-        buttonShape.mutate();
-        buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.button_color));
+
 
     }
 

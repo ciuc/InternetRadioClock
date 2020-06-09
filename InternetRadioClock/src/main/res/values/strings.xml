@@ -171,7 +171,7 @@
     <string name="streamFinder.hint">The list with radio streams is retrieved from the internet. It is maintained by community efforts and might not be 100% accurate.\n
 \nThere are aver 15.000 radios so this is why you need to provide at least a country as search criteria, otherwise the list would be huge.\n
 \nYou can add more search criteria like a category or the name of the radio.\n
-\nIf you want to assign a radio to a memory button, click on the button coresponding to the desired memory.
+\nIf you want to assign a radio to a memory button, click on the button corresponding to the desired memory.
     </string>
     <string name="mainHelp.hint">
 - enable progressive alarm sound from settings menu\n
@@ -467,7 +467,7 @@ in this section you can set some neat stuff:
 <b>Configure buttons</b>
 <ul>
 <li>edit a memory button (the stream url)</li>
-<li>assign a label to a button (will be displayed instead of the number) - you can also do this by long clicking on a button; <span style="color:red"><b>new in 3.3</b></span>: by long click you can also remove a button</li>
+<li>assign a label to a button (will be displayed instead of the number) - you can also do this by long clicking on a button; by long click you can also remove a button</li>
 <li>enable up to 8 buttons (simply add the url of your favourite radio stream)</li>
 </ul>
 <b>Stream Finder</b>
