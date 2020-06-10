@@ -156,7 +156,12 @@
     <string name="setting.key.clock24ampm">setting.key.clock24ampm</string>
     <string name="setting.name.clock24ampm">Display am/pm</string>
     <string name="setting.summary.clock24ampm">When using 12h clock, display am or pm or not.</string>
-
+    <string name="setting.key.clock_dots">setting.key.clock_dots</string>
+    <string name="setting.name.clock_dots">Display the colon (dots) between h:m:s</string>
+    <string name="setting.summary.clock_dots">When using 12h clock, display or hide the colon between numbers.</string>
+    <string name="setting.key.clock_vertical">setting.key.clock_vertical</string>
+    <string name="setting.name.clock_vertical">Display the clock vertically</string>
+    <string name="setting.summary.clock_vertical">In portrait mode, display the hour, minutes and seconds one under the other.</string>
     <string name="back">Back</string>
     <string name="find">Go Find!</string>
     <string name="assign_to">Assign\nto memory:</string>
@@ -173,11 +178,11 @@
 \nYou can add more search criteria like a category or the name of the radio.\n
 \nIf you want to assign a radio to a memory button, click on the button corresponding to the desired memory.
     </string>
-    <string name="mainHelp.hint">
-- enable progressive alarm sound from settings menu\n
+    <string name="mainHelp.hint">- enable progressive alarm sound from settings menu\n
 - after alarm starts, clicking on the screen will cancel the alarm, but radio continues playing at the current volume; use the volume buttons to set desired volume\n
 - after alarm starts - click the alarm cancel button to cancel the alarm and stop playing the radio\n
 - you can also snooze the alarm\n
+- try out multiple display choices in the Settings menu\n
 - more tips in the \"About\" section
     </string>
     <string name="streamFinder.prompt.country">Choose country</string>
@@ -462,7 +467,7 @@ in this section you can set some neat stuff:
 -> You can activate the sleep timer from the sleep button on the main screen. </li>
 <li>custom snooze time: you can set your own snooze timer (by default it is set to 10 minutes)</li>
 <li>reverse stream/alarm buttons: put radio buttons at the top and the alarm buttons on the bottom. This might be helpful for certain phone holders.</li>
-<li><span style="color:red">new: </span> unlock landscape mode so the clock will follow phone orientation</li>
+<li><span style="color:red">new: </span> unlock landscape mode so the clock will follow phone orientation; also ability to draw the clock vertically (with hours, minutes and/or seconds one below the other).</li>
 </ul>
 <b>Configure buttons</b>
 <ul>

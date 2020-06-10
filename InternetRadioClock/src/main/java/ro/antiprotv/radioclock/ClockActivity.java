@@ -220,9 +220,7 @@ public class ClockActivity extends AppCompatActivity {
         //Initialize the preferences_buttons
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if(prefs.getBoolean(getResources().getString(R.string.setting_key_lockOrientationLandscape), true)) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }
+        setOrientationLandscapeIfLocked();
         int currentOrientation = getResources().getConfiguration().orientation;
         //if reverse enabled we load the reverse layout
         boolean reverse = prefs.getBoolean(getResources().getString(R.string.setting_key_reverseButtons), false);
@@ -303,6 +301,12 @@ public class ClockActivity extends AppCompatActivity {
         helpButton.setOnClickListener(new OnHelpClickListener());
     }
 
+    private void setOrientationLandscapeIfLocked() {
+        if(prefs.getBoolean(getResources().getString(R.string.setting_key_lockOrientationLandscape), true)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+    }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -332,6 +336,7 @@ public class ClockActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter("alarmReceiver");
         this.registerReceiver(this.alarmManager, filter);
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+        setOrientationLandscapeIfLocked();
     }
 
     @Override

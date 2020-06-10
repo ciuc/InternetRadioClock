@@ -1,6 +1,7 @@
 package ro.antiprotv.radioclock;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.preference.PreferenceManager;
@@ -135,7 +136,10 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
         if (key.equals(clockActivity.getResources().getString(R.string.setting_key_seconds)) ||
                 key.equals(clockActivity.getResources().getString(R.string.setting_key_seconds_night)) ||
                 key.equals(clockActivity.getResources().getString(R.string.setting_key_clock24)) ||
-                key.equals(clockActivity.getResources().getString(R.string.setting_key_clock24ampm))) {
+                key.equals(clockActivity.getResources().getString(R.string.setting_key_clock_dots)) ||
+                key.equals(clockActivity.getResources().getString(R.string.setting_key_clock_vertical)) ||
+                key.equals(clockActivity.getResources().getString(R.string.setting_key_clock24ampm))
+        ) {
             clockUpdater.setSdf(getClockFormat());
         }
         if (key.equals(clockActivity.getResources().getString(keyClockMove))) {
@@ -219,10 +223,19 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             clockPattern.append(":ss");
         }
         if(clock12 && prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clock24ampm), true)) {
-
             clockPattern.append(" a");
         }
-        SimpleDateFormat sdf = new SimpleDateFormat(clockPattern.toString());
+        String pattern = clockPattern.toString();
+        if (clockActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT &&
+                prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clock_vertical), true)) {
+            pattern  = pattern.replaceAll(":",":\n");
+            pattern  = pattern.replaceAll(" ","\n");
+        }
+
+        if (!prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clock_dots), true)) {
+            pattern = pattern.replaceAll(":","");
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         return sdf;
     }
 }
