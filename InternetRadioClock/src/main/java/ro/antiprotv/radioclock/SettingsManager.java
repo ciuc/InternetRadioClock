@@ -93,7 +93,13 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
         }
 
         if (key.equals(clockActivity.getResources().getString(R.string.setting_key_sleepMinutes))) {
-            Integer customTimer = Integer.parseInt(prefs.getString(clockActivity.getResources().getString(R.string.setting_key_sleepMinutes), "0"));
+            Integer customTimer = 0;
+            try {
+                Integer.parseInt(prefs.getString(clockActivity.getResources().getString(R.string.setting_key_sleepMinutes), "0"));
+            } catch (NumberFormatException e) {
+                prefs.edit().putString(clockActivity.getResources().getString(R.string.setting_key_sleepMinutes), "0").apply();
+                return;
+            }
             if (customTimer == 0) {
                 sleepManager.getTimers().remove(0);
             } else {

@@ -408,7 +408,13 @@ public class ClockActivity extends AppCompatActivity {
     private void initializeSleepFunction() {
         //sleep timer
         sleepManager = new SleepManager(this);
-        Integer customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
+
+        Integer customTimer = 0;
+        try {
+            customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
+        } catch (NumberFormatException e) {
+            prefs.edit().putString(getResources().getString(R.string.setting_key_sleepMinutes), "0").apply();
+        }
         if (customTimer != 0) {
             sleepManager.getTimers().add(0, customTimer);
         }
