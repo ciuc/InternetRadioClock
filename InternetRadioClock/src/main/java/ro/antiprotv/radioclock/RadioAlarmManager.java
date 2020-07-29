@@ -107,7 +107,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
             alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), alarmIntent);
         }
         //TESTING: enable this line to have the alarm in 5 secs;
-        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
+        //alarmMgr.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
         Toast.makeText(clockActivity, String.format("Alarm set for %s at %s", (tomorrow) ? clockActivity.getString(R.string.text_tomorrow) : clockActivity.getString(R.string.today), sdf.format(next.getTime())), Toast.LENGTH_SHORT).show();
         alarmText.setText(clockActivity.getString(R.string.text_alarm_set_for, sdf.format(next.getTime())));
         alarmText.setVisibility(View.VISIBLE);
@@ -217,7 +217,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         showSnoozeAndCancel();
         clockActivity.setAlarmPlaying(true);
         clockActivity.play(memory);
-        clockActivity.startActivity(intent);
+        clockActivity.show();
     }
 
     private class MediaPlayerCanceller implements Runnable {
