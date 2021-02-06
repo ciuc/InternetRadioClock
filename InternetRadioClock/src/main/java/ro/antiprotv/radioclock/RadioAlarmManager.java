@@ -39,6 +39,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     private final ButtonManager buttonManager;
     private MediaPlayer player;
     ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private String playMemoryAtWakeup = "0";
 
     public RadioAlarmManager(ClockActivity context, ButtonManager buttonManager) {
         this.buttonManager = buttonManager;
@@ -79,6 +80,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
                 clockActivity.hide();
             }
         });
+        playMemoryAtWakeup = PreferenceManager.getDefaultSharedPreferences(context).getString(context.getResources().getString(R.string.setting_key_wake_up_station), "0");
     }
 
     public void setAlarm(int hour, int minute) {
@@ -202,11 +204,18 @@ public class RadioAlarmManager extends BroadcastReceiver {
         }
     }
 
+    public void setPlayMemoryAtWakeup(String playMemoryAtWakeup) {
+        this.playMemoryAtWakeup = playMemoryAtWakeup;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         //what do we play?
         int memory;
-        if (buttonManager.getButtonClicked() == null) {
+        if (!playMemoryAtWakeup.equals("0")) {
+            memory = buttonManager.findButtonByTag(playMemoryAtWakeup).getId();
+            buttonManager.setButtonClicked(buttonManager.findButtonByTag(playMemoryAtWakeup));
+        } else if (buttonManager.getButtonClicked() == null) {
             memory = R.id.stream1;
             buttonManager.setButtonClicked((Button) clockActivity.findViewById(R.id.stream1));
         } else {

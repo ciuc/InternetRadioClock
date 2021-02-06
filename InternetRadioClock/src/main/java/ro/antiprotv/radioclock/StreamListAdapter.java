@@ -21,7 +21,6 @@ class StreamListAdapter extends RecyclerView.Adapter {
     private final StreamFinderActivity streamFinderActivity;
     private final ButtonManager buttonManager;
     private List<Stream> streams;
-    private Logger logger = Logger.getLogger(StreamListAdapter.class.getName());
 
     public StreamListAdapter(StreamFinderActivity context, ButtonManager buttonManager, List<Stream> streams) {
         inflater = LayoutInflater.from(context);

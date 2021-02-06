@@ -1,6 +1,7 @@
 package ro.antiprotv.radioclock;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -13,23 +14,82 @@ import java.text.SimpleDateFormat;
 import static ro.antiprotv.radioclock.ClockActivity.PREF_NIGHT_MODE;
 import static ro.antiprotv.radioclock.ClockActivity.TAG_RADIOCLOCK;
 
-class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsManager implements OnSharedPreferenceChangeListener {
     private final ClockActivity clockActivity;
     private final ButtonManager buttonManager;
     private final SleepManager sleepManager;
     private final ClockUpdater clockUpdater;
     private final SharedPreferences prefs;
+    private final BatteryService batteryService;
+    private final RadioAlarmManager radioAlarmManager;
 
-    public SettingsManager(ClockActivity clockActivity, ButtonManager buttonManager, SleepManager sleepManager, ClockUpdater clockUpdater) {
+    public SettingsManager(ClockActivity clockActivity, ButtonManager buttonManager, SleepManager sleepManager, ClockUpdater clockUpdater, BatteryService batteryService, RadioAlarmManager radioAlarmManager) {
         this.clockActivity = clockActivity;
         this.buttonManager = buttonManager;
         this.sleepManager = sleepManager;
         this.clockUpdater = clockUpdater;
-        prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
+        this.batteryService = batteryService;
+        this.radioAlarmManager = radioAlarmManager;
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        setupButtons(prefs, key);
+
+        setupTimers(prefs, key);
+
+        if (key.equals(clockActivity.getmPlayingStreamTag())) {
+            clockActivity.stopPlaying();
+            //since we stopped, the clicked button is reset
+            //set this one here
+            //TODO: find a better solution
+            buttonManager.setButtonClicked(buttonManager.findButtonByTag(key));
+            clockActivity.play(buttonManager.findButtonByTag(key).getId());
+        }
+
+        //SETTINGS DOUBLED IN NIGHT MODE
+        boolean nightMode = prefs.getBoolean(ClockActivity.PREF_NIGHT_MODE, false);
+        int keyClockColor = R.string.setting_key_clockColor;
+        int keyClockSize = R.string.setting_key_clockSize;
+        int keyClockMove = R.string.setting_key_clockMove;
+
+        if (nightMode) {
+            keyClockColor = R.string.setting_key_clockColor_night;
+            keyClockSize = R.string.setting_key_clockSize_night;
+            keyClockMove = R.string.setting_key_clockMove_night;
+        }
+
+        setupClockFormatting(prefs, key, keyClockColor, keyClockSize, keyClockMove);
+
+        setupBatteryMonitoring(key);
+
+        setupPlayOnWakeup(prefs, key);
+    }
+
+    private void setupPlayOnWakeup(SharedPreferences prefs, String key) {
+        if (key.equals(clockActivity.getResources().getString(R.string.setting_key_wake_up_station))) {
+            radioAlarmManager.setPlayMemoryAtWakeup(prefs.getString(clockActivity.getResources().getString(R.string.setting_key_wake_up_station), "0"));
+        }
+    }
+
+    private void setupTimers(SharedPreferences prefs, String key) {
+        if (key.equals(clockActivity.getResources().getString(R.string.setting_key_sleepMinutes))) {
+            int customTimer = 0;
+            try {
+                Integer.parseInt(prefs.getString(clockActivity.getResources().getString(R.string.setting_key_sleepMinutes), "0"));
+            } catch (NumberFormatException e) {
+                prefs.edit().putString(clockActivity.getResources().getString(R.string.setting_key_sleepMinutes), "0").apply();
+            }
+            if (customTimer == 0) {
+                sleepManager.getTimers().remove(0);
+            } else {
+                sleepManager.getTimers().add(0, customTimer);
+            }
+        }
+    }
+
+    private void setupButtons(SharedPreferences prefs, String key) {
         //BUTTONS
         int buttonIndex = -1;
 
@@ -91,43 +151,9 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             clockActivity.getmUrls().set(streamIndex, url);
             buttonManager.hideUnhideButtons(clockActivity.getmUrls());
         }
+    }
 
-        if (key.equals(clockActivity.getResources().getString(R.string.setting_key_sleepMinutes))) {
-            Integer customTimer = 0;
-            try {
-                Integer.parseInt(prefs.getString(clockActivity.getResources().getString(R.string.setting_key_sleepMinutes), "0"));
-            } catch (NumberFormatException e) {
-                prefs.edit().putString(clockActivity.getResources().getString(R.string.setting_key_sleepMinutes), "0").apply();
-                return;
-            }
-            if (customTimer == 0) {
-                sleepManager.getTimers().remove(0);
-            } else {
-                sleepManager.getTimers().add(0, customTimer);
-            }
-        }
-
-        if (key.equals(clockActivity.getmPlayingStreamTag())) {
-            clockActivity.stopPlaying();
-            //since we stopped, the clicked button is reset
-            //set this one here
-            //TODO: find a better solution
-            buttonManager.setButtonClicked(buttonManager.findButtonByTag(key));
-            clockActivity.play(buttonManager.findButtonByTag(key).getId());
-        }
-
-        //SETTINGS DOUBLED IN NIGHT MODE
-        boolean nightMode = prefs.getBoolean(ClockActivity.PREF_NIGHT_MODE, false);
-        int keyClockColor = R.string.setting_key_clockColor;
-        int keyClockSize = R.string.setting_key_clockSize;
-        int keyClockMove = R.string.setting_key_clockMove;
-
-        if (nightMode) {
-            keyClockColor = R.string.setting_key_clockColor_night;
-            keyClockSize = R.string.setting_key_clockSize_night;
-            keyClockMove = R.string.setting_key_clockMove_night;
-        }
-
+    private void setupClockFormatting(SharedPreferences prefs, String key, int keyClockColor, int keyClockSize, int keyClockMove) {
         if (key.equals(clockActivity.getResources().getString(keyClockColor))) {
             String colorCode = prefs.getString(clockActivity.getResources().getString(keyClockColor), clockActivity.getResources().getString(R.string.setting_default_clockColor));
             clockActivity.getmContentView().setTextColor(Color.parseColor(colorCode));
@@ -152,7 +178,17 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(keyClockMove), true));
             clockActivity.getmContentView().setGravity(Gravity.CENTER);
         }
+    }
 
+    private void setupBatteryMonitoring(String key) {
+        if (key.equals(clockActivity.getResources().getString(R.string.setting_key_alwaysDisplayBattery))) {
+            boolean show = isAlwaysDisplayBattery();
+            if (show) {
+                batteryService.registerBatteryLevelReceiver();
+            } else {
+                batteryService.unregisterBatteryLevelReceiver();
+            }
+        }
     }
 
     void toggleNightMode() {
@@ -243,5 +279,9 @@ class SettingsManager implements SharedPreferences.OnSharedPreferenceChangeListe
         }
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         return sdf;
+    }
+
+    public boolean isAlwaysDisplayBattery() {
+        return prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_alwaysDisplayBattery), false);
     }
 }

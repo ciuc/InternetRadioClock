@@ -2,11 +2,11 @@ package ro.antiprotv.radioclock;
 
 class Stream {
 
-    private String name;
-    private String url;
-    private String country;
-    private String tags;
-    private String language;
+    private final String name;
+    private final String url;
+    private final String country;
+    private final String tags;
+    private final String language;
 
     public Stream(String name, String url, String country, String tags, String language) {
         this.name = name;

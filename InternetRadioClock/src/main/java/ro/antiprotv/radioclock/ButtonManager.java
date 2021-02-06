@@ -118,8 +118,8 @@ class ButtonManager {
     }
 
     void assignUrlToMemory(String url, int streamNo, String label) {
-        String key = "setting.key.stream"+String.valueOf(streamNo);
-        String labelKey = "setting.key.label"+String.valueOf(streamNo);
+        String key = "setting.key.stream"+ streamNo;
+        String labelKey = "setting.key.label"+ streamNo;
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().putString(key, url).apply();
         prefs.edit().putString(labelKey, label).apply();
@@ -162,16 +162,16 @@ class ButtonManager {
             builder.show();
             return true;
         }
-    };
+    }
 
     void setButtonLabel(int streamNo, String label) {
-        String labelKey = "setting.key.label"+String.valueOf(streamNo);
+        String labelKey = "setting.key.label"+ streamNo;
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().putString(labelKey, label).apply();
     }
 
     void setButtonUrl(int streamNo, String url) {
-        String labelKey = "setting.key.stream"+String.valueOf(streamNo);
+        String labelKey = "setting.key.stream"+ streamNo;
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         prefs.edit().putString(labelKey, url).apply();
     }

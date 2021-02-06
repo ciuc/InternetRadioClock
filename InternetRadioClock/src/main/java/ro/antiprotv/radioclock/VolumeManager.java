@@ -24,12 +24,12 @@ import java.util.concurrent.Executors;
  */
 public class VolumeManager {
     private final View view;
-    private SharedPreferences prefs;
-    private ImageButton volumeUpButton;
-    private ImageButton volumeDownButton;
-    private AudioPlayer mediaPlayer;
+    private final SharedPreferences prefs;
+    private final ImageButton volumeUpButton;
+    private final ImageButton volumeDownButton;
+    private final AudioPlayer mediaPlayer;
     private final Context ctx;
-    private TextView volumeText;
+    private final TextView volumeText;
     private final DecimalFormat fmt = new DecimalFormat("#%");
 
     VolumeManager(Context ctx, View view, AudioPlayer mediaPlayer) {
@@ -93,7 +93,7 @@ public class VolumeManager {
         ((ClockActivity) ctx).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                volumeText.setText(String.valueOf(fmt.format(volume)));
+                volumeText.setText(fmt.format(volume));
             }
         });
         prefs.edit().putFloat(ClockActivity.LAST_VOLUME, volume).apply();

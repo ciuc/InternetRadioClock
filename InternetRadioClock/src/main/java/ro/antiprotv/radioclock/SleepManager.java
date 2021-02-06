@@ -20,13 +20,13 @@ class SleepManager {
     private final List<Integer> timers = new ArrayList<>(Arrays.asList(15, 20, 30));
     private int sleepTimerIndex;
 
-    private ExecutorService sleepExecutorService = Executors.newScheduledThreadPool(2);
+    private final ExecutorService sleepExecutorService = Executors.newScheduledThreadPool(2);
     private final ClockActivity context;
-    private ImageButton button;
-    private TextView sleepTimerText;
+    private final ImageButton button;
+    private final TextView sleepTimerText;
     private ScheduledFuture sleepFuture;
     private ScheduledFuture sleepCounterFuture;
-    private SleepCounterUpdater sleepCounterUpdater = new SleepCounterUpdater();
+    private final SleepCounterUpdater sleepCounterUpdater = new SleepCounterUpdater();
     final Button.OnClickListener sleepOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(final View view) {

@@ -31,6 +31,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -46,6 +47,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 //import timber.log.Timber;
 
@@ -103,7 +107,7 @@ public class ClockActivity extends AppCompatActivity {
             if (actionBar != null) {
                 actionBar.show();
             }
-            mControlsView.setVisibility(View.VISIBLE);
+            mControlsView.setVisibility(VISIBLE);
         }
     };
     private boolean mVisible;
@@ -146,6 +150,7 @@ public class ClockActivity extends AppCompatActivity {
 
     private boolean alarmPlaying;
     private RadioAlarmManager alarmManager;
+    private BatteryService batteryService;
     ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
     private final Button.OnClickListener playOnClickListener = new View.OnClickListener() {
 
@@ -269,7 +274,11 @@ public class ClockActivity extends AppCompatActivity {
         initializeSleepFunction();
         initializeAlarmFunction();
 
-        preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater);
+        TextView battery_pct = findViewById(R.id.batteryPct);
+        ImageView batteryIcon = findViewById(R.id.battery_icon);
+        this.batteryService = new BatteryService(this, batteryIcon, battery_pct);
+
+        preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater, batteryService, alarmManager);
         ((SettingsManager) preferenceChangeListener).applyProfile();
 
         //Initialize the player
@@ -299,6 +308,13 @@ public class ClockActivity extends AppCompatActivity {
 
         final ImageButton helpButton = findViewById(R.id.main_help_button);
         helpButton.setOnClickListener(new OnHelpClickListener());
+
+
+        if (((SettingsManager) preferenceChangeListener).isAlwaysDisplayBattery()) {
+            batteryService.registerBatteryLevelReceiver();
+        } else {
+            batteryService.unregisterBatteryLevelReceiver();
+        }
     }
 
     private void setOrientationLandscapeIfLocked() {
@@ -366,7 +382,12 @@ public class ClockActivity extends AppCompatActivity {
         sleepManager.stop();
         try {
             this.unregisterReceiver(this.alarmManager);
-        } catch (IllegalArgumentException e) {
+        } catch (Throwable e) {
+            //move along
+        }
+        try {
+            batteryService.unregisterBatteryLevelReceiver();
+        } catch (Throwable e) {
             //move along
         }
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
@@ -673,7 +694,7 @@ public class ClockActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-        mControlsView.setVisibility(View.GONE);
+        mControlsView.setVisibility(GONE);
         mVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay

@@ -58,6 +58,11 @@
         android:key="@string/setting.key.sleepMinutes"
         android:summary="@string/setting.summary.sleepMinutes"
         android:title="@string/setting.name.sleepMinutes" />
+    <ListPreference
+        android:defaultValue="0"
+        android:key="@string/setting.key.wake_up_station"
+        android:summary="%s"
+        android:title="@string/setting.name.wake_up_station" />
     <EditTextPreference
         android:defaultValue="10"
         android:inputType="number"
@@ -94,4 +99,10 @@
         android:key="@string/setting.key.lockOrientationLandscape"
         android:summary="@string/setting.summary.lockOrientationLandscape"
         android:title="@string/setting.name.lockOrientationLandscape" />
+    <SwitchPreference
+        android:id="@+id/always_display_battery"
+        android:defaultValue="false"
+        android:key="@string/setting.key.alwaysDisplayBattery"
+        android:summary="@string/setting.summary.alwaysDisplayBattery"
+        android:title="@string/setting.name.alwaysDisplayBattery" />
 </PreferenceScreen>
