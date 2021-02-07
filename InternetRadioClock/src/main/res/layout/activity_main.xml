@@ -30,9 +30,9 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/fullscreen_content"
             android:layout_toRightOf="@id/fullscreen_content"
-            android:tint="@color/color.clock"
             android:visibility="visible"
-            app:srcCompat="@drawable/ic_baseline_battery_std_16" />
+            app:srcCompat="@drawable/ic_baseline_battery_std_16"
+            app:tint="@color/color.clock" />
 
         <TextView
             android:id="@+id/batteryPct"
@@ -44,277 +44,279 @@
             android:textColor="@color/color.clock"
             android:textSize="12sp"
             android:visibility="gone"></TextView>
+
+        <RelativeLayout
+            android:id="@+id/mainLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="2dp"
+            android:background="#00FFFFFF"
+            android:layout_marginTop="@dimen/margin_top"
+            android:fitsSystemWindows="true">
+
+            <ImageButton
+                android:id="@+id/alarm_icon"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/ic_alarm_add_black_24dp" />
+
+            <TextView
+                android:id="@+id/alarm_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill"
+                android:layout_toRightOf="@+id/alarm_icon"
+                android:textColor="@color/button.color.off"
+                android:textSize="10sp" />
+
+            <ImageButton
+                android:id="@+id/alarm_icon_turn_off"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_toRightOf="@+id/alarm_time"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:textColor="@color/button.color.off"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_alarm_off_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/alarm_icon_snooze"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/alarm_time"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:textColor="@color/button.color.off"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_snooze_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/alarm_icon_cancel"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/alarm_icon_snooze"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:textColor="@color/button.color.off"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_cancel_black_24dp" />
+
+            <ImageButton
+                android:id="@+id/alarm_icon_close"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/alarm_icon_cancel"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:textColor="@color/button.color.off"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_check_24dp" />
+
+            <ImageButton
+                android:id="@+id/sleep"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.sleepMinutes"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/sleep_timer_off_white_24dp" />
+
+            <TextView
+                android:id="@+id/sleep_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill"
+                android:layout_toLeftOf="@+id/sleep"
+                android:textColor="@color/button.color.off"
+                android:textSize="10sp" />
+
+            <ImageButton
+                android:id="@+id/night_mode_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/sleep_timer"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.sleepMinutes"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/ic_night_24dp" />
+
+            <ImageButton
+                android:id="@+id/volumeup_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/night_mode_button"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/ic_volume_up_24dp" />
+
+            <ImageButton
+                android:id="@+id/volumedown_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/volumeup_button"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/ic_volume_down_24dp" />
+
+            <TextView
+                android:id="@+id/volume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill"
+                android:layout_toLeftOf="@+id/volumedown_button"
+                android:textColor="@color/button.color.off"
+                android:textSize="10sp" />
+
+            <ImageButton
+                android:id="@+id/main_help_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/volume"
+                android:background="@android:color/transparent"
+                android:clickable="false"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/ic_help_outline_white_24dp" />
+
+            <LinearLayout
+                android:id="@+id/fullscreen_content_controls"
+                style="?metaButtonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/black_overlay"
+                android:orientation="horizontal"
+                tools:ignore="UselessParent">
+
+                <Button
+                    android:id="@+id/stream1"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/memory"
+                    android:clickable="false"
+                    android:tag="@string/setting.key.stream1"
+                    android:text="@string/button.name.stream1"
+                    android:textColor="@color/button.color.off" />
+
+                <Button
+                    android:id="@+id/stream2"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/memory"
+                    android:clickable="false"
+                    android:tag="@string/setting.key.stream2"
+                    android:text="@string/button.name.stream2"
+                    android:textColor="@color/button.color.off" />
+
+                <Button
+                    android:id="@+id/stream3"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/memory"
+                    android:clickable="false"
+                    android:tag="@string/setting.key.stream3"
+                    android:text="@string/button.name.stream3"
+                    android:textColor="@color/button.color.off" />
+
+                <Button
+                    android:id="@+id/stream4"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/memory"
+                    android:clickable="false"
+                    android:tag="@string/setting.key.stream4"
+                    android:text="@string/button.name.stream4"
+                    android:textColor="@color/button.color.off" />
+
+                <Button
+                    android:id="@+id/stream5"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/memory"
+                    android:clickable="false"
+                    android:tag="@string/setting.key.stream5"
+                    android:text="@string/button.name.stream5"
+                    android:textColor="@color/button.color.off" />
+
+                <Button
+                    android:id="@+id/stream6"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/memory"
+                    android:clickable="false"
+                    android:tag="@string/setting.key.stream6"
+                    android:text="@string/button.name.stream6"
+                    android:textColor="@color/button.color.off" />
+
+                <Button
+                    android:id="@+id/stream7"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/memory"
+                    android:clickable="false"
+                    android:tag="@string/setting.key.stream7"
+                    android:text="@string/button.name.stream7"
+                    android:textColor="@color/button.color.off" />
+
+                <Button
+                    android:id="@+id/stream8"
+                    style="?metaButtonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/memory"
+                    android:clickable="false"
+                    android:tag="@string/setting.key.stream8"
+                    android:text="@string/button.name.stream8"
+                    android:textColor="@color/button.color.off" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
     </RelativeLayout>
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
 
-    <RelativeLayout
-        android:id="@+id/mainLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:background="#00FFFFFF"
-        android:fitsSystemWindows="true">
-
-        <ImageButton
-            android:id="@+id/alarm_icon"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:tag="@string/setting.key.alarmIcon"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/ic_alarm_add_black_24dp" />
-
-        <TextView
-            android:id="@+id/alarm_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill"
-            android:layout_toRightOf="@+id/alarm_icon"
-            android:textColor="@color/button.color.off"
-            android:textSize="10sp" />
-
-        <ImageButton
-            android:id="@+id/alarm_icon_turn_off"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_toRightOf="@+id/alarm_time"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_alarm_off_black_24dp" />
-
-        <ImageButton
-            android:id="@+id/alarm_icon_snooze"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/alarm_time"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_snooze_black_24dp" />
-
-        <ImageButton
-            android:id="@+id/alarm_icon_cancel"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/alarm_icon_snooze"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_cancel_black_24dp" />
-
-        <ImageButton
-            android:id="@+id/alarm_icon_close"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/alarm_icon_cancel"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_check_24dp" />
-
-        <ImageButton
-            android:id="@+id/sleep"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:tag="@string/setting.key.sleepMinutes"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/sleep_timer_off_white_24dp" />
-
-        <TextView
-            android:id="@+id/sleep_timer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill"
-            android:layout_toLeftOf="@+id/sleep"
-            android:textColor="@color/button.color.off"
-            android:textSize="10sp" />
-
-        <ImageButton
-            android:id="@+id/night_mode_button"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/sleep_timer"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:tag="@string/setting.key.sleepMinutes"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/ic_night_24dp" />
-
-        <ImageButton
-            android:id="@+id/volumeup_button"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/night_mode_button"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/ic_volume_up_24dp" />
-
-        <ImageButton
-            android:id="@+id/volumedown_button"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/volumeup_button"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/ic_volume_down_24dp" />
-
-        <TextView
-            android:id="@+id/volume"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill"
-            android:layout_toLeftOf="@+id/volumedown_button"
-            android:textColor="@color/button.color.off"
-            android:textSize="10sp" />
-
-        <ImageButton
-            android:id="@+id/main_help_button"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/volume"
-            android:background="@android:color/transparent"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/ic_help_outline_white_24dp" />
-
-        <LinearLayout
-            android:id="@+id/fullscreen_content_controls"
-            style="?metaButtonBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/black_overlay"
-            android:orientation="horizontal"
-            tools:ignore="UselessParent">
-
-            <Button
-                android:id="@+id/stream1"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/memory"
-                android:clickable="false"
-                android:tag="@string/setting.key.stream1"
-                android:text="@string/button.name.stream1"
-                android:textColor="@color/button.color.off" />
-
-            <Button
-                android:id="@+id/stream2"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/memory"
-                android:clickable="false"
-                android:tag="@string/setting.key.stream2"
-                android:text="@string/button.name.stream2"
-                android:textColor="@color/button.color.off" />
-
-            <Button
-                android:id="@+id/stream3"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/memory"
-                android:clickable="false"
-                android:tag="@string/setting.key.stream3"
-                android:text="@string/button.name.stream3"
-                android:textColor="@color/button.color.off" />
-
-            <Button
-                android:id="@+id/stream4"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/memory"
-                android:clickable="false"
-                android:tag="@string/setting.key.stream4"
-                android:text="@string/button.name.stream4"
-                android:textColor="@color/button.color.off" />
-
-            <Button
-                android:id="@+id/stream5"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/memory"
-                android:clickable="false"
-                android:tag="@string/setting.key.stream5"
-                android:text="@string/button.name.stream5"
-                android:textColor="@color/button.color.off" />
-
-            <Button
-                android:id="@+id/stream6"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/memory"
-                android:clickable="false"
-                android:tag="@string/setting.key.stream6"
-                android:text="@string/button.name.stream6"
-                android:textColor="@color/button.color.off" />
-
-            <Button
-                android:id="@+id/stream7"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/memory"
-                android:clickable="false"
-                android:tag="@string/setting.key.stream7"
-                android:text="@string/button.name.stream7"
-                android:textColor="@color/button.color.off" />
-
-            <Button
-                android:id="@+id/stream8"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@drawable/memory"
-                android:clickable="false"
-                android:tag="@string/setting.key.stream8"
-                android:text="@string/button.name.stream8"
-                android:textColor="@color/button.color.off" />
-        </LinearLayout>
-
-
-    </RelativeLayout>
 
 </RelativeLayout>

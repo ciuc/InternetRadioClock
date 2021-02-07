@@ -8,19 +8,19 @@
     app:title="@string/title.streamFinder"
     tools:context=".StreamFinderActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:popupTheme="@style/PopupOverlay" />
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                 android:layout_marginTop="1pt"
                 android:text="@string/streamFinder.label.name" />
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/streamFinder.textinput.name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -127,7 +127,7 @@
         </LinearLayout>
 
         <!-- RADIOS LIST -->
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/stream_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

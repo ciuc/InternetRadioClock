@@ -7,8 +7,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
-import android.view.View;
+import androidx.core.content.ContextCompat;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 

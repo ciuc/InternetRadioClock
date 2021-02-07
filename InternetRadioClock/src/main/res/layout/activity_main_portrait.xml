@@ -51,6 +51,7 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/margin_top"
         >
         <ImageButton
             android:id="@+id/alarm_icon"

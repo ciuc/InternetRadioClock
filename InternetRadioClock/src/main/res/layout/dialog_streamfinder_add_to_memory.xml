@@ -21,7 +21,7 @@
             android:layout_marginTop="1pt"
             android:text="Add a label\n(optional)" />
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/streamFinder.textinput.addDialog.label"
             android:layout_width="59dp"
             android:layout_height="wrap_content"

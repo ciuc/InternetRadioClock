@@ -4,4 +4,5 @@
     <dimen name="sf_spinner_label">40pt</dimen>
     <dimen name="assign_to_mem_button_margin_left">4dp</dimen>
     <dimen name="assign_to_mem_button_margin_top">4dp</dimen>
+    <dimen name="margin_top">30dp</dimen>
 </resources>
