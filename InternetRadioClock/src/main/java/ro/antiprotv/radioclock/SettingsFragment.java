@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,11 +19,13 @@ import java.util.List;
  * Created by ciuc on 7/12/16.
  */
 public class SettingsFragment extends PreferenceFragment {
-
+    private SeekBarPreference seekBarPref;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences_settings);
+
+        seekBarPref = (SeekBarPreference) findPreference(getString(R.string.setting_key_clockBrightness));
     }
 
     @Override
@@ -54,5 +57,9 @@ public class SettingsFragment extends PreferenceFragment {
         };
         stations.setEntries(labels);
         stations.setEntryValues(tags);
+
+
+        int radius = prefs.getInt(getString(R.string.setting_key_clockBrightness), 50);
+        seekBarPref.setSummary(getString(R.string.setting_summary_clockBrightness).replace("$1", ""+radius));
     }
 }

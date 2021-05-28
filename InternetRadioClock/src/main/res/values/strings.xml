@@ -50,6 +50,8 @@
     <string name="setting.key.clockMove.night">setting.key.clockMove.night</string>
     <string name="setting.key.clockColor.night">setting.key.clockColor.night</string>
     <string name="setting.key.clockSize.night">setting.key.clockSize.night</string>
+    <string name="setting.key.clockBrightness.night">setting.key.clockBrightness.night</string>
+
 
     <string name="setting.name.stream1">Memory 1</string>
     <string name="setting.name.stream2">Memory 2</string>
@@ -96,7 +98,6 @@
     <string name="setting.name.rememberLastVolume">Remember last volume</string>
     <string name="setting.summary.rememberLastVolume">Start playing with the last volume setting.</string>
 
-
     <string name="setting.key.lockOrientationLandscape">setting.key.lockOrientationLandscape</string>
     <string name="setting.name.lockOrientationLandscape">Lock landscape</string>
     <string name="setting.summary.lockOrientationLandscape">If disabled, clock will follow phone orientation. If enabled it will stay landscape. (Requires restart!)</string>
@@ -105,7 +106,13 @@
     <string name="setting.name.alwaysDisplayBattery">Display battery level (beta)</string>
     <string name="setting.summary.alwaysDisplayBattery">Enable this to have the battery level displayed. (Beta: might not work on all devices.)</string>
 
+    <string name="setting.key.clockBrightness">setting.key.clockBrightness</string>
+    <string name="setting.name.clockBrightness">Brightness of the clock (digits)</string>
+    <string name="setting.summary.clockBrightness">$1%</string>
+
     <string name="text.sleep.timer">Sleep in %d minutes</string>
+    <string name="text.sleep.timer.short">Sleep: %d min</string>
+    <string name="text.sleep.off">Sleep off</string>
     <!-- advanced settings -->
     <string-array name="clock_colors">
         <item>green (default)</item>
@@ -466,6 +473,7 @@ Change screen orientation. Depending on the placement of the volume buttons, thi
 in this section you can set some neat stuff:
 <ul>
 <li>clock color</li>
+<li>clock brightness</li>
 <li>clock size</li>
 <li>enable/disable the display of seconds</li>
 <li>enable 12 hour clock with or without the display of am/pm</li>
@@ -491,7 +499,7 @@ in this section you can set some neat stuff:
 </ul>
 <b>Night Profile</b>
 <ul>
-<li>you can define a different set of settings and activate them at a touch of a button (for instance you might set a bigger clock without seconds and color red for the night while during the day it will be smaller, green and with seconds)</li>
+<li>you can define a different set of settings and activate them at a touch of a button (for instance you might set a bigger clock without seconds, or red color and brightness at 50% for the night while during the day it will be smaller, green, with seconds and brighter)</li>
 
 <b>Alarm</b>
 <ul>

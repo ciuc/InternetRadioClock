@@ -23,6 +23,25 @@ class ClockUpdater extends Thread {
     private Handler threadHandler = null;
     private final TextView mContentView;
     private SimpleDateFormat sdf;
+    private int sleep = 1000;
+    private String clockText;
+
+    public void setClockText(String text, int seconds) {
+        clockText = text;
+        if (seconds == -1) {
+            sleep = 1000;
+        } else {
+            sleep = seconds*1000;
+        }
+    }
+    private String getClockText() {
+        if (clockText == null) {
+            return sdf.format(new Date());
+        }
+        return clockText;
+    }
+
+
     //We create this ui handler to update the clock
     //We need this in order to not block the UI
     private final Handler uiHandler = new Handler() {
@@ -30,7 +49,7 @@ class ClockUpdater extends Thread {
 
         @Override
         public void handleMessage(Message msg) {
-            mContentView.setText(sdf.format(new Date()));
+            mContentView.setText(getClockText());
             if (msg.what == MOVE_TEXT) {
                 mContentView.setGravity(GRAVITIES.get(gravityIndex));
                 gravityIndex++;
@@ -63,12 +82,10 @@ class ClockUpdater extends Thread {
             public void handleMessage(Message msg) {
                 int count = 0;
                 while (semaphore) {
-                    {
-                        try {
-                            Thread.sleep(1000);
-                            count++;
-                        } catch (Exception e) {
-                        }
+                    try {
+                        Thread.sleep(sleep);
+                        count++;
+                    } catch (Exception e) {
                     }
                     uiHandler.sendEmptyMessage(DO_NOT_MOVE_TEXT);
                     if (moveText && count > 300) {
@@ -94,4 +111,5 @@ class ClockUpdater extends Thread {
     public void setMoveText(boolean moveText) {
         this.moveText = moveText;
     }
+
 }

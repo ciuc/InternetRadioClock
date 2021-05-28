@@ -53,18 +53,21 @@ class SettingsManager implements OnSharedPreferenceChangeListener {
         int keyClockColor = R.string.setting_key_clockColor;
         int keyClockSize = R.string.setting_key_clockSize;
         int keyClockMove = R.string.setting_key_clockMove;
+        int keyClockBrightness = R.string.setting_key_clockBrightness;
 
         if (nightMode) {
             keyClockColor = R.string.setting_key_clockColor_night;
             keyClockSize = R.string.setting_key_clockSize_night;
             keyClockMove = R.string.setting_key_clockMove_night;
+            keyClockBrightness = R.string.setting_key_clockBrightness_night;
         }
 
-        setupClockFormatting(prefs, key, keyClockColor, keyClockSize, keyClockMove);
+        setupClockFormatting(prefs, key, keyClockColor, keyClockSize, keyClockMove, keyClockBrightness);
 
         setupBatteryMonitoring(key);
 
         setupPlayOnWakeup(prefs, key);
+
     }
 
     private void setupPlayOnWakeup(SharedPreferences prefs, String key) {
@@ -153,10 +156,16 @@ class SettingsManager implements OnSharedPreferenceChangeListener {
         }
     }
 
-    private void setupClockFormatting(SharedPreferences prefs, String key, int keyClockColor, int keyClockSize, int keyClockMove) {
+    private void setupClockFormatting(SharedPreferences prefs, String key, int keyClockColor, int keyClockSize, int keyClockMove, int keyClockBrightness) {
         if (key.equals(clockActivity.getResources().getString(keyClockColor))) {
             String colorCode = prefs.getString(clockActivity.getResources().getString(keyClockColor), clockActivity.getResources().getString(R.string.setting_default_clockColor));
             clockActivity.getmContentView().setTextColor(Color.parseColor(colorCode));
+        }
+        if (key.equals(clockActivity.getResources().getString(keyClockBrightness))) {
+            String clockBrightnessKey = clockActivity.getResources().getString(keyClockBrightness);
+            int alpha = prefs.getInt(clockBrightnessKey, 100);
+            float alpha_ = alpha;
+            clockActivity.getmContentView().setAlpha(alpha_/100);
         }
         if (key.equals(clockActivity.getResources().getString(keyClockSize))) {
             String clockSizeKey = clockActivity.getResources().getString(keyClockSize);
@@ -205,15 +214,20 @@ class SettingsManager implements OnSharedPreferenceChangeListener {
 
         String colorCode;
         String clockSize = clockActivity.getResources().getString(R.string.setting_default_clockSize);
+        String clockSizeKey;
+        String clockBrightnessKey;
         int size;
+        int brightness;
 
         if (nightMode) {
             //clock seconds
             //Clock color
             colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor_night), clockActivity.getResources().getString(R.string.setting_default_clockColor));
             //clock size
-            String clockSizeKey = clockActivity.getResources().getString(R.string.setting_key_clockSize_night);
-            size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
+            clockSizeKey = clockActivity.getResources().getString(R.string.setting_key_clockSize_night);
+
+            //clock alpha
+            clockBrightnessKey = clockActivity.getResources().getString(R.string.setting_key_clockBrightness_night);
 
             //clock move
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clockMove_night), true));
@@ -226,9 +240,10 @@ class SettingsManager implements OnSharedPreferenceChangeListener {
             colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor), clockActivity.getResources().getString(R.string.setting_default_clockColor));
 
             //clock size
-            String clockSizeKey = clockActivity.getResources().getString(R.string.setting_key_clockSize);
+            clockSizeKey = clockActivity.getResources().getString(R.string.setting_key_clockSize);
 
-            size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
+            //clock alpha
+            clockBrightnessKey = clockActivity.getResources().getString(R.string.setting_key_clockBrightness);
 
             //clock move
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clockMove), true));
@@ -237,13 +252,14 @@ class SettingsManager implements OnSharedPreferenceChangeListener {
             buttonShape.mutate();
             buttonShape.setStroke(1, clockActivity.getResources().getColor(R.color.button_color));
         }
-
+        size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
+        brightness = prefs.getInt(clockBrightnessKey, 100);
+        float brightness_ = brightness;
         clockUpdater.setSdf(getClockFormat());
         clockActivity.getmContentView().setTextColor(Color.parseColor(colorCode));
         clockActivity.getmContentView().setTextSize(size);
         clockActivity.getmContentView().setGravity(Gravity.CENTER);
-
-
+        clockActivity.getmContentView().setAlpha(brightness_/100);
     }
 
     protected SimpleDateFormat getClockFormat() {

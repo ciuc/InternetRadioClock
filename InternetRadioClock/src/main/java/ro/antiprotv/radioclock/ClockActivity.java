@@ -428,12 +428,12 @@ public class ClockActivity extends AppCompatActivity {
 
     private void initializeSleepFunction() {
         //sleep timer
-        sleepManager = new SleepManager(this);
+        sleepManager = new SleepManager(this, clockUpdater);
 
         Integer customTimer = 0;
         try {
             customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             prefs.edit().putString(getResources().getString(R.string.setting_key_sleepMinutes), "0").apply();
         }
         if (customTimer != 0) {

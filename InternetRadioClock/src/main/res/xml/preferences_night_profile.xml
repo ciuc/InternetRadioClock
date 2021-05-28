@@ -7,7 +7,13 @@
         android:entryValues="@array/clock_color_codes"
         android:key="@string/setting.key.clockColor.night"
         android:title="@string/setting.name.clockColor" />
-
+    <ro.antiprotv.radioclock.SeekBarPreference
+        android:defaultValue="100"
+        android:key="@string/setting.key.clockBrightness.night"
+        android:max="100"
+        android:summary="@string/setting.summary.clockBrightness"
+        android:text="%"
+        android:title="@string/setting.name.clockBrightness" />
     <ListPreference
         android:summary="%s"
         android:defaultValue="@string/setting.default.clockSize"

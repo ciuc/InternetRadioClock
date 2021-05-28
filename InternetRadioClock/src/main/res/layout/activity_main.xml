@@ -49,9 +49,9 @@
             android:id="@+id/mainLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_top"
             android:layout_marginBottom="2dp"
             android:background="#00FFFFFF"
-            android:layout_marginTop="@dimen/margin_top"
             android:fitsSystemWindows="true">
 
             <ImageButton

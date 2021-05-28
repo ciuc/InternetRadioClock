@@ -24,17 +24,25 @@ class SleepManager {
     private final ClockActivity context;
     private final ImageButton button;
     private final TextView sleepTimerText;
+    private ClockUpdater clockUpdater;
     private ScheduledFuture sleepFuture;
     private ScheduledFuture sleepCounterFuture;
     private final SleepCounterUpdater sleepCounterUpdater = new SleepCounterUpdater();
+
     final Button.OnClickListener sleepOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(final View view) {
             if (sleepTimerIndex == timers.size()) {
+                clockUpdater.interrupt();
+                clockUpdater.setClockText(null,-1);
                 resetSleepTimer();
                 sleepFuture.cancel(true);
                 sleepCounterUpdater.setStartFrom(0);
+                clockUpdater.setClockText(view.getResources().getString(R.string.text_sleep_off), 5);
+                scheduleClockSleepTimerReset();
             } else {
+                clockUpdater.interrupt();
+                clockUpdater.setClockText(null,-1);
                 //stop the timer thread
                 if (sleepFuture != null) {
                     sleepFuture.cancel(true);
@@ -43,6 +51,8 @@ class SleepManager {
                 sleepTimerText.setVisibility(View.VISIBLE);
                 long timer = timers.get(sleepTimerIndex);
                 sleepTimerText.setText(String.format(view.getResources().getString(R.string.text_sleep_timer), timer));
+                clockUpdater.setClockText(String.format(view.getResources().getString(R.string.text_sleep_timer_short), timer),5);
+                scheduleClockSleepTimerReset();
                 sleepTimerIndex++;
                 //now start the thread
                 SleepRunner sleepRunner = new SleepRunner();
@@ -56,8 +66,19 @@ class SleepManager {
         }
     };
 
-    SleepManager(ClockActivity context) {
+    private void scheduleClockSleepTimerReset() {
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.schedule(new Runnable() {
+            @Override
+            public void run() {
+                clockUpdater.setClockText(null,-1);
+            }
+        }, 5, TimeUnit.SECONDS );
+    }
+
+    SleepManager(ClockActivity context, ClockUpdater clockUpdater) {
         this.context = context;
+        this.clockUpdater = clockUpdater;
         sleepTimerText = context.findViewById(R.id.sleep_timer);
         button = context.findViewById(R.id.sleep);
     }
