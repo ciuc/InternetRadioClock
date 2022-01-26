@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
 import androidx.core.content.ContextCompat;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static ro.antiprotv.radioclock.ClockActivity.PREF_NIGHT_MODE;
 
 public class BatteryService extends BroadcastReceiver {
     private final TextView pct;
@@ -56,9 +58,21 @@ public class BatteryService extends BroadcastReceiver {
             icon.setColorFilter(ContextCompat.getColor(context, R.color.color_clock_red), android.graphics.PorterDuff.Mode.SRC_IN);
             icon.setImageResource(R.drawable.ic_baseline_battery_alert_16);
         } else {
-            pct.setTextColor(clockActivity.getResources().getColor(R.color.color_clock));
             icon.setImageResource(R.drawable.ic_baseline_battery_std_16);
-            icon.setColorFilter(ContextCompat.getColor(context, R.color.color_clock), android.graphics.PorterDuff.Mode.SRC_IN);
+            int color = clockActivity.getResources().getColor(R.color.color_clock);
+            if (prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_batteryInClockColor), false)) {
+                String colorCode;
+                boolean nightmode = prefs.getBoolean(PREF_NIGHT_MODE, false);
+                if (nightmode) {
+                    colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor_night), clockActivity.getResources().getString(R.string.setting_default_clockColor));
+                } else {
+                    colorCode = prefs.getString(clockActivity.getResources().getString(R.string.setting_key_clockColor), clockActivity.getResources().getString(R.string.setting_default_clockColor));
+                }
+                color = Color.parseColor(colorCode);
+                icon.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+            }
+            icon.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+            pct.setTextColor(color);
         }
     }
 }

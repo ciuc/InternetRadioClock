@@ -112,4 +112,10 @@
         android:key="@string/setting.key.alwaysDisplayBattery"
         android:summary="@string/setting.summary.alwaysDisplayBattery"
         android:title="@string/setting.name.alwaysDisplayBattery" />
+    <SwitchPreference
+        android:id="@+id/battery_in_clock_color"
+        android:defaultValue="false"
+        android:key="@string/setting.key.batteryInClockColor"
+        android:summary="@string/setting.summary.batteryInClockColor"
+        android:title="@string/setting.name.batteryInClockColor" />
 </PreferenceScreen>

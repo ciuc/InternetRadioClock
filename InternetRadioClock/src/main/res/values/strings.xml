@@ -103,8 +103,13 @@
     <string name="setting.summary.lockOrientationLandscape">If disabled, clock will follow phone orientation. If enabled it will stay landscape. (Requires restart!)</string>
 
     <string name="setting.key.alwaysDisplayBattery">setting.key.alwaysDisplayBattery</string>
-    <string name="setting.name.alwaysDisplayBattery">Display battery level (beta)</string>
-    <string name="setting.summary.alwaysDisplayBattery">Enable this to have the battery level displayed. (Beta: might not work on all devices.)</string>
+    <string name="setting.name.alwaysDisplayBattery">Display battery level</string>
+    <string name="setting.summary.alwaysDisplayBattery">Enable this to have the battery level displayed. (Might not work on all devices.)</string>
+
+    <string name="setting.key.batteryInClockColor">setting.key.batteryInClockColor</string>
+    <string name="setting.name.batteryInClockColor">Display battery level in clock color</string>
+    <string name="setting.summary.batteryInClockColor">If disabled, the battery level will always be displayed in green.
+        (Note that no matter what, the low level will be displayed in red.) Might require restart.</string>
 
     <string name="setting.key.clockBrightness">setting.key.clockBrightness</string>
     <string name="setting.name.clockBrightness">Brightness of the clock (digits)</string>

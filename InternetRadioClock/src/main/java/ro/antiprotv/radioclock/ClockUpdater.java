@@ -1,9 +1,10 @@
 package ro.antiprotv.radioclock;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.view.Gravity;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -11,13 +12,26 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM;
+import static android.widget.RelativeLayout.ALIGN_PARENT_LEFT;
+import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
+import static android.widget.RelativeLayout.ALIGN_PARENT_TOP;
+import static android.widget.RelativeLayout.CENTER_IN_PARENT;
+
 /**
  * Thread to manage the clock (update the clock and move it)
  */
 class ClockUpdater extends Thread {
     private static final int DO_NOT_MOVE_TEXT = 1;
     private static final int MOVE_TEXT = 2;
-    private static final List<Integer> GRAVITIES = Arrays.asList(Gravity.TOP, Gravity.BOTTOM, Gravity.LEFT, Gravity.RIGHT, Gravity.CENTER, Gravity.BOTTOM | Gravity.RIGHT);
+    private static final List<int[]> LAYOUT_ALIGNS = Arrays.asList(
+            new int[]{ALIGN_PARENT_BOTTOM, ALIGN_PARENT_LEFT},
+            new int[]{ALIGN_PARENT_TOP, ALIGN_PARENT_RIGHT},
+            new int[]{CENTER_IN_PARENT},
+            new int[]{ALIGN_PARENT_BOTTOM, ALIGN_PARENT_RIGHT},
+            new int[]{ALIGN_PARENT_TOP, ALIGN_PARENT_LEFT},
+            new int[]{CENTER_IN_PARENT}
+    );
     private boolean semaphore = true;
     //Threading stuff
     private Handler threadHandler = null;
@@ -44,17 +58,29 @@ class ClockUpdater extends Thread {
 
     //We create this ui handler to update the clock
     //We need this in order to not block the UI
-    private final Handler uiHandler = new Handler() {
-        int gravityIndex = 0;
+    @SuppressLint("HandlerLeak")
+    private final Handler uiHandler =  new Handler() {
+        int layoutListIndex = 0;
+        int[] addedRules = new int[]{-1};
 
         @Override
         public void handleMessage(Message msg) {
             mContentView.setText(getClockText());
             if (msg.what == MOVE_TEXT) {
-                mContentView.setGravity(GRAVITIES.get(gravityIndex));
-                gravityIndex++;
-                if (gravityIndex == GRAVITIES.size()) {
-                    gravityIndex = 0;
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mContentView.getLayoutParams();
+                if (addedRules[0] != -1) {
+                    for (int i = 0; i < addedRules.length; i++) {
+                        params.removeRule(addedRules[i]);
+                    }
+                }
+                addedRules = LAYOUT_ALIGNS.get(layoutListIndex);
+                for (int i = 0; i < addedRules.length; i++) {
+                    params.addRule(addedRules[i]);
+                }
+                mContentView.setLayoutParams(params);
+                layoutListIndex++;
+                if (layoutListIndex == LAYOUT_ALIGNS.size()) {
+                    layoutListIndex = 0;
                 }
             }
         }
@@ -88,7 +114,7 @@ class ClockUpdater extends Thread {
                     } catch (Exception e) {
                     }
                     uiHandler.sendEmptyMessage(DO_NOT_MOVE_TEXT);
-                    if (moveText && count > 300) {
+                    if (moveText && count > 3) {
                         count = 0;
                         uiHandler.sendEmptyMessage(MOVE_TEXT);
                     }
