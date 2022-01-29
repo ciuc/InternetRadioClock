@@ -28,6 +28,7 @@ class SleepManager {
     private ScheduledFuture sleepFuture;
     private ScheduledFuture sleepCounterFuture;
     private final SleepCounterUpdater sleepCounterUpdater = new SleepCounterUpdater();
+    private static final int MOVEMENT_SECCONDS = 5;//don';t know what the hell this does, must document
 
     final Button.OnClickListener sleepOnClickListener = new View.OnClickListener() {
         @Override
@@ -38,7 +39,7 @@ class SleepManager {
                 resetSleepTimer();
                 sleepFuture.cancel(true);
                 sleepCounterUpdater.setStartFrom(0);
-                clockUpdater.setClockText(view.getResources().getString(R.string.text_sleep_off), 5);
+                clockUpdater.setClockText(view.getResources().getString(R.string.text_sleep_off), MOVEMENT_SECCONDS);
                 scheduleClockSleepTimerReset();
             } else {
                 clockUpdater.interrupt();
@@ -51,7 +52,7 @@ class SleepManager {
                 sleepTimerText.setVisibility(View.VISIBLE);
                 long timer = timers.get(sleepTimerIndex);
                 sleepTimerText.setText(String.format(view.getResources().getString(R.string.text_sleep_timer), timer));
-                clockUpdater.setClockText(String.format(view.getResources().getString(R.string.text_sleep_timer_short), timer),5);
+                clockUpdater.setClockText(String.format(view.getResources().getString(R.string.text_sleep_timer_short), timer),MOVEMENT_SECCONDS);
                 scheduleClockSleepTimerReset();
                 sleepTimerIndex++;
                 //now start the thread
@@ -73,7 +74,7 @@ class SleepManager {
             public void run() {
                 clockUpdater.setClockText(null,-1);
             }
-        }, 5, TimeUnit.SECONDS );
+        }, MOVEMENT_SECCONDS, TimeUnit.SECONDS );
     }
 
     SleepManager(ClockActivity context, ClockUpdater clockUpdater) {

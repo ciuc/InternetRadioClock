@@ -457,12 +457,13 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     private void displayDialogsOnOpen() {
-        if (prefs.getBoolean("FIFTH_TIME", true)) {
+        final String currentDialog = "SIXTH_TIME";
+        if (prefs.getBoolean(currentDialog, true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Check out the \"About\" section to see what's new and to find out what you can do with this thing.")
-                    .setTitle("Thanks for using this app!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+            builder.setMessage("Remember you can always disable the clock movement from the settings dialog. Now it moves every 5 minutes.")
+                    .setTitle("Clock movement!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    prefs.edit().putBoolean("FIFTH_TIME", false).apply();
+                    prefs.edit().putBoolean(currentDialog, false).apply();
                 }
             });
             AlertDialog dialog = builder.create();
