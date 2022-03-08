@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
@@ -54,26 +55,20 @@ class SettingsManager implements OnSharedPreferenceChangeListener {
         int keyClockSize = R.string.setting_key_clockSize;
         int keyClockMove = R.string.setting_key_clockMove;
         int keyClockBrightness = R.string.setting_key_clockBrightness;
+        int keyClockTypeface = R.string.setting_key_typeface;
 
         if (nightMode) {
             keyClockColor = R.string.setting_key_clockColor_night;
             keyClockSize = R.string.setting_key_clockSize_night;
             keyClockMove = R.string.setting_key_clockMove_night;
             keyClockBrightness = R.string.setting_key_clockBrightness_night;
+            keyClockTypeface = R.string.setting_key_typeface_night;
         }
 
-        setupClockFormatting(prefs, key, keyClockColor, keyClockSize, keyClockMove, keyClockBrightness);
+        setupClockFormatting(prefs, key, keyClockColor, keyClockSize, keyClockMove, keyClockBrightness, keyClockTypeface);
 
         setupBatteryMonitoring(key);
 
-        setupPlayOnWakeup(prefs, key);
-
-    }
-
-    private void setupPlayOnWakeup(SharedPreferences prefs, String key) {
-        if (key.equals(clockActivity.getResources().getString(R.string.setting_key_wake_up_station))) {
-            radioAlarmManager.setPlayMemoryAtWakeup(prefs.getString(clockActivity.getResources().getString(R.string.setting_key_wake_up_station), "0"));
-        }
     }
 
     private void setupTimers(SharedPreferences prefs, String key) {
@@ -156,15 +151,14 @@ class SettingsManager implements OnSharedPreferenceChangeListener {
         }
     }
 
-    private void setupClockFormatting(SharedPreferences prefs, String key, int keyClockColor, int keyClockSize, int keyClockMove, int keyClockBrightness) {
+    private void setupClockFormatting(SharedPreferences prefs, String key, int keyClockColor, int keyClockSize, int keyClockMove, int keyClockBrightness, int keyClockTypeface) {
         if (key.equals(clockActivity.getResources().getString(keyClockColor))) {
             String colorCode = prefs.getString(clockActivity.getResources().getString(keyClockColor), clockActivity.getResources().getString(R.string.setting_default_clockColor));
             clockActivity.getmContentView().setTextColor(Color.parseColor(colorCode));
         }
         if (key.equals(clockActivity.getResources().getString(keyClockBrightness))) {
             String clockBrightnessKey = clockActivity.getResources().getString(keyClockBrightness);
-            int alpha = prefs.getInt(clockBrightnessKey, 100);
-            float alpha_ = alpha;
+            float alpha_ = prefs.getInt(clockBrightnessKey, 100);
             clockActivity.getmContentView().setAlpha(alpha_/100);
         }
         if (key.equals(clockActivity.getResources().getString(keyClockSize))) {
@@ -187,6 +181,10 @@ class SettingsManager implements OnSharedPreferenceChangeListener {
             clockUpdater.setMoveText(prefs.getBoolean(clockActivity.getResources().getString(keyClockMove), true));
             clockActivity.getmContentView().setGravity(Gravity.CENTER);
         }
+        String typefacePref = prefs.getString(clockActivity.getResources().getString(keyClockTypeface), "digital-7.mono.ttf");
+        Typeface font = Typeface.createFromAsset(clockActivity.getAssets(), "fonts/"+typefacePref);
+        clockActivity.getmContentView().setTypeface(font);
+
     }
 
     private void setupBatteryMonitoring(String key) {
@@ -293,8 +291,7 @@ class SettingsManager implements OnSharedPreferenceChangeListener {
         if (!prefs.getBoolean(clockActivity.getResources().getString(R.string.setting_key_clock_dots), true)) {
             pattern = pattern.replaceAll(":","");
         }
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        return sdf;
+        return new SimpleDateFormat(pattern);
     }
 
     public boolean isAlwaysDisplayBattery() {

@@ -122,7 +122,7 @@ public class StreamFinderActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class OnHelpClickListener implements View.OnClickListener {
+    private static class OnHelpClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(view.getContext());

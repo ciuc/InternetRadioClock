@@ -51,7 +51,7 @@
     <string name="setting.key.clockColor.night">setting.key.clockColor.night</string>
     <string name="setting.key.clockSize.night">setting.key.clockSize.night</string>
     <string name="setting.key.clockBrightness.night">setting.key.clockBrightness.night</string>
-
+    <string name="setting.key.typeface.night">setting.key.typeface.night</string>
 
     <string name="setting.name.stream1">Memory 1</string>
     <string name="setting.name.stream2">Memory 2</string>
@@ -150,6 +150,7 @@
         <item>20</item>
         <item>50</item>
         <item>100</item>
+        <item>130</item>
         <item>150</item>
         <item>200</item>
         <item>250</item>
@@ -158,16 +159,30 @@
         <item>XS</item>
         <item>S</item>
         <item>M (default)</item>
+        <item>M-L</item>
         <item>L</item>
         <item>XL</item>
         <item>XXL</item>
     </string-array>
+    <string-array name="clock_typefaces">
+        <item>digital-7.mono.ttf</item>
+        <item>repet___.ttf</item>
+        <item>ninepin.ttf</item>
+    </string-array>
+    <string-array name="clock_human_typefaces">
+        <item>LCD</item>
+        <item>Dots 1</item>
+        <item>Dots 2</item>
+    </string-array>
     <string name="setting.key.clockSize">setting.key.clockSize</string>
     <string name="setting.name.clockSize">Clock Size</string>
     <string name="setting.default.clockSize">100</string>
+    <string name="setting.default.typeface">digital-7.mono.ttf</string>
     <string name="setting.key.clock24">setting.key.clock24</string>
     <string name="setting.name.clock24">Use 12h Clock</string>
     <string name="setting.summary.clock24">Use am/pm or 24h clock.</string>
+    <string name="setting.key.typeface">setting.key.typeface</string>
+    <string name="setting.name.typeface">Change the font of the clock</string>
     <string name="setting.key.clock24ampm">setting.key.clock24ampm</string>
     <string name="setting.name.clock24ampm">Display am/pm</string>
     <string name="setting.summary.clock24ampm">When using 12h clock, display am or pm or not.</string>
@@ -181,11 +196,32 @@
     <string name="setting.name.wake_up_station">Always wake up on station</string>
     <string name="lastPlayed">Last played</string>
 
+    <!-- alarm days -->
+    <string name="setting.alarm.1.key.2">setting.alarm.1.key.2</string>
+    <string name="setting.alarm.1.key.3">setting.alarm.1.key.3</string>
+    <string name="setting.alarm.1.key.4">setting.alarm.1.key.4</string>
+    <string name="setting.alarm.1.key.5">setting.alarm.1.key.5</string>
+    <string name="setting.alarm.1.key.6">setting.alarm.1.key.6</string>
+    <string name="setting.alarm.1.key.7">setting.alarm.1.key.7</string>
+    <string name="setting.alarm.1.key.1">setting.alarm.1.key.1</string>
+    <string name="setting.alarm.2.key.2">setting.alarm.2.key.2</string>
+    <string name="setting.alarm.2.key.3">setting.alarm.2.key.3</string>
+    <string name="setting.alarm.2.key.4">setting.alarm.2.key.4</string>
+    <string name="setting.alarm.2.key.5">setting.alarm.2.key.5</string>
+    <string name="setting.alarm.2.key.6">setting.alarm.2.key.6</string>
+    <string name="setting.alarm.2.key.7">setting.alarm.2.key.7</string>
+    <string name="setting.alarm.2.key.8">setting.alarm.2.key.1</string>
+    <string name="setting.alarm.1.hh">setting.alarm.1.hh</string>
+    <string name="setting.alarm.1.mm">setting.alarm.1.mm</string>
+    <string name="setting.alarm.2.hh">setting.alarm.2.hh</string>
+    <string name="setting.alarm.2.mm">setting.alarm1.2.mm</string>
+
     <string name="back">Back</string>
     <string name="find">Go Find!</string>
     <string name="assign_to">Assign\nto memory:</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
+    <string name="ok">OK</string>
     <string name="remove">Remove this button!</string>
 
     <string name="title.streams">Configure Buttons</string>
@@ -197,13 +233,27 @@
 \nYou can add more search criteria like a category or the name of the radio.\n
 \nIf you want to assign a radio to a memory button, click on the button corresponding to the desired memory.
     </string>
-    <string name="mainHelp.hint">- enable progressive alarm sound from settings menu\n
-- after alarm starts, clicking on the screen will cancel the alarm, but radio continues playing at the current volume; use the volume buttons to set desired volume\n
-- after alarm starts - click the alarm cancel button to cancel the alarm and stop playing the radio\n
-- you can also snooze the alarm\n
-- try out multiple display choices in the Settings menu\n
-- more tips in the \"About\" section
+    <string name="tips.1">
+ - you can setup up to two alarms; they can be recurring by choosing the days\n
+ - after alarm starts, clicking on the screen will stop the alarm, but radio continues playing at the current volume; use the volume buttons to set desired volume\n
+ - after alarm starts - click the alarm cancel button (x) to cancel the alarm and stop playing the radio\n
+ - you can also snooze the alarm; you can define your own snooze time (default is 10 minutes)\n
+ - enable progressive alarm sound from settings menu
     </string>
+    <string-array name="tips">
+        <item>@string/tips.1</item>
+        <item>
+- try out multiple display choices in the Settings menu\n
+- you can choose from multiple fonts, colors, sizes for the clock\n
+- you can set various modes to display the clock
+        </item>
+        <item>
+- if you find problems or have ideas, let me know: write me a message at mai gmail address cristi.ciuc\n
+- you can find a more extensive help in the "About" section
+        </item>
+    </string-array>
+
+
     <string name="streamFinder.prompt.country">Choose country</string>
     <string name="streamFinder.prompt.language">Choose language</string>
     <string name="streamFinder.prompt.genre">Choose genre</string>
@@ -466,10 +516,14 @@
     </string-array>
 
     <string name="about.text"><![CDATA[
+    <html>
+    <body style="font-size:8px;">
+    <style>
+    p,li{font-weight:normal}
+    </style>
     <h1>Internet Radio Clock<h1>
 <p>This simple app just displays the clock in full screen mode and has 5 buttons associated each with a radio stream.</p>
 <p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania, RadioBOB from Germany and Zodiac from Ireland. These can be changed and you can have up to 8 buttons.</p>
-<p>alarm progressive sound; when alarm starts touch the screen (or the check button) to cancel it without stopping radio; play directly when open; (check settings). StreamFinder: now allows empty tag.</p>
 <p>
 <b>Reverse</b><br>
 Change screen orientation. Depending on the placement of the volume buttons, this might come in handy.<br>
@@ -477,6 +531,7 @@ Change screen orientation. Depending on the placement of the volume buttons, thi
 <b>Settings</b><br>
 in this section you can set some neat stuff:
 <ul>
+<li><span style="color:red">new: </span>clock font: you can choose from 3 fonts options for the clock display.</li>
 <li>clock color</li>
 <li>clock brightness</li>
 <li>clock size</li>
@@ -488,7 +543,7 @@ in this section you can set some neat stuff:
 <li>custom snooze time: you can set your own snooze timer (by default it is set to 10 minutes)</li>
 <li>reverse stream/alarm buttons: put radio buttons at the top and the alarm buttons on the bottom. This might be helpful for certain phone holders.</li>
 <li>unlock landscape mode so the clock will follow phone orientation; also ability to draw the clock vertically (with hours, minutes and/or seconds one below the other).</li>
-<li><span style="color:red">new: </span>you can enable the display of battery level; please be advised that this feature is still in a beta state and might not work on all devices all the time.</li>
+<li>you can enable the display of battery level; please be advised that this feature is still in a beta state and might not work on all devices all the time.</li>
 </ul>
 <b>Configure buttons</b>
 <ul>
@@ -505,13 +560,16 @@ in this section you can set some neat stuff:
 <b>Night Profile</b>
 <ul>
 <li>you can define a different set of settings and activate them at a touch of a button (for instance you might set a bigger clock without seconds, or red color and brightness at 50% for the night while during the day it will be smaller, green, with seconds and brighter)</li>
+</ul>
 
-<b>Alarm</b>
+<b>Alarms</b>
+<p>Pro tip: when alarm starts, touch the screen (or the check button) to cancel it without stopping radio;<br>when alarm plays, press the cancel button (marked with "x") to stop the alarm but not play the radio; next alarm will automatically be enabled.</p>
 <ul>
-<li>you can set an alarm which will wake up the radio at the defined time. It will play the last played radio. If the internet connection is down, it will play the default alarm sound.</li>
-<li>there is also a snooze function</li>
+<li>you can set up to two alarms which will wake up the radio at the defined time. It will play the last played radio or a radio you choose from the settings. If the internet connection is down, it will play the default alarm sound.</li>
+<li><b><span style="color:red">new: </span> now you can set the recurring alarms on various days of the week (for example one on weekdays, one in weekend)</b></li>
+<li>there is also a snooze function with 10 minutes snooze time; you can also set your own snooze time.</li>
 <li>you can enable progressive sound: the radio will start playing at a low volume which will increase every 10 seconds. Please note that it will not increase the device volume (the one controlled by the volume buttons).
-<li><span style="color:red">new: </span> you can set a station to always start the alarm with</li>
+<li>you can set a station to always start the alarm with</li>
 </ul>
 <p>
 <b>*** WARNING: please do not use this app as your main alarm clock. Always use your usual alarm clock to wake you up. ***</b>
@@ -529,7 +587,8 @@ in this section you can set some neat stuff:
 <p>If you like it, drink a beer for me. If you\'d also like me to drink a beer for you, rate 5 stars :)</p>
 
 <p>Cheers!</p>
-
+</body>
+</html>
 ]]>
     </string>
 
@@ -544,5 +603,8 @@ in this section you can set some neat stuff:
     <string name="title_night_profile">Night Profile</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="title_dialog_alarm_days">Choose days</string>
+    <string name="next_tip">Next Tip</string>
+    <string name="previous_tip">Previous tip</string>
 
 </resources>

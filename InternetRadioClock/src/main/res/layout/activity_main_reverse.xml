@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/fullscreen_content"
             android:layout_toRightOf="@id/fullscreen_content"
-            android:tint="@color/color.clock"
+            app:tint="@color/color.clock"
             app:srcCompat="@drawable/ic_baseline_battery_std_16"
             android:visibility="gone"/>
         <TextView
@@ -53,6 +53,8 @@
         android:fitsSystemWindows="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/margin_top">
+
+        <!-- ALARMS -->
         <ImageButton
             android:id="@+id/alarm_icon"
             android:tag="@string/setting.key.alarmIcon"
@@ -99,6 +101,19 @@
             android:visibility="gone"
             android:textColor="@color/button.color.off" />
         <ImageButton
+            android:id="@+id/alarm_icon_snooze_cancel"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/alarm_time"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="5dp"
+            android:clickable="false"
+            app:srcCompat="@drawable/ic_snooze_cancel_black_24dp"
+            android:background="@drawable/memory"
+            android:visibility="gone"
+            android:textColor="@color/button.color.off" />
+        <ImageButton
             android:id="@+id/alarm_icon_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -124,6 +139,48 @@
             android:background="@drawable/memory"
             android:layout_alignParentBottom="true"
             android:textColor="@color/button.color.off" />
+
+        <!-- ALARM 2-->
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/alarm_icon" >
+            <ImageButton
+                android:id="@+id/alarm_icon2"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/ic_alarm_add_black_24dp" />
+
+            <TextView
+                android:id="@+id/alarm_time2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill"
+                android:layout_toRightOf="@+id/alarm_icon2"
+                android:textColor="@color/button.color.off"
+                android:textSize="10sp" />
+
+            <ImageButton
+                android:id="@+id/alarm_icon_turn_off2"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_toRightOf="@+id/alarm_time2"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:textColor="@color/button.color.off"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_alarm_off_black_24dp" />
+        </RelativeLayout>
+
+        <!-- ALARMS END-->
         <ImageButton
             android:id="@+id/sleep"
             android:tag="@string/setting.key.sleepMinutes"

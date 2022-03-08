@@ -30,12 +30,7 @@ public class CheersActivity extends AppCompatActivity {
         TextView foo = findViewById(R.id.cheersText);
         foo.setText(Html.fromHtml(getString(R.string.cheers_text)));
         Button back = findViewById(R.id.about_back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        back.setOnClickListener(v -> onBackPressed());
     }
 
     @Override

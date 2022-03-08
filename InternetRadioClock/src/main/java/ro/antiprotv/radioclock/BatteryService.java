@@ -50,7 +50,7 @@ public class BatteryService extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         int status = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        pct.setText(String.format("%d%%",Integer.valueOf(status)));
+        pct.setText(String.format("%d%%", status));
         boolean low = intent.getBooleanExtra(BatteryManager.EXTRA_BATTERY_LOW, false);
         boolean charging = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING;
         if (low && !charging) {

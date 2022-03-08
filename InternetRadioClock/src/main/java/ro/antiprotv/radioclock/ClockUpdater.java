@@ -69,13 +69,13 @@ class ClockUpdater extends Thread {
             if (msg.what == MOVE_TEXT) {
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mContentView.getLayoutParams();
                 if (addedRules[0] != -1) {
-                    for (int i = 0; i < addedRules.length; i++) {
-                        params.removeRule(addedRules[i]);
+                    for (int addedRule : addedRules) {
+                        params.removeRule(addedRule);
                     }
                 }
                 addedRules = LAYOUT_ALIGNS.get(layoutListIndex);
-                for (int i = 0; i < addedRules.length; i++) {
-                    params.addRule(addedRules[i]);
+                for (int addedRule : addedRules) {
+                    params.addRule(addedRule);
                 }
                 mContentView.setLayoutParams(params);
                 layoutListIndex++;

@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -26,15 +27,10 @@ public class AboutActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        TextView foo = findViewById(R.id.aboutText);
-        foo.setText(Html.fromHtml(getString(R.string.about_text)));
+        WebView foo = findViewById(R.id.aboutText);
+        foo.loadDataWithBaseURL(null, getResources().getString(R.string.about_text), "text/html", "utf-8", null);
         Button back = findViewById(R.id.about_back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        back.setOnClickListener(v -> onBackPressed());
     }
 
     @Override

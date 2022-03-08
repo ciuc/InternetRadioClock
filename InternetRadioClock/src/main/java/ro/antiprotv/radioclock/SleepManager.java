@@ -24,7 +24,7 @@ class SleepManager {
     private final ClockActivity context;
     private final ImageButton button;
     private final TextView sleepTimerText;
-    private ClockUpdater clockUpdater;
+    private final ClockUpdater clockUpdater;
     private ScheduledFuture sleepFuture;
     private ScheduledFuture sleepCounterFuture;
     private final SleepCounterUpdater sleepCounterUpdater = new SleepCounterUpdater();

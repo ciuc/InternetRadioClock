@@ -22,6 +22,13 @@
         android:key="@string/setting.key.clockSize"
         android:summary="%s"
         android:title="@string/setting.name.clockSize" />
+    <ListPreference
+        android:defaultValue="@string/setting.default.typeface"
+        android:entries="@array/clock_human_typefaces"
+        android:entryValues="@array/clock_typefaces"
+        android:key="@string/setting.key.typeface"
+        android:summary="%s"
+        android:title="@string/setting.name.typeface" />
     <SwitchPreference
         android:id="@+id/switch_clock24"
         android:defaultValue="false"

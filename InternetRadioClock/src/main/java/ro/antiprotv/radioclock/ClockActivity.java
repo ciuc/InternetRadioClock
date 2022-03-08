@@ -9,6 +9,7 @@ package ro.antiprotv.radioclock;
 
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -20,9 +21,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,8 +34,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -41,7 +48,9 @@ import com.devbrackets.android.exomedia.listener.OnErrorListener;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -149,6 +158,7 @@ public class ClockActivity extends AppCompatActivity {
     private int m = 0;
 
     private boolean alarmPlaying;
+    private boolean alarmSnoozing;
     private RadioAlarmManager alarmManager;
     private BatteryService batteryService;
     ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
@@ -173,7 +183,9 @@ public class ClockActivity extends AppCompatActivity {
                 buttonManager.enableButtons();
             }
             //I want to hide the snooze button on any interaction with the radio buttons
-            alarmManager.cancelSnooze();
+            if (alarmSnoozing) {
+                alarmManager.cancelSnooze();
+            }
         }
     };
 
@@ -198,19 +210,11 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    private class OnHelpClickListener implements View.OnClickListener {
+    private static class OnHelpClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            android.app.AlertDialog.Builder dialogBuilder = new android.app.AlertDialog.Builder(view.getContext());
-            dialogBuilder.setTitle("Tips & Tricks");
-            dialogBuilder.setView(LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_main_help, null));
-            dialogBuilder.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            dialogBuilder.show();
+            android.app.AlertDialog tipsDialog = new TipsDialog(view.getContext());
+            tipsDialog.show();
         }
     }
 
@@ -249,16 +253,20 @@ public class ClockActivity extends AppCompatActivity {
         mVisible = true;
         mControlsView = findViewById(R.id.mainLayout);
         mContentView = findViewById(R.id.fullscreen_content);
+        RelativeLayout overlay = findViewById(R.id.overlay);
 
         // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
+        overlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggle();
             }
         });
-        Typeface digital7 = Typeface.createFromAsset(getAssets(), "fonts/digital-7.mono.ttf");
-        mContentView.setTypeface(digital7);
+        //Set font
+        String typefacePref = prefs.getString(getResources().getString(R.string.setting_key_typeface), "digital-7.mono.ttf");
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/"+typefacePref);
+        mContentView.setTypeface(font);
+
 
         initializeUrls();
         buttonManager = new ButtonManager(getApplicationContext(), mControlsView, prefs, mDelayHideTouchListener, playOnClickListener);
@@ -407,18 +415,43 @@ public class ClockActivity extends AppCompatActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //INITIALIZATIONS
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //............
+    //ALARMS
+    //............
     private void initializeAlarmFunction() {
         alarmManager = new RadioAlarmManager(this, buttonManager);
+        alarmManager.setAlarm();
         ImageButton alarmButton = findViewById(R.id.alarm_icon);
         alarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                TimePickerDialog timePicker = new TimePickerDialog(view.getContext(), new TimePickerDialog.OnTimeSetListener() {
+            public void onClick(final View view) {
+                final Context context = view.getContext();
+                TimePickerDialog timePicker = new CustomTimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+
                     @Override
-                    public void onTimeSet(TimePicker timePicker, int hh, int mm) {
+                    public void onTimeSet(TimePicker timePicker, final int hh, final int mm) {
                         h = hh;
                         m = mm;
-                        alarmManager.setAlarm(hh, mm);
+                        DaysDialog daysDialog = new DaysDialog(context, h, m, 1);
+                        daysDialog.show();
+                    }
+                }, h, m, true);
+                timePicker.show();
+            }
+        });
+        ImageButton alarmButton2 = findViewById(R.id.alarm_icon2);
+        alarmButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                final Context context = view.getContext();
+                TimePickerDialog timePicker = new CustomTimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, final int hh, final int mm) {
+                        h = hh;
+                        m = mm;
+                        DaysDialog daysDialog = new DaysDialog(context, h, m, 2);
+                        daysDialog.show();
                     }
                 }, h, m, true);
                 timePicker.show();
@@ -426,6 +459,83 @@ public class ClockActivity extends AppCompatActivity {
         });
     }
 
+    private class DaysDialog extends AlertDialog {
+        protected DaysDialog(@NonNull Context context, final int hh, final int mm, int alarmId) {
+            super(context);
+            Map<Integer, Map<String, Integer>> alarmKeys = new HashMap<>();
+            Map<String, Integer> alarmIds1 = new HashMap<>();
+            alarmIds1.put("MON", R.id.setting_alarm_1_key_2);
+            alarmIds1.put("TUE", R.id.setting_alarm_1_key_3);
+            alarmIds1.put("WED", R.id.setting_alarm_1_key_4);
+            alarmIds1.put("THU", R.id.setting_alarm_1_key_5);
+            alarmIds1.put("FRI", R.id.setting_alarm_1_key_6);
+            alarmIds1.put("SAT", R.id.setting_alarm_1_key_7);
+            alarmIds1.put("SUN", R.id.setting_alarm_1_key_1);
+            alarmKeys.put(RadioAlarmManager.ALARM_ID_1, alarmIds1);
+            Map<String, Integer> alarmIds2 = new HashMap<>();
+            alarmIds2.put("MON", R.id.setting_alarm_1_key_2);
+            alarmIds2.put("TUE", R.id.setting_alarm_1_key_3);
+            alarmIds2.put("WED", R.id.setting_alarm_1_key_4);
+            alarmIds2.put("THU", R.id.setting_alarm_1_key_5);
+            alarmIds2.put("FRI", R.id.setting_alarm_1_key_6);
+            alarmIds2.put("SAT", R.id.setting_alarm_1_key_7);
+            alarmIds2.put("SUN", R.id.setting_alarm_1_key_1);
+            alarmKeys.put(RadioAlarmManager.ALARM_ID_2, alarmIds2);
+            final LinearLayout layout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.dialog_alarm_days, null);
+
+
+            final CheckBox MON = layout.findViewById(alarmKeys.get(alarmId).get("MON"));
+            final CheckBox TUE = layout.findViewById(alarmKeys.get(alarmId).get("TUE"));
+            final CheckBox WED = layout.findViewById(alarmKeys.get(alarmId).get("WED"));
+            final CheckBox THU = layout.findViewById(alarmKeys.get(alarmId).get("THU"));
+            final CheckBox FRI = layout.findViewById(alarmKeys.get(alarmId).get("FRI"));
+            final CheckBox SAT = layout.findViewById(alarmKeys.get(alarmId).get("SAT"));
+            final CheckBox SUN = layout.findViewById(alarmKeys.get(alarmId).get("SUN"));
+            MON.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.2", false));
+            TUE.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.3", false));
+            WED.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.4", false));
+            THU.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.5", false));
+            FRI.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.6", false));
+            SAT.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.7", false));
+            SUN.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.1", false));
+            setView(layout);
+            setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok),  new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.2",MON.isChecked()).apply();
+                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.3",TUE.isChecked()).apply();
+                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.4",WED.isChecked()).apply();
+                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.5",THU.isChecked()).apply();
+                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.6",FRI.isChecked()).apply();
+                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.7",SAT.isChecked()).apply();
+                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.1",SUN.isChecked()).apply();
+                    prefs.edit().putInt("setting.alarm."+alarmId+".hh", hh).apply();
+                    prefs.edit().putInt("setting.alarm."+alarmId+".mm", mm).apply();
+                    alarmManager.setAlarm();
+                }
+            });
+            setTitle(R.string.title_dialog_alarm_days);
+        }
+
+    }
+    /**
+     * Necessary just to inhibit onStop to prevent double onTimeSet call on certain versions of android
+     */
+    private static class CustomTimePickerDialog extends TimePickerDialog {
+
+        public CustomTimePickerDialog(Context context, OnTimeSetListener listener, int hourOfDay, int minute, boolean is24HourView) {
+            super(context, listener, hourOfDay, minute, is24HourView);
+        }
+
+        @Override
+        protected void onStop() {
+            //inhibit
+        }
+    }
+
+    //......................
+    //ALARM END
+    //......................
     private void initializeSleepFunction() {
         //sleep timer
         sleepManager = new SleepManager(this, clockUpdater);
@@ -457,11 +567,11 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     private void displayDialogsOnOpen() {
-        final String currentDialog = "SIXTH_TIME";
+        final String currentDialog = "SEVENTH_TIME";
         if (prefs.getBoolean(currentDialog, true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Remember you can always disable the clock movement from the settings dialog. Now it moves every 5 minutes.")
-                    .setTitle("Clock movement!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
+            builder.setMessage("Check out new display face for the clock.\nThere are two alarms now and both can be recurring.")
+                    .setTitle("New Stuff!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     prefs.edit().putBoolean(currentDialog, false).apply();
                 }
@@ -599,7 +709,7 @@ public class ClockActivity extends AppCompatActivity {
             int index = Integer.parseInt(defaultKey) - 1;
             Toast.makeText(ClockActivity.this, "Playing " + mUrls.get(index), Toast.LENGTH_SHORT).show();
             Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
-            alarmPlaying = false;
+            //setAlarmPlaying(false);
         }
     }
 
@@ -688,8 +798,13 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     public void hide() {
-        cancelProgressiveVolumeTask();
-        alarmManager.shutDownRadioAlarm(false);
+        if (alarmPlaying) {
+            cancelProgressiveVolumeTask();
+            alarmManager.shutDownRadioAlarm(false);
+            alarmManager.cancelNonRecurringAlarm();
+            alarmManager.setAlarm();
+            setAlarmPlaying(false);
+        }
         // Hide UI first
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -729,6 +844,10 @@ public class ClockActivity extends AppCompatActivity {
     //--/////////////////////////////////////////////////////////////////////////
     public void setAlarmPlaying(boolean alarmPlaying) {
         this.alarmPlaying = alarmPlaying;
+    }
+
+    public void setAlarmSnoozing(boolean alarmSnoozing) {
+        this.alarmSnoozing = alarmSnoozing;
     }
 
     public TextView getmContentView() {

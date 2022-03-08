@@ -1,13 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:padding="4pt"
-        android:text="@string/mainHelp.hint" />
+        <TextView
+            android:id="@+id/tipTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="4pt"
+            android:text="@string/tips.1" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/button.tips.previousTip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/previous_tip"
+            android:layout_alignParentLeft="true"/>
+        <Button
+            android:id="@+id/button.tips.nextTip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/next_tip"
+            android:layout_toRightOf="@id/button.tips.previousTip"/>
+        <Button
+            android:id="@+id/button.tips.ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/ok" />
+    </RelativeLayout>
+
 </LinearLayout>
+
+

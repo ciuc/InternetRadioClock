@@ -141,18 +141,8 @@ class ButtonManager {
             labelInput.setText(button.getText());
             labelInput.setSelectAllOnFocus(true);
             builder.setView(layout);
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    setButtonLabel(streamNo, labelInput.getText().toString());
-                }
-            });
+            builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+            builder.setPositiveButton(R.string.yes, (dialog, which) -> setButtonLabel(streamNo, labelInput.getText().toString()));
             builder.setNeutralButton(R.string.remove, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

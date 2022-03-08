@@ -37,7 +37,7 @@
     tools:context="ro.antiprotv.radioclock.AboutActivity"
     android:background="#ffffff">
 
-    <TextView
+    <WebView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
