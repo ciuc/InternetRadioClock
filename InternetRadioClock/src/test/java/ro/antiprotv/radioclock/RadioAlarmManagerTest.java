@@ -62,7 +62,6 @@ public class RadioAlarmManagerTest {
         method.setAccessible(true);
         RadioAlarmManager.Alarm alarm = (RadioAlarmManager.Alarm) method.invoke(radioAlarmManager, 1);
 
-        System.out.println("result: " + alarm);
         Assert.assertEquals(new RadioAlarmManager.Alarm(7, 11, 11, 1), alarm);
     }
 
@@ -80,7 +79,6 @@ public class RadioAlarmManagerTest {
         method.setAccessible(true);
         RadioAlarmManager.Alarm alarm = (RadioAlarmManager.Alarm) method.invoke(radioAlarmManager, 1);
 
-        System.out.println("result: " + alarm);
         Assert.assertEquals(new RadioAlarmManager.Alarm(1, now.get(Calendar.HOUR_OF_DAY) - 1, 11, 1), alarm);
     }
 
@@ -98,7 +96,6 @@ public class RadioAlarmManagerTest {
         method.setAccessible(true);
         RadioAlarmManager.Alarm alarm = (RadioAlarmManager.Alarm) method.invoke(radioAlarmManager, 1);
 
-        System.out.println("result: " + alarm);
         Assert.assertEquals(new RadioAlarmManager.Alarm(7, now.get(Calendar.HOUR_OF_DAY) + 1, 11, 1), alarm);
     }
 
