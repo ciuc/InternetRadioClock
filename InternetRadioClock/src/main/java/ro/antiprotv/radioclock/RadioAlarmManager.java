@@ -12,7 +12,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +22,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.SortedSet;
@@ -53,7 +51,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     private final ClockActivity clockActivity;
     private final ButtonManager buttonManager;
     private MediaPlayer player;
-    ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private int NEXT_ALARM;
 
     private SharedPreferences prefs;
@@ -62,7 +60,11 @@ public class RadioAlarmManager extends BroadcastReceiver {
         this.buttonManager = buttonManager;
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent("alarmReceiver");
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        } else {
+            alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        }
         clockActivity = context;
         alarmButton1 = clockActivity.findViewById(R.id.alarm_icon);
         alarmText1 = clockActivity.findViewById(R.id.alarm_time);
@@ -71,53 +73,27 @@ public class RadioAlarmManager extends BroadcastReceiver {
         snoozeButton1 = clockActivity.findViewById(R.id.alarm_icon_snooze);
         snoozeCancelButton1 = clockActivity.findViewById(R.id.alarm_icon_snooze_cancel);
         closeButton1 = clockActivity.findViewById(R.id.alarm_icon_close);
-        alarmOffButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cancelAlarm(1);
-            }
+        alarmOffButton1.setOnClickListener(view -> cancelAlarm(1));
+        cancelButton1.setOnClickListener(view -> {
+            shutDownDefaultAlarm();
+            shutDownRadioAlarm(true);
+            cancelNonRecurringAlarm();
+            setAlarm();
         });
-        cancelButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shutDownDefaultAlarm();
-                shutDownRadioAlarm(true);
-                cancelNonRecurringAlarm();
-                setAlarm();
-            }
-        });
-        snoozeButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                snooze();
-            }
-        });
-        snoozeCancelButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cancelSnooze();
-            }
-        });
-        closeButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //shutDownDefaultAlarm();
-                //shutDownRadioAlarm(false);
-                //This has the same function as the click which hides the clcockActivity
-                clockActivity.hide();
-                //setAlarm();
-            }
+        snoozeButton1.setOnClickListener(view -> snooze());
+        snoozeCancelButton1.setOnClickListener(view -> cancelSnooze());
+        closeButton1.setOnClickListener(view -> {
+            //shutDownDefaultAlarm();
+            //shutDownRadioAlarm(false);
+            //This has the same function as the click which hides the clcockActivity
+            clockActivity.hide();
+            //setAlarm();
         });
 
         alarmButton2 = clockActivity.findViewById(R.id.alarm_icon2);
         alarmText2 = clockActivity.findViewById(R.id.alarm_time2);
         alarmOffButton2 = clockActivity.findViewById(R.id.alarm_icon_turn_off2);
-        alarmOffButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cancelAlarm(2);
-            }
-        });
+        alarmOffButton2.setOnClickListener(view -> cancelAlarm(2));
         prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
     }
 
@@ -128,11 +104,11 @@ public class RadioAlarmManager extends BroadcastReceiver {
     }
 
     protected static class Alarm implements Comparable<Alarm> {
-        int day;
-        int hh;
-        int mm;
-        int id;
-        Calendar calendar;
+        private final int day;
+        private final int hh;
+        private final int mm;
+        private final int id;
+        private final Calendar calendar;
 
         public Alarm(int day, int hh, int mm, int id) {
             this.day = day;
@@ -163,10 +139,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
 
         long getTimeInMillis() {
             return calendar.getTimeInMillis();
-        }
-
-        boolean after(Alarm alarm) {
-            return this.calendar.compareTo(alarm.calendar) > 0;
         }
 
         boolean before(Alarm alarm) {
@@ -363,14 +335,11 @@ public class RadioAlarmManager extends BroadcastReceiver {
         //which makes no sense at the moment
         //LE: I guess this is b/c it fails silently
         //when it tries to manipulate UI
-        clockActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                cancelButton1.setVisibility(View.GONE);
-                snoozeButton1.setVisibility(View.GONE);
-                snoozeCancelButton1.setVisibility(View.GONE);
-                closeButton1.setVisibility(View.GONE);
-            }
+        clockActivity.runOnUiThread(() -> {
+            cancelButton1.setVisibility(View.GONE);
+            snoozeButton1.setVisibility(View.GONE);
+            snoozeCancelButton1.setVisibility(View.GONE);
+            closeButton1.setVisibility(View.GONE);
         });
 
     }

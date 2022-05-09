@@ -13,8 +13,6 @@ import android.widget.Toast;
 import com.devbrackets.android.exomedia.AudioPlayer;
 
 import java.text.DecimalFormat;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 //import timber.log.Timber;
 
@@ -23,7 +21,6 @@ import java.util.concurrent.Executors;
  * It does not manage the overall device volume set by hardware buttons
  */
 public class VolumeManager {
-    private final View view;
     private final SharedPreferences prefs;
     private final ImageButton volumeUpButton;
     private final ImageButton volumeDownButton;
@@ -35,7 +32,6 @@ public class VolumeManager {
     VolumeManager(Context ctx, View view, AudioPlayer mediaPlayer) {
         prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         this.ctx = ctx;
-        this.view = view;
         this.mediaPlayer = mediaPlayer;
         volumeUpButton = view.findViewById(R.id.volumeup_button);
         volumeDownButton = view.findViewById(R.id.volumedown_button);
@@ -53,12 +49,7 @@ public class VolumeManager {
         //Timber.d(String.valueOf(volume));
         if (volume > 1) {
             //run on ui thread, b/c this is accessed by the progressive volume task
-            ((ClockActivity) ctx).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(ctx, "Volume MAX", Toast.LENGTH_SHORT).show();
-                }
-            });
+            ((ClockActivity) ctx).runOnUiThread(() -> Toast.makeText(ctx, "Volume MAX", Toast.LENGTH_SHORT).show());
             volume = 1;
         }
         setVolume(volume);
@@ -71,12 +62,7 @@ public class VolumeManager {
     protected void volumeDown(float pct){
         float volume = mediaPlayer.getVolumeLeft() - pct;
         if (volume < 0) {
-            ((ClockActivity) ctx).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(ctx, "Muted", Toast.LENGTH_SHORT).show();
-                }
-            });
+            ((ClockActivity) ctx).runOnUiThread(() -> Toast.makeText(ctx, "Muted", Toast.LENGTH_SHORT).show());
             volume = 0;
         }
         setVolume(volume);
@@ -90,12 +76,7 @@ public class VolumeManager {
         mediaPlayer.setVolume(volume, volume);
         //volumeText.setText(fmt.format(volume));
         //run on ui thread, b/c this is accessed by the progressive volume task
-        ((ClockActivity) ctx).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                volumeText.setText(fmt.format(volume));
-            }
-        });
+        ((ClockActivity) ctx).runOnUiThread(() -> volumeText.setText(fmt.format(volume)));
         prefs.edit().putFloat(ClockActivity.LAST_VOLUME, volume).apply();
     }
     private class VolumeUpOnClickListener implements View.OnTouchListener{

@@ -10,7 +10,6 @@ package ro.antiprotv.radioclock;
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -21,17 +20,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -40,8 +32,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.devbrackets.android.exomedia.AudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnErrorListener;
@@ -60,13 +56,10 @@ import java.util.concurrent.TimeUnit;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-//import timber.log.Timber;
-
 /**
  * Main Activity. Just displays the clock and buttons
  */
 public class ClockActivity extends AppCompatActivity {
-    public static final String TAG_RADIOCLOCK = "ClockActivity: %s";
     public final static String PREF_NIGHT_MODE = "NIGHT_MODE";
     public final static String LAST_PLAYED = "LAST_PLAYED";
     public final static String LAST_VOLUME = "LAST_VOLUME";
@@ -95,15 +88,11 @@ public class ClockActivity extends AppCompatActivity {
      * system UI. This is to prevent the jarring behavior of controls going away
      * while interacting with activity UI.
      */
-    private final View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (AUTO_HIDE) {
-                delayedHide(AUTO_HIDE_DELAY_MILLIS);
-            }
-            return false;
+    private final View.OnTouchListener mDelayHideTouchListener = (view, motionEvent) -> {
+        if (AUTO_HIDE) {
+            delayedHide(AUTO_HIDE_DELAY_MILLIS);
         }
-
+        return false;
     };
     private SharedPreferences prefs;
     private ClockUpdater clockUpdater;
@@ -138,12 +127,7 @@ public class ClockActivity extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
-    private final Runnable mHideRunnable = new Runnable() {
-        @Override
-        public void run() {
-            hide();
-        }
-    };
+    private final Runnable mHideRunnable = () -> hide();
     private AudioPlayer mMediaPlayer;
     private ButtonManager buttonManager;
     private SleepManager sleepManager;
@@ -161,7 +145,7 @@ public class ClockActivity extends AppCompatActivity {
     private boolean alarmSnoozing;
     private RadioAlarmManager alarmManager;
     private BatteryService batteryService;
-    ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
     private final Button.OnClickListener playOnClickListener = new View.OnClickListener() {
 
         @Override
@@ -200,9 +184,7 @@ public class ClockActivity extends AppCompatActivity {
 
     private class AlarmProgressiveVolume implements Runnable{
         public void run() {
-            //Timber.d("Running progressive volume task");
             if (mMediaPlayer.getVolumeLeft() >= 1) {
-                //Timber.d("Canceling progressive volume task");
                 cancelProgressiveVolumeTask();
                 return;
             }
@@ -224,7 +206,6 @@ public class ClockActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Timber.d(TAG_STATE, "onCreate");
         //SOME INITIALIZATIONS
         //Initialize the preferences_buttons
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -243,25 +224,13 @@ public class ClockActivity extends AppCompatActivity {
             setContentView(R.layout.activity_main);
         }
 
-        /*
-        LEAVE THIS HERE, SO IF WE ENABLE TIMBER FOR DEBUGGING, WE JUST UNCOMMENT
-         */
-        //Set up Timber
-        //if (BuildConfig.DEBUG) {
-        //    Timber.plant(new Timber.DebugTree());
-        //}
         mVisible = true;
         mControlsView = findViewById(R.id.mainLayout);
         mContentView = findViewById(R.id.fullscreen_content);
         RelativeLayout overlay = findViewById(R.id.overlay);
 
         // Set up the user interaction to manually show or hide the system UI.
-        overlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggle();
-            }
-        });
+        overlay.setOnClickListener(view -> toggle());
         //Set font
         String typefacePref = prefs.getString(getResources().getString(R.string.setting_key_typeface), "digital-7.mono.ttf");
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/"+typefacePref);
@@ -286,7 +255,7 @@ public class ClockActivity extends AppCompatActivity {
         ImageView batteryIcon = findViewById(R.id.battery_icon);
         this.batteryService = new BatteryService(this, batteryIcon, battery_pct);
 
-        preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater, batteryService, alarmManager);
+        preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater, batteryService);
         ((SettingsManager) preferenceChangeListener).applyProfile();
 
         //Initialize the player
@@ -335,7 +304,6 @@ public class ClockActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        //Timber.d(TAG_STATE, "onPostCreate");
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
@@ -344,9 +312,7 @@ public class ClockActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        //Timber.d(TAG_STATE, "onStart");
         super.onStart();
-        //semaphore = true;
         if (!clockUpdater.getThreadHandler().hasMessages(0)) {
             clockUpdater.getThreadHandler().sendEmptyMessage(0);
         }
@@ -356,7 +322,6 @@ public class ClockActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //Timber.d(TAG_STATE, "onResume");
         IntentFilter filter = new IntentFilter("alarmReceiver");
         this.registerReceiver(this.alarmManager, filter);
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(preferenceChangeListener);
@@ -364,14 +329,7 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        //Timber.d(TAG_STATE, "onPause");
-    }
-
-    @Override
     protected void onStop() {
-        //Timber.d(TAG_STATE, "onStop");
         super.onStop();
         clockUpdater.setSemaphore(false);
         clockUpdater.getThreadHandler().removeMessages(0);
@@ -380,7 +338,6 @@ public class ClockActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        //Timber.d(TAG_STATE, "onDestroy");
         resetMediaPlayer();
         if (clockUpdater != null && !clockUpdater.isInterrupted()) {
             clockUpdater.interrupt();
@@ -422,40 +379,26 @@ public class ClockActivity extends AppCompatActivity {
         alarmManager = new RadioAlarmManager(this, buttonManager);
         alarmManager.setAlarm();
         ImageButton alarmButton = findViewById(R.id.alarm_icon);
-        alarmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final Context context = view.getContext();
-                TimePickerDialog timePicker = new CustomTimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
-
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, final int hh, final int mm) {
-                        h = hh;
-                        m = mm;
-                        DaysDialog daysDialog = new DaysDialog(context, h, m, 1);
-                        daysDialog.show();
-                    }
-                }, h, m, true);
-                timePicker.show();
-            }
+        alarmButton.setOnClickListener(view -> {
+            final Context context = view.getContext();
+            TimePickerDialog timePicker = new CustomTimePickerDialog(context, (timePicker12, hh, mm) -> {
+                h = hh;
+                m = mm;
+                DaysDialog daysDialog = new DaysDialog(context, h, m, 1);
+                daysDialog.show();
+            }, h, m, true);
+            timePicker.show();
         });
         ImageButton alarmButton2 = findViewById(R.id.alarm_icon2);
-        alarmButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                final Context context = view.getContext();
-                TimePickerDialog timePicker = new CustomTimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
-
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, final int hh, final int mm) {
-                        h = hh;
-                        m = mm;
-                        DaysDialog daysDialog = new DaysDialog(context, h, m, 2);
-                        daysDialog.show();
-                    }
-                }, h, m, true);
-                timePicker.show();
-            }
+        alarmButton2.setOnClickListener(view -> {
+            final Context context = view.getContext();
+            TimePickerDialog timePicker = new CustomTimePickerDialog(context, (timePicker1, hh, mm) -> {
+                h = hh;
+                m = mm;
+                DaysDialog daysDialog = new DaysDialog(context, h, m, 2);
+                daysDialog.show();
+            }, h, m, true);
+            timePicker.show();
         });
     }
 
@@ -499,20 +442,17 @@ public class ClockActivity extends AppCompatActivity {
             SAT.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.7", false));
             SUN.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.1", false));
             setView(layout);
-            setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok),  new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.2",MON.isChecked()).apply();
-                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.3",TUE.isChecked()).apply();
-                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.4",WED.isChecked()).apply();
-                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.5",THU.isChecked()).apply();
-                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.6",FRI.isChecked()).apply();
-                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.7",SAT.isChecked()).apply();
-                    prefs.edit().putBoolean("setting.alarm."+alarmId+".key.1",SUN.isChecked()).apply();
-                    prefs.edit().putInt("setting.alarm."+alarmId+".hh", hh).apply();
-                    prefs.edit().putInt("setting.alarm."+alarmId+".mm", mm).apply();
-                    alarmManager.setAlarm();
-                }
+            setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), (dialog, which) -> {
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.2",MON.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.3",TUE.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.4",WED.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.5",THU.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.6",FRI.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.7",SAT.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.1",SUN.isChecked()).apply();
+                prefs.edit().putInt("setting.alarm."+alarmId+".hh", hh).apply();
+                prefs.edit().putInt("setting.alarm."+alarmId+".mm", mm).apply();
+                alarmManager.setAlarm();
             });
             setTitle(R.string.title_dialog_alarm_days);
         }
@@ -540,7 +480,7 @@ public class ClockActivity extends AppCompatActivity {
         //sleep timer
         sleepManager = new SleepManager(this, clockUpdater);
 
-        Integer customTimer = 0;
+        int customTimer = 0;
         try {
             customTimer = Integer.parseInt(prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
         } catch (Exception e) {
@@ -571,11 +511,7 @@ public class ClockActivity extends AppCompatActivity {
         if (prefs.getBoolean(currentDialog, true)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Check out new display face for the clock.\nThere are two alarms now and both can be recurring.")
-                    .setTitle("New Stuff!").setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    prefs.edit().putBoolean(currentDialog, false).apply();
-                }
-            });
+                    .setTitle("New Stuff!").setPositiveButton(R.string.dialog_button_ok, (dialog, id) -> prefs.edit().putBoolean(currentDialog, false).apply());
             AlertDialog dialog = builder.create();
 
             dialog.show();
@@ -587,11 +523,7 @@ public class ClockActivity extends AppCompatActivity {
                     "The text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen you are highly discouraged to do so.")
                     .setTitle("AMOLED WARNING")
                     .setIcon(R.drawable.ic_warning_black_24dp)
-                    .setPositiveButton(R.string.dialog_button_ok_amoled, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            prefs.edit().putBoolean("AMOLED_WARN", false).apply();
-                        }
-                    });
+                    .setPositiveButton(R.string.dialog_button_ok_amoled, (dialog, id) -> prefs.edit().putBoolean("AMOLED_WARN", false).apply());
             AlertDialog dialog = builder.create();
 
             dialog.show();

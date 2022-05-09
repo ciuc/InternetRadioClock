@@ -5,7 +5,6 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -34,24 +33,21 @@ class HttpRequestManager {
         }
         ResponseListener responseListener = new ResponseListener(context);
         JsonArrayRequest request = new JsonArrayRequest(requestParams.toString(),
-                responseListener, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                int statusCode = 500;
-                if (error.networkResponse != null) {
-                    statusCode = error.networkResponse.statusCode;
-                }
+                responseListener, error -> {
+                    int statusCode = 500;
+                    if (error.networkResponse != null) {
+                        statusCode = error.networkResponse.statusCode;
+                    }
 
-                switch (statusCode) {
-                    case 404:
-                        Toast.makeText(context, "No radios matching the criteria! Please try again.", Toast.LENGTH_LONG).show();
-                        break;
-                    case 500:
-                        Toast.makeText(context, String.format("Something went wrong while retrieving list. Please try again later. (error %d) ", statusCode), Toast.LENGTH_LONG).show();
-                        break;
-                }
-            }
-        });
+                    switch (statusCode) {
+                        case 404:
+                            Toast.makeText(context, "No radios matching the criteria! Please try again.", Toast.LENGTH_LONG).show();
+                            break;
+                        case 500:
+                            Toast.makeText(context, String.format("Something went wrong while retrieving list. Please try again later. (error %d) ", statusCode), Toast.LENGTH_LONG).show();
+                            break;
+                    }
+                });
 
         queue.add(request);
 

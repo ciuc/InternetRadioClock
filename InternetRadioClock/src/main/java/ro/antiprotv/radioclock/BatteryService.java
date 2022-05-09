@@ -8,10 +8,10 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.BatteryManager;
 import android.preference.PreferenceManager;
-import androidx.core.content.ContextCompat;
-
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;

@@ -1,18 +1,19 @@
 package ro.antiprotv.radioclock;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.GradientDrawable;
 import android.preference.PreferenceManager;
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Arrays;
 import java.util.List;
@@ -127,7 +128,7 @@ class ButtonManager {
     }
 
     private class AddLabelOnLongClickListener implements View.OnLongClickListener {
-        int streamNo;
+        private final int streamNo;
 
         AddLabelOnLongClickListener(int stream) {
             streamNo = stream;
@@ -143,12 +144,7 @@ class ButtonManager {
             builder.setView(layout);
             builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
             builder.setPositiveButton(R.string.yes, (dialog, which) -> setButtonLabel(streamNo, labelInput.getText().toString()));
-            builder.setNeutralButton(R.string.remove, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    setButtonUrl(streamNo, "");
-                }
-            });
+            builder.setNeutralButton(R.string.remove, (dialog, which) -> setButtonUrl(streamNo));
             builder.show();
             return true;
         }
@@ -160,10 +156,10 @@ class ButtonManager {
         prefs.edit().putString(labelKey, label).apply();
     }
 
-    void setButtonUrl(int streamNo, String url) {
+    void setButtonUrl(int streamNo) {
         String labelKey = "setting.key.stream"+ streamNo;
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        prefs.edit().putString(labelKey, url).apply();
+        prefs.edit().putString(labelKey, "").apply();
     }
 
     /**

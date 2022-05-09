@@ -69,12 +69,7 @@ class SleepManager {
 
     private void scheduleClockSleepTimerReset() {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.schedule(new Runnable() {
-            @Override
-            public void run() {
-                clockUpdater.setClockText(null,-1);
-            }
-        }, MOVEMENT_SECCONDS, TimeUnit.SECONDS );
+        executor.schedule(() -> clockUpdater.setClockText(null,-1), MOVEMENT_SECCONDS, TimeUnit.SECONDS );
     }
 
     SleepManager(ClockActivity context, ClockUpdater clockUpdater) {
@@ -111,13 +106,10 @@ class SleepManager {
 
         @Override
         public void run() {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Time's up", Toast.LENGTH_SHORT).show();
-                        context.stopPlaying();
-                        resetSleepTimer();
-                    }
+                context.runOnUiThread(() -> {
+                    Toast.makeText(context, "Time's up", Toast.LENGTH_SHORT).show();
+                    context.stopPlaying();
+                    resetSleepTimer();
                 });
         }
     }
@@ -129,7 +121,7 @@ class SleepManager {
      * Exiting the app will stop this future.
      */
     private class SleepCounterUpdater implements Runnable {
-        long startFrom;
+        private long startFrom;
 
         public void setStartFrom(long start) {
             this.startFrom = start;
@@ -142,12 +134,7 @@ class SleepManager {
         @Override
         public void run() {
             if (startFrom > 0) {
-                context.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        sleepTimerText.setText(String.format(context.getResources().getString(R.string.text_sleep_timer), startFrom--));
-                    }
-                });
+                context.runOnUiThread(() -> sleepTimerText.setText(String.format(context.getResources().getString(R.string.text_sleep_timer), startFrom--)));
             }
         }
     }

@@ -16,12 +16,10 @@ import android.preference.PreferenceManager;
  */
 public class ConfigureButtonsFragment extends PreferenceFragment {
 
-    private final SharedPreferences.OnSharedPreferenceChangeListener mListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-            Preference pref = findPreference(key);
-            if (pref != null) {
-                pref.setSummary(prefs.getString(key, ""));
-            }
+    private final SharedPreferences.OnSharedPreferenceChangeListener mListener = (prefs, key) -> {
+        Preference pref = findPreference(key);
+        if (pref != null) {
+            pref.setSummary(prefs.getString(key, ""));
         }
     };
 

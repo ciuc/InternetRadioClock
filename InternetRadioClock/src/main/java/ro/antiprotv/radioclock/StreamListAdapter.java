@@ -1,10 +1,6 @@
 package ro.antiprotv.radioclock;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import androidx.annotation.NonNull;
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,23 +9,24 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.textfield.TextInputEditText;
+
 import java.util.List;
 
 class StreamListAdapter extends RecyclerView.Adapter {
     private final LayoutInflater inflater;
     private final StreamFinderActivity streamFinderActivity;
     private final ButtonManager buttonManager;
-    private List<Stream> streams;
+    private final List<Stream> streams;
 
     public StreamListAdapter(StreamFinderActivity context, ButtonManager buttonManager, List<Stream> streams) {
         inflater = LayoutInflater.from(context);
         this.streams = streams;
         this.streamFinderActivity = context;
         this.buttonManager = buttonManager;
-    }
-
-    public void setStreams(List<Stream> streams) {
-        this.streams = streams;
     }
 
     @NonNull
@@ -58,17 +55,15 @@ class StreamListAdapter extends RecyclerView.Adapter {
 
         private final TextView nameView;
         private final TextView countryView;
-        private final View view;
         private String url;
 
         private Stream stream;
 
         StreamViewHolder(View view) {
             super(view);
-            this.view = view;
             this.nameView = view.findViewById(R.id.name);
             this.countryView = view.findViewById(R.id.radio_description);
-            this.view.setOnCreateContextMenuListener(this);
+            view.setOnCreateContextMenuListener(this);
 
             final Button assignToMemoryButton1 = view.findViewById(R.id.sf_assign_button_stream1);
             assignToMemoryButton1.setOnClickListener(new OnAssignToMemoryClickListener(1));
@@ -112,18 +107,8 @@ class StreamListAdapter extends RecyclerView.Adapter {
                 labelInput.setSelectAllOnFocus(true);
                 dialogBuilder.setView(layout);
 
-                dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                dialogBuilder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        buttonManager.assignUrlToMemory(stream.getUrl(), streamNo, labelInput.getText().toString());
-                    }
-                });
+                dialogBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+                dialogBuilder.setPositiveButton(R.string.yes, (dialog, which) -> buttonManager.assignUrlToMemory(stream.getUrl(), streamNo, labelInput.getText().toString()));
                 dialogBuilder.show();
             }
 

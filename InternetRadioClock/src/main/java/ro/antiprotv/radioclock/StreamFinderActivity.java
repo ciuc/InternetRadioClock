@@ -2,14 +2,9 @@ package ro.antiprotv.radioclock;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +14,11 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,12 +57,7 @@ public class StreamFinderActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         final Button findStreamButton = findViewById(R.id.find_stream);
-        findStreamButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getStreams();
-            }
-        });
+        findStreamButton.setOnClickListener(view -> getStreams());
         final ImageButton helpButton = findViewById(R.id.streamFinder_help);
         helpButton.setOnClickListener(new OnHelpClickListener());
 
@@ -128,18 +123,13 @@ public class StreamFinderActivity extends AppCompatActivity {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(view.getContext());
             dialogBuilder.setTitle("About the StreamFinder");
             dialogBuilder.setView(LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_streamfinder_help, null));
-            dialogBuilder.setPositiveButton(R.string.dialog_button_ok, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
+            dialogBuilder.setPositiveButton(R.string.dialog_button_ok, (dialog, which) -> dialog.cancel());
             dialogBuilder.show();
         }
     }
 
-    private class KeyboardHideOnClickListener implements View.OnClickListener{
-        StreamFinderActivity activity;
+    private static class KeyboardHideOnClickListener implements View.OnClickListener{
+        private final StreamFinderActivity activity;
         KeyboardHideOnClickListener(StreamFinderActivity activity) {
             this.activity = activity;
 

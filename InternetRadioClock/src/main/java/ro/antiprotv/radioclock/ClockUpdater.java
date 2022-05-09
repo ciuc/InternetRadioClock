@@ -111,7 +111,7 @@ class ClockUpdater extends Thread {
                     try {
                         Thread.sleep(sleep);
                         count++;
-                    } catch (Exception e) {
+                    } catch (InterruptedException e) {
                     }
                     uiHandler.sendEmptyMessage(DO_NOT_MOVE_TEXT);
                     if (moveText && count > 300) {

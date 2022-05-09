@@ -2,7 +2,6 @@ package ro.antiprotv.radioclock;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.icu.util.ICUUncheckedIOException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -24,41 +23,30 @@ public class TipsDialog extends AlertDialog {
         Button ok = view.findViewById(R.id.button_tips_ok);
         TextView tip = view.findViewById(R.id.tipTxt);
 
-        previous.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int counter = tipPosition.getAndDecrement();
-                if (counter == 0) {
-                    counter = tips.length-1;
-                    tipPosition.set(tips.length-1);
-                } else {
-                    counter--;
-                }
-
-                tip.setText(tips[counter]);
+        previous.setOnClickListener(v -> {
+            int counter = tipPosition.getAndDecrement();
+            if (counter == 0) {
+                counter = tips.length-1;
+                tipPosition.set(tips.length-1);
+            } else {
+                counter--;
             }
+
+            tip.setText(tips[counter]);
         });
 
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int counter = tipPosition.getAndIncrement();
-                if (counter == tips.length-1) {
-                    counter = 0;
-                    tipPosition.set(0);
-                } else {
-                    counter++;
-                }
+        next.setOnClickListener(v -> {
+            int counter = tipPosition.getAndIncrement();
+            if (counter == tips.length-1) {
+                counter = 0;
+                tipPosition.set(0);
+            } else {
+                counter++;
+            }
 
-                tip.setText(tips[counter]);
-            }
+            tip.setText(tips[counter]);
         });
-        ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cancel();
-            }
-        });
+        ok.setOnClickListener(v -> cancel());
     }
 
 

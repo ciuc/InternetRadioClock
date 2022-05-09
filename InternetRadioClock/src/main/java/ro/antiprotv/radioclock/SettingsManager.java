@@ -13,7 +13,6 @@ import android.widget.ImageButton;
 import java.text.SimpleDateFormat;
 
 import static ro.antiprotv.radioclock.ClockActivity.PREF_NIGHT_MODE;
-import static ro.antiprotv.radioclock.ClockActivity.TAG_RADIOCLOCK;
 
 class SettingsManager implements OnSharedPreferenceChangeListener {
     private final ClockActivity clockActivity;
@@ -22,16 +21,14 @@ class SettingsManager implements OnSharedPreferenceChangeListener {
     private final ClockUpdater clockUpdater;
     private final SharedPreferences prefs;
     private final BatteryService batteryService;
-    private final RadioAlarmManager radioAlarmManager;
 
-    public SettingsManager(ClockActivity clockActivity, ButtonManager buttonManager, SleepManager sleepManager, ClockUpdater clockUpdater, BatteryService batteryService, RadioAlarmManager radioAlarmManager) {
+    public SettingsManager(ClockActivity clockActivity, ButtonManager buttonManager, SleepManager sleepManager, ClockUpdater clockUpdater, BatteryService batteryService) {
         this.clockActivity = clockActivity;
         this.buttonManager = buttonManager;
         this.sleepManager = sleepManager;
         this.clockUpdater = clockUpdater;
         this.prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
         this.batteryService = batteryService;
-        this.radioAlarmManager = radioAlarmManager;
     }
 
     @Override
