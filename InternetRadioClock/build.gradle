@@ -17,8 +17,8 @@ android {
         applicationId "ro.antiprotv.radioclock"
         minSdkVersion 19
         targetSdkVersion 31
-        versionCode 318
-        versionName "v3.18"
+        versionCode 319
+        versionName "v3.19"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
