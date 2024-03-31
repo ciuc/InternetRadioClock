@@ -41,4 +41,24 @@
         android:summary="@string/setting.summary.clockMove"
         android:defaultValue="true"
         />
+    <SwitchPreference
+        android:id="@+id/switch_enable_night_schedule"
+        android:key="setting.key.enable.night.schedule"
+        android:title="@string/setting.name.enable.night.schedule"
+        android:summary="@string/setting.name.enable.night.schedule"
+        android:defaultValue="false"
+        />
+
+    <ro.antiprotv.radioclock.TimePreference
+        android:id="@+id/picker_night_profile_autostart"
+        android:key="setting.key.night_profile.autostart"
+        android:title="@string/setting.name.night_profile.autostart"
+        android:dependency="setting.key.enable.night.schedule"
+        android:defaultValue="21:00"/>
+    <ro.antiprotv.radioclock.TimePreference
+        android:id="@+id/picker_night_profile_autoend"
+        android:key="setting.key.night_profile.autoend"
+        android:dependency="setting.key.enable.night.schedule"
+        android:title="@string/setting.name.night_profile.autoend"
+        android:defaultValue="07:00" />
 </PreferenceScreen>

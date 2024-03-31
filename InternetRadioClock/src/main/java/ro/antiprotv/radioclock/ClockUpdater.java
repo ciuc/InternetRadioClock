@@ -1,22 +1,21 @@
 package ro.antiprotv.radioclock;
 
+import static android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM;
+import static android.widget.RelativeLayout.ALIGN_PARENT_LEFT;
+import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
+import static android.widget.RelativeLayout.ALIGN_PARENT_TOP;
+import static android.widget.RelativeLayout.CENTER_IN_PARENT;
+
 import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import static android.widget.RelativeLayout.ALIGN_PARENT_BOTTOM;
-import static android.widget.RelativeLayout.ALIGN_PARENT_LEFT;
-import static android.widget.RelativeLayout.ALIGN_PARENT_RIGHT;
-import static android.widget.RelativeLayout.ALIGN_PARENT_TOP;
-import static android.widget.RelativeLayout.CENTER_IN_PARENT;
 
 /**
  * Thread to manage the clock (update the clock and move it)
@@ -32,30 +31,13 @@ class ClockUpdater extends Thread {
             new int[]{ALIGN_PARENT_TOP, ALIGN_PARENT_LEFT},
             new int[]{CENTER_IN_PARENT}
     );
+    private final TextView mContentView;
     private boolean semaphore = true;
     //Threading stuff
     private Handler threadHandler = null;
-    private final TextView mContentView;
     private SimpleDateFormat sdf;
     private int sleep = 1000;
     private String clockText;
-
-    public void setClockText(String text, int seconds) {
-        clockText = text;
-        if (seconds == -1) {
-            sleep = 1000;
-        } else {
-            sleep = seconds*1000;
-        }
-    }
-    private String getClockText() {
-        if (clockText == null) {
-            return sdf.format(new Date());
-        }
-        return clockText;
-    }
-
-
     //We create this ui handler to update the clock
     //We need this in order to not block the UI
     @SuppressLint("HandlerLeak")
@@ -87,10 +69,27 @@ class ClockUpdater extends Thread {
     };
     private boolean moveText = true;
 
+
     ClockUpdater(TextView tv) {
         //this.sdf = sdf;
         this.mContentView = tv;
         //this.moveText = moveText;
+    }
+
+    public void setClockText(String text, int seconds) {
+        clockText = text;
+        if (seconds == -1) {
+            sleep = 1000;
+        } else {
+            sleep = seconds*1000;
+        }
+    }
+
+    private String getClockText() {
+        if (clockText == null) {
+            return sdf.format(new Date());
+        }
+        return clockText;
     }
 
     public Handler getThreadHandler() {

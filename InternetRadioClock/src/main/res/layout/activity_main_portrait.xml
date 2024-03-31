@@ -53,6 +53,18 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/margin_top"
         >
+
+        <ImageButton
+            android:id="@+id/on_off_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"
+            android:clickable="false"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/ic_baseline_on_off_white_24" />
+
         <!-- ALARMS -->
         <ImageButton
             android:id="@+id/alarm_icon"

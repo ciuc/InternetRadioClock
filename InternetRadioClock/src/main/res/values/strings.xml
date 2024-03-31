@@ -52,6 +52,9 @@
     <string name="setting.key.clockSize.night">setting.key.clockSize.night</string>
     <string name="setting.key.clockBrightness.night">setting.key.clockBrightness.night</string>
     <string name="setting.key.typeface.night">setting.key.typeface.night</string>
+    <string name="setting.key.night_profile.autostart">setting.key.night_profile.autostart</string>
+    <string name="setting.key.night_profile.autoend">setting.key.night_profile.autoend</string>
+
 
     <string name="setting.name.stream1">Memory 1</string>
     <string name="setting.name.stream2">Memory 2</string>
@@ -63,13 +66,18 @@
     <string name="setting.name.stream8">Memory 8</string>
 
     <string name="setting.name.sleepMinutes">Custom Sleep Time (minutes)</string>
-    <string name="setting.name.snoozeMinutes">Custom Snooze Time (minutes)</string>
     <string name="setting.summary.sleepMinutes">Set your own custom sleep timer which will be added to the predefined ones.</string>
+    <string name="setting.name.snoozeMinutes">Custom Snooze Time (minutes)</string>
     <string name="setting.summary.snoozeMinutes">Set your preferred snooze time.</string>
     <string name="setting.name.seconds">Display Seconds</string>
     <string name="setting.summary.seconds">Disable if you want the clock to not display seconds.\n(Might require restart!)</string>
     <string name="setting.name.clockMove">Enable clock movement on the screen (screensaver-like)</string>
     <string name="setting.summary.clockMove">If you have an AMOLED display DO NOT TURN THIS FEATURE OFF!</string>
+    <string name="setting.name.night_profile.autostart">Night profile autostart</string>
+    <string name="setting.name.night_profile.autoend">Night profile autoend</string>
+    <string name="setting.name.enable.night.schedule">Enable night profile schedule</string>
+    <string name="setting.summary.night.schedule">Setup time to start and end night profile automatically</string>
+
 
     <string name="setting.name.label1">Button 1 Label</string>
     <string name="setting.name.label2">Button 2 Label</string>

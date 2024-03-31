@@ -9,9 +9,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.devbrackets.android.exomedia.AudioPlayer;
-
 import java.text.DecimalFormat;
 
 //import timber.log.Timber;

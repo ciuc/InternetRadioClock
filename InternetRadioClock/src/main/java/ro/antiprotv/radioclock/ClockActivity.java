@@ -7,6 +7,9 @@
  */
 package ro.antiprotv.radioclock;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -15,11 +18,13 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,16 +38,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.devbrackets.android.exomedia.AudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnErrorListener;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,9 +55,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 
 /**
  * Main Activity. Just displays the clock and buttons
@@ -83,17 +83,7 @@ public class ClockActivity extends AppCompatActivity {
     //the map of urls; it is a map of the setting key > url (String)
     //url(setting_key_stream1 >  http://something)
     private final List<String> mUrls = new ArrayList<>();
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    private final View.OnTouchListener mDelayHideTouchListener = (view, motionEvent) -> {
-        if (AUTO_HIDE) {
-            delayedHide(AUTO_HIDE_DELAY_MILLIS);
-        }
-        return false;
-    };
+    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
     private SharedPreferences prefs;
     private ClockUpdater clockUpdater;
     private View mControlsView;
@@ -127,11 +117,11 @@ public class ClockActivity extends AppCompatActivity {
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
-    private final Runnable mHideRunnable = () -> hide();
     private AudioPlayer mMediaPlayer;
     private ButtonManager buttonManager;
     private SleepManager sleepManager;
-    VolumeManager volumeManager;
+    private VolumeManager volumeManager;
+    private ImageButton onOffButton;
     //remember the playing stream number and tag
     //they will have to be reset when stopping
     private int mPlayingStreamNo;
@@ -140,12 +130,32 @@ public class ClockActivity extends AppCompatActivity {
     //remember last picked hour
     private int h = 0;
     private int m = 0;
-
     private boolean alarmPlaying;
     private boolean alarmSnoozing;
     private RadioAlarmManager alarmManager;
     private BatteryService batteryService;
-    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+    private ProfileManager profileManager;
+    private final Button.OnClickListener nightModeOnClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(final View view) {
+            profileManager.toggleNightMode();
+        }
+    };
+    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
+    private ScheduledFuture progressiveVolumeTask;
+    private final Runnable mHideRunnable = () -> hide();
+    /**
+     * Touch listener to use for in-layout UI controls to delay hiding the
+     * system UI. This is to prevent the jarring behavior of controls going away
+     * while interacting with activity UI.
+     */
+    private final View.OnTouchListener mDelayHideTouchListener = (view, motionEvent) -> {
+        if (AUTO_HIDE) {
+            delayedHide(AUTO_HIDE_DELAY_MILLIS);
+        }
+        return false;
+    };
     private final Button.OnClickListener playOnClickListener = new View.OnClickListener() {
 
         @Override
@@ -173,31 +183,73 @@ public class ClockActivity extends AppCompatActivity {
         }
     };
 
-    private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
-    private final Button.OnClickListener nightModeOnClickListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(final View view) {
-            ((SettingsManager) preferenceChangeListener).toggleNightMode();
+    protected SimpleDateFormat getClockFormat() {
+        boolean nightMode = prefs.getBoolean(ClockActivity.PREF_NIGHT_MODE, false);
+        boolean keyClockSeconds = prefs.getBoolean(getResources().getString(R.string.setting_key_seconds), true);
+        if (nightMode) {
+            //clock seconds
+            keyClockSeconds = prefs.getBoolean(getResources().getString(R.string.setting_key_seconds_night), true);
         }
-    };
 
-    private class AlarmProgressiveVolume implements Runnable{
-        public void run() {
-            if (mMediaPlayer.getVolumeLeft() >= 1) {
-                cancelProgressiveVolumeTask();
-                return;
-            }
-            volumeManager.volumeUp(0.15f);
+        boolean clock12 = prefs.getBoolean(getResources().getString(R.string.setting_key_clock24), false);
+        StringBuilder clockPattern = new StringBuilder();
+        if (!clock12) {
+            clockPattern.append("HH:mm");
+        } else {
+            clockPattern.append("hh:mm");
         }
+        if (keyClockSeconds) {
+            clockPattern.append(":ss");
+        }
+        if(clock12 && prefs.getBoolean(getResources().getString(R.string.setting_key_clock24ampm), true)) {
+            clockPattern.append(" a");
+        }
+        String pattern = clockPattern.toString();
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT &&
+                prefs.getBoolean(getResources().getString(R.string.setting_key_clock_vertical), true)) {
+            pattern  = pattern.replaceAll(":",":\n");
+            pattern  = pattern.replaceAll(" ","\n");
+        }
+
+        if (!prefs.getBoolean(getResources().getString(R.string.setting_key_clock_dots), true)) {
+            pattern = pattern.replaceAll(":","");
+        }
+        return new SimpleDateFormat(pattern);
     }
 
-    private static class OnHelpClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            android.app.AlertDialog tipsDialog = new TipsDialog(view.getContext());
-            tipsDialog.show();
-        }
+    private void setupClockFormatting(int keyClockColor, int keyClockSize, int keyClockMove, int keyClockBrightness, int keyClockTypeface) {
+        //if (key.equals(getResources().getString(keyClockColor))) {
+            String colorCode = prefs.getString(getResources().getString(keyClockColor), getResources().getString(R.string.setting_default_clockColor));
+            getmContentView().setTextColor(Color.parseColor(colorCode));
+        //}
+        //if (key.equals(getResources().getString(keyClockBrightness))) {
+            String clockBrightnessKey = getResources().getString(keyClockBrightness);
+            float alpha_ = prefs.getInt(clockBrightnessKey, 100);
+            getmContentView().setAlpha(alpha_/100);
+        //}
+        //if (key.equals(getResources().getString(keyClockSize))) {
+            String clockSizeKey = getResources().getString(keyClockSize);
+            String clockSize = getResources().getString(R.string.setting_default_clockSize);
+            int size = Integer.parseInt(prefs.getString(clockSizeKey, clockSize));
+            getmContentView().setTextSize(size);
+        //}
+
+        /*if (key.equals(getResources().getString(R.string.setting_key_seconds)) ||
+                key.equals(getResources().getString(R.string.setting_key_seconds_night)) ||
+                key.equals(getResources().getString(R.string.setting_key_clock24)) ||
+                key.equals(getResources().getString(R.string.setting_key_clock_dots)) ||
+                key.equals(getResources().getString(R.string.setting_key_clock_vertical)) ||
+                key.equals(getResources().getString(R.string.setting_key_clock24ampm))
+        ){*/
+            clockUpdater.setSdf(getClockFormat());
+        //}
+        //if (key.equals(getResources().getString(keyClockMove))) {
+            clockUpdater.setMoveText(prefs.getBoolean(getResources().getString(keyClockMove), true));
+            getmContentView().setGravity(Gravity.CENTER);
+        //}
+        String typefacePref = prefs.getString(getResources().getString(keyClockTypeface), "digital-7.mono.ttf");
+        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/"+typefacePref);
+        getmContentView().setTypeface(font);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -236,7 +288,6 @@ public class ClockActivity extends AppCompatActivity {
         Typeface font = Typeface.createFromAsset(getAssets(), "fonts/"+typefacePref);
         mContentView.setTypeface(font);
 
-
         initializeUrls();
         buttonManager = new ButtonManager(getApplicationContext(), mControlsView, prefs, mDelayHideTouchListener, playOnClickListener);
         buttonManager.initializeButtons(mUrls);
@@ -256,7 +307,8 @@ public class ClockActivity extends AppCompatActivity {
         this.batteryService = new BatteryService(this, batteryIcon, battery_pct);
 
         preferenceChangeListener = new SettingsManager(this, buttonManager, sleepManager, clockUpdater, batteryService);
-        ((SettingsManager) preferenceChangeListener).applyProfile();
+        profileManager = new ProfileManager(this, prefs, clockUpdater);
+        profileManager.applyProfile();
 
         //Initialize the player
         //TODO: maybe initialize on first run
@@ -286,12 +338,15 @@ public class ClockActivity extends AppCompatActivity {
         final ImageButton helpButton = findViewById(R.id.main_help_button);
         helpButton.setOnClickListener(new OnHelpClickListener());
 
+        onOffButton = findViewById(R.id.on_off_button);
+        onOffButton.setOnClickListener(new OnOnOffClickListener());
 
         if (((SettingsManager) preferenceChangeListener).isAlwaysDisplayBattery()) {
             batteryService.registerBatteryLevelReceiver();
         } else {
             batteryService.unregisterBatteryLevelReceiver();
         }
+
     }
 
     private void setOrientationLandscapeIfLocked() {
@@ -299,7 +354,6 @@ public class ClockActivity extends AppCompatActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
     }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -316,7 +370,8 @@ public class ClockActivity extends AppCompatActivity {
         if (!clockUpdater.getThreadHandler().hasMessages(0)) {
             clockUpdater.getThreadHandler().sendEmptyMessage(0);
         }
-
+        prefs.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+        prefs.registerOnSharedPreferenceChangeListener(profileManager);
     }
 
     @Override
@@ -324,17 +379,17 @@ public class ClockActivity extends AppCompatActivity {
         super.onResume();
         IntentFilter filter = new IntentFilter("alarmReceiver");
         this.registerReceiver(this.alarmManager, filter);
-        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(preferenceChangeListener);
+        delayedHide(AUTO_HIDE_DELAY_MILLIS);
         setOrientationLandscapeIfLocked();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+
         clockUpdater.setSemaphore(false);
         clockUpdater.getThreadHandler().removeMessages(0);
     }
-
 
     @Override
     protected void onDestroy() {
@@ -355,7 +410,8 @@ public class ClockActivity extends AppCompatActivity {
         } catch (Throwable e) {
             //move along
         }
-        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
+        prefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
+        prefs.unregisterOnSharedPreferenceChangeListener(profileManager);
         super.onDestroy();
     }
 
@@ -400,77 +456,6 @@ public class ClockActivity extends AppCompatActivity {
             }, h, m, true);
             timePicker.show();
         });
-    }
-
-    private class DaysDialog extends AlertDialog {
-        protected DaysDialog(@NonNull Context context, final int hh, final int mm, int alarmId) {
-            super(context);
-            Map<Integer, Map<String, Integer>> alarmKeys = new HashMap<>();
-            Map<String, Integer> alarmIds1 = new HashMap<>();
-            alarmIds1.put("MON", R.id.setting_alarm_1_key_2);
-            alarmIds1.put("TUE", R.id.setting_alarm_1_key_3);
-            alarmIds1.put("WED", R.id.setting_alarm_1_key_4);
-            alarmIds1.put("THU", R.id.setting_alarm_1_key_5);
-            alarmIds1.put("FRI", R.id.setting_alarm_1_key_6);
-            alarmIds1.put("SAT", R.id.setting_alarm_1_key_7);
-            alarmIds1.put("SUN", R.id.setting_alarm_1_key_1);
-            alarmKeys.put(RadioAlarmManager.ALARM_ID_1, alarmIds1);
-            Map<String, Integer> alarmIds2 = new HashMap<>();
-            alarmIds2.put("MON", R.id.setting_alarm_1_key_2);
-            alarmIds2.put("TUE", R.id.setting_alarm_1_key_3);
-            alarmIds2.put("WED", R.id.setting_alarm_1_key_4);
-            alarmIds2.put("THU", R.id.setting_alarm_1_key_5);
-            alarmIds2.put("FRI", R.id.setting_alarm_1_key_6);
-            alarmIds2.put("SAT", R.id.setting_alarm_1_key_7);
-            alarmIds2.put("SUN", R.id.setting_alarm_1_key_1);
-            alarmKeys.put(RadioAlarmManager.ALARM_ID_2, alarmIds2);
-            final LinearLayout layout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.dialog_alarm_days, null);
-
-
-            final CheckBox MON = layout.findViewById(alarmKeys.get(alarmId).get("MON"));
-            final CheckBox TUE = layout.findViewById(alarmKeys.get(alarmId).get("TUE"));
-            final CheckBox WED = layout.findViewById(alarmKeys.get(alarmId).get("WED"));
-            final CheckBox THU = layout.findViewById(alarmKeys.get(alarmId).get("THU"));
-            final CheckBox FRI = layout.findViewById(alarmKeys.get(alarmId).get("FRI"));
-            final CheckBox SAT = layout.findViewById(alarmKeys.get(alarmId).get("SAT"));
-            final CheckBox SUN = layout.findViewById(alarmKeys.get(alarmId).get("SUN"));
-            MON.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.2", false));
-            TUE.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.3", false));
-            WED.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.4", false));
-            THU.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.5", false));
-            FRI.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.6", false));
-            SAT.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.7", false));
-            SUN.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.1", false));
-            setView(layout);
-            setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), (dialog, which) -> {
-                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.2",MON.isChecked()).apply();
-                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.3",TUE.isChecked()).apply();
-                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.4",WED.isChecked()).apply();
-                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.5",THU.isChecked()).apply();
-                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.6",FRI.isChecked()).apply();
-                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.7",SAT.isChecked()).apply();
-                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.1",SUN.isChecked()).apply();
-                prefs.edit().putInt("setting.alarm."+alarmId+".hh", hh).apply();
-                prefs.edit().putInt("setting.alarm."+alarmId+".mm", mm).apply();
-                alarmManager.setAlarm();
-            });
-            setTitle(R.string.title_dialog_alarm_days);
-        }
-
-    }
-    /**
-     * Necessary just to inhibit onStop to prevent double onTimeSet call on certain versions of android
-     */
-    private static class CustomTimePickerDialog extends TimePickerDialog {
-
-        public CustomTimePickerDialog(Context context, OnTimeSetListener listener, int hourOfDay, int minute, boolean is24HourView) {
-            super(context, listener, hourOfDay, minute, is24HourView);
-        }
-
-        @Override
-        protected void onStop() {
-            //inhibit
-        }
     }
 
     //......................
@@ -547,12 +532,12 @@ public class ClockActivity extends AppCompatActivity {
         }
     }
 
-    private ScheduledFuture progressiveVolumeTask;
     public void cancelProgressiveVolumeTask() {
         if (progressiveVolumeTask != null && !progressiveVolumeTask.isCancelled()) {
             progressiveVolumeTask.cancel(true);
         }
     }
+
     void play(int buttonId) {
         //if already playing and comes from alarm -do nothing
         if (mMediaPlayer.isPlaying() && alarmPlaying) {
@@ -618,6 +603,7 @@ public class ClockActivity extends AppCompatActivity {
         }
         buttonManager.enableButtons();
         buttonManager.unlightButton();
+        onOffButton.setColorFilter(getResources().getColor(R.color.color_clock_red));
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
@@ -627,40 +613,6 @@ public class ClockActivity extends AppCompatActivity {
         cancelProgressiveVolumeTask();
     }
 
-    private class CustomOnPreparedListener implements OnPreparedListener {
-        @Override
-        public void onPrepared() {
-            mMediaPlayer.start();
-
-            buttonManager.lightButton();
-            mPlayingStreamNo = buttonManager.getButtonClicked().getId();
-            mPlayingStreamTag = buttonManager.getButtonClicked().getTag().toString();
-            buttonManager.enableButtons();
-            //default url do not show, b/c they are not present in prefs at first
-            String defaultKey = mPlayingStreamTag.replace("setting.key.stream", "");
-            int index = Integer.parseInt(defaultKey) - 1;
-            Toast.makeText(ClockActivity.this, "Playing " + mUrls.get(index), Toast.LENGTH_SHORT).show();
-            Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
-            //setAlarmPlaying(false);
-        }
-    }
-
-    private class CustomOnErrorListener implements OnErrorListener {
-        @Override
-        public boolean onError(Exception e) {
-            Toast.makeText(ClockActivity.this, "Error playing stream", Toast.LENGTH_SHORT).show();
-            resetMediaPlayer();
-            initMediaPlayer();
-            buttonManager.resetButtons();
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-            }
-            if (alarmPlaying) {
-                alarmManager.playDefaultAlarmOnStreamError();
-            }
-            return false;
-        }
-    }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // MENU
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -792,6 +744,145 @@ public class ClockActivity extends AppCompatActivity {
 
     public String getmPlayingStreamTag() {
         return mPlayingStreamTag;
+    }
+
+    private static class OnHelpClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            android.app.AlertDialog tipsDialog = new TipsDialog(view.getContext());
+            tipsDialog.show();
+        }
+    }
+
+    /**
+     * Necessary just to inhibit onStop to prevent double onTimeSet call on certain versions of android
+     */
+    private static class CustomTimePickerDialog extends TimePickerDialog {
+
+        public CustomTimePickerDialog(Context context, OnTimeSetListener listener, int hourOfDay, int minute, boolean is24HourView) {
+            super(context, listener, hourOfDay, minute, is24HourView);
+        }
+
+        @Override
+        protected void onStop() {
+            //inhibit
+        }
+    }
+
+    private class AlarmProgressiveVolume implements Runnable{
+        public void run() {
+            if (mMediaPlayer.getVolumeLeft() >= 1) {
+                cancelProgressiveVolumeTask();
+                return;
+            }
+            volumeManager.volumeUp(0.15f);
+        }
+    }
+
+    private class OnOnOffClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            if (mMediaPlayer.isPlaying()){
+                stopPlaying();
+            } else {
+                play(buttonManager.getButtonClicked().getId());
+            }
+            delayedHide(AUTO_HIDE_DELAY_MILLIS);
+        }
+    }
+
+    private class DaysDialog extends AlertDialog {
+        protected DaysDialog(@NonNull Context context, final int hh, final int mm, int alarmId) {
+            super(context);
+            Map<Integer, Map<String, Integer>> alarmKeys = new HashMap<>();
+            Map<String, Integer> alarmIds1 = new HashMap<>();
+            alarmIds1.put("MON", R.id.setting_alarm_1_key_2);
+            alarmIds1.put("TUE", R.id.setting_alarm_1_key_3);
+            alarmIds1.put("WED", R.id.setting_alarm_1_key_4);
+            alarmIds1.put("THU", R.id.setting_alarm_1_key_5);
+            alarmIds1.put("FRI", R.id.setting_alarm_1_key_6);
+            alarmIds1.put("SAT", R.id.setting_alarm_1_key_7);
+            alarmIds1.put("SUN", R.id.setting_alarm_1_key_1);
+            alarmKeys.put(RadioAlarmManager.ALARM_ID_1, alarmIds1);
+            Map<String, Integer> alarmIds2 = new HashMap<>();
+            alarmIds2.put("MON", R.id.setting_alarm_1_key_2);
+            alarmIds2.put("TUE", R.id.setting_alarm_1_key_3);
+            alarmIds2.put("WED", R.id.setting_alarm_1_key_4);
+            alarmIds2.put("THU", R.id.setting_alarm_1_key_5);
+            alarmIds2.put("FRI", R.id.setting_alarm_1_key_6);
+            alarmIds2.put("SAT", R.id.setting_alarm_1_key_7);
+            alarmIds2.put("SUN", R.id.setting_alarm_1_key_1);
+            alarmKeys.put(RadioAlarmManager.ALARM_ID_2, alarmIds2);
+            final LinearLayout layout = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.dialog_alarm_days, null);
+
+
+            final CheckBox MON = layout.findViewById(alarmKeys.get(alarmId).get("MON"));
+            final CheckBox TUE = layout.findViewById(alarmKeys.get(alarmId).get("TUE"));
+            final CheckBox WED = layout.findViewById(alarmKeys.get(alarmId).get("WED"));
+            final CheckBox THU = layout.findViewById(alarmKeys.get(alarmId).get("THU"));
+            final CheckBox FRI = layout.findViewById(alarmKeys.get(alarmId).get("FRI"));
+            final CheckBox SAT = layout.findViewById(alarmKeys.get(alarmId).get("SAT"));
+            final CheckBox SUN = layout.findViewById(alarmKeys.get(alarmId).get("SUN"));
+            MON.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.2", false));
+            TUE.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.3", false));
+            WED.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.4", false));
+            THU.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.5", false));
+            FRI.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.6", false));
+            SAT.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.7", false));
+            SUN.setChecked(prefs.getBoolean("setting.alarm."+alarmId+".key.1", false));
+            setView(layout);
+            setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.ok), (dialog, which) -> {
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.2",MON.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.3",TUE.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.4",WED.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.5",THU.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.6",FRI.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.7",SAT.isChecked()).apply();
+                prefs.edit().putBoolean("setting.alarm."+alarmId+".key.1",SUN.isChecked()).apply();
+                prefs.edit().putInt("setting.alarm."+alarmId+".hh", hh).apply();
+                prefs.edit().putInt("setting.alarm."+alarmId+".mm", mm).apply();
+                alarmManager.setAlarm();
+            });
+            setTitle(R.string.title_dialog_alarm_days);
+        }
+
+    }
+
+    private class CustomOnPreparedListener implements OnPreparedListener {
+        @Override
+        public void onPrepared() {
+            mMediaPlayer.start();
+
+            buttonManager.lightButton();
+            mPlayingStreamNo = buttonManager.getButtonClicked().getId();
+            mPlayingStreamTag = buttonManager.getButtonClicked().getTag().toString();
+            buttonManager.enableButtons();
+            onOffButton.setColorFilter(getResources().getColor(R.color.color_clock));
+            //default url do not show, b/c they are not present in prefs at first
+            String defaultKey = mPlayingStreamTag.replace("setting.key.stream", "");
+            int index = Integer.parseInt(defaultKey) - 1;
+            Toast.makeText(ClockActivity.this, "Playing " + mUrls.get(index), Toast.LENGTH_SHORT).show();
+            Objects.requireNonNull(getSupportActionBar()).setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
+            //setAlarmPlaying(false);
+        }
+    }
+
+    private class CustomOnErrorListener implements OnErrorListener {
+        @Override
+        public boolean onError(Exception e) {
+            Toast.makeText(ClockActivity.this, "Error playing stream", Toast.LENGTH_SHORT).show();
+            resetMediaPlayer();
+            initMediaPlayer();
+            buttonManager.resetButtons();
+            onOffButton.setColorFilter(getResources().getColor(R.color.color_clock_red));
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+            }
+            if (alarmPlaying) {
+                alarmManager.playDefaultAlarmOnStreamError();
+            }
+            return false;
+        }
     }
 
 }

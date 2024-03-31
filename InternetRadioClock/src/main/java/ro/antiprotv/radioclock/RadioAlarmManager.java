@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -36,6 +35,18 @@ public class RadioAlarmManager extends BroadcastReceiver {
     public static final Integer ALARM_ID_2 = 2;
     private final static String DEFAULT_SNOOZE = "10";//minutes
     private final static int DEFAULT_ALARM_PLAY_TIME = 300;//Seconds (=5minutes)
+    private final static HashMap<Integer, String> calendarDays2Names = new HashMap<>();
+
+    static {
+        calendarDays2Names.put(2, "Mo");
+        calendarDays2Names.put(3, "Tu");
+        calendarDays2Names.put(4, "We");
+        calendarDays2Names.put(5, "Th");
+        calendarDays2Names.put(6, "Fr");
+        calendarDays2Names.put(7, "Sa");
+        calendarDays2Names.put(1, "Su");
+    }
+
     private final ImageButton alarmButton1;
     private final ImageButton cancelButton1;
     private final ImageButton snoozeButton1;
@@ -46,15 +57,16 @@ public class RadioAlarmManager extends BroadcastReceiver {
     private final ImageButton alarmButton2;
     private final TextView alarmText2;
     private final ImageButton alarmOffButton2;
-    private AlarmManager alarmMgr;
     private final PendingIntent alarmIntent;
     private final ClockActivity clockActivity;
     private final ButtonManager buttonManager;
-    private MediaPlayer player;
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private AlarmManager alarmMgr;
+    private MediaPlayer player;
     private int NEXT_ALARM;
-
     private SharedPreferences prefs;
+    //private List<String> alarmsDays = new ArrayList<>();
+    private Toaster toaster = new Toaster();
 
     public RadioAlarmManager(ClockActivity context, ButtonManager buttonManager) {
         this.buttonManager = buttonManager;
@@ -103,89 +115,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
         }
     }
 
-    protected static class Alarm implements Comparable<Alarm> {
-        private final int day;
-        private final int hh;
-        private final int mm;
-        private final int id;
-        private final Calendar calendar;
-
-        public Alarm(int day, int hh, int mm, int id) {
-            this.day = day;
-            this.hh = hh;
-            this.mm = mm;
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DAY_OF_WEEK, day);
-            calendar.set(Calendar.HOUR_OF_DAY, hh);
-            calendar.set(Calendar.MINUTE, mm);
-            calendar.set(Calendar.SECOND, 0);
-            this.calendar = calendar;
-            this.id = id;
-        }
-
-        public Alarm(Calendar calendar, int id) {
-            this.day = calendar.get(Calendar.DAY_OF_WEEK);
-            this.hh = calendar.get(Calendar.HOUR_OF_DAY);
-            this.mm = calendar.get(Calendar.MINUTE);
-            calendar.set(Calendar.SECOND, 0);
-            this.calendar = calendar;
-            this.id = id;
-        }
-
-        @Override
-        public int compareTo(Alarm alarm) {
-            return this.calendar.compareTo(alarm.calendar);
-        }
-
-        long getTimeInMillis() {
-            return calendar.getTimeInMillis();
-        }
-
-        boolean before(Alarm alarm) {
-            return this.calendar.compareTo(alarm.calendar) <= 0;
-        }
-
-        @Override
-        public String toString() {
-            return "Alarm{" +
-                    "day=" + day +
-                    ", hh=" + hh +
-                    ", mm=" + mm +
-                    ", id=" + id +
-                    " | " + calendar.getTime() +
-                    '}';
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Alarm alarm = (Alarm) o;
-            return day == alarm.day &&
-                    hh == alarm.hh &&
-                    mm == alarm.mm;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(day, hh, mm);
-        }
-    }
-
-    //private List<String> alarmsDays = new ArrayList<>();
-    private Toaster toaster = new Toaster();
-    private final static HashMap<Integer, String> calendarDays2Names = new HashMap<>();
-
-    static {
-        calendarDays2Names.put(2, "Mo");
-        calendarDays2Names.put(3, "Tu");
-        calendarDays2Names.put(4, "We");
-        calendarDays2Names.put(5, "Th");
-        calendarDays2Names.put(6, "Fr");
-        calendarDays2Names.put(7, "Sa");
-        calendarDays2Names.put(1, "Su");
-    }
-
     @SuppressLint("DefaultLocale")
     public void setAlarm() {
         Alarm nextAlarm1 = getNextAlarm(1);
@@ -226,7 +155,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
                     text1.append(s).append(",");
                 }
             }
-            alarmText1.setText(String.format(alarmText, text1.toString(), nextAlarm1.hh, nextAlarm1.mm));
+            alarmText1.setText(String.format(alarmText, text1, nextAlarm1.hh, nextAlarm1.mm));
         }
         List<String> alarmsDays2 = getAlarmDays(2);
         if (nextAlarm2 != null){
@@ -236,7 +165,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
                     text2.append(s).append(",");
                 }
             }
-            alarmText2.setText(String.format(alarmText, text2.toString(), nextAlarm2.hh, nextAlarm2.mm));
+            alarmText2.setText(String.format(alarmText, text2, nextAlarm2.hh, nextAlarm2.mm));
         }
     }
 
@@ -265,12 +194,14 @@ public class RadioAlarmManager extends BroadcastReceiver {
 
     private List<String> getAlarmDays(int alarmId) {
         List<String> alarmsDays = new ArrayList<>();
-        for (int day = 1; day <= 7; day++)
-        if (prefs.getBoolean(String.format("setting.alarm.%s.key.%s", alarmId, day), false)) {
-            alarmsDays.add(calendarDays2Names.get(day));
+        for (int day = 1; day <= 7; day++) {
+            if (prefs.getBoolean(String.format("setting.alarm.%s.key.%s", alarmId, day), false)) {
+                alarmsDays.add(calendarDays2Names.get(day));
+            }
         }
         return alarmsDays;
     }
+
     @SuppressLint("DefaultLocale")
     private Alarm getNextAlarm(int alarmId) {
         SortedSet<Alarm> alarms = new TreeSet<>();
@@ -350,7 +281,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
         cancelButton1.setVisibility(View.VISIBLE);
         closeButton1.setVisibility(View.VISIBLE);
     }
-
 
     public void cancelAlarm(int alarmId) {
         alarmMgr.cancel(alarmIntent);
@@ -460,20 +390,90 @@ public class RadioAlarmManager extends BroadcastReceiver {
         clockActivity.show();
     }
 
-    private class MediaPlayerCanceller implements Runnable {
-        public void run() {
-            shutDownDefaultAlarm();
-        }
-    }
-
     public void setPrefs(SharedPreferences prefs) {
         this.prefs = prefs;
     }
+
     public void setAlarmMgr(AlarmManager alarmMgr){
         this.alarmMgr = alarmMgr;
     }
 
     public void setToaster(Toaster toaster) {
         this.toaster = toaster;
+    }
+
+    protected static class Alarm implements Comparable<Alarm> {
+        private final int day;
+        private final int hh;
+        private final int mm;
+        private final int id;
+        private final Calendar calendar;
+
+        public Alarm(int day, int hh, int mm, int id) {
+            this.day = day;
+            this.hh = hh;
+            this.mm = mm;
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.DAY_OF_WEEK, day);
+            calendar.set(Calendar.HOUR_OF_DAY, hh);
+            calendar.set(Calendar.MINUTE, mm);
+            calendar.set(Calendar.SECOND, 0);
+            this.calendar = calendar;
+            this.id = id;
+        }
+
+        public Alarm(Calendar calendar, int id) {
+            this.day = calendar.get(Calendar.DAY_OF_WEEK);
+            this.hh = calendar.get(Calendar.HOUR_OF_DAY);
+            this.mm = calendar.get(Calendar.MINUTE);
+            calendar.set(Calendar.SECOND, 0);
+            this.calendar = calendar;
+            this.id = id;
+        }
+
+        @Override
+        public int compareTo(Alarm alarm) {
+            return this.calendar.compareTo(alarm.calendar);
+        }
+
+        long getTimeInMillis() {
+            return calendar.getTimeInMillis();
+        }
+
+        boolean before(Alarm alarm) {
+            return this.calendar.compareTo(alarm.calendar) <= 0;
+        }
+
+        @Override
+        public String toString() {
+            return "Alarm{" +
+                    "day=" + day +
+                    ", hh=" + hh +
+                    ", mm=" + mm +
+                    ", id=" + id +
+                    " | " + calendar.getTime() +
+                    '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Alarm alarm = (Alarm) o;
+            return day == alarm.day &&
+                    hh == alarm.hh &&
+                    mm == alarm.mm;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(day, hh, mm);
+        }
+    }
+
+    private class MediaPlayerCanceller implements Runnable {
+        public void run() {
+            shutDownDefaultAlarm();
+        }
     }
 }

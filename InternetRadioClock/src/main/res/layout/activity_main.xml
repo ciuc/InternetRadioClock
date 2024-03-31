@@ -258,6 +258,17 @@
                 android:textColor="@color/button.color.off"
                 app:srcCompat="@drawable/ic_help_outline_white_24dp" />
 
+            <ImageButton
+                android:id="@+id/on_off_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/main_help_button"
+                android:background="@android:color/transparent"
+                android:clickable="false"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/ic_baseline_on_off_white_24" />
 
 
 
