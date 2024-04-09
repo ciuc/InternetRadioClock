@@ -13,7 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.textfield.TextInputEditText;
 import java.util.List;
 
-class StreamListAdapter extends RecyclerView.Adapter {
+import ro.antiprotv.radioclock.activity.StreamFinderActivity;
+import ro.antiprotv.radioclock.service.ButtonManager;
+
+
+public class StreamListAdapter extends RecyclerView.Adapter {
   private final LayoutInflater inflater;
   private final StreamFinderActivity streamFinderActivity;
   private final ButtonManager buttonManager;

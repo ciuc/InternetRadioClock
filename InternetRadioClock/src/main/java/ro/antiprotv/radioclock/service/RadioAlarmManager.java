@@ -1,4 +1,4 @@
-package ro.antiprotv.radioclock;
+package ro.antiprotv.radioclock.service;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -28,6 +28,10 @@ import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import ro.antiprotv.radioclock.R;
+import ro.antiprotv.radioclock.Toaster;
+import ro.antiprotv.radioclock.activity.ClockActivity;
 
 public class RadioAlarmManager extends BroadcastReceiver {
 
@@ -335,7 +339,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
      * restores the alarm view
      * to its original state
      */
-    void changeAlarmIconAndTextOnCancel() {
+    public void changeAlarmIconAndTextOnCancel() {
         alarmButton1.setImageResource(R.drawable.ic_alarm_add_black_24dp);
         alarmText1.setVisibility(View.GONE);
         alarmOffButton1.setVisibility(View.GONE);
@@ -344,14 +348,14 @@ public class RadioAlarmManager extends BroadcastReceiver {
         alarmOffButton2.setVisibility(View.GONE);
     }
 
-    void cancelSnooze() {
+    public void cancelSnooze() {
         hideAlarmButtons();
         cancelNonRecurringAlarm();
         setAlarm();
         clockActivity.setAlarmSnoozing(false);
     }
 
-    void playDefaultAlarmOnStreamError() {
+    public void playDefaultAlarmOnStreamError() {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
         player = MediaPlayer.create(clockActivity, notification);
         player.start();
@@ -361,7 +365,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         showSnoozeAndCancel();
     }
 
-    void shutDownDefaultAlarm() {
+    public void shutDownDefaultAlarm() {
         if (player != null && player.isPlaying()) {
             player.stop();
             hideAlarmButtons();

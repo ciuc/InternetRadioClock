@@ -2,13 +2,16 @@
   Copyright Cristian "ciuc" Starasciuc 2016
   cristi.ciuc@gmail.com
  */
-package ro.antiprotv.radioclock;
+package ro.antiprotv.radioclock.activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import java.util.Objects;
+
+import ro.antiprotv.radioclock.fragment.NightProfileFragment;
+import ro.antiprotv.radioclock.R;
 
 /**
  * Created by ciuc on 7/17/16.

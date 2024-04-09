@@ -15,7 +15,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-class SleepManager {
+import ro.antiprotv.radioclock.activity.ClockActivity;
+
+public class SleepManager {
   private static final int MOVEMENT_SECCONDS =
       5; // don';t know what the hell this does, must document
   // initialize the sleep timers default list (pressing button will cycle through those)
@@ -29,7 +31,7 @@ class SleepManager {
   private int sleepTimerIndex;
   private ScheduledFuture sleepFuture;
   private ScheduledFuture sleepCounterFuture;
-  final Button.OnClickListener sleepOnClickListener =
+  public final Button.OnClickListener sleepOnClickListener =
       new View.OnClickListener() {
         @Override
         public void onClick(final View view) {
@@ -76,7 +78,7 @@ class SleepManager {
         }
       };
 
-  SleepManager(ClockActivity context, ClockUpdater clockUpdater) {
+  public SleepManager(ClockActivity context, ClockUpdater clockUpdater) {
     this.context = context;
     this.clockUpdater = clockUpdater;
     sleepTimerText = context.findViewById(R.id.sleep_timer);

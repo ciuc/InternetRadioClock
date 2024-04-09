@@ -5,23 +5,22 @@ import android.content.SharedPreferences;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
+
+import ro.antiprotv.radioclock.activity.ClockActivity;
+import ro.antiprotv.radioclock.service.ButtonManager;
+import ro.antiprotv.radioclock.service.RadioAlarmManager;
 
 
 public class RadioAlarmManagerTest {

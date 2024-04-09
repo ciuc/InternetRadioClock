@@ -1,4 +1,4 @@
-package ro.antiprotv.radioclock;
+package ro.antiprotv.radioclock.preference;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,6 +9,10 @@ import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import ro.antiprotv.radioclock.R;
+import ro.antiprotv.radioclock.service.profile.ProfileManager;
+import ro.antiprotv.radioclock.service.profile.ProfileUtils;
 
 public class TimePreference extends DialogPreference {
   private static final String TIME_FORMAT = "%d:%d";
@@ -83,8 +87,8 @@ public class TimePreference extends DialogPreference {
       time = defaultValue.toString();
     }
 
-    lastHour = ProfileManager.getHour(time);
-    lastMinute = ProfileManager.getMinute(time);
+    lastHour = ProfileUtils.getHour(time);
+    lastMinute = ProfileUtils.getMinute(time);
     setSummary(getSummary());
   }
 }

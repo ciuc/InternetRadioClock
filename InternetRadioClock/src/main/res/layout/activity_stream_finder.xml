@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:title="@string/title.streamFinder"
-    tools:context=".StreamFinderActivity">
+    tools:context=".activity.StreamFinderActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"

@@ -7,7 +7,7 @@
         android:entryValues="@array/clock_color_codes"
         android:key="@string/setting.key.clockColor.night"
         android:title="@string/setting.name.clockColor" />
-    <ro.antiprotv.radioclock.SeekBarPreference
+    <ro.antiprotv.radioclock.preference.SeekBarPreference
         android:defaultValue="100"
         android:key="@string/setting.key.clockBrightness.night"
         android:max="100"
@@ -49,13 +49,13 @@
         android:defaultValue="false"
         />
 
-    <ro.antiprotv.radioclock.TimePreference
+    <ro.antiprotv.radioclock.preference.TimePreference
         android:id="@+id/picker_night_profile_autostart"
         android:key="setting.key.night_profile.autostart"
         android:title="@string/setting.name.night_profile.autostart"
         android:dependency="setting.key.enable.night.schedule"
         android:defaultValue="21:00"/>
-    <ro.antiprotv.radioclock.TimePreference
+    <ro.antiprotv.radioclock.preference.TimePreference
         android:id="@+id/picker_night_profile_autoend"
         android:key="setting.key.night_profile.autoend"
         android:dependency="setting.key.enable.night.schedule"

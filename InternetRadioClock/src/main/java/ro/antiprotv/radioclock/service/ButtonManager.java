@@ -1,4 +1,4 @@
-package ro.antiprotv.radioclock;
+package ro.antiprotv.radioclock.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,7 +18,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Arrays;
 import java.util.List;
 
-class ButtonManager {
+import ro.antiprotv.radioclock.R;
+import ro.antiprotv.radioclock.activity.ClockActivity;
+
+public class ButtonManager {
   private final Resources resources;
   private final Context context;
   private final View view;
@@ -32,16 +35,16 @@ class ButtonManager {
   // the button we have clicked on
   private Button mButtonClicked;
 
-  ButtonManager(Context ctx) {
+  public ButtonManager(Context ctx) {
     this(ctx, null, null, null, null);
   }
 
-  ButtonManager(
-      Context ctx,
-      View view,
-      SharedPreferences prefs,
-      View.OnTouchListener onTouchListener,
-      View.OnClickListener playListener) {
+  public ButtonManager(
+          Context ctx,
+          View view,
+          SharedPreferences prefs,
+          View.OnTouchListener onTouchListener,
+          View.OnClickListener playListener) {
     this.context = ctx;
     this.view = view;
     this.prefs = prefs;
@@ -50,7 +53,7 @@ class ButtonManager {
     resources = context.getResources();
   }
 
-  void initializeButtons(List<String> mUrls) {
+  public void initializeButtons(List<String> mUrls) {
     Button stream1 = view.findViewById(R.id.stream1);
     Button stream2 = view.findViewById(R.id.stream2);
     Button stream3 = view.findViewById(R.id.stream3);
@@ -133,7 +136,7 @@ class ButtonManager {
     this.prefs = newPrefs;
   }
 
-  void assignUrlToMemory(String url, int streamNo, String label) {
+  public void assignUrlToMemory(String url, int streamNo, String label) {
     String key = "setting.key.stream" + streamNo;
     String labelKey = "setting.key.label" + streamNo;
     final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -157,20 +160,20 @@ class ButtonManager {
   }
 
   /** Set disabled to all buttons (cycle through buttons and .setEnabled false) */
-  void disableButtons() {
+  public void disableButtons() {
     for (Button button : buttons) {
       button.setEnabled(false);
     }
   }
 
   /** Set enabled to all buttons (cycle through buttons and .setEnabled) */
-  void enableButtons() {
+  public void enableButtons() {
     for (Button button : buttons) {
       button.setEnabled(true);
     }
   }
 
-  void resetButtons() {
+  public void resetButtons() {
     for (Button button : buttons) {
       button.setEnabled(true);
       button.setTextColor(resources.getColor(R.color.button_color_off));
@@ -188,14 +191,14 @@ class ButtonManager {
     return null;
   }
 
-  void lightButton() {
+  public void lightButton() {
     resetButtons();
     mButtonClicked.setTextColor(resources.getColor(R.color.color_clock));
     GradientDrawable buttonShape = (GradientDrawable) mButtonClicked.getBackground();
     buttonShape.setStroke(1, resources.getColor(R.color.color_clock));
   }
 
-  void unlightButton() {
+  public void unlightButton() {
     Button clicked = getButtonClicked();
     if (clicked != null) {
       clicked.setTextColor(context.getResources().getColor(R.color.button_color_off));

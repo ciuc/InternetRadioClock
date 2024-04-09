@@ -1,10 +1,15 @@
-package ro.antiprotv.radioclock;
+package ro.antiprotv.radioclock.service;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
 
-class SettingsManager implements OnSharedPreferenceChangeListener {
+import ro.antiprotv.radioclock.ClockUpdater;
+import ro.antiprotv.radioclock.R;
+import ro.antiprotv.radioclock.SleepManager;
+import ro.antiprotv.radioclock.activity.ClockActivity;
+
+public class SettingsManager implements OnSharedPreferenceChangeListener {
     private final ClockActivity clockActivity;
     private final ButtonManager buttonManager;
     private final SleepManager sleepManager;

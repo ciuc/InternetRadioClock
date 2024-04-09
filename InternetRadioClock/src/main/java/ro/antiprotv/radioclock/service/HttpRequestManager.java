@@ -1,4 +1,4 @@
-package ro.antiprotv.radioclock;
+package ro.antiprotv.radioclock.service;
 
 import android.net.Uri;
 import android.widget.Toast;
@@ -8,16 +8,18 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 
-class HttpRequestManager {
+import ro.antiprotv.radioclock.activity.StreamFinderActivity;
+
+public class HttpRequestManager {
 
     private final StreamFinderActivity context;
 
-    HttpRequestManager(StreamFinderActivity ctx) {
+    public HttpRequestManager(StreamFinderActivity ctx) {
         this.context = ctx;
 
     }
 
-    void getStations(String country, String name, String language, String tags) {
+    public void getStations(String country, String name, String language, String tags) {
         RequestQueue queue = Volley.newRequestQueue(context);
         StringBuilder requestParams = new StringBuilder("http://www.antiprotv.ro/radioclock/api.php?x=list&country=").append(Uri.encode(country));
         if (!name.isEmpty()) {

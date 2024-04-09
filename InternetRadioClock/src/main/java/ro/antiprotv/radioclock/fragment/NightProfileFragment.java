@@ -3,11 +3,16 @@
   Licensed under the Apache license 2.0
   cristi.ciuc@gmail.com
  */
-package ro.antiprotv.radioclock;
+package ro.antiprotv.radioclock.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+
+import ro.antiprotv.radioclock.service.profile.ProfileManager;
+import ro.antiprotv.radioclock.R;
+import ro.antiprotv.radioclock.preference.SeekBarPreference;
+import ro.antiprotv.radioclock.preference.TimePreference;
 
 /**
  * Created by ciuc on 7/12/16.

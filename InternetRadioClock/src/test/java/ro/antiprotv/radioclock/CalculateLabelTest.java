@@ -1,7 +1,5 @@
 package ro.antiprotv.radioclock;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 

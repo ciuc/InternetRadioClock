@@ -1,8 +1,8 @@
-package ro.antiprotv.radioclock;
+package ro.antiprotv.radioclock.service;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static ro.antiprotv.radioclock.ClockActivity.PREF_NIGHT_MODE;
+import static ro.antiprotv.radioclock.activity.ClockActivity.PREF_NIGHT_MODE;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -15,6 +15,9 @@ import android.preference.PreferenceManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.core.content.ContextCompat;
+
+import ro.antiprotv.radioclock.R;
+import ro.antiprotv.radioclock.activity.ClockActivity;
 
 public class BatteryService extends BroadcastReceiver {
   private final TextView pct;

@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Thread to manage the clock (update the clock and move it)
  */
-class ClockUpdater extends Thread {
+public class ClockUpdater extends Thread {
     private static final int DO_NOT_MOVE_TEXT = 1;
     private static final int MOVE_TEXT = 2;
     private static final List<int[]> LAYOUT_ALIGNS = Arrays.asList(
@@ -70,7 +70,7 @@ class ClockUpdater extends Thread {
     private boolean moveText = true;
 
 
-    ClockUpdater(TextView tv) {
+    public ClockUpdater(TextView tv) {
         //this.sdf = sdf;
         this.mContentView = tv;
         //this.moveText = moveText;

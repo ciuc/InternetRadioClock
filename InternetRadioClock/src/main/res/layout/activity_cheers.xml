@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:title="@string/settings.menu.about"
-    tools:context="ro.antiprotv.radioclock.AboutActivity">
+    tools:context="ro.antiprotv.radioclock.activity.AboutActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -26,12 +26,12 @@
     android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:title="@string/settings.menu.about"
-        tools:context="ro.antiprotv.radioclock.AboutActivity">
+        tools:context="ro.antiprotv.radioclock.activity.AboutActivity">
 
 <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context="ro.antiprotv.radioclock.CheersActivity"
+    tools:context="ro.antiprotv.radioclock.activity.CheersActivity"
     android:background="#ffffff">
 
     <TextView

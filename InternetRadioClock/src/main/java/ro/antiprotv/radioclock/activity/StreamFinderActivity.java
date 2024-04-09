@@ -1,4 +1,4 @@
-package ro.antiprotv.radioclock;
+package ro.antiprotv.radioclock.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,6 +24,12 @@ import java.util.Objects;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import ro.antiprotv.radioclock.service.ButtonManager;
+import ro.antiprotv.radioclock.service.HttpRequestManager;
+import ro.antiprotv.radioclock.R;
+import ro.antiprotv.radioclock.Stream;
+import ro.antiprotv.radioclock.StreamListAdapter;
 
 public class StreamFinderActivity extends AppCompatActivity {
     private List<Stream> streams;
@@ -82,7 +88,7 @@ public class StreamFinderActivity extends AppCompatActivity {
         requestManager.getStations(country, name, language, tags);
     }
 
-    void fillInStreams(JSONArray jsonStations) {
+    public void fillInStreams(JSONArray jsonStations) {
         if (jsonStations != null) {
             streams.clear();
             for (int i = 0; i < jsonStations.length(); i++) {

@@ -14,11 +14,12 @@
 
         <!-- main activity -->
         <activity
-            android:name=".ClockActivity"
+            android:name=".activity.ClockActivity"
             android:configChanges="keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -28,44 +29,44 @@
 
         <!-- Settings activity -->
         <activity
-            android:name=".ConfigureButtonsActivity"
+            android:name=".activity.ConfigureButtonsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Preferences"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Preferences"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".NightProfileActivity"
+            android:name=".activity.NightProfileActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Preferences"
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".AboutActivity"
+            android:name=".activity.AboutActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="About"
             android:screenOrientation="landscape">
         </activity>
         <activity
-            android:name=".CheersActivity"
+            android:name=".activity.CheersActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Cheers"
             android:screenOrientation="landscape">
         </activity>
         <activity
-            android:name=".StreamFinderActivity"
+            android:name=".activity.StreamFinderActivity"
             android:label="@string/title_activity_stream_finder"
-            android:parentActivityName=".ClockActivity"
+            android:parentActivityName=".activity.ClockActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ro.antiprotv.radioclock.ClockActivity" />
+                android:value="ro.antiprotv.radioclock.activity.ClockActivity" />
         </activity>
     </application>
 

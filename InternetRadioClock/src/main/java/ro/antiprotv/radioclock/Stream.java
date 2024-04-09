@@ -1,6 +1,6 @@
 package ro.antiprotv.radioclock;
 
-class Stream {
+public class Stream {
 
   private final String name;
   private final String url;
