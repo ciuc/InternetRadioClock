@@ -45,15 +45,19 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
     if (key.equals(SETTING_NIGHT_PROFILE_AUTOSTART)
         || key.equals(SETTING_NIGHT_PROFILE_AUTOEND)
-        || key.equals(SETTING_NIGHT_PROFILE_SCHEDULE_ENABLED)) {
+        || key.equals(SETTING_NIGHT_PROFILE_SCHEDULE_ENABLED)
+       ) {
       Timber.d("Pref changed: " + key);
       clearTask();
       applyProfile();
-    } else {
-      applyProfile(sharedPreferences.getBoolean(PREF_NIGHT_MODE, false));
     }
   }
 
+  /*
+  Since the tasks are scheduled when the tasks run as well (which run the appluProfile method),
+  we need to take care of the task cancelling upon other uses of the applyProfile method
+     -> namely, from the main activty onCreate and from onSharedPreferencesChanged
+  */
   public void clearTask() {
     if (currentScheduledNightTask != null) {
       currentScheduledNightTask.cancel(false);
@@ -132,14 +136,8 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     Timber.d(
         "night profile start: " + profileUtils.getHumanReadableCalendar(nightProfile_start, true));
     Timber.d("night profile end: " + profileUtils.getHumanReadableCalendar(nightProfile_end, true));
-    if (nightProfile_end.before(nightProfile_start)) {
-      nightProfile_end.add(Calendar.DAY_OF_MONTH, 1);
-      Timber.d(
-          "End before start, new end is: "
-              + profileUtils.getHumanReadableCalendar(nightProfile_end, true));
-    }
-    if (now.after(nightProfile_start) && now.before(nightProfile_end)) {
 
+    if (isNight(nightProfile_start, nightProfile_end, now)) {
       Timber.d("apply night");
       applyNightProfile();
 
@@ -163,9 +161,6 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     } else {
       Timber.d("apply day");
       applyDayProfile();
-      if (nightProfile_end.before(now)) {
-        nightProfile_start.add(Calendar.DAY_OF_MONTH, 1);
-      }
       String h_r_nightProfile_start =
           profileUtils.getHumanReadableCalendar(nightProfile_start, true);
 
