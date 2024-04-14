@@ -46,10 +46,28 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     if (key.equals(SETTING_NIGHT_PROFILE_AUTOSTART)
         || key.equals(SETTING_NIGHT_PROFILE_AUTOEND)
         || key.equals(SETTING_NIGHT_PROFILE_SCHEDULE_ENABLED)
-       ) {
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_clock24))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_clock24ampm))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_clockColor))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_clockSize))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_clockBrightness))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_seconds))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_typeface))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_clockMove))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_clockColor_night))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_clockSize_night))
+        || key.equals(
+            clockActivity.getResources().getString(R.string.setting_key_clockBrightness_night))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_seconds_night))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_typeface_night))
+        || key.equals(
+            clockActivity.getResources().getString(R.string.setting_key_clockMove_night))) {
+
       Timber.d("Pref changed: " + key);
       clearTask();
       applyProfile();
+    } else if (key.equals(ClockActivity.PREF_NIGHT_MODE)) {
+      applyProfile(prefs.getBoolean(ClockActivity.PREF_NIGHT_MODE, false));
     }
   }
 
@@ -132,16 +150,16 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
       Timber.d(ste.toString());
     }*/
     Timber.d("Configured:");
-    Timber.d("now: " + profileUtils.getHumanReadableCalendar(now, false));
+    Timber.d("now: " + profileUtils.getHumanReadableCalendar(now));
     Timber.d(
-        "night profile start: " + profileUtils.getHumanReadableCalendar(nightProfile_start, true));
-    Timber.d("night profile end: " + profileUtils.getHumanReadableCalendar(nightProfile_end, true));
+        "night profile start: " + profileUtils.getHumanReadableCalendar(nightProfile_start));
+    Timber.d("night profile end: " + profileUtils.getHumanReadableCalendar(nightProfile_end));
 
     if (isNight(nightProfile_start, nightProfile_end, now)) {
       Timber.d("apply night");
       applyNightProfile();
 
-      String h_r_nightProfile_end = profileUtils.getHumanReadableCalendar(nightProfile_end, true);
+      String h_r_nightProfile_end = profileUtils.getHumanReadableCalendar(nightProfile_end);
       Timber.d("Night profile end: " + h_r_nightProfile_end);
       Timber.d(
           "Schedule next task (day change) in "
@@ -162,7 +180,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
       Timber.d("apply day");
       applyDayProfile();
       String h_r_nightProfile_start =
-          profileUtils.getHumanReadableCalendar(nightProfile_start, true);
+          profileUtils.getHumanReadableCalendar(nightProfile_start);
 
       Timber.d("Night profile start: " + h_r_nightProfile_start);
       Timber.d(

@@ -51,7 +51,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import ro.antiprotv.radioclock.BuildConfig;
 import ro.antiprotv.radioclock.ClockUpdater;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.SleepManager;
@@ -62,6 +61,7 @@ import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.SettingsManager;
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
+import timber.log.BuildConfig;
 import timber.log.Timber;
 
 /** Main Activity. Just displays the clock and buttons */
@@ -338,7 +338,6 @@ public class ClockActivity extends AppCompatActivity {
     super.onResume();
     IntentFilter filter = new IntentFilter("alarmReceiver");
     this.registerReceiver(this.alarmManager, filter);
-    delayedHide(AUTO_HIDE_DELAY_MILLIS);
     setOrientationLandscapeIfLocked();
   }
 

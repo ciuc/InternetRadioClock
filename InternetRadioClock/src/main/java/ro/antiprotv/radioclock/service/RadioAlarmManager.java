@@ -76,11 +76,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
         this.buttonManager = buttonManager;
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent("alarmReceiver");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-        } else {
-            alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-        }
+        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         clockActivity = context;
         alarmButton1 = clockActivity.findViewById(R.id.alarm_icon);
         alarmText1 = clockActivity.findViewById(R.id.alarm_time);

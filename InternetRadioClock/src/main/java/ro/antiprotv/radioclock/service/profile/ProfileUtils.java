@@ -6,10 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import ro.antiprotv.radioclock.R;
+import timber.log.BuildConfig;
 
 public class ProfileUtils {
   private static final String HUMAN_READABLE_TIME_FORMAT = "%s, %s";
-  private Context context;
+  private final Context context;
   private static ProfileUtils INSTANCE;
 
   private ProfileUtils(Context context) {
@@ -23,9 +24,9 @@ public class ProfileUtils {
     return INSTANCE;
   }
 
-  protected String getHumanReadableCalendar(Calendar calendar, boolean extraInfo) {
+  protected String getHumanReadableCalendar(Calendar calendar) {
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-    if (extraInfo) {
+    if (BuildConfig.DEBUG) {
       sdf = new SimpleDateFormat("dd/MM/y HH:mm:ss");
     }
     return String.format(
