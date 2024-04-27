@@ -3,6 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
         android:allowBackup="false"
@@ -32,37 +33,37 @@
             android:name=".activity.ConfigureButtonsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Preferences"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".activity.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Preferences"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".activity.NightProfileActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Preferences"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".activity.AboutActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="About"
-            android:screenOrientation="landscape">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".activity.CheersActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Cheers"
-            android:screenOrientation="landscape">
+            android:screenOrientation="fullSensor">
         </activity>
         <activity
             android:name=".activity.StreamFinderActivity"
             android:label="@string/title_activity_stream_finder"
             android:parentActivityName=".activity.ClockActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

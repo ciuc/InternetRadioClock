@@ -15,7 +15,7 @@ android {
     compileSdk 34
     defaultConfig {
         applicationId "ro.antiprotv.radioclock2"
-        minSdkVersion 15
+        minSdkVersion 23
         targetSdkVersion 33
         versionName "v4.10"
         vectorDrawables.useSupportLibrary = true
@@ -30,6 +30,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro'
         }
+        debug {
+            debuggable true
+        }
+    }
+    buildFeatures {
+        buildConfig = true
     }
     testOptions {
         unitTests.returnDefaultValues = true
