@@ -1,4 +1,4 @@
-package ro.antiprotv.radioclock;
+package ro.antiprotv.radioclock.service;
 
 import android.app.AlarmManager;
 import android.content.SharedPreferences;
@@ -18,6 +18,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
+import ro.antiprotv.radioclock.R;
+import ro.antiprotv.radioclock.Toaster;
 import ro.antiprotv.radioclock.activity.ClockActivity;
 import ro.antiprotv.radioclock.service.ButtonManager;
 import ro.antiprotv.radioclock.service.RadioAlarmManager;
