@@ -3,6 +3,9 @@
 
     <string name="dialog.button.ok">GOT IT!</string>
     <string name="dialog.button.ok.amoled">I UNDERSTAND AND I CONTINUE!</string>
+    <string name="dialog.button.permission_OK">Take me there</string>
+    <string name="dialog.button.permission_CANCEL">Do not allow</string>
+    <string name="dialog.button.permission_REMIND_LTR">Remind me later</string>
 
     <string name="button.name.stream1">1</string>
     <string name="button.name.stream2">2</string>

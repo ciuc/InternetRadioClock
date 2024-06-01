@@ -11,6 +11,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,9 +20,11 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,6 +72,22 @@ public class ClockActivity extends AppCompatActivity {
   public static final String PREF_NIGHT_MODE = "NIGHT_MODE";
   public static final String LAST_PLAYED = "LAST_PLAYED";
   public static final String LAST_VOLUME = "LAST_VOLUME";
+
+  public static final String USER_ALARM_PERMISSION_NOT_ALLOWED_PREF = "USER_PERM_NOK";
+
+  /**
+   * The user has explicitly denied setting alarms permissions.
+   *
+   * <p>TRUE = user explicitly did not allow the alarm
+   * <li>- he canceled the dialog
+   * <li>- OR
+   * <li>- he went to the dialog but did not set the permission
+   *
+   *     <p>FALSE = (default) user has not explicitly denied
+   */
+  public boolean USER_ALARM_PERMISSION_NOT_ALLOWED = false;
+
+  public boolean HAS_ALARM_PERMISSIONS = true;
 
   /**
    * Whether or not the system UI should be auto-hidden after {@link #AUTO_HIDE_DELAY_MILLIS}
@@ -255,6 +274,7 @@ public class ClockActivity extends AppCompatActivity {
     clockUpdater = new ClockUpdater(mContentView);
     clockUpdater.start();
     initializeSleepFunction();
+
     initializeAlarmFunction();
 
     TextView battery_pct = findViewById(R.id.batteryPct);
@@ -339,6 +359,7 @@ public class ClockActivity extends AppCompatActivity {
     IntentFilter filter = new IntentFilter("alarmReceiver");
     this.registerReceiver(this.alarmManager, filter);
     setOrientationLandscapeIfLocked();
+    initializeAlarmFunction();
   }
 
   @Override
@@ -389,8 +410,51 @@ public class ClockActivity extends AppCompatActivity {
   // ............
   // ALARMS
   // ............
+  private void showDialogPermissionAlarm() {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder
+        .setMessage(
+            "In order to use the alarm functionality, you need to \nallow the app to set alarms and reminders. \nYou can always do this later, or revoke the permission at any time.")
+        .setTitle("Use alarms?")
+        .setIcon(R.drawable.outline_icon_alarm_24)
+        .setPositiveButton(
+            R.string.dialog_button_permission_OK,
+            (dialog, id) -> {
+              prefs.edit().putBoolean(USER_ALARM_PERMISSION_NOT_ALLOWED_PREF, true).apply();
+              startActivity(new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM));
+            })
+        .setNeutralButton(
+            R.string.dialog_button_permission_REMIND_LTR, (dialog, id) -> dialog.cancel())
+        .setNegativeButton(
+            R.string.dialog_button_permission_CANCEL,
+            ((dialog, id) ->
+                prefs.edit().putBoolean(USER_ALARM_PERMISSION_NOT_ALLOWED_PREF, true).apply()));
+
+    AlertDialog dialog = builder.create();
+    dialog.show();
+  }
+
   private void initializeAlarmFunction() {
     alarmManager = new RadioAlarmManager(this, buttonManager);
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+      AlarmManager systemAlarmManager = this.getSystemService(AlarmManager.class);
+      if (!systemAlarmManager.canScheduleExactAlarms()) {
+        HAS_ALARM_PERMISSIONS = false;
+      } else {
+        HAS_ALARM_PERMISSIONS = true;
+      }
+    }
+    USER_ALARM_PERMISSION_NOT_ALLOWED =
+        prefs.getBoolean(USER_ALARM_PERMISSION_NOT_ALLOWED_PREF, false);
+    if (!HAS_ALARM_PERMISSIONS) {
+      setAlarmDialogOnClick();
+      if (!USER_ALARM_PERMISSION_NOT_ALLOWED) {
+        showDialogPermissionAlarm();
+      }
+      return;
+    }
+
     alarmManager.setAlarm();
     ImageButton alarmButton = findViewById(R.id.alarm_icon);
     alarmButton.setOnClickListener(
@@ -428,6 +492,13 @@ public class ClockActivity extends AppCompatActivity {
                   true);
           timePicker.show();
         });
+  }
+
+  private void setAlarmDialogOnClick() {
+    ImageButton alarmButton = findViewById(R.id.alarm_icon);
+    alarmButton.setOnClickListener(view -> showDialogPermissionAlarm());
+    ImageButton alarmButton2 = findViewById(R.id.alarm_icon2);
+    alarmButton2.setOnClickListener(view -> showDialogPermissionAlarm());
   }
 
   // ......................
