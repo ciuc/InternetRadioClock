@@ -1,13 +1,19 @@
 package ro.antiprotv.radioclock.service.profile;
 
+import static android.content.Context.BATTERY_SERVICE;
 import static ro.antiprotv.radioclock.activity.ClockActivity.PREF_NIGHT_MODE;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
+import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Calendar;
 import java.util.concurrent.ScheduledExecutorService;
@@ -17,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import ro.antiprotv.radioclock.ClockUpdater;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.activity.ClockActivity;
+import ro.antiprotv.radioclock.service.BatteryService;
 import timber.log.Timber;
 
 public class ProfileManager implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -31,6 +38,8 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   private ScheduledFuture currentScheduledNightTask;
   private ScheduledFuture currentScheduledDayTask;
   private final ProfileUtils profileUtils;
+  private final ImageView battery_icon;
+  private final TextView battery_pct;
 
   public ProfileManager(
       ClockActivity clockActivity, SharedPreferences prefs, ClockUpdater clockUpdater) {
@@ -39,6 +48,8 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     this.clockUpdater = clockUpdater;
     scheduledExecutorService = new ScheduledThreadPoolExecutor(1);
     this.profileUtils = ProfileUtils.getInstance(clockActivity);
+    battery_pct = clockActivity.findViewById(R.id.batteryPct);
+    battery_icon = clockActivity.findViewById(R.id.battery_icon);
   }
 
   @Override
@@ -60,8 +71,9 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
             clockActivity.getResources().getString(R.string.setting_key_clockBrightness_night))
         || key.equals(clockActivity.getResources().getString(R.string.setting_key_seconds_night))
         || key.equals(clockActivity.getResources().getString(R.string.setting_key_typeface_night))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_clockMove_night))
         || key.equals(
-            clockActivity.getResources().getString(R.string.setting_key_clockMove_night))) {
+            clockActivity.getResources().getString(R.string.setting_key_batteryInClockColor))) {
 
       Timber.d("Pref changed: " + key);
       clearTask();
@@ -151,8 +163,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     }*/
     Timber.d("Configured:");
     Timber.d("now: " + profileUtils.getHumanReadableCalendar(now));
-    Timber.d(
-        "night profile start: " + profileUtils.getHumanReadableCalendar(nightProfile_start));
+    Timber.d("night profile start: " + profileUtils.getHumanReadableCalendar(nightProfile_start));
     Timber.d("night profile end: " + profileUtils.getHumanReadableCalendar(nightProfile_end));
 
     if (isNight(nightProfile_start, nightProfile_end, now)) {
@@ -179,8 +190,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     } else {
       Timber.d("apply day");
       applyDayProfile();
-      String h_r_nightProfile_start =
-          profileUtils.getHumanReadableCalendar(nightProfile_start);
+      String h_r_nightProfile_start = profileUtils.getHumanReadableCalendar(nightProfile_start);
 
       Timber.d("Night profile start: " + h_r_nightProfile_start);
       Timber.d(
@@ -214,10 +224,11 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockUpdater.setSdf(nightProfile.clockFormat);
     clockActivity.getmContentView().setTextSize(nightProfile.clockSize);
     clockActivity.getmContentView().setTypeface(nightProfile.font);
-    clockActivity.getmContentView().setTextColor(nightProfile.textColor);
+    clockActivity.getmContentView().setTextColor(nightProfile.clockColor);
     clockActivity.getmContentView().setAlpha(nightProfile.alpha);
     clockUpdater.setMoveText(nightProfile.moveText);
     clockActivity.getmContentView().setGravity(Gravity.CENTER);
+    applyBatteryProfile(nightProfile.clockColor);
   }
 
   private void applyDayProfile() {
@@ -232,10 +243,37 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockActivity.getmContentView().setTextSize(dayProfile.clockSize);
     clockActivity.getmContentView().setTypeface(dayProfile.font);
     clockUpdater.setSdf(dayProfile.clockFormat);
-    clockActivity.getmContentView().setTextColor(dayProfile.textColor);
+    clockActivity.getmContentView().setTextColor(dayProfile.clockColor);
     clockActivity.getmContentView().setAlpha(dayProfile.alpha);
     clockUpdater.setMoveText(dayProfile.moveText);
     clockActivity.getmContentView().setGravity(Gravity.CENTER);
+    applyBatteryProfile(dayProfile.clockColor);
+  }
+
+  public void applyBatteryProfile(int currentProfileColor) {
+    int color = clockActivity.getResources().getColor(R.color.color_clock, null);
+    boolean batteryInClockColor = prefs.getBoolean(
+            clockActivity.getResources().getString(R.string.setting_key_batteryInClockColor),
+            false);
+    if (BatteryService.low && !BatteryService.charging) {
+      color = clockActivity.getResources().getColor(R.color.color_clock_red, null);
+      battery_icon.setImageResource(R.drawable.ic_baseline_battery_alert_16);
+    } else {
+      battery_icon.setImageResource(R.drawable.ic_baseline_battery_std_16);
+      if (batteryInClockColor) {
+        if (currentProfileColor == -1) {
+          boolean nightmode = prefs.getBoolean(PREF_NIGHT_MODE, false);
+          Profile profile = new DayProfile(prefs, clockActivity);
+          if (nightmode) {
+            profile = new NightProfile(prefs, clockActivity);
+          }
+          currentProfileColor = profile.clockColor;
+        }
+        color = currentProfileColor;
+      }
+    }
+    battery_icon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+    battery_pct.setTextColor(color);
   }
 
   private boolean isNight(Calendar nightStart, Calendar nightEnd, Calendar now) {

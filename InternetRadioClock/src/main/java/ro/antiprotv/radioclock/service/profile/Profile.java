@@ -12,7 +12,7 @@ import ro.antiprotv.radioclock.R;
 public class Profile {
   protected boolean clock12h;
   protected boolean clock12hShowAmPm;
-  protected final int textColor;
+  protected final int clockColor;
   protected final float alpha;
   protected final float clockSize;
   protected final boolean moveText;
@@ -25,14 +25,14 @@ public class Profile {
   public Profile(
       SharedPreferences prefs,
       Context context,
-      int textColor,
-      float textSize,
+      int clockColor,
+      float clockSize,
       float alpha,
       boolean moveText,
       boolean showSeconds,
       Typeface font) {
-    this.textColor = textColor;
-    this.clockSize = textSize;
+    this.clockColor = clockColor;
+    this.clockSize = clockSize;
     this.alpha = alpha;
     this.moveText = moveText;
     this.showSeconds = showSeconds;

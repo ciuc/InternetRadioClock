@@ -27,7 +27,7 @@ public class ProfileUtils {
   protected String getHumanReadableCalendar(Calendar calendar) {
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
     if (BuildConfig.DEBUG) {
-      sdf = new SimpleDateFormat("dd/MM/y HH:mm:ss");
+      sdf = new SimpleDateFormat("dd/MM/y HH:mm:mm");
     }
     return String.format(
         HUMAN_READABLE_TIME_FORMAT, today_tomorrow(calendar), sdf.format(calendar.getTime()));

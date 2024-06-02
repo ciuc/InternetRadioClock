@@ -277,13 +277,11 @@ public class ClockActivity extends AppCompatActivity {
 
     initializeAlarmFunction();
 
-    TextView battery_pct = findViewById(R.id.batteryPct);
-    ImageView batteryIcon = findViewById(R.id.battery_icon);
-    this.batteryService = new BatteryService(this, batteryIcon, battery_pct);
 
+    profileManager = new ProfileManager(this, prefs, clockUpdater);
+    this.batteryService = new BatteryService(this, profileManager);
     preferenceChangeListener =
         new SettingsManager(this, buttonManager, sleepManager, clockUpdater, batteryService);
-    profileManager = new ProfileManager(this, prefs, clockUpdater);
     profileManager.clearTask();
     profileManager.applyProfile();
 

@@ -15,7 +15,6 @@
         <activity
             android:name=".activity.ClockActivity"
             android:configChanges="keyboardHidden|screenSize"
-            android:label="@string/app_name"
             android:theme="@style/FullscreenTheme"
             android:exported="true"
             android:launchMode="singleTop">
