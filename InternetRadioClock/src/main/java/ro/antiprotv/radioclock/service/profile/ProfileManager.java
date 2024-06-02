@@ -3,14 +3,20 @@ package ro.antiprotv.radioclock.service.profile;
 import static android.content.Context.BATTERY_SERVICE;
 import static ro.antiprotv.radioclock.activity.ClockActivity.PREF_NIGHT_MODE;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.Settings;
 import android.view.Gravity;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -225,7 +231,13 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockActivity.getmContentView().setTextSize(nightProfile.clockSize);
     clockActivity.getmContentView().setTypeface(nightProfile.font);
     clockActivity.getmContentView().setTextColor(nightProfile.clockColor);
-    clockActivity.getmContentView().setAlpha(nightProfile.alpha);
+    //clockActivity.getmContentView().setAlpha(nightProfile.alpha);
+    Window window = clockActivity.getWindow();
+    WindowManager.LayoutParams layoutParams = window.getAttributes();
+    layoutParams.screenBrightness = nightProfile.alpha;
+    window.setAttributes(layoutParams);
+
+
     clockUpdater.setMoveText(nightProfile.moveText);
     clockActivity.getmContentView().setGravity(Gravity.CENTER);
     applyBatteryProfile(nightProfile.clockColor);
@@ -244,7 +256,12 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockActivity.getmContentView().setTypeface(dayProfile.font);
     clockUpdater.setSdf(dayProfile.clockFormat);
     clockActivity.getmContentView().setTextColor(dayProfile.clockColor);
-    clockActivity.getmContentView().setAlpha(dayProfile.alpha);
+    //clockActivity.getmContentView().setAlpha(dayProfile.alpha);
+
+    Window window = clockActivity.getWindow();
+    WindowManager.LayoutParams layoutParams = window.getAttributes();
+    layoutParams.screenBrightness = dayProfile.alpha;
+    window.setAttributes(layoutParams);
     clockUpdater.setMoveText(dayProfile.moveText);
     clockActivity.getmContentView().setGravity(Gravity.CENTER);
     applyBatteryProfile(dayProfile.clockColor);

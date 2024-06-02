@@ -10,11 +10,14 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
 
+import androidx.annotation.Nullable;
+
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.preference.SeekBarPreference;
 
 /** Created by ciuc on 7/12/16. */
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragment
+    implements SharedPreferences.OnSharedPreferenceChangeListener {
   private SeekBarPreference seekBarPref;
 
   @Override
@@ -32,6 +35,7 @@ public class SettingsFragment extends PreferenceFragment {
     ListPreference stations =
         (ListPreference) findPreference(getString(R.string.setting_key_wake_up_station));
     SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+    prefs.registerOnSharedPreferenceChangeListener(this);
     CharSequence[] labels =
         new CharSequence[] {
           getString(R.string.lastPlayed),
@@ -59,8 +63,33 @@ public class SettingsFragment extends PreferenceFragment {
     stations.setEntries(labels);
     stations.setEntryValues(tags);
 
-    int radius = prefs.getInt(getString(R.string.setting_key_clockBrightness), 50);
-    seekBarPref.setSummary(
-        getString(R.string.setting_summary_clockBrightness).replace("$1", "" + radius));
+    setSummary();
+  }
+
+  @Override
+  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String key) {
+    if (key == null) {
+      return;
+    }
+    if (!isAdded()) {
+      return;
+    }
+    if (key.equals(getString(R.string.setting_key_clockBrightness))) {
+      setSummary();
+    }
+  }
+
+  private void setSummary() {
+    int radius =
+        getPreferenceManager()
+            .getSharedPreferences()
+            .getInt(getString(R.string.setting_key_clockBrightness), 100);
+    if (radius == -1) {
+      seekBarPref.setSummary(
+          getString(R.string.setting_summary_clockBrightness).replace("$1%", "AUTO (SYSTEM)"));
+    } else {
+      seekBarPref.setSummary(
+          getString(R.string.setting_summary_clockBrightness).replace("$1", "" + radius));
+    }
   }
 }

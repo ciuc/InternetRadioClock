@@ -2,6 +2,7 @@ package ro.antiprotv.radioclock.preference;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
@@ -9,6 +10,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -26,6 +29,7 @@ public class SeekBarPreference extends DialogPreference
   private TextView mValueText;
   private int mMax;
   private int mValue = 0;
+  private CheckBox checkboxAuto;
 
   // ------------------------------------------------------------------------------------------
 
@@ -47,7 +51,7 @@ public class SeekBarPreference extends DialogPreference
     else mSuffix = mContext.getString(mSuffixId);
 
     // Get default and max seekbar values :
-    mDefault = attrs.getAttributeIntValue(androidns, "defaultValue", 0);
+    mDefault = attrs.getAttributeIntValue(androidns, "defaultValue", 100);
     mMax = attrs.getAttributeIntValue(androidns, "max", 100);
   }
 
@@ -64,13 +68,16 @@ public class SeekBarPreference extends DialogPreference
     layout.setPadding(6, 6, 6, 6);
 
     TextView mSplashText = new TextView(mContext);
-    mSplashText.setPadding(30, 10, 30, 10);
-    if (mDialogMessage != null) mSplashText.setText(mDialogMessage);
+    //mSplashText.setPadding(30, 10, 30, 10);
+    if (mDialogMessage != null) {
+      mSplashText.setText(mDialogMessage);
+    }
     layout.addView(mSplashText);
 
     mValueText = new TextView(mContext);
     mValueText.setGravity(Gravity.CENTER_HORIZONTAL);
     mValueText.setTextSize(32);
+    mValueText.setTextColor(Color.DKGRAY);
     params =
         new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -83,10 +90,30 @@ public class SeekBarPreference extends DialogPreference
         new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
-    if (shouldPersist()) mValue = getPersistedInt(mDefault);
+    if (shouldPersist()) {
+      mValue = getPersistedInt(mDefault);
+    }
 
     mSeekBar.setMax(mMax);
     mSeekBar.setProgress(mValue);
+
+    checkboxAuto = new CheckBox(mContext);
+    checkboxAuto.setText("Auto (Leave the brightness to the system's sensor.)");
+
+    checkboxAuto.setOnCheckedChangeListener((buttonView, isChecked) -> {
+      if (isChecked) {
+        mSeekBar.setEnabled(false);
+        mValueText.setTextColor(Color.LTGRAY);
+        //mValueText.setText("AUTO");
+      } else {
+        mSeekBar.setEnabled(true);
+        mValueText.setTextColor(Color.DKGRAY);
+        //mValueText.setText(String.format("%d%%", mValue < 0 ? 100 : mSeekBar.getProgress()));
+
+      }
+    });
+    layout.addView(checkboxAuto,new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
     return layout;
   }
@@ -96,13 +123,20 @@ public class SeekBarPreference extends DialogPreference
     super.onBindDialogView(v);
     mSeekBar.setMax(mMax);
     mSeekBar.setProgress(mValue);
+    if (mValue == -1) {
+      checkboxAuto.setChecked(true);
+    }
   }
 
   @Override
   protected void onSetInitialValue(boolean restore, Object defaultValue) {
     super.onSetInitialValue(restore, defaultValue);
-    if (restore) mValue = shouldPersist() ? getPersistedInt(mDefault) : 0;
-    else mValue = (Integer) defaultValue;
+    if (restore) {
+      mValue = shouldPersist() ? getPersistedInt(mDefault) : 100;
+    }
+    else {
+      mValue = (Integer) defaultValue;
+    }
   }
 
   // ------------------------------------------------------------------------------------------
@@ -135,7 +169,9 @@ public class SeekBarPreference extends DialogPreference
 
   public void setProgress(int progress) {
     mValue = progress;
-    if (mSeekBar != null) mSeekBar.setProgress(progress);
+    if (mSeekBar != null) {
+      mSeekBar.setProgress(progress);
+    }
   }
 
   // ------------------------------------------------------------------------------------------
@@ -154,14 +190,16 @@ public class SeekBarPreference extends DialogPreference
   @Override
   public void onClick(View v) {
 
-    if (shouldPersist()) {
+    mValue = mSeekBar.getProgress();
+    //if (shouldPersist()) {
+      if(checkboxAuto.isChecked()) {
+        mValue = -1;
+      }
+      persistInt(mValue);
+      callChangeListener(mValue);
+    //}
 
-      mValue = mSeekBar.getProgress();
-      persistInt(mSeekBar.getProgress());
-      callChangeListener(mSeekBar.getProgress());
-    }
-
-    ((AlertDialog) getDialog()).dismiss();
+    getDialog().dismiss();
   }
   // ------------------------------------------------------------------------------------------
 }
