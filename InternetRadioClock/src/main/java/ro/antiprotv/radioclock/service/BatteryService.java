@@ -58,10 +58,6 @@ public class BatteryService extends BroadcastReceiver {
   public static boolean low = false;
   @Override
   public void onReceive(Context context, Intent intent) {
-    //boolean nightmode = prefs.getBoolean(PREF_NIGHT_MODE, false);
-    //boolean batteryInClockColor = prefs.getBoolean(
-    //        clockActivity.getResources().getString(R.string.setting_key_batteryInClockColor),
-    //        false);
     int status = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
     low = status <= 15;
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -72,33 +68,6 @@ public class BatteryService extends BroadcastReceiver {
         intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
             == BatteryManager.BATTERY_STATUS_CHARGING;
 
-    /*
-    int color = clockActivity.getResources().getColor(R.color.color_clock, null);
-    if (low && !charging) {
-      color = clockActivity.getResources().getColor(R.color.color_clock_red, null);
-      battery_icon.setImageResource(R.drawable.ic_baseline_battery_alert_16);
-    } else {
-      if (batteryInClockColor) {
-        String colorCode;
-        if (nightmode) {
-          colorCode =
-              prefs.getString(
-                  clockActivity.getResources().getString(R.string.setting_key_clockColor_night),
-                  clockActivity.getResources().getString(R.string.setting_default_clockColor));
-        } else {
-          colorCode =
-              prefs.getString(
-                  clockActivity.getResources().getString(R.string.setting_key_clockColor),
-                  clockActivity.getResources().getString(R.string.setting_default_clockColor));
-        }
-        color = Color.parseColor(colorCode);
-        battery_icon.setImageResource(R.drawable.ic_baseline_battery_std_16);
-      }
-    }
-    battery_icon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-    battery_pct.setTextColor(color);
-
-     */
     profileManager.applyBatteryProfile(-1);
     battery_pct.setText(String.format("%d%%", status));
   }
