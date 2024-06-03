@@ -24,7 +24,7 @@ public class NightProfile extends Profile {
         (float)
                 prefs.getInt(
                     context.getResources().getString(R.string.setting_key_clockBrightness_night),
-                    100)
+                    -1)
             / 100,
         prefs.getBoolean(
             context.getResources().getString(R.string.setting_key_clockMove_night), true),

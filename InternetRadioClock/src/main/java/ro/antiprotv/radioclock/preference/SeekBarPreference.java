@@ -51,7 +51,7 @@ public class SeekBarPreference extends DialogPreference
     else mSuffix = mContext.getString(mSuffixId);
 
     // Get default and max seekbar values :
-    mDefault = attrs.getAttributeIntValue(androidns, "defaultValue", 100);
+    mDefault = attrs.getAttributeIntValue(androidns, "defaultValue", -1);
     mMax = attrs.getAttributeIntValue(androidns, "max", 100);
   }
 
@@ -132,7 +132,7 @@ public class SeekBarPreference extends DialogPreference
   protected void onSetInitialValue(boolean restore, Object defaultValue) {
     super.onSetInitialValue(restore, defaultValue);
     if (restore) {
-      mValue = shouldPersist() ? getPersistedInt(mDefault) : 100;
+      mValue = shouldPersist() ? getPersistedInt(mDefault) : -1;
     }
     else {
       mValue = (Integer) defaultValue;

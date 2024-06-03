@@ -8,7 +8,7 @@
         android:key="@string/setting.key.clockColor.night"
         android:title="@string/setting.name.clockColor" />
     <ro.antiprotv.radioclock.preference.SeekBarPreference
-        android:defaultValue="100"
+        android:defaultValue="-1"
         android:key="@string/setting.key.clockBrightness.night"
         android:max="100"
         android:summary="@string/setting.summary.clockBrightness"

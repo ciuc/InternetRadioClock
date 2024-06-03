@@ -23,7 +23,7 @@ public class DayProfile extends Profile {
                 context.getResources().getString(R.string.setting_default_clockSize))),
         (float)
                 prefs.getInt(
-                    context.getResources().getString(R.string.setting_key_clockBrightness), 100)
+                    context.getResources().getString(R.string.setting_key_clockBrightness), -1)
             / 100,
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_clockMove), true),
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_seconds), true),

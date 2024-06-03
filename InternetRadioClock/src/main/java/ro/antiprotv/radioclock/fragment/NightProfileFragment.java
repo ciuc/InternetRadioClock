@@ -67,7 +67,7 @@ public class NightProfileFragment extends PreferenceFragment
     int radius =
         getPreferenceManager()
             .getSharedPreferences()
-            .getInt(getString(R.string.setting_key_clockBrightness_night), 100);
+            .getInt(getString(R.string.setting_key_clockBrightness_night), -1);
     if (radius == -1) {
       seekBarPref.setSummary(
           getString(R.string.setting_summary_clockBrightness).replace("$1%", "AUTO (SYSTEM)"));
