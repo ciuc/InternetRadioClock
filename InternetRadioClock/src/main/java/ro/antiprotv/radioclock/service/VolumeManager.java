@@ -1,8 +1,13 @@
 package ro.antiprotv.radioclock.service;
 
+import static android.content.Context.AUDIO_SERVICE;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.ContentObserver;
 import android.graphics.drawable.GradientDrawable;
+import android.media.AudioManager;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,109 +16,153 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.devbrackets.android.exomedia.AudioPlayer;
 import java.text.DecimalFormat;
-
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.activity.ClockActivity;
+import timber.log.Timber;
 
-//import timber.log.Timber;
+// import timber.log.Timber;
 
 /**
- * Manages the volume of the player
- * It does not manage the overall device volume set by hardware buttons
+ * Manages the volume of the player It does not manage the overall device volume set by hardware
+ * buttons
  */
 public class VolumeManager {
-    private final SharedPreferences prefs;
-    private final ImageButton volumeUpButton;
-    private final ImageButton volumeDownButton;
-    private final AudioPlayer mediaPlayer;
-    private final Context ctx;
-    private final TextView volumeText;
-    private final DecimalFormat fmt = new DecimalFormat("#%");
+  private final SharedPreferences prefs;
+  private final ImageButton volumeUpButton;
+  private final ImageButton volumeDownButton;
+  private final Context ctx;
+  private final TextView volumeText;
+  private final DecimalFormat fmt = new DecimalFormat("#");
+  private final AudioManager audioManager;
+  private final int maxVolume;
 
-    public VolumeManager(Context ctx, View view, AudioPlayer mediaPlayer) {
-        prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        this.ctx = ctx;
-        this.mediaPlayer = mediaPlayer;
-        volumeUpButton = view.findViewById(R.id.volumeup_button);
-        volumeDownButton = view.findViewById(R.id.volumedown_button);
-        this.volumeText = view.findViewById(R.id.volume);
-        volumeUpButton.setOnTouchListener(new VolumeUpOnClickListener());
-        volumeDownButton.setOnTouchListener(new VolumeDownOnClickListener());
+  public VolumeManager(Context ctx, View view) {
+    prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+    this.ctx = ctx;
+    volumeUpButton = view.findViewById(R.id.volumeup_button);
+    volumeDownButton = view.findViewById(R.id.volumedown_button);
+    this.volumeText = view.findViewById(R.id.volume);
+    volumeUpButton.setOnTouchListener(new VolumeUpOnClickListener());
+    volumeDownButton.setOnTouchListener(new VolumeDownOnClickListener());
+
+    audioManager = (AudioManager) ctx.getApplicationContext().getSystemService(AUDIO_SERVICE);
+    maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+    setVolumeText(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), maxVolume);
+    ctx.getApplicationContext()
+        .getContentResolver()
+        .registerContentObserver(
+            android.provider.Settings.System.CONTENT_URI,
+            true,
+            new SettingsContentObserver(new Handler()));
+  }
+
+  /** increase volume */
+  public void volumeUp() {
+    int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+    audioManager.adjustVolume(
+        AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+    Timber.d("vol up: current " + String.valueOf(currentVolume));
+    if (currentVolume >= maxVolume) {
+      // run on ui thread, b/c this is accessed by the progressive volume task
+      ((ClockActivity) ctx)
+          .runOnUiThread(() -> Toast.makeText(ctx, "Volume MAX", Toast.LENGTH_SHORT).show());
+    }
+    //setVolumeText(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), maxVolume);
+    Timber.d(
+        "vol up: after change "
+            + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+  }
+
+  /** decrease volume */
+  protected void volumeDown() {
+    int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+    Timber.d("vol dn: current " + String.valueOf(currentVolume));
+    if (currentVolume <= 0) {
+      ((ClockActivity) ctx)
+          .runOnUiThread(() -> Toast.makeText(ctx, "Muted", Toast.LENGTH_SHORT).show());
+    }
+    audioManager.adjustVolume(
+        AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+    Timber.d(
+        "vol dn: after change "
+            + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+    //setVolumeText(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), maxVolume);
+  }
+
+  /**
+   * Set exact volume
+   *
+   * @param volume
+   */
+  public void setVolume(final int volume) {
+    // run on ui thread, b/c this is accessed by the progressive volume task
+    audioManager.setStreamVolume(
+        AudioManager.STREAM_MUSIC, 1, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+    ((ClockActivity) ctx).runOnUiThread(() -> volumeText.setText(fmt.format(volume)));
+  }
+
+  public int getVolume() {
+    return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+  }
+
+  public int getMaxVolume() {
+    return maxVolume;
+  }
+
+  private void setVolumeText(int volume, int maxVolume) {
+    double volumePct = Math.ceil((float) volume / (float) maxVolume * 100);
+    // Timber.d(String.valueOf(volumePct));
+    // Timber.d(fmt.format(volumePct));
+    ((ClockActivity) ctx).runOnUiThread(() -> volumeText.setText(fmt.format(volumePct) + "%"));
+  }
+
+  private class VolumeUpOnClickListener implements View.OnTouchListener {
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+      GradientDrawable buttonShape = (GradientDrawable) volumeUpButton.getBackground();
+      switch (event.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+          buttonShape.setStroke(1, ctx.getResources().getColor(R.color.color_clock));
+          break;
+        case MotionEvent.ACTION_UP:
+          buttonShape.setStroke(1, ctx.getResources().getColor(R.color.button_color));
+          volumeUp();
+          break;
+      }
+      return true;
+    }
+  }
+
+  private class VolumeDownOnClickListener implements View.OnTouchListener {
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+      GradientDrawable buttonShape = (GradientDrawable) volumeDownButton.getBackground();
+      switch (event.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+          buttonShape.setStroke(1, ctx.getResources().getColor(R.color.color_clock));
+          break;
+        case MotionEvent.ACTION_UP:
+          buttonShape.setStroke(1, ctx.getResources().getColor(R.color.button_color));
+          volumeDown();
+          break;
+      }
+
+      return true;
+    }
+  }
+
+  public class SettingsContentObserver extends ContentObserver {
+    public SettingsContentObserver(Handler handler) {
+      super(handler);
     }
 
-    /**
-     * increase volume by pct
-     * @param pct
-     */
-    public void volumeUp(float pct) {
-        float volume = mediaPlayer.getVolumeLeft() + pct;
-        //Timber.d(String.valueOf(volume));
-        if (volume > 1) {
-            //run on ui thread, b/c this is accessed by the progressive volume task
-            ((ClockActivity) ctx).runOnUiThread(() -> Toast.makeText(ctx, "Volume MAX", Toast.LENGTH_SHORT).show());
-            volume = 1;
-        }
-        setVolume(volume);
+      @Override
+    public void onChange(boolean selfChange) {
+      int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+      Timber.d("Volume now " + currentVolume);
+      setVolumeText(currentVolume, maxVolume);
     }
-
-    /**
-     * decrease volume by pct
-     * @param pct
-     */
-    protected void volumeDown(float pct){
-        float volume = mediaPlayer.getVolumeLeft() - pct;
-        if (volume < 0) {
-            ((ClockActivity) ctx).runOnUiThread(() -> Toast.makeText(ctx, "Muted", Toast.LENGTH_SHORT).show());
-            volume = 0;
-        }
-        setVolume(volume);
-    }
-
-    /**
-     * Set exact volume
-     * @param volume
-     */
-    public void setVolume(final float volume) {
-        mediaPlayer.setVolume(volume, volume);
-        //volumeText.setText(fmt.format(volume));
-        //run on ui thread, b/c this is accessed by the progressive volume task
-        ((ClockActivity) ctx).runOnUiThread(() -> volumeText.setText(fmt.format(volume)));
-        prefs.edit().putFloat(ClockActivity.LAST_VOLUME, volume).apply();
-    }
-    private class VolumeUpOnClickListener implements View.OnTouchListener{
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            GradientDrawable buttonShape = (GradientDrawable) volumeUpButton.getBackground();
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    buttonShape.setStroke(1, ctx.getResources().getColor(R.color.color_clock));
-                    break;
-                case MotionEvent.ACTION_UP:
-                    buttonShape.setStroke(1, ctx.getResources().getColor(R.color.button_color));
-                    volumeUp(0.1f);
-                    break;
-            }
-            return true;
-        }
-    }
-
-    private class VolumeDownOnClickListener implements View.OnTouchListener{
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            GradientDrawable buttonShape = (GradientDrawable) volumeDownButton.getBackground();
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    buttonShape.setStroke(1, ctx.getResources().getColor(R.color.color_clock));
-                    break;
-                case MotionEvent.ACTION_UP:
-                    buttonShape.setStroke(1, ctx.getResources().getColor(R.color.button_color));
-                    volumeDown(0.1f);
-                    break;
-            }
-
-            return true;
-        }
-    }
+  }
 }

@@ -99,15 +99,11 @@
 
     <string name="setting.key.alarmProgressiveSound">setting.key.alarmProgressiveSound</string>
     <string name="setting.name.alarmProgressiveSound">Alarm Progressive Sound</string>
-    <string name="setting.summary.alarmProgressiveSound">Enable progressive volume for the alarm. The radio will start playing at a low volume which will increase ever so slightly every 10 seconds until it reaches your phone\'s defined volume.</string>
+    <string name="setting.summary.alarmProgressiveSound">Enable progressive volume for the alarm. The radio will start playing at a low volume which will increase ever so slightly every 20 seconds until it reaches your phone\'s maximum volume.</string>
 
     <string name="setting.key.playAtStart">setting.key.playAtStart</string>
     <string name="setting.name.playAtStart">Play when opening</string>
     <string name="setting.summary.playAtStart">Starts playing last radio directly when opening the application.</string>
-
-    <string name="setting.key.rememberLastVolume">setting.key.rememberLastVolume</string>
-    <string name="setting.name.rememberLastVolume">Remember last volume</string>
-    <string name="setting.summary.rememberLastVolume">Start playing with the last volume setting.</string>
 
     <string name="setting.key.lockOrientationLandscape">setting.key.lockOrientationLandscape</string>
     <string name="setting.name.lockOrientationLandscape">Lock landscape</string>

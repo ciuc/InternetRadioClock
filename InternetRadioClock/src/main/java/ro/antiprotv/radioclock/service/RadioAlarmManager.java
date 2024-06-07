@@ -183,16 +183,16 @@ public class RadioAlarmManager extends BroadcastReceiver {
     }
     alarmMgr.cancel(alarmIntent);
     try {
-      alarmMgr.setExactAndAllowWhileIdle(
-          AlarmManager.RTC_WAKEUP, nextAlarm.getTimeInMillis(), alarmIntent);
+      //alarmMgr.setExactAndAllowWhileIdle(
+      //    AlarmManager.RTC_WAKEUP, nextAlarm.getTimeInMillis(), alarmIntent);
+    // TESTING: enable this line to have the alarm in 5 secs;
+    alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
     } catch (SecurityException securityException) {
       toaster.toast(
           clockActivity,
           "Cannot set the alarm: make sure you give Exact Alarm permission to the app.",
           Toast.LENGTH_LONG);
     }
-    // TESTING: enable this line to have the alarm in 5 secs;
-    // alarmMgr.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
     toaster.toast(
         clockActivity,
         String.format(
@@ -378,7 +378,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     player.start();
     executor.schedule(
         new MediaPlayerCanceller(), DEFAULT_ALARM_PLAY_TIME, TimeUnit.MINUTES); // PROD
-    // executor.schedule(new MediaPlayerCanceller(), 5, TimeUnit.SECONDS);//TEST
+    //executor.schedule(new MediaPlayerCanceller(), 5, TimeUnit.SECONDS);//TEST
     clockActivity.setAlarmPlaying(false);
     showSnoozeAndCancel();
   }

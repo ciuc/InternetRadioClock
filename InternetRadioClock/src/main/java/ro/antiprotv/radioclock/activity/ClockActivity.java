@@ -54,6 +54,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import ro.antiprotv.radioclock.BuildConfig;
 import ro.antiprotv.radioclock.ClockUpdater;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.SleepManager;
@@ -64,14 +66,12 @@ import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.SettingsManager;
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
-import timber.log.BuildConfig;
 import timber.log.Timber;
 
 /** Main Activity. Just displays the clock and buttons */
 public class ClockActivity extends AppCompatActivity {
   public static final String PREF_NIGHT_MODE = "NIGHT_MODE";
   public static final String LAST_PLAYED = "LAST_PLAYED";
-  public static final String LAST_VOLUME = "LAST_VOLUME";
 
   public static final String USER_ALARM_PERMISSION_NOT_ALLOWED_PREF = "USER_PERM_NOK";
 
@@ -296,16 +296,8 @@ public class ClockActivity extends AppCompatActivity {
     nightModeButton.setOnTouchListener(mDelayHideTouchListener);
 
     // Volume
-    volumeManager = new VolumeManager(this, mControlsView, mMediaPlayer);
-    // A bit of circular dependecies here. So init the volume here, instead in the initMediaPlayer()
-    // method
-    if (prefs.getBoolean(
-        getResources().getString(R.string.setting_key_rememberLastVolume), false)) {
-      float volume = prefs.getFloat(LAST_VOLUME, 1);
-      volumeManager.setVolume(volume);
-    } else {
-      volumeManager.setVolume(1);
-    }
+    volumeManager = new VolumeManager(this, mControlsView);
+
     // Play at start?
     // button clicked is either last played, or the first; will also set
     if (prefs.getBoolean(getResources().getString(R.string.setting_key_playAtStart), false)) {
@@ -610,21 +602,26 @@ public class ClockActivity extends AppCompatActivity {
 
   public void play(int buttonId) {
     // if already playing and comes from alarm -do nothing
+    if (mMediaPlayer == null) {
+      initMediaPlayer();
+    }
     if (mMediaPlayer.isPlaying() && alarmPlaying) {
       alarmManager.changeAlarmIconAndTextOnCancel();
       return;
     }
     // we might have a default alarm playing, so need to shut it off
     alarmManager.shutDownDefaultAlarm();
+    boolean isProgressiveSound = prefs.getBoolean(
+            getResources().getString(R.string.setting_key_alarmProgressiveSound), false);
+    Timber.d(String.format("progressive: %b", isProgressiveSound));
     if (alarmPlaying
-        && prefs.getBoolean(
-            getResources().getString(R.string.setting_key_alarmProgressiveSound), false)) {
+        && isProgressiveSound) {
       cancelProgressiveVolumeTask();
-      volumeManager.setVolume(0.05f);
+      volumeManager.setVolume(1);
       // Timber.d("Scheduling progressive volume task");
       progressiveVolumeTask =
-          executorService.scheduleAtFixedRate(
-              new AlarmProgressiveVolume(), 10, 10, TimeUnit.SECONDS);
+          executorService.scheduleWithFixedDelay(
+              new AlarmProgressiveVolume(), 10, 20, TimeUnit.SECONDS);
     }
     String url;
     // index in th list
@@ -850,11 +847,11 @@ public class ClockActivity extends AppCompatActivity {
 
   private class AlarmProgressiveVolume implements Runnable {
     public void run() {
-      if (mMediaPlayer.getVolumeLeft() >= 1) {
+      if (volumeManager.getVolume() > volumeManager.getMaxVolume()) {
         cancelProgressiveVolumeTask();
         return;
       }
-      volumeManager.volumeUp(0.15f);
+      volumeManager.volumeUp();
     }
   }
 
