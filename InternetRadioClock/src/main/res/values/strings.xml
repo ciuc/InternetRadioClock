@@ -172,19 +172,35 @@
         <item>XXL</item>
     </string-array>
     <string-array name="clock_typefaces">
-        <item>digital-7.mono.ttf</item>
+        <item>LCD14.otf</item>
+        <item>LCD14Condensed.otf</item>
         <item>repet___.ttf</item>
         <item>ninepin.ttf</item>
+        <item>Minisystem.otf</item>
+        <item>digital-dream.regular.ttf</item>
+        <item>digital-dream.fat.ttf</item>
+        <item>Library3am.otf</item>
+        <item>Library3amSoft.otf</item>
+        <item>visitor1.ttf</item>
+        <item>whitrabt.ttf</item>
     </string-array>
     <string-array name="clock_human_typefaces">
-        <item>LCD</item>
-        <item>Dots 1</item>
-        <item>Dots 2</item>
+        <item>LCD (LCD14)</item>
+        <item>LCD2 (LCD14 Condensed)</item>
+        <item>Dots 1 (Repet)</item>
+        <item>Dots 2 (NinePin)</item>
+        <item>Dots 3 (Minisystem)</item>
+        <item>Digital Dream</item>
+        <item>Digital Dream FAT</item>
+        <item>Lib 3 am</item>
+        <item>Lib 3 am Soft</item>
+        <item>Visitor 1</item>
+        <item>White Rabbit</item>
     </string-array>
     <string name="setting.key.clockSize">setting.key.clockSize</string>
     <string name="setting.name.clockSize">Clock Size</string>
     <string name="setting.default.clockSize">100</string>
-    <string name="setting.default.typeface">digital-7.mono.ttf</string>
+    <string name="setting.default.typeface">LCD14.otf</string>
     <string name="setting.key.clock24">setting.key.clock24</string>
     <string name="setting.name.clock24">Use 12h Clock</string>
     <string name="setting.summary.clock24">Use am/pm or 24h clock.</string>

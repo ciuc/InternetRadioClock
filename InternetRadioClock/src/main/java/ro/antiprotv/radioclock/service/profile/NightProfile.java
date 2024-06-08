@@ -35,6 +35,6 @@ public class NightProfile extends Profile {
             "fonts/"
                 + prefs.getString(
                     context.getResources().getString(R.string.setting_key_typeface_night),
-                    "digital-7.mono.ttf")));
+                    "repet___.ttf")));
   }
 }

@@ -32,6 +32,6 @@ public class DayProfile extends Profile {
             "fonts/"
                 + prefs.getString(
                     context.getResources().getString(R.string.setting_key_typeface),
-                    "digital-7.mono.ttf")));
+                    "repet___.ttf")));
   }
 }
