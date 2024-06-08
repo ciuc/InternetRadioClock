@@ -172,11 +172,11 @@
         <item>XXL</item>
     </string-array>
     <string-array name="clock_typefaces">
-        <item>LCD14.otf</item>
-        <item>LCD14Condensed.otf</item>
         <item>repet___.ttf</item>
         <item>ninepin.ttf</item>
         <item>Minisystem.otf</item>
+        <item>LCD14.otf</item>
+        <item>LCD14Condensed.otf</item>
         <item>digital-dream.regular.ttf</item>
         <item>digital-dream.fat.ttf</item>
         <item>Library3am.otf</item>
@@ -185,11 +185,11 @@
         <item>whitrabt.ttf</item>
     </string-array>
     <string-array name="clock_human_typefaces">
-        <item>LCD (LCD14)</item>
-        <item>LCD2 (LCD14 Condensed)</item>
         <item>Dots 1 (Repet)</item>
         <item>Dots 2 (NinePin)</item>
         <item>Dots 3 (Minisystem)</item>
+        <item>LCD (LCD14)</item>
+        <item>LCD2 (LCD14 Condensed)</item>
         <item>Digital Dream</item>
         <item>Digital Dream FAT</item>
         <item>Lib 3 am</item>

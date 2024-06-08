@@ -231,7 +231,11 @@ public class ClockActivity extends AppCompatActivity {
     // SOME INITIALIZATIONS
     // Initialize the preferences_buttons
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
+    // Migration
+    if (prefs.getString(getResources().getString(R.string.setting_key_typeface), "repet___.ttf").equals("digital-7.mono.ttf")) {
+      prefs.edit().putString(getResources().getString(R.string.setting_key_typeface), "repet___.ttf").apply();
+    }
+    //--end migration
     setOrientationLandscapeIfLocked();
     int currentOrientation = getResources().getConfiguration().orientation;
     // if reverse enabled we load the reverse layout
