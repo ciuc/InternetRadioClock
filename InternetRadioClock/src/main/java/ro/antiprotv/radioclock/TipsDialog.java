@@ -5,6 +5,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,6 +19,7 @@ public class TipsDialog extends AlertDialog {
     View view = LayoutInflater.from(context).inflate(R.layout.dialog_main_help, null);
     setView(view);
     setTitle("Tips & Tricks");
+    setIcon(R.drawable.ic_help_outline_green_24);
     Button previous = view.findViewById(R.id.button_tips_previousTip);
     Button next = view.findViewById(R.id.button_tips_nextTip);
     Button ok = view.findViewById(R.id.button_tips_ok);

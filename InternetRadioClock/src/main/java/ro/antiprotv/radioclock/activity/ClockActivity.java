@@ -33,7 +33,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,7 +53,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import ro.antiprotv.radioclock.BuildConfig;
 import ro.antiprotv.radioclock.ClockUpdater;
 import ro.antiprotv.radioclock.R;
@@ -232,13 +230,23 @@ public class ClockActivity extends AppCompatActivity {
     // Initialize the preferences_buttons
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
     // Migration
-    if (prefs.getString(getResources().getString(R.string.setting_key_typeface), "repet___.ttf").equals("digital-7.mono.ttf")) {
-      prefs.edit().putString(getResources().getString(R.string.setting_key_typeface), "repet___.ttf").apply();
+    if (prefs
+        .getString(getResources().getString(R.string.setting_key_typeface), "repet___.ttf")
+        .equals("digital-7.mono.ttf")) {
+      prefs
+          .edit()
+          .putString(getResources().getString(R.string.setting_key_typeface), "repet___.ttf")
+          .apply();
     }
-    if (prefs.getString(getResources().getString(R.string.setting_key_typeface_night), "repet___.ttf").equals("digital-7.mono.ttf")) {
-      prefs.edit().putString(getResources().getString(R.string.setting_key_typeface_night), "repet___.ttf").apply();
+    if (prefs
+        .getString(getResources().getString(R.string.setting_key_typeface_night), "repet___.ttf")
+        .equals("digital-7.mono.ttf")) {
+      prefs
+          .edit()
+          .putString(getResources().getString(R.string.setting_key_typeface_night), "repet___.ttf")
+          .apply();
     }
-    //--end migration
+    // --end migration
     setOrientationLandscapeIfLocked();
     int currentOrientation = getResources().getConfiguration().orientation;
     // if reverse enabled we load the reverse layout
@@ -283,7 +291,6 @@ public class ClockActivity extends AppCompatActivity {
     initializeSleepFunction();
 
     initializeAlarmFunction();
-
 
     profileManager = new ProfileManager(this, prefs, clockUpdater);
     this.batteryService = new BatteryService(this, profileManager);
@@ -552,13 +559,14 @@ public class ClockActivity extends AppCompatActivity {
   }
 
   private void displayDialogsOnOpen() {
-    final String currentDialog = "SEVENTH_TIME";
+    final String currentDialog = "EIGHTH_TIME";
     if (prefs.getBoolean(currentDialog, true)) {
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
       builder
           .setMessage(
-              "Check out new display face for the clock.\nThere are two alarms now and both can be recurring.")
+              "Check out new display faces for the clock.\nThere are two alarms and both can be recurring.\nYou can setup the night profile to start automatically at a certain time.\nVolume buttons change the phone volume.")
           .setTitle("New Stuff!")
+          .setIcon(R.drawable.baseline_info_24)
           .setPositiveButton(
               R.string.dialog_button_ok,
               (dialog, id) -> prefs.edit().putBoolean(currentDialog, false).apply());
@@ -618,11 +626,11 @@ public class ClockActivity extends AppCompatActivity {
     }
     // we might have a default alarm playing, so need to shut it off
     alarmManager.shutDownDefaultAlarm();
-    boolean isProgressiveSound = prefs.getBoolean(
+    boolean isProgressiveSound =
+        prefs.getBoolean(
             getResources().getString(R.string.setting_key_alarmProgressiveSound), false);
     Timber.d(String.format("progressive: %b", isProgressiveSound));
-    if (alarmPlaying
-        && isProgressiveSound) {
+    if (alarmPlaying && isProgressiveSound) {
       cancelProgressiveVolumeTask();
       volumeManager.setVolume(1);
       // Timber.d("Scheduling progressive volume task");
