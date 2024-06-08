@@ -200,7 +200,7 @@
     <string name="setting.key.clockSize">setting.key.clockSize</string>
     <string name="setting.name.clockSize">Clock Size</string>
     <string name="setting.default.clockSize">100</string>
-    <string name="setting.default.typeface">LCD14.otf</string>
+    <string name="setting.default.typeface">repet___.ttf</string>
     <string name="setting.key.clock24">setting.key.clock24</string>
     <string name="setting.name.clock24">Use 12h Clock</string>
     <string name="setting.summary.clock24">Use am/pm or 24h clock.</string>

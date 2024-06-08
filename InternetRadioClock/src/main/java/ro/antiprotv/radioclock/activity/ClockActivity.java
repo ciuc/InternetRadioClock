@@ -235,6 +235,9 @@ public class ClockActivity extends AppCompatActivity {
     if (prefs.getString(getResources().getString(R.string.setting_key_typeface), "repet___.ttf").equals("digital-7.mono.ttf")) {
       prefs.edit().putString(getResources().getString(R.string.setting_key_typeface), "repet___.ttf").apply();
     }
+    if (prefs.getString(getResources().getString(R.string.setting_key_typeface_night), "repet___.ttf").equals("digital-7.mono.ttf")) {
+      prefs.edit().putString(getResources().getString(R.string.setting_key_typeface_night), "repet___.ttf").apply();
+    }
     //--end migration
     setOrientationLandscapeIfLocked();
     int currentOrientation = getResources().getConfiguration().orientation;
