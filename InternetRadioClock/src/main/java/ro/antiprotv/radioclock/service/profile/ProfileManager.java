@@ -1,19 +1,13 @@
 package ro.antiprotv.radioclock.service.profile;
 
-import static android.content.Context.BATTERY_SERVICE;
 import static ro.antiprotv.radioclock.activity.ClockActivity.PREF_NIGHT_MODE;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
-import android.os.BatteryManager;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.view.Gravity;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,7 +15,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -47,6 +45,11 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   private final ImageView battery_icon;
   private final TextView battery_pct;
 
+  private final String[] fonts_files;
+  private final Map<String, Typeface> fonts = new HashMap<>();
+  private final List<Integer> sizes = new ArrayList<>();
+  private Profile currentProfile;
+
   public ProfileManager(
       ClockActivity clockActivity, SharedPreferences prefs, ClockUpdater clockUpdater) {
     this.clockActivity = clockActivity;
@@ -56,6 +59,16 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     this.profileUtils = ProfileUtils.getInstance(clockActivity);
     battery_pct = clockActivity.findViewById(R.id.batteryPct);
     battery_icon = clockActivity.findViewById(R.id.battery_icon);
+
+    fonts_files = clockActivity.getResources().getStringArray(R.array.clock_typefaces);
+
+    for (String fontsFile : fonts_files) {
+      fonts.put(
+          fontsFile, Typeface.createFromAsset(clockActivity.getAssets(), "fonts/" + fontsFile));
+    }
+    for (String size : clockActivity.getResources().getStringArray(R.array.clock_sizes)) {
+      sizes.add(Integer.parseInt(size));
+    }
   }
 
   @Override
@@ -121,8 +134,8 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
 
   /*
    * Called at startup and when the change profile task kicks in.
-   * If night mode schedule is not enabled, we just apply whichever pfofile is dictated by the button click.
-   * The button clck is persistent.
+   * If night mode schedule is not enabled, we just apply whichever profile is dictated by the button click.
+   * The button click is persistent.
    * Else, if there is a schedule, we check in which period we are and schedule the next change.
    */
   public synchronized void applyProfile() {
@@ -229,18 +242,18 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
 
     clockUpdater.setSdf(nightProfile.clockFormat);
     clockActivity.getmContentView().setTextSize(nightProfile.clockSize);
-    clockActivity.getmContentView().setTypeface(nightProfile.font);
+    clockActivity.getmContentView().setTypeface(fonts.get(nightProfile.font));
     clockActivity.getmContentView().setTextColor(nightProfile.clockColor);
-    //clockActivity.getmContentView().setAlpha(nightProfile.alpha);
     Window window = clockActivity.getWindow();
     WindowManager.LayoutParams layoutParams = window.getAttributes();
     layoutParams.screenBrightness = nightProfile.alpha;
     window.setAttributes(layoutParams);
 
-
     clockUpdater.setMoveText(nightProfile.moveText);
     clockActivity.getmContentView().setGravity(Gravity.CENTER);
     applyBatteryProfile(nightProfile.clockColor);
+    currentProfile = nightProfile;
+    size_index = sizes.indexOf((int) nightProfile.clockSize);
   }
 
   private void applyDayProfile() {
@@ -253,10 +266,9 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     Profile dayProfile = new DayProfile(prefs, clockActivity);
     dayProfile.setup();
     clockActivity.getmContentView().setTextSize(dayProfile.clockSize);
-    clockActivity.getmContentView().setTypeface(dayProfile.font);
+    clockActivity.getmContentView().setTypeface(fonts.get(dayProfile.font));
     clockUpdater.setSdf(dayProfile.clockFormat);
     clockActivity.getmContentView().setTextColor(dayProfile.clockColor);
-    //clockActivity.getmContentView().setAlpha(dayProfile.alpha);
 
     Window window = clockActivity.getWindow();
     WindowManager.LayoutParams layoutParams = window.getAttributes();
@@ -265,11 +277,14 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockUpdater.setMoveText(dayProfile.moveText);
     clockActivity.getmContentView().setGravity(Gravity.CENTER);
     applyBatteryProfile(dayProfile.clockColor);
+    currentProfile = dayProfile;
+    size_index = sizes.indexOf((int) dayProfile.clockSize);
   }
 
   public void applyBatteryProfile(int currentProfileColor) {
     int color = clockActivity.getResources().getColor(R.color.color_clock, null);
-    boolean batteryInClockColor = prefs.getBoolean(
+    boolean batteryInClockColor =
+        prefs.getBoolean(
             clockActivity.getResources().getString(R.string.setting_key_batteryInClockColor),
             false);
     if (BatteryService.low && !BatteryService.charging) {
@@ -291,6 +306,54 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     }
     battery_icon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
     battery_pct.setTextColor(color);
+  }
+
+  private int font_index = 0;
+
+  public void cycleThroughFonts() {
+    cycleThroughFonts(true);
+  }
+
+  public void cycleThroughFonts(boolean forward) {
+    if (forward && font_index == fonts_files.length - 1) {
+      font_index = 0;
+    } else if (!forward && font_index == 0) {
+      font_index = fonts_files.length - 1;
+    } else {
+      if (forward) {
+        font_index++;
+      } else {
+        font_index--;
+      }
+    }
+    String font = fonts_files[font_index];
+    Timber.d("font index: " + font_index);
+    Timber.d("font file: " + font);
+    clockActivity.getmContentView().setTypeface(fonts.get(font));
+    currentProfile.setFont(font);
+    // Toast.makeText(clockActivity,fonts_files[font_index], Toast.LENGTH_SHORT).show();
+  }
+
+  private int size_index = 0;
+
+  public void cycleThroughSizes(boolean forward) {
+    if (forward && size_index == sizes.size() - 1) {
+      size_index = 0;
+    } else if (!forward && size_index == 0) {
+      size_index = sizes.size() - 1;
+    } else {
+      if (forward) {
+        size_index++;
+      } else {
+        size_index--;
+      }
+    }
+    int size = sizes.get(size_index);
+    Timber.d("size index: " + size_index);
+    Timber.d("size: " + size);
+    clockActivity.getmContentView().setTextSize(size);
+    currentProfile.setSize(size);
+    // Toast.makeText(clockActivity,fonts_files[font_index], Toast.LENGTH_SHORT).show();
   }
 
   private boolean isNight(Calendar nightStart, Calendar nightEnd, Calendar now) {

@@ -10,14 +10,14 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import androidx.annotation.Nullable;
 import ro.antiprotv.radioclock.R;
-import ro.antiprotv.radioclock.preference.SeekBarPreference;
+import ro.antiprotv.radioclock.preference.BrightnessPreference;
 import ro.antiprotv.radioclock.preference.TimePreference;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
 
 /** Created by ciuc on 7/12/16. */
 public class NightProfileFragment extends PreferenceFragment
     implements SharedPreferences.OnSharedPreferenceChangeListener {
-  private SeekBarPreference seekBarPref;
+  private BrightnessPreference seekBarPref;
   private TimePreference nightAutostartPref;
   private TimePreference nightAutoEndPref;
 
@@ -29,7 +29,7 @@ public class NightProfileFragment extends PreferenceFragment
     addPreferencesFromResource(R.xml.preferences_night_profile);
 
     seekBarPref =
-        (SeekBarPreference) findPreference(getString(R.string.setting_key_clockBrightness_night));
+        (BrightnessPreference) findPreference(getString(R.string.setting_key_clockBrightness_night));
     nightAutostartPref =
         (TimePreference) findPreference(ProfileManager.SETTING_NIGHT_PROFILE_AUTOSTART);
     // nightAutostartPref.setKey(ProfileManager.SETTING_NIGHT_PROFILE_AUTOSTART);

@@ -329,6 +329,31 @@ public class ClockActivity extends AppCompatActivity {
     } else {
       batteryService.unregisterBatteryLevelReceiver();
     }
+
+    findViewById(R.id.font_cycle_button_fwd).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        profileManager.cycleThroughFonts();
+      }
+    });
+    findViewById(R.id.font_cycle_button_backwards).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        profileManager.cycleThroughFonts(false);
+      }
+    });
+    findViewById(R.id.text_size_cycle_button).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        profileManager.cycleThroughSizes(true);
+      }
+    });
+    findViewById(R.id.text_size_cycle_button_1).setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        profileManager.cycleThroughSizes(false);
+      }
+    });
   }
 
   private void setOrientationLandscapeIfLocked() {

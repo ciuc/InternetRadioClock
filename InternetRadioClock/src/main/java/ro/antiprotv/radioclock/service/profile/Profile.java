@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 
 import ro.antiprotv.radioclock.R;
 
-public class Profile {
+public abstract class Profile {
   protected boolean clock12h;
   protected boolean clock12hShowAmPm;
   protected final int clockColor;
@@ -17,10 +17,10 @@ public class Profile {
   protected final float clockSize;
   protected final boolean moveText;
   protected final boolean showSeconds;
-  private final Context context;
+  protected final Context context;
   protected SimpleDateFormat clockFormat;
-  protected Typeface font;
-  private SharedPreferences prefs;
+  protected String font;
+  protected SharedPreferences prefs;
 
   public Profile(
       SharedPreferences prefs,
@@ -30,7 +30,7 @@ public class Profile {
       float alpha,
       boolean moveText,
       boolean showSeconds,
-      Typeface font) {
+      String font) {
     this.clockColor = clockColor;
     this.clockSize = clockSize;
     this.alpha = alpha;
@@ -74,4 +74,7 @@ public class Profile {
     clockFormat = new SimpleDateFormat(pattern);
 
   }
+
+  abstract public void setFont(String font);
+  abstract public void setSize(int size);
 }

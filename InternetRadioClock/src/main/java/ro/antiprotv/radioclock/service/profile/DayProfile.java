@@ -3,8 +3,6 @@ package ro.antiprotv.radioclock.service.profile;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
-
 import ro.antiprotv.radioclock.R;
 
 public class DayProfile extends Profile {
@@ -27,11 +25,22 @@ public class DayProfile extends Profile {
             / 100,
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_clockMove), true),
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_seconds), true),
-        Typeface.createFromAsset(
-            context.getAssets(),
-            "fonts/"
-                + prefs.getString(
-                    context.getResources().getString(R.string.setting_key_typeface),
-                    "repet___.ttf")));
+        prefs.getString(
+            context.getResources().getString(R.string.setting_key_typeface), "repet___.ttf"));
+  }
+
+  @Override
+  public void setFont(String font) {
+    prefs
+        .edit()
+        .putString(context.getResources().getString(R.string.setting_key_typeface), font)
+        .apply();
+  }
+  @Override
+  public void setSize(int size) {
+    prefs
+            .edit()
+            .putString(context.getResources().getString(R.string.setting_key_clockSize), String.valueOf(size))
+            .apply();
   }
 }

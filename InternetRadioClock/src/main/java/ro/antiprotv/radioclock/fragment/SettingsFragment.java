@@ -13,12 +13,12 @@ import android.preference.PreferenceFragment;
 import androidx.annotation.Nullable;
 
 import ro.antiprotv.radioclock.R;
-import ro.antiprotv.radioclock.preference.SeekBarPreference;
+import ro.antiprotv.radioclock.preference.BrightnessPreference;
 
 /** Created by ciuc on 7/12/16. */
 public class SettingsFragment extends PreferenceFragment
     implements SharedPreferences.OnSharedPreferenceChangeListener {
-  private SeekBarPreference seekBarPref;
+  private BrightnessPreference seekBarPref;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -26,7 +26,7 @@ public class SettingsFragment extends PreferenceFragment
     addPreferencesFromResource(R.xml.preferences_settings);
 
     seekBarPref =
-        (SeekBarPreference) findPreference(getString(R.string.setting_key_clockBrightness));
+        (BrightnessPreference) findPreference(getString(R.string.setting_key_clockBrightness));
   }
 
   @Override

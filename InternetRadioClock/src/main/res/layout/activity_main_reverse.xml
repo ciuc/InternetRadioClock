@@ -194,6 +194,38 @@
             android:background="@drawable/memory"
             android:textColor="@color/button.color.off" />
 
+        <ImageButton
+            android:id="@+id/font_cycle_button_fwd"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_above="@+id/main_help_button"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/memory"
+            android:clickable="false"
+            android:tag="@string/setting.key.alarmIcon"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/baseline_text_rotation_none_24"/>
+
+        <ImageButton
+            android:id="@+id/font_cycle_button_backwards"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_above="@+id/main_help_button"
+            android:layout_toStartOf="@id/font_cycle_button_fwd"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/memory"
+            android:clickable="false"
+            android:scaleX="-1"
+            android:tag="@string/setting.key.alarmIcon"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/baseline_text_rotation_none_24"/>
+
+
         <TextView
             android:id="@+id/sleep_timer"
             android:layout_width="wrap_content"
@@ -262,6 +294,19 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentBottom="true"/>
+
+        <ImageButton
+            android:id="@+id/on_off_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@android:color/transparent"
+            android:layout_toLeftOf="@id/main_help_button"
+            android:clickable="false"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/ic_baseline_on_off_white_24"
+            android:layout_alignParentBottom="true"/>
+
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
             style="?metaButtonBarStyle"
@@ -363,16 +408,7 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-            <ImageButton
-                android:id="@+id/on_off_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@android:color/transparent"
-                android:layout_alignParentEnd="true"
-                android:clickable="false"
-                android:textColor="@color/button.color.off"
-                app:srcCompat="@drawable/ic_baseline_on_off_white_24" />
+
             </RelativeLayout>
         </LinearLayout>
 

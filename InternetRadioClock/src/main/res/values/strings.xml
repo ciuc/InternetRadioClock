@@ -159,7 +159,9 @@
         <item>100</item>
         <item>130</item>
         <item>150</item>
+        <item>180</item>
         <item>200</item>
+        <item>230</item>
         <item>250</item>
     </string-array>
     <string-array name="clock_human_sizes">
@@ -167,35 +169,36 @@
         <item>S</item>
         <item>M (default)</item>
         <item>M-L</item>
-        <item>L</item>
         <item>XL</item>
         <item>XXL</item>
+        <item>XXXL</item>
+        <item>XXXXL</item>
     </string-array>
     <string-array name="clock_typefaces">
         <item>repet___.ttf</item>
         <item>ninepin.ttf</item>
         <item>Minisystem.otf</item>
         <item>LCD14.otf</item>
-        <item>LCD14Condensed.otf</item>
         <item>digital-dream.regular.ttf</item>
         <item>digital-dream.fat.ttf</item>
         <item>Library3am.otf</item>
-        <item>Library3amSoft.otf</item>
         <item>visitor1.ttf</item>
         <item>whitrabt.ttf</item>
+        <item>01DigiGraphics.ttf</item>
+        <item>pixel.regular.ttf</item>
     </string-array>
     <string-array name="clock_human_typefaces">
         <item>Dots 1 (Repet)</item>
         <item>Dots 2 (NinePin)</item>
         <item>Dots 3 (Minisystem)</item>
         <item>LCD (LCD14)</item>
-        <item>LCD2 (LCD14 Condensed)</item>
         <item>Digital Dream</item>
         <item>Digital Dream FAT</item>
         <item>Lib 3 am</item>
-        <item>Lib 3 am Soft</item>
         <item>Visitor 1</item>
         <item>White Rabbit</item>
+        <item>DigiGraphics</item>
+        <item>Pixel Regular</item>
     </string-array>
     <string name="setting.key.clockSize">setting.key.clockSize</string>
     <string name="setting.name.clockSize">Clock Size</string>
