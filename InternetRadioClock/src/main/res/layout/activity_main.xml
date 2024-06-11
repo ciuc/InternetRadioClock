@@ -286,7 +286,7 @@
                 app:srcCompat="@drawable/baseline_text_rotation_none_24"/>
 
             <ImageButton
-                android:id="@+id/font_cycle_button_backwards"
+                android:id="@+id/font_cycle_button_rev"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -302,7 +302,7 @@
                 app:srcCompat="@drawable/baseline_text_rotation_none_24"/>
 
             <ImageButton
-                android:id="@+id/text_size_cycle_button"
+                android:id="@+id/text_size_cycle_button_fwd"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -317,7 +317,7 @@
                 app:srcCompat="@drawable/baseline_text_increase_24"/>
 
             <ImageButton
-                android:id="@+id/text_size_cycle_button_1"
+                android:id="@+id/text_size_cycle_button_rev"
                 style="?metaButtonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

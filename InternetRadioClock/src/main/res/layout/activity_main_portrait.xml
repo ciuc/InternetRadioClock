@@ -165,7 +165,7 @@
             style="?metaButtonBarButtonStyle"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
+            android:layout_centerHorizontal="true"
             android:background="@android:color/transparent"
             android:clickable="false"
             android:textColor="@color/button.color.off"
@@ -402,7 +402,7 @@
             app:srcCompat="@drawable/baseline_text_rotation_none_24"/>
 
         <ImageButton
-            android:id="@+id/font_cycle_button_backwards"
+            android:id="@+id/font_cycle_button_rev"
             style="?metaButtonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -416,6 +416,37 @@
             android:tag="@string/setting.key.alarmIcon"
             android:textColor="@color/button.color.off"
             app:srcCompat="@drawable/baseline_text_rotation_none_24"/>
+
+        <ImageButton
+            android:id="@+id/text_size_cycle_button_fwd"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_below="@+id/font_cycle_button_fwd"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/memory"
+            android:clickable="false"
+            android:tag="@string/setting.key.alarmIcon"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/baseline_text_increase_24"/>
+
+        <ImageButton
+            android:id="@+id/text_size_cycle_button_rev"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_below="@+id/font_cycle_button_fwd"
+            android:layout_toStartOf="@+id/font_cycle_button_fwd"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/memory"
+            android:clickable="false"
+            android:scaleX="-1"
+            android:tag="@string/setting.key.alarmIcon"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/baseline_text_decrease_24"/>
 
 
     </RelativeLayout>
