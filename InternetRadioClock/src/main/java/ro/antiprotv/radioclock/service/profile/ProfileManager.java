@@ -3,18 +3,23 @@ package ro.antiprotv.radioclock.service.profile;
 import static ro.antiprotv.radioclock.activity.ClockActivity.PREF_NIGHT_MODE;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mrudultora.colorpicker.ColorPickerPopUp;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -354,6 +359,30 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockActivity.getmContentView().setTextSize(size);
     currentProfile.setSize(size);
     // Toast.makeText(clockActivity,fonts_files[font_index], Toast.LENGTH_SHORT).show();
+  }
+
+  public class ColorPickerClickListner implements View.OnClickListener{
+
+    @Override
+    public void onClick(View v) {
+      ColorPickerPopUp colorPickerPopUp = new ColorPickerPopUp(v.getContext());	// Pass the context.
+      colorPickerPopUp.setShowAlpha(false)			// By default show alpha is true.
+              .setDefaultColor(currentProfile.getColor())			// By default red color is set.
+              .setDialogTitle("Pick a Color")
+              .setOnPickColorListener(new ColorPickerPopUp.OnPickColorListener() {
+                @Override
+                public void onColorPicked(int color) {
+                  String hexColor = String.format("#%06X", (0xFFFFFF & color));
+                  currentProfile.setClockColor(hexColor);
+                }
+
+                @Override
+                public void onCancel() {
+                  colorPickerPopUp.dismissDialog();	// Dismiss the dialog.
+                }
+              })
+              .show();
+    }
   }
 
   private boolean isNight(Calendar nightStart, Calendar nightEnd, Calendar now) {

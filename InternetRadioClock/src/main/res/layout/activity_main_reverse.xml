@@ -256,6 +256,22 @@
             android:textColor="@color/button.color.off"
             app:srcCompat="@drawable/baseline_text_decrease_24"/>
 
+        <ImageButton
+            android:id="@+id/color_picker_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_above="@+id/text_size_cycle_button_fwd"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/memory"
+            android:clickable="false"
+            android:scaleX="-1"
+            android:tag="@string/setting.key.alarmIcon"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/outline_color_lens_24"/>
+
 
         <TextView
             android:id="@+id/sleep_timer"

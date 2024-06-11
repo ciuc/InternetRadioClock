@@ -77,4 +77,9 @@ public abstract class Profile {
 
   abstract public void setFont(String font);
   abstract public void setSize(int size);
+
+  abstract public void setClockColor(String color);
+  public int getColor(){
+    return clockColor;
+  };
 }

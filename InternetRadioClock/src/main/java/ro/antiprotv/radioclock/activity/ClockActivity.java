@@ -354,6 +354,8 @@ public class ClockActivity extends AppCompatActivity {
         profileManager.cycleThroughSizes(false);
       }
     });
+
+    findViewById(R.id.color_picker_button).setOnClickListener(profileManager. new ColorPickerClickListner());
   }
 
   private void setOrientationLandscapeIfLocked() {

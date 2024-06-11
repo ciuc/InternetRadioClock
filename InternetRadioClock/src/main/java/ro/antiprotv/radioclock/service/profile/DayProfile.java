@@ -36,11 +36,25 @@ public class DayProfile extends Profile {
         .putString(context.getResources().getString(R.string.setting_key_typeface), font)
         .apply();
   }
+
   @Override
   public void setSize(int size) {
     prefs
-            .edit()
-            .putString(context.getResources().getString(R.string.setting_key_clockSize), String.valueOf(size))
-            .apply();
+        .edit()
+        .putString(
+            context.getResources().getString(R.string.setting_key_clockSize), String.valueOf(size))
+        .apply();
   }
+
+  @Override
+  public void setClockColor(String color) {
+    prefs
+        .edit()
+        .putString(
+            context.getResources().getString(R.string.setting_key_clockColor),
+            color)
+        .apply();
+  }
+
+
 }

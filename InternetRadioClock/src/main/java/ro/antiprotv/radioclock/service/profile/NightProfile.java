@@ -44,7 +44,19 @@ public class NightProfile extends Profile {
   public void setSize(int size) {
     prefs
         .edit()
-        .putString(context.getResources().getString(R.string.setting_key_clockSize_night), String.valueOf(size))
+        .putString(
+            context.getResources().getString(R.string.setting_key_clockSize_night),
+            String.valueOf(size))
+        .apply();
+  }
+
+  @Override
+  public void setClockColor(String color) {
+    prefs
+        .edit()
+        .putString(
+            context.getResources().getString(R.string.setting_key_clockColor_night),
+            color)
         .apply();
   }
 }

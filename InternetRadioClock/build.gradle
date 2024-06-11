@@ -60,4 +60,5 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
     // for android 8
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.github.mrudultora:Colorpicker:1.2.0'
 }
