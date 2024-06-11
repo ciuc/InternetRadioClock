@@ -55,6 +55,8 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   private final List<Integer> sizes = new ArrayList<>();
   private Profile currentProfile;
 
+  private boolean disableProfileChangeOnSettingChange = false;
+
   public ProfileManager(
       ClockActivity clockActivity, SharedPreferences prefs, ClockUpdater clockUpdater) {
     this.clockActivity = clockActivity;
@@ -78,6 +80,10 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
 
   @Override
   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    if (disableProfileChangeOnSettingChange) {
+      disableProfileChangeOnSettingChange = false;
+      return;
+    }
     if (key.equals(SETTING_NIGHT_PROFILE_AUTOSTART)
         || key.equals(SETTING_NIGHT_PROFILE_AUTOEND)
         || key.equals(SETTING_NIGHT_PROFILE_SCHEDULE_ENABLED)
@@ -335,6 +341,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     Timber.d("font index: " + font_index);
     Timber.d("font file: " + font);
     clockActivity.getmContentView().setTypeface(fonts.get(font));
+    disableProfileChangeOnSettingChange = true;
     currentProfile.setFont(font);
     // Toast.makeText(clockActivity,fonts_files[font_index], Toast.LENGTH_SHORT).show();
   }
@@ -357,6 +364,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     Timber.d("size index: " + size_index);
     Timber.d("size: " + size);
     clockActivity.getmContentView().setTextSize(size);
+    disableProfileChangeOnSettingChange = true;
     currentProfile.setSize(size);
     // Toast.makeText(clockActivity,fonts_files[font_index], Toast.LENGTH_SHORT).show();
   }
@@ -373,6 +381,8 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
                 @Override
                 public void onColorPicked(int color) {
                   String hexColor = String.format("#%06X", (0xFFFFFF & color));
+                  disableProfileChangeOnSettingChange = true;
+                  clockActivity.getmContentView().setTextColor(color);
                   currentProfile.setClockColor(hexColor);
                 }
 

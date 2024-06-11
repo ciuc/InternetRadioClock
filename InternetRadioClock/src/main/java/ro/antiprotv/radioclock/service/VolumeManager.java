@@ -27,7 +27,6 @@ import timber.log.Timber;
  * buttons
  */
 public class VolumeManager {
-  private final SharedPreferences prefs;
   private final ImageButton volumeUpButton;
   private final ImageButton volumeDownButton;
   private final Context ctx;
@@ -37,7 +36,6 @@ public class VolumeManager {
   private final int maxVolume;
 
   public VolumeManager(Context ctx, View view) {
-    prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
     this.ctx = ctx;
     volumeUpButton = view.findViewById(R.id.volumeup_button);
     volumeDownButton = view.findViewById(R.id.volumedown_button);
