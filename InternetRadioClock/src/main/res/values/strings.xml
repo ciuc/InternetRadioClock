@@ -186,6 +186,8 @@
         <item>whitrabt.ttf</item>
         <item>01DigiGraphics.ttf</item>
         <item>pixel.regular.ttf</item>
+        <item>Bazaronite.ttf</item>
+        <item>square-sans-serif-7.regular.ttf</item>
     </string-array>
     <string-array name="clock_human_typefaces">
         <item>Dots 1 (Repet)</item>
@@ -199,6 +201,8 @@
         <item>White Rabbit</item>
         <item>DigiGraphics</item>
         <item>Pixel Regular</item>
+        <item>Bazaronite</item>
+        <item>Square Sans-serif</item>
     </string-array>
     <string name="setting.key.clockSize">setting.key.clockSize</string>
     <string name="setting.name.clockSize">Clock Size</string>

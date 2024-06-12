@@ -42,7 +42,7 @@
             android:text="60%"
             android:textColor="@color/color.clock"
             android:textSize="12sp"
-            android:visibility="gone"></TextView>
+            android:visibility="gone"/>
 
         <RelativeLayout
             android:id="@+id/mainLayout"
