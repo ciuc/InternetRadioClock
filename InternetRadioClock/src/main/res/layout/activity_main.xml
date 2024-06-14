@@ -225,34 +225,24 @@
                 android:background="@drawable/memory"
                 android:clickable="false"
                 android:textColor="@color/button.color.off"
-                app:srcCompat="@drawable/ic_volume_up_24dp" />
+                app:srcCompat="@drawable/ic_volume_dialog_24dp" />
 
-            <ImageButton
-                android:id="@+id/volumedown_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_toLeftOf="@+id/volumeup_button"
-                android:background="@drawable/memory"
-                android:clickable="false"
-                android:textColor="@color/button.color.off"
-                app:srcCompat="@drawable/ic_volume_down_24dp" />
+
 
             <TextView
                 android:id="@+id/volume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="fill"
-                android:layout_toLeftOf="@+id/volumedown_button"
+                android:layout_toLeftOf="@+id/volumeup_button"
                 android:textColor="@color/button.color.off"
                 android:textSize="10sp" />
 
             <ImageButton
                 android:id="@+id/main_help_button"
                 style="?metaButtonBarButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@+id/volume"
                 android:background="@android:color/transparent"
@@ -263,9 +253,9 @@
             <ImageButton
                 android:id="@+id/on_off_button"
                 style="?metaButtonBarButtonStyle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginRight="5dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginRight="55dp"
                 android:layout_toLeftOf="@+id/main_help_button"
                 android:background="@android:color/transparent"
                 android:clickable="false"

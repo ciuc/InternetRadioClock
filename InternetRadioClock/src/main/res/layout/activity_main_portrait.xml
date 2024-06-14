@@ -56,8 +56,8 @@
         <ImageButton
             android:id="@+id/on_off_button"
             style="?metaButtonBarButtonStyle"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_centerHorizontal="true"
             android:background="@android:color/transparent"
             android:clickable="false"
@@ -241,21 +241,10 @@
             android:layout_below="@id/night_mode_button"
             android:layout_alignParentEnd="true"
             android:clickable="false"
-            app:srcCompat="@drawable/ic_volume_up_24dp"
+            app:srcCompat="@drawable/ic_volume_dialog_24dp"
             android:background="@drawable/memory"
             android:textColor="@color/button.color.off" />
-        <ImageButton
-            android:id="@+id/volumedown_button"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/volumeup_button"
-            android:clickable="false"
-            app:srcCompat="@drawable/ic_volume_down_24dp"
-            android:background="@drawable/memory"
-            android:textColor="@color/button.color.off" />
+
         <TextView
             android:id="@+id/volume"
             android:layout_width="wrap_content"
@@ -265,7 +254,7 @@
             android:textColor="@color/button.color.off"
             android:textSize="10sp"
             android:layout_marginBottom="5dp"
-            android:layout_below="@+id/volumedown_button"/>
+            android:layout_below="@+id/volumeup_button"/>
         <ImageButton
             android:id="@+id/main_help_button"
             style="?metaButtonBarButtonStyle"
@@ -276,8 +265,8 @@
             android:textColor="@color/button.color.off"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/volume"
-            android:layout_width="50dp"
-            android:layout_height="50dp"/>
+            android:layout_width="45dp"
+            android:layout_height="45dp"/>
         <RelativeLayout
             android:id="@+id/ui_settings_panel"
             android:layout_width="match_parent"
