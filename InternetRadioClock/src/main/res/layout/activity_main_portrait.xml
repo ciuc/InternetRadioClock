@@ -278,14 +278,17 @@
             android:layout_below="@id/volume"
             android:layout_width="50dp"
             android:layout_height="50dp"/>
-
+        <RelativeLayout
+            android:id="@+id/ui_settings_panel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_help_button">
         <ImageButton
             android:id="@+id/font_cycle_button_fwd"
             style="?metaButtonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_below="@+id/main_help_button"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
             android:background="@drawable/memory"
@@ -347,8 +350,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_below="@+id/text_size_cycle_button_fwd"
-            android:layout_alignParentRight="true"
+            android:layout_below="@+id/font_cycle_button_rev"
+            android:layout_toLeftOf="@id/text_size_cycle_button_rev"
             android:layout_marginTop="5dp"
             android:background="@drawable/memory"
             android:clickable="false"
@@ -356,6 +359,8 @@
             android:tag="@string/setting.key.alarmIcon"
             android:textColor="@color/button.color.off"
             app:srcCompat="@drawable/outline_color_lens_24"/>
+        </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
             style="?metaButtonBarStyle"

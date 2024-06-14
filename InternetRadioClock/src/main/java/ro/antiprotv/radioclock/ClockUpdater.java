@@ -122,7 +122,6 @@ public class ClockUpdater extends Thread {
 
         };
         Looper.loop();
-
     }
 
     public void setSemaphore(boolean semaphore) {

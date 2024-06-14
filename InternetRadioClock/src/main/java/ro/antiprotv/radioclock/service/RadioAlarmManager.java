@@ -335,8 +335,8 @@ public class RadioAlarmManager extends BroadcastReceiver {
     shutDownRadioAlarm(true);
     Calendar now = Calendar.getInstance();
     now.setTimeInMillis(System.currentTimeMillis());
-    // now.add(Calendar.SECOND, 10);//FOR TESTING
-    now.add(Calendar.MINUTE, snooze); // FOR PRODUCTION
+    now.add(Calendar.SECOND, 10);//FOR TESTING
+    //now.add(Calendar.MINUTE, snooze); // FOR PRODUCTION
     if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
       alarmMgr.setExact(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), alarmIntent);
     } else {

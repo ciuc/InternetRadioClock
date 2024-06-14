@@ -555,7 +555,7 @@ public class ClockActivity extends AppCompatActivity {
     }
     // sleep buttons
     ImageButton sleep = findViewById(R.id.sleep);
-    sleep.setOnClickListener(sleepManager.sleepOnClickListener);
+    sleep.setOnClickListener(sleepManager.sleepButtonOnClickListener);
     sleep.setOnTouchListener(mDelayHideTouchListener);
   }
 

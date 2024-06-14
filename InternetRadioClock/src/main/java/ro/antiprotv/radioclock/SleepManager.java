@@ -1,5 +1,8 @@
 package ro.antiprotv.radioclock;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -31,7 +34,7 @@ public class SleepManager {
   private int sleepTimerIndex;
   private ScheduledFuture sleepFuture;
   private ScheduledFuture sleepCounterFuture;
-  public final Button.OnClickListener sleepOnClickListener =
+  public final Button.OnClickListener sleepButtonOnClickListener =
       new View.OnClickListener() {
         @Override
         public void onClick(final View view) {
@@ -52,7 +55,8 @@ public class SleepManager {
               sleepFuture.cancel(true);
             }
             button.setImageResource(R.drawable.sleep_timer_on_white_24dp);
-            sleepTimerText.setVisibility(View.VISIBLE);
+            hideUiElements();
+            sleepTimerText.setVisibility(VISIBLE);
             long timer = timers.get(sleepTimerIndex);
             sleepTimerText.setText(
                 String.format(view.getResources().getString(R.string.text_sleep_timer), timer));
@@ -88,12 +92,23 @@ public class SleepManager {
   private void scheduleClockSleepTimerReset() {
     ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     executor.schedule(
-        () -> clockUpdater.setClockText(null, -1), MOVEMENT_SECCONDS, TimeUnit.SECONDS);
+        () -> {
+
+          clockUpdater.setClockText(null, -1);
+          context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+              showUiElements();
+            }
+          });
+        },
+        MOVEMENT_SECCONDS,
+        TimeUnit.SECONDS);
   }
 
   private void resetSleepTimer() {
     sleepTimerText.setText("");
-    sleepTimerText.setVisibility(View.GONE);
+    sleepTimerText.setVisibility(GONE);
     button.setImageResource(R.drawable.sleep_timer_off_white_24dp);
     sleepTimerIndex = 0;
   }
@@ -105,6 +120,25 @@ public class SleepManager {
   /** Cleanup method - to execute when application exits */
   public void stop() {
     sleepExecutorService.shutdownNow();
+  }
+
+  private void hideUiElements() {
+    context.findViewById(R.id.ui_settings_panel).setVisibility(GONE);
+    context.findViewById(R.id.night_mode_button).setVisibility(GONE);
+    context.findViewById(R.id.volumedown_button).setVisibility(GONE);
+    context.findViewById(R.id.volumeup_button).setVisibility(GONE);
+    context.findViewById(R.id.volume).setVisibility(GONE);
+    context.findViewById(R.id.main_help_button).setVisibility(GONE);
+    context.findViewById(R.id.fullscreen_content_controls).setVisibility(GONE);
+  }
+  private void showUiElements() {
+    context.findViewById(R.id.ui_settings_panel).setVisibility(VISIBLE);
+    context.findViewById(R.id.night_mode_button).setVisibility(VISIBLE);
+    context.findViewById(R.id.volumedown_button).setVisibility(VISIBLE);
+    context.findViewById(R.id.volumeup_button).setVisibility(VISIBLE);
+    context.findViewById(R.id.volume).setVisibility(VISIBLE);
+    context.findViewById(R.id.main_help_button).setVisibility(VISIBLE);
+    context.findViewById(R.id.fullscreen_content_controls).setVisibility(VISIBLE);
   }
 
   /**
