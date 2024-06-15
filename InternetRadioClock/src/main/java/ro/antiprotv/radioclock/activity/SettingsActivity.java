@@ -9,7 +9,6 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import java.util.Objects;
-
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.fragment.SettingsFragment;
 

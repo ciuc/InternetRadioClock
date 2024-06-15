@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-
 import ro.antiprotv.radioclock.R;
 
 /** Created by ciuc on 7/12/16. */

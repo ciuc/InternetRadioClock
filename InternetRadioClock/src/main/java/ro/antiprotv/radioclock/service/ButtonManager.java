@@ -40,11 +40,11 @@ public class ButtonManager {
   }
 
   public ButtonManager(
-          Context ctx,
-          View view,
-          SharedPreferences prefs,
-          View.OnTouchListener onTouchListener,
-          View.OnClickListener playListener) {
+      Context ctx,
+      View view,
+      SharedPreferences prefs,
+      View.OnTouchListener onTouchListener,
+      View.OnClickListener playListener) {
     this.context = ctx;
     this.view = view;
     this.prefs = prefs;
@@ -143,7 +143,9 @@ public class ButtonManager {
     prefs.edit().putString(key, url).apply();
     prefs.edit().putString(labelKey, label).apply();
     Toast.makeText(
-            context, String.format("%s assigned to memory %d", url, streamNo), Toast.LENGTH_SHORT)
+            context,
+            String.format(context.getString(R.string.assigned_to_memory), url, streamNo),
+            Toast.LENGTH_SHORT)
         .show();
   }
 

@@ -11,7 +11,6 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import java.util.Objects;
-
 import ro.antiprotv.radioclock.R;
 
 /** Created by ciuc on 7/19/16. */

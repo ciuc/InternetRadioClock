@@ -647,5 +647,6 @@ in this section you can set some neat stuff:
     <string name="title_dialog_alarm_days">Choose days</string>
     <string name="next_tip">Next Tip</string>
     <string name="previous_tip">Previous tip</string>
-
+    <string name="auto.brightness.description">"Auto (Leave the brightness to the system's sensor.)"</string>
+    <string name="assigned.to.memory">%s assigned to memory %d</string>
 </resources>

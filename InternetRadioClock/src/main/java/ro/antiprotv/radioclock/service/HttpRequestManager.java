@@ -7,7 +7,6 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
-
 import ro.antiprotv.radioclock.activity.StreamFinderActivity;
 
 public class HttpRequestManager {

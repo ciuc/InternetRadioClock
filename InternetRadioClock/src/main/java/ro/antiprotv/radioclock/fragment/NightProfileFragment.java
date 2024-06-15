@@ -29,7 +29,8 @@ public class NightProfileFragment extends PreferenceFragment
     addPreferencesFromResource(R.xml.preferences_night_profile);
 
     seekBarPref =
-        (BrightnessPreference) findPreference(getString(R.string.setting_key_clockBrightness_night));
+        (BrightnessPreference)
+            findPreference(getString(R.string.setting_key_clockBrightness_night));
     nightAutostartPref =
         (TimePreference) findPreference(ProfileManager.SETTING_NIGHT_PROFILE_AUTOSTART);
     // nightAutostartPref.setKey(ProfileManager.SETTING_NIGHT_PROFILE_AUTOSTART);

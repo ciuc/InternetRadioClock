@@ -3,7 +3,6 @@ package ro.antiprotv.radioclock.service.profile;
 import static ro.antiprotv.radioclock.activity.ClockActivity.PREF_NIGHT_MODE;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -17,9 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.mrudultora.colorpicker.ColorPickerPopUp;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -44,18 +41,19 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   private final SharedPreferences prefs;
   private final ClockUpdater clockUpdater;
   private final ScheduledExecutorService scheduledExecutorService;
-  private ScheduledFuture currentScheduledNightTask;
-  private ScheduledFuture currentScheduledDayTask;
   private final ProfileUtils profileUtils;
   private final ImageView battery_icon;
   private final TextView battery_pct;
-
   private final String[] fonts_files;
   private final Map<String, Typeface> fonts = new HashMap<>();
   private final List<Integer> sizes = new ArrayList<>();
+  private ScheduledFuture currentScheduledNightTask;
+  private ScheduledFuture currentScheduledDayTask;
   private Profile currentProfile;
 
   private boolean disableProfileChangeOnSettingChange = false;
+  private int font_index = 0;
+  private int size_index = 0;
 
   public ProfileManager(
       ClockActivity clockActivity, SharedPreferences prefs, ClockUpdater clockUpdater) {
@@ -319,8 +317,6 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     battery_pct.setTextColor(color);
   }
 
-  private int font_index = 0;
-
   public void cycleThroughFonts() {
     cycleThroughFonts(true);
   }
@@ -346,8 +342,6 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     // Toast.makeText(clockActivity,fonts_files[font_index], Toast.LENGTH_SHORT).show();
   }
 
-  private int size_index = 0;
-
   public void cycleThroughSizes(boolean forward) {
     if (forward && size_index == sizes.size() - 1) {
       size_index = 0;
@@ -367,32 +361,6 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     disableProfileChangeOnSettingChange = true;
     currentProfile.setSize(size);
     // Toast.makeText(clockActivity,fonts_files[font_index], Toast.LENGTH_SHORT).show();
-  }
-
-  public class ColorPickerClickListner implements View.OnClickListener{
-
-    @Override
-    public void onClick(View v) {
-      ColorPickerPopUp colorPickerPopUp = new ColorPickerPopUp(v.getContext());	// Pass the context.
-      colorPickerPopUp.setShowAlpha(false)			// By default show alpha is true.
-              .setDefaultColor(currentProfile.getColor())			// By default red color is set.
-              .setDialogTitle("Pick a Color")
-              .setOnPickColorListener(new ColorPickerPopUp.OnPickColorListener() {
-                @Override
-                public void onColorPicked(int color) {
-                  String hexColor = String.format("#%06X", (0xFFFFFF & color));
-                  disableProfileChangeOnSettingChange = true;
-                  clockActivity.getmContentView().setTextColor(color);
-                  currentProfile.setClockColor(hexColor);
-                }
-
-                @Override
-                public void onCancel() {
-                  colorPickerPopUp.dismissDialog();	// Dismiss the dialog.
-                }
-              })
-              .show();
-    }
   }
 
   private boolean isNight(Calendar nightStart, Calendar nightEnd, Calendar now) {
@@ -424,6 +392,32 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
         // | +++++++ end ---!---- start +++++++ |
         return false; // and do nothing with the calendars
       }
+    }
+  }
+
+  public class ColorPickerClickListner implements View.OnClickListener{
+
+    @Override
+    public void onClick(View v) {
+      ColorPickerPopUp colorPickerPopUp = new ColorPickerPopUp(v.getContext());	// Pass the context.
+      colorPickerPopUp.setShowAlpha(false)			// By default show alpha is true.
+              .setDefaultColor(currentProfile.getColor())			// By default red color is set.
+              .setDialogTitle("Pick a Color")
+              .setOnPickColorListener(new ColorPickerPopUp.OnPickColorListener() {
+                @Override
+                public void onColorPicked(int color) {
+                  String hexColor = String.format("#%06X", (0xFFFFFF & color));
+                  disableProfileChangeOnSettingChange = true;
+                  clockActivity.getmContentView().setTextColor(color);
+                  currentProfile.setClockColor(hexColor);
+                }
+
+                @Override
+                public void onCancel() {
+                  colorPickerPopUp.dismissDialog();	// Dismiss the dialog.
+                }
+              })
+              .show();
     }
   }
 

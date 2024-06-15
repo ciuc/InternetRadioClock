@@ -50,11 +50,7 @@ public class DayProfile extends Profile {
   public void setClockColor(String color) {
     prefs
         .edit()
-        .putString(
-            context.getResources().getString(R.string.setting_key_clockColor),
-            color)
+        .putString(context.getResources().getString(R.string.setting_key_clockColor), color)
         .apply();
   }
-
-
 }

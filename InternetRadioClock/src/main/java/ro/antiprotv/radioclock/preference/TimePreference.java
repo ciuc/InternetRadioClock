@@ -6,12 +6,9 @@ import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TimePicker;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
 import ro.antiprotv.radioclock.R;
-import ro.antiprotv.radioclock.service.profile.ProfileManager;
 import ro.antiprotv.radioclock.service.profile.ProfileUtils;
 
 public class TimePreference extends DialogPreference {

@@ -93,14 +93,14 @@ public class SleepManager {
     ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     executor.schedule(
         () -> {
-
           clockUpdater.setClockText(null, -1);
-          context.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-              showUiElements();
-            }
-          });
+          context.runOnUiThread(
+              new Runnable() {
+                @Override
+                public void run() {
+                  showUiElements();
+                }
+              });
         },
         MOVEMENT_SECCONDS,
         TimeUnit.SECONDS);
@@ -130,6 +130,7 @@ public class SleepManager {
     context.findViewById(R.id.main_help_button).setVisibility(GONE);
     context.findViewById(R.id.fullscreen_content_controls).setVisibility(GONE);
   }
+
   private void showUiElements() {
     context.findViewById(R.id.ui_settings_panel).setVisibility(VISIBLE);
     context.findViewById(R.id.night_mode_button).setVisibility(VISIBLE);

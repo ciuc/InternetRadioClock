@@ -9,9 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.PreferenceFragment;
-
 import androidx.annotation.Nullable;
-
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.preference.BrightnessPreference;
 

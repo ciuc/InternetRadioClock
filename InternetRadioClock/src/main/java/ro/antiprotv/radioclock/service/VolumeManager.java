@@ -53,7 +53,7 @@ public class VolumeManager {
     int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
     audioManager.adjustVolume(
         AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-    Timber.d("vol up: current " + String.valueOf(currentVolume));
+    Timber.d("vol up: current " + currentVolume);
     if (currentVolume >= maxVolume) {
       // run on ui thread, b/c this is accessed by the progressive volume task
       ((ClockActivity) ctx)
@@ -66,7 +66,7 @@ public class VolumeManager {
   /** decrease volume */
   protected void volumeDown() {
     int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-    Timber.d("vol dn: current " + String.valueOf(currentVolume));
+    Timber.d("vol dn: current " + currentVolume);
     if (currentVolume <= 0) {
       ((ClockActivity) ctx)
           .runOnUiThread(() -> Toast.makeText(ctx, "Muted", Toast.LENGTH_SHORT).show());
@@ -75,6 +75,10 @@ public class VolumeManager {
         AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
     Timber.d("vol dn: after change " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
     // setVolumeText(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), maxVolume);
+  }
+
+  public int getVolume() {
+    return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
   }
 
   /**
@@ -87,10 +91,6 @@ public class VolumeManager {
     audioManager.setStreamVolume(
         AudioManager.STREAM_MUSIC, volume, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
     ((ClockActivity) ctx).runOnUiThread(() -> volumeText.setText(getVolumePct(volume)));
-  }
-
-  public int getVolume() {
-    return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
   }
 
   public int getMaxVolume() {

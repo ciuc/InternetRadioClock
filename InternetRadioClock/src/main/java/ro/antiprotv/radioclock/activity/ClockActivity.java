@@ -72,7 +72,27 @@ public class ClockActivity extends AppCompatActivity {
   public static final String LAST_PLAYED = "LAST_PLAYED";
 
   public static final String USER_ALARM_PERMISSION_NOT_ALLOWED_PREF = "USER_PERM_NOK";
-
+  /**
+   * Whether or not the system UI should be auto-hidden after {@link #AUTO_HIDE_DELAY_MILLIS}
+   * milliseconds.
+   */
+  private static final boolean AUTO_HIDE = true;
+  /**
+   * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after user interaction before
+   * hiding the system UI.
+   */
+  private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+  /**
+   * Some older devices needs a small delay between UI widget updates and a change of the status and
+   * navigation bar.
+   */
+  private static final int UI_ANIMATION_DELAY = 300;
+  private static final String TAG_STATE = "ClockActivity | State: %s";
+  private final Handler mHideHandler = new Handler();
+  // the map of urls; it is a map of the setting key > url (String)
+  // url(setting_key_stream1 >  http://something)
+  private final List<String> mUrls = new ArrayList<>();
+  private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
   /**
    * The user has explicitly denied setting alarms permissions.
    *
@@ -84,33 +104,7 @@ public class ClockActivity extends AppCompatActivity {
    *     <p>FALSE = (default) user has not explicitly denied
    */
   public boolean USER_ALARM_PERMISSION_NOT_ALLOWED = false;
-
   public boolean HAS_ALARM_PERMISSIONS = true;
-
-  /**
-   * Whether or not the system UI should be auto-hidden after {@link #AUTO_HIDE_DELAY_MILLIS}
-   * milliseconds.
-   */
-  private static final boolean AUTO_HIDE = true;
-
-  /**
-   * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after user interaction before
-   * hiding the system UI.
-   */
-  private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
-
-  /**
-   * Some older devices needs a small delay between UI widget updates and a change of the status and
-   * navigation bar.
-   */
-  private static final int UI_ANIMATION_DELAY = 300;
-
-  private static final String TAG_STATE = "ClockActivity | State: %s";
-  private final Handler mHideHandler = new Handler();
-  // the map of urls; it is a map of the setting key > url (String)
-  // url(setting_key_stream1 >  http://something)
-  private final List<String> mUrls = new ArrayList<>();
-  private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
   private SharedPreferences prefs;
   private ClockUpdater clockUpdater;
   private View mControlsView;
@@ -330,32 +324,41 @@ public class ClockActivity extends AppCompatActivity {
       batteryService.unregisterBatteryLevelReceiver();
     }
 
-    findViewById(R.id.font_cycle_button_fwd).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        profileManager.cycleThroughFonts();
-      }
-    });
-    findViewById(R.id.font_cycle_button_rev).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        profileManager.cycleThroughFonts(false);
-      }
-    });
-    findViewById(R.id.text_size_cycle_button_fwd).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        profileManager.cycleThroughSizes(true);
-      }
-    });
-    findViewById(R.id.text_size_cycle_button_rev).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        profileManager.cycleThroughSizes(false);
-      }
-    });
+    findViewById(R.id.font_cycle_button_fwd)
+        .setOnClickListener(
+            new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                profileManager.cycleThroughFonts();
+              }
+            });
+    findViewById(R.id.font_cycle_button_rev)
+        .setOnClickListener(
+            new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                profileManager.cycleThroughFonts(false);
+              }
+            });
+    findViewById(R.id.text_size_cycle_button_fwd)
+        .setOnClickListener(
+            new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                profileManager.cycleThroughSizes(true);
+              }
+            });
+    findViewById(R.id.text_size_cycle_button_rev)
+        .setOnClickListener(
+            new View.OnClickListener() {
+              @Override
+              public void onClick(View v) {
+                profileManager.cycleThroughSizes(false);
+              }
+            });
 
-    findViewById(R.id.color_picker_button).setOnClickListener(profileManager. new ColorPickerClickListner());
+    findViewById(R.id.color_picker_button)
+        .setOnClickListener(profileManager.new ColorPickerClickListner());
   }
 
   private void setOrientationLandscapeIfLocked() {
@@ -470,11 +473,7 @@ public class ClockActivity extends AppCompatActivity {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       AlarmManager systemAlarmManager = this.getSystemService(AlarmManager.class);
-      if (!systemAlarmManager.canScheduleExactAlarms()) {
-        HAS_ALARM_PERMISSIONS = false;
-      } else {
-        HAS_ALARM_PERMISSIONS = true;
-      }
+        HAS_ALARM_PERMISSIONS = systemAlarmManager.canScheduleExactAlarms();
     }
     USER_ALARM_PERMISSION_NOT_ALLOWED =
         prefs.getBoolean(USER_ALARM_PERMISSION_NOT_ALLOWED_PREF, false);
@@ -611,7 +610,7 @@ public class ClockActivity extends AppCompatActivity {
           .setTitle("AMOLED WARNING")
           .setIcon(R.drawable.ic_warning_black_24dp)
           .setPositiveButton(
-              R.string.dialog_button_ok_amoled,
+              getString(R.string.dialog_button_ok_amoled),
               (dialog, id) -> prefs.edit().putBoolean("AMOLED_WARN", false).apply());
       AlertDialog dialog = builder.create();
 

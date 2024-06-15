@@ -23,6 +23,8 @@ import ro.antiprotv.radioclock.activity.ClockActivity;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
 
 public class BatteryService extends BroadcastReceiver {
+  public static boolean charging = false;
+  public static boolean low = false;
   private final TextView battery_pct;
   private final SharedPreferences prefs;
   private final ClockActivity clockActivity;
@@ -54,8 +56,6 @@ public class BatteryService extends BroadcastReceiver {
     }
   }
 
-  public static boolean charging = false;
-  public static boolean low = false;
   @Override
   public void onReceive(Context context, Intent intent) {
     int status = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);

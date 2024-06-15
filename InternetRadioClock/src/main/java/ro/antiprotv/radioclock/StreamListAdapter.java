@@ -16,7 +16,6 @@ import java.util.List;
 import ro.antiprotv.radioclock.activity.StreamFinderActivity;
 import ro.antiprotv.radioclock.service.ButtonManager;
 
-
 public class StreamListAdapter extends RecyclerView.Adapter {
   private final LayoutInflater inflater;
   private final StreamFinderActivity streamFinderActivity;

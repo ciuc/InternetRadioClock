@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import ro.antiprotv.radioclock.R;
+
 public class BrightnessPreference extends DialogPreference
     implements SeekBar.OnSeekBarChangeListener, OnClickListener {
   // ------------------------------------------------------------------------------------------
@@ -67,7 +69,7 @@ public class BrightnessPreference extends DialogPreference
     layout.setPadding(6, 6, 6, 6);
 
     TextView mSplashText = new TextView(mContext);
-    //mSplashText.setPadding(30, 10, 30, 10);
+    // mSplashText.setPadding(30, 10, 30, 10);
     if (mDialogMessage != null) {
       mSplashText.setText(mDialogMessage);
     }
@@ -97,21 +99,24 @@ public class BrightnessPreference extends DialogPreference
     mSeekBar.setProgress(mValue);
 
     checkboxAuto = new CheckBox(mContext);
-    checkboxAuto.setText("Auto (Leave the brightness to the system's sensor.)");
+    checkboxAuto.setText(R.string.auto_brightness_description);
 
-    checkboxAuto.setOnCheckedChangeListener((buttonView, isChecked) -> {
-      if (isChecked) {
-        mSeekBar.setEnabled(false);
-        mValueText.setTextColor(Color.LTGRAY);
-        //mValueText.setText("AUTO");
-      } else {
-        mSeekBar.setEnabled(true);
-        mValueText.setTextColor(Color.DKGRAY);
-        //mValueText.setText(String.format("%d%%", mValue < 0 ? 100 : mSeekBar.getProgress()));
+    checkboxAuto.setOnCheckedChangeListener(
+        (buttonView, isChecked) -> {
+          if (isChecked) {
+            mSeekBar.setEnabled(false);
+            mValueText.setTextColor(Color.LTGRAY);
+            // mValueText.setText("AUTO");
+          } else {
+            mSeekBar.setEnabled(true);
+            mValueText.setTextColor(Color.DKGRAY);
+            // mValueText.setText(String.format("%d%%", mValue < 0 ? 100 : mSeekBar.getProgress()));
 
-      }
-    });
-    layout.addView(checkboxAuto,new LinearLayout.LayoutParams(
+          }
+        });
+    layout.addView(
+        checkboxAuto,
+        new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
     return layout;
@@ -132,8 +137,7 @@ public class BrightnessPreference extends DialogPreference
     super.onSetInitialValue(restore, defaultValue);
     if (restore) {
       mValue = shouldPersist() ? getPersistedInt(mDefault) : -1;
-    }
-    else {
+    } else {
       mValue = (Integer) defaultValue;
     }
   }
@@ -190,13 +194,13 @@ public class BrightnessPreference extends DialogPreference
   public void onClick(View v) {
 
     mValue = mSeekBar.getProgress();
-    //if (shouldPersist()) {
-      if(checkboxAuto.isChecked()) {
-        mValue = -1;
-      }
-      persistInt(mValue);
-      callChangeListener(mValue);
-    //}
+    // if (shouldPersist()) {
+    if (checkboxAuto.isChecked()) {
+      mValue = -1;
+    }
+    persistInt(mValue);
+    callChangeListener(mValue);
+    // }
 
     getDialog().dismiss();
   }

@@ -1,17 +1,15 @@
 package ro.antiprotv.radioclock.service.profile;
 
 import android.content.Context;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
 import ro.antiprotv.radioclock.R;
 import timber.log.BuildConfig;
 
 public class ProfileUtils {
   private static final String HUMAN_READABLE_TIME_FORMAT = "%s, %s";
-  private final Context context;
   private static ProfileUtils INSTANCE;
+  private final Context context;
 
   private ProfileUtils(Context context) {
     this.context = context;
@@ -22,6 +20,18 @@ public class ProfileUtils {
       INSTANCE = new ProfileUtils(context);
     }
     return INSTANCE;
+  }
+
+  public static int getHour(String time) {
+    String[] pieces = time.split(":");
+
+    return (Integer.parseInt(pieces[0]));
+  }
+
+  public static int getMinute(String time) {
+    String[] pieces = time.split(":");
+
+    return (Integer.parseInt(pieces[1]));
   }
 
   protected String getHumanReadableCalendar(Calendar calendar) {
@@ -42,17 +52,5 @@ public class ProfileUtils {
       return context.getResources().getString(R.string.text_tomorrow);
     }
     return context.getResources().getString(R.string.today);
-  }
-
-  public static int getHour(String time) {
-    String[] pieces = time.split(":");
-
-    return (Integer.parseInt(pieces[0]));
-  }
-
-  public static int getMinute(String time) {
-    String[] pieces = time.split(":");
-
-    return (Integer.parseInt(pieces[1]));
   }
 }

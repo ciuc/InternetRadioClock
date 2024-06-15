@@ -9,9 +9,8 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import java.util.Objects;
-
-import ro.antiprotv.radioclock.fragment.NightProfileFragment;
 import ro.antiprotv.radioclock.R;
+import ro.antiprotv.radioclock.fragment.NightProfileFragment;
 
 /**
  * Created by ciuc on 7/17/16.

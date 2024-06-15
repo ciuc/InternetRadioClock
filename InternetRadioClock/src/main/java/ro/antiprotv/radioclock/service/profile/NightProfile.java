@@ -54,9 +54,7 @@ public class NightProfile extends Profile {
   public void setClockColor(String color) {
     prefs
         .edit()
-        .putString(
-            context.getResources().getString(R.string.setting_key_clockColor_night),
-            color)
+        .putString(context.getResources().getString(R.string.setting_key_clockColor_night), color)
         .apply();
   }
 }
