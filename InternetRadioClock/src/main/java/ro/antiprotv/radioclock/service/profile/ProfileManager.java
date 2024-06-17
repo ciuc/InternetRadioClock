@@ -157,7 +157,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
       return;
     }
 
-    String nightModeAutoStart = prefs.getString(SETTING_NIGHT_PROFILE_AUTOSTART, "23:00");
+    String nightModeAutoStart = prefs.getString(SETTING_NIGHT_PROFILE_AUTOSTART, "21:00");
     String nightModeAutoEnd = prefs.getString(SETTING_NIGHT_PROFILE_AUTOEND, "07:00");
 
     // in what period are we? night or day?

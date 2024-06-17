@@ -46,7 +46,7 @@ public class NightProfileFragment extends PreferenceFragment
     prefs.registerOnSharedPreferenceChangeListener(this);
     setSummary();
     nightAutostartPref.setSummary(
-        prefs.getString(ProfileManager.SETTING_NIGHT_PROFILE_AUTOSTART, "23:00"));
+        prefs.getString(ProfileManager.SETTING_NIGHT_PROFILE_AUTOSTART, "21:00"));
     nightAutoEndPref.setSummary(
         prefs.getString(ProfileManager.SETTING_NIGHT_PROFILE_AUTOEND, "07:00"));
   }
