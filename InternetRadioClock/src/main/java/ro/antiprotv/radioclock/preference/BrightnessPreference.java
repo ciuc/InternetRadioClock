@@ -1,31 +1,23 @@
 package ro.antiprotv.radioclock.preference;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Bundle;
-import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.preference.DialogPreference;
 import ro.antiprotv.radioclock.R;
 
-public class BrightnessPreference extends DialogPreference
-    implements SeekBar.OnSeekBarChangeListener, OnClickListener {
+public class BrightnessPreference extends DialogPreference {
   // ------------------------------------------------------------------------------------------
   // Private attributes :
   private static final String androidns = "http://schemas.android.com/apk/res/android";
-  private final Context mContext;
-  private final String mDialogMessage;
-  private final String mSuffix;
-  private final int mDefault;
+  // private final Context mContext;
+  // private final String mDialogMessage;
+  // private final String mSuffix;
+  // private final int mDefault;
   private SeekBar mSeekBar;
   private TextView mValueText;
   private int mMax;
@@ -36,31 +28,20 @@ public class BrightnessPreference extends DialogPreference
 
   // ------------------------------------------------------------------------------------------
   // Constructor :
-  public BrightnessPreference(Context context, AttributeSet attrs) {
 
+  public BrightnessPreference(@NonNull Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
-    mContext = context;
+  }
 
-    // Get string value for dialogMessage :
-    int mDialogMessageId = attrs.getAttributeResourceValue(androidns, "dialogMessage", 0);
-    if (mDialogMessageId == 0) mDialogMessage = attrs.getAttributeValue(androidns, "dialogMessage");
-    else mDialogMessage = mContext.getString(mDialogMessageId);
-
-    // Get string value for suffix (text attribute in xml file) :
-    int mSuffixId = attrs.getAttributeResourceValue(androidns, "text", 0);
-    if (mSuffixId == 0) mSuffix = attrs.getAttributeValue(androidns, "text");
-    else mSuffix = mContext.getString(mSuffixId);
-
-    // Get default and max seekbar values :
-    mDefault = attrs.getAttributeIntValue(androidns, "defaultValue", -1);
-    mMax = attrs.getAttributeIntValue(androidns, "max", 100);
+  public BrightnessPreference(Context ctxt, AttributeSet attrs, int defStyle) {
+    super(ctxt, attrs, defStyle);
   }
 
   // ------------------------------------------------------------------------------------------
 
   // ------------------------------------------------------------------------------------------
   // DialogPreference methods :
-  @Override
+  /*@Override
   protected View onCreateDialogView() {
 
     LinearLayout.LayoutParams params;
@@ -130,6 +111,11 @@ public class BrightnessPreference extends DialogPreference
     if (mValue == -1) {
       checkboxAuto.setChecked(true);
     }
+  }
+
+  @Override
+  public void onDialogClosed(boolean positiveResult) {
+
   }
 
   @Override
@@ -205,4 +191,19 @@ public class BrightnessPreference extends DialogPreference
     getDialog().dismiss();
   }
   // ------------------------------------------------------------------------------------------
+
+   */
+
+  public static String getSummary(int brightness, Context context) {
+
+    if (brightness == -1) {
+      return context
+          .getString(R.string.setting_summary_clockBrightness)
+          .replace("$1%", "AUTO (SYSTEM)");
+    } else {
+      return context
+          .getString(R.string.setting_summary_clockBrightness)
+          .replace("$1", "" + brightness);
+    }
+  }
 }

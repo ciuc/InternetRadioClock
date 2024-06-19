@@ -7,33 +7,50 @@ package ro.antiprotv.radioclock.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.PreferenceFragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.preference.BrightnessPreference;
+import ro.antiprotv.radioclock.preference.BrightnessPreferencesDialogCompat;
 
 /** Created by ciuc on 7/12/16. */
-public class SettingsFragment extends PreferenceFragment
-    implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragmentCompat {
   private BrightnessPreference seekBarPref;
 
   @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    addPreferencesFromResource(R.xml.preferences_settings);
+  public void onDisplayPreferenceDialog(Preference preference) {
+    if (preference instanceof BrightnessPreference) {
+      BrightnessPreferencesDialogCompat dialogFragment =
+          BrightnessPreferencesDialogCompat.newInstance(preference.getKey());
+      dialogFragment.setTargetFragment(this, 0);
+      dialogFragment.show(getParentFragmentManager(), null);
+    } else {
+      super.onDisplayPreferenceDialog(preference);
+    }
+  }
 
-    seekBarPref =
-        (BrightnessPreference) findPreference(getString(R.string.setting_key_clockBrightness));
+  @Nullable
+  @Override
+  public View onCreateView(
+      @NonNull LayoutInflater inflater,
+      @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState) {
+    seekBarPref = findPreference(getString(R.string.setting_key_clockBrightness));
+    return super.onCreateView(inflater, container, savedInstanceState);
   }
 
   @Override
   public void onResume() {
     super.onResume();
-    ListPreference stations =
-        (ListPreference) findPreference(getString(R.string.setting_key_wake_up_station));
+    androidx.preference.ListPreference stations =
+        findPreference(getString(R.string.setting_key_wake_up_station));
     SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-    prefs.registerOnSharedPreferenceChangeListener(this);
+
     CharSequence[] labels =
         new CharSequence[] {
           getString(R.string.lastPlayed),
@@ -65,29 +82,15 @@ public class SettingsFragment extends PreferenceFragment
   }
 
   @Override
-  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String key) {
-    if (key == null) {
-      return;
-    }
-    if (!isAdded()) {
-      return;
-    }
-    if (key.equals(getString(R.string.setting_key_clockBrightness))) {
-      setSummary();
-    }
+  public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+    setPreferencesFromResource(R.xml.preferences_settings, rootKey);
   }
 
   private void setSummary() {
-    int radius =
+    int brightness =
         getPreferenceManager()
             .getSharedPreferences()
             .getInt(getString(R.string.setting_key_clockBrightness), -1);
-    if (radius == -1) {
-      seekBarPref.setSummary(
-          getString(R.string.setting_summary_clockBrightness).replace("$1%", "AUTO (SYSTEM)"));
-    } else {
-      seekBarPref.setSummary(
-          getString(R.string.setting_summary_clockBrightness).replace("$1", "" + radius));
-    }
+    seekBarPref.setSummary(BrightnessPreference.getSummary(brightness, getContext()));
   }
 }

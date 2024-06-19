@@ -119,7 +119,7 @@
         (Note that no matter what, the low level will be displayed in red.) Might require restart.</string>
 
     <string name="setting.key.clockBrightness">setting.key.clockBrightness</string>
-    <string name="setting.name.clockBrightness">Brightness of the clock (digits)</string>
+    <string name="setting.name.clockBrightness">Brightness</string>
     <string name="setting.summary.clockBrightness">$1%</string>
 
     <string name="text.sleep.timer">Sleep in %d minutes</string>
@@ -173,6 +173,7 @@
         <item>XXL</item>
         <item>XXXL</item>
         <item>XXXXL</item>
+        <item>XXXXXL</item>
     </string-array>
     <string-array name="clock_typefaces">
         <item>repet___.ttf</item>

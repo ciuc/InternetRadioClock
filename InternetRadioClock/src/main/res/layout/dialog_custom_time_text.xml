@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dialog.custom_time.text"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="4pt"
+
+        android:text="Please input the desired time using format (24h): HH:mm (i.e. 23:30 or 07:00)" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/dialog.custom_time.time"
+        android:layout_width="59dp"
+        android:layout_height="wrap_content"
+        android:inputType="time"
+        android:maxLength="5"
+        />
+    <TextView
+        android:id="@+id/dialog.custom_time.error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color.clock.red"
+        android:text="Format not correct - use HH:mm in 24h format"
+        android:visibility="gone"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/dialog.custom_time.button.cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:layout_alignParentLeft="true"/>
+        <Button
+            android:id="@+id/dialog.custom_time.button.ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/ok" />
+    </RelativeLayout>
+</LinearLayout>

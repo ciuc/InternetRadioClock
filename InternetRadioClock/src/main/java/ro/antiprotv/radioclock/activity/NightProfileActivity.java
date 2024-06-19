@@ -25,8 +25,7 @@ public class NightProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-        getFragmentManager().beginTransaction()
-                .replace(R.id.night_profile_content, new NightProfileFragment())
+        getSupportFragmentManager().beginTransaction().replace(R.id.night_profile_content, new NightProfileFragment())
                 .commit();
 
     }
