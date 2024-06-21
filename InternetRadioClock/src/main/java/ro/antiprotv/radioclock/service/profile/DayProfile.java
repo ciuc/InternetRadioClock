@@ -15,7 +15,7 @@ public class DayProfile extends Profile {
             prefs.getString(
                 context.getResources().getString(R.string.setting_key_clockColor),
                 context.getResources().getString(R.string.setting_default_clockColor))),
-        Integer.parseInt(
+        Float.parseFloat(
             prefs.getString(
                 context.getResources().getString(R.string.setting_key_clockSize),
                 context.getResources().getString(R.string.setting_default_clockSize))),
@@ -38,7 +38,8 @@ public class DayProfile extends Profile {
   }
 
   @Override
-  public void setSize(int size) {
+  public void setSize(float size) {
+    super.setSize(size);
     prefs
         .edit()
         .putString(

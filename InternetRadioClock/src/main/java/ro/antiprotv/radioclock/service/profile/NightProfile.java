@@ -15,7 +15,7 @@ public class NightProfile extends Profile {
             prefs.getString(
                 context.getResources().getString(R.string.setting_key_clockColor_night),
                 context.getResources().getString(R.string.setting_default_clockColor))),
-        Integer.parseInt(
+        Float.parseFloat(
             prefs.getString(
                 context.getResources().getString(R.string.setting_key_clockSize_night),
                 context.getResources().getString(R.string.setting_default_clockSize))),
@@ -41,7 +41,8 @@ public class NightProfile extends Profile {
   }
 
   @Override
-  public void setSize(int size) {
+  public void setSize(float size) {
+    super.setSize(size);
     prefs
         .edit()
         .putString(

@@ -363,6 +363,22 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     // Toast.makeText(clockActivity,fonts_files[font_index], Toast.LENGTH_SHORT).show();
   }
 
+  public void changeSize(float diff) {
+    diff *= 1.5;
+    Timber.d("size now : " + currentProfile.getSize() + "; diff " + diff+ "; applied diff " + diff*10);
+    float size = currentProfile.getSize();
+    size += diff*2;
+    if (size < 0) {
+      size *= -1;
+    }
+    size = Math.min(size, 300);
+    size = Math.max(size, 20);
+    Timber.d("new size: " + size);
+    clockActivity.getmContentView().setTextSize(size);
+    disableProfileChangeOnSettingChange = true;
+    currentProfile.setSize(size);
+  }
+
   private boolean isNight(Calendar nightStart, Calendar nightEnd, Calendar now) {
     if (nightStart.before(nightEnd)) {
       // | ------- start +++++++++ end -------- |
@@ -395,15 +411,17 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     }
   }
 
-  public class ColorPickerClickListner implements View.OnClickListener{
+  public class ColorPickerClickListner implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-      ColorPickerPopUp colorPickerPopUp = new ColorPickerPopUp(v.getContext());	// Pass the context.
-      colorPickerPopUp.setShowAlpha(false)			// By default show alpha is true.
-              .setDefaultColor(currentProfile.getColor())			// By default red color is set.
-              .setDialogTitle("Pick a Color")
-              .setOnPickColorListener(new ColorPickerPopUp.OnPickColorListener() {
+      ColorPickerPopUp colorPickerPopUp = new ColorPickerPopUp(v.getContext()); // Pass the context.
+      colorPickerPopUp
+          .setShowAlpha(false) // By default show alpha is true.
+          .setDefaultColor(currentProfile.getColor()) // By default red color is set.
+          .setDialogTitle("Pick a Color")
+          .setOnPickColorListener(
+              new ColorPickerPopUp.OnPickColorListener() {
                 @Override
                 public void onColorPicked(int color) {
                   String hexColor = String.format("#%06X", (0xFFFFFF & color));
@@ -414,10 +432,10 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
 
                 @Override
                 public void onCancel() {
-                  colorPickerPopUp.dismissDialog();	// Dismiss the dialog.
+                  colorPickerPopUp.dismissDialog(); // Dismiss the dialog.
                 }
               })
-              .show();
+          .show();
     }
   }
 

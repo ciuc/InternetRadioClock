@@ -25,10 +25,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -72,27 +75,34 @@ public class ClockActivity extends AppCompatActivity {
   public static final String LAST_PLAYED = "LAST_PLAYED";
 
   public static final String USER_ALARM_PERMISSION_NOT_ALLOWED_PREF = "USER_PERM_NOK";
+
   /**
    * Whether or not the system UI should be auto-hidden after {@link #AUTO_HIDE_DELAY_MILLIS}
    * milliseconds.
    */
   private static final boolean AUTO_HIDE = true;
+
   /**
    * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after user interaction before
    * hiding the system UI.
    */
   private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+
   /**
    * Some older devices needs a small delay between UI widget updates and a change of the status and
    * navigation bar.
    */
   private static final int UI_ANIMATION_DELAY = 300;
+
   private static final String TAG_STATE = "ClockActivity | State: %s";
   private final Handler mHideHandler = new Handler();
   // the map of urls; it is a map of the setting key > url (String)
   // url(setting_key_stream1 >  http://something)
   private final List<String> mUrls = new ArrayList<>();
   private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+  private GestureDetector swipeGestureDetector;
+  private ScaleGestureDetector pinchGestureDetector;
+
   /**
    * The user has explicitly denied setting alarms permissions.
    *
@@ -104,6 +114,7 @@ public class ClockActivity extends AppCompatActivity {
    *     <p>FALSE = (default) user has not explicitly denied
    */
   public boolean USER_ALARM_PERMISSION_NOT_ALLOWED = false;
+
   public boolean HAS_ALARM_PERMISSIONS = true;
   private SharedPreferences prefs;
   private ClockUpdater clockUpdater;
@@ -359,6 +370,9 @@ public class ClockActivity extends AppCompatActivity {
 
     findViewById(R.id.color_picker_button)
         .setOnClickListener(profileManager.new ColorPickerClickListner());
+
+    swipeGestureDetector = new GestureDetector(this, new SwipeGestureDetector());
+    pinchGestureDetector = new ScaleGestureDetector(getApplicationContext(), new ScaleListener());
   }
 
   private void setOrientationLandscapeIfLocked() {
@@ -473,7 +487,7 @@ public class ClockActivity extends AppCompatActivity {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       AlarmManager systemAlarmManager = this.getSystemService(AlarmManager.class);
-        HAS_ALARM_PERMISSIONS = systemAlarmManager.canScheduleExactAlarms();
+      HAS_ALARM_PERMISSIONS = systemAlarmManager.canScheduleExactAlarms();
     }
     USER_ALARM_PERMISSION_NOT_ALLOWED =
         prefs.getBoolean(USER_ALARM_PERMISSION_NOT_ALLOWED_PREF, false);
@@ -1002,6 +1016,119 @@ public class ClockActivity extends AppCompatActivity {
         alarmManager.playDefaultAlarmOnStreamError();
       }
       return false;
+    }
+  }
+
+  // --/////////////////////////////////////////////////////////////////////////
+  // --- TOUCH EVENTS ---
+  // --/////////////////////////////////////////////////////////////////////////
+  private boolean isScaling = false;
+
+  /*  @Override
+  public boolean onTouchEvent(MotionEvent event) {
+
+    if (swipeGestureDetector.onTouchEvent(event)) {
+      return true;
+    }
+    return super.onTouchEvent(event);
+  }*/
+
+  @Override
+  public boolean dispatchTouchEvent(MotionEvent event) {
+    /*    boolean gestureHandled = swipeGestureDetector.onTouchEvent(event);
+    boolean scaleHandled = pinchGestureDetector.onTouchEvent(event);
+    if (event.getAction() == MotionEvent.ACTION_UP) {
+      RelativeLayout overlay = findViewById(R.id.overlay);
+      overlay.callOnClick();
+      return true;
+    }
+    return gestureHandled || scaleHandled || super.dispatchTouchEvent(event);*/
+    // Pass the touch event to the scale gesture detector first
+    pinchGestureDetector.onTouchEvent(event);
+    swipeGestureDetector.onTouchEvent(event);
+
+    // If scaling, consume the event, otherwise let it propagate
+    if (isScaling) {
+      return true; // Consume the event
+    } else {
+      return super.dispatchTouchEvent(event); // Propagate the event
+    }
+  }
+
+  private class SwipeGestureDetector extends GestureDetector.SimpleOnGestureListener {
+
+    private static final int SWIPE_THRESHOLD = 100;
+    private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+      if (!isScaling) {
+        // Handle single tap
+        Timber.d("Single tap detected");
+        // RelativeLayout overlay = findViewById(R.id.overlay);
+        // overlay.callOnClick();
+        return true;
+      }
+      return super.onSingleTapUp(e);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+      return true;
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+      float diffX = e2.getX() - e1.getX();
+      float diffY = e2.getY() - e1.getY();
+      if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+          if (diffX > 0) {
+            onSwipeRight();
+          } else {
+            onSwipeLeft();
+          }
+          return true;
+        }
+      }
+      return false;
+    }
+  }
+
+  private void onSwipeRight() {
+    profileManager.cycleThroughFonts(false);
+  }
+
+  private void onSwipeLeft() {
+    profileManager.cycleThroughFonts(true);
+  }
+
+  private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+    //private float scaleFactor = 1.0f;
+
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+      isScaling = true;
+      return true;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector detector) {
+      isScaling = false;
+    }
+
+    @Override
+    public boolean onScale(ScaleGestureDetector detector) {
+      Timber.d("Scaling: detected " + detector.getScaleFactor());
+
+      float scaleFactor = detector.getScaleFactor();
+      scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 8.0f));
+      Timber.d("Scale, factor: " + scaleFactor);
+      if (scaleFactor < 1.0) {
+        scaleFactor *= -1;
+      }
+      profileManager.changeSize(scaleFactor);
+      return true;
     }
   }
 }

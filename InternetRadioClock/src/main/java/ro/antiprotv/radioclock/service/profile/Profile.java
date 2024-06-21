@@ -9,7 +9,7 @@ import ro.antiprotv.radioclock.R;
 public abstract class Profile {
   protected final int clockColor;
   protected final float alpha;
-  protected final float clockSize;
+  protected float clockSize;
   protected final boolean moveText;
   protected final boolean showSeconds;
   protected final Context context;
@@ -73,10 +73,13 @@ public abstract class Profile {
   }
 
   abstract public void setFont(String font);
-  abstract public void setSize(int size);
+  public void setSize(float size) {
+    this.clockSize = size;
+  }
 
   abstract public void setClockColor(String color);
   public int getColor(){
     return clockColor;
   }
+  public int getSize() {return (int) clockSize;}
 }
