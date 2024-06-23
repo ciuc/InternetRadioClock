@@ -298,9 +298,16 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
             false);
     if (BatteryService.low && !BatteryService.charging) {
       color = clockActivity.getResources().getColor(R.color.color_clock_red, null);
-      battery_icon.setImageResource(R.drawable.ic_baseline_battery_alert_16);
+      if (BatteryService.status > 5) {
+        battery_icon.setImageResource(R.drawable.baseline_battery_1_bar_24);
+        battery_pct.setTextSize(20);
+      } else {
+        battery_icon.setImageResource(R.drawable.baseline_battery_0_bar_24);
+        battery_pct.setTextSize(20);
+      }
     } else {
       battery_icon.setImageResource(R.drawable.ic_baseline_battery_std_16);
+      battery_pct.setTextSize(12);
       if (batteryInClockColor) {
         if (currentProfileColor == -1) {
           boolean nightmode = prefs.getBoolean(PREF_NIGHT_MODE, false);

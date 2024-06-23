@@ -4,7 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    tools:context=".activity.ClockActivity">
+    tools:context=".activity.ClockActivity"
+    android:fitsSystemWindows="true">
+
+    <!--com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/title.settings"
+        android:theme="@style/AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:title="@string/title.settings"
+            app:popupTheme="@style/PopupOverlay" />
+
+    </com.google.android.material.appbar.AppBarLayout-->
+
 
     <RelativeLayout
         android:id="@+id/overlay"
@@ -27,8 +45,8 @@
             android:id="@+id/battery_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/fullscreen_content"
-            android:layout_toRightOf="@id/fullscreen_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:visibility="visible"
             app:srcCompat="@drawable/ic_baseline_battery_std_16"
             app:tint="@color/color.clock" />
@@ -38,17 +56,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/battery_icon"
-            android:layout_toRightOf="@id/battery_icon"
+            android:layout_toLeftOf="@id/battery_icon"
             android:text="60%"
             android:textColor="@color/color.clock"
             android:textSize="12sp"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <RelativeLayout
             android:id="@+id/mainLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/margin_top"
+            android:layout_marginTop="50dp"
             android:layout_marginBottom="2dp"
             android:background="#00FFFFFF"
             android:fitsSystemWindows="true">

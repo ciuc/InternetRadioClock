@@ -375,103 +375,9 @@ public class ClockActivity extends AppCompatActivity {
     swipeGestureDetector = new GestureDetector(this, new SwipeGestureDetector());
     pinchGestureDetector = new ScaleGestureDetector(getApplicationContext(), new ScaleListener());
 
-    /*
-        // tap targets
-        TapTarget tap_tgt_on_off = TapTarget.forView(onOffButton, "On/Off", "You can use this button to close the radio.")
-                .outerCircleColor(R.color.colorPrimary) // Specify a color for the outer circle
-                .outerCircleAlpha(0.96f) // Specify the alpha amount for the outer circle
-                .targetCircleColor(R.color.white) // Specify a color for the target circle
-                .titleTextSize(20) // Specify the size (in sp) of the title text
-                .titleTextColor(R.color.white) // Specify the color of the title text
-                .descriptionTextSize(10) // Specify the size (in sp) of the description text
-                .descriptionTextColor(R.color.white) // Specify the color of the description text
-                .textColor(R.color.white) // Specify a color for both the title and description text
-                .dimColor(R.color.color_clock) // If set, will dim behind the view with 30% opacity of the given color
-                .drawShadow(true) // Whether to draw a drop shadow or not
-                .cancelable(false) // Whether tapping outside the outer circle dismisses the view
-                .tintTarget(true) // Whether to tint the target view's color
-                .transparentTarget(true) // Specify whether the target is transparent (displays the content underneath)
-                .cancelable(true)
-                .targetRadius(60); // Specify the target radius (in dp)
-
-        TapTarget tap_tgt_night = TapTarget.forView(nightModeButton, "Night profile", "Click to toggle between the profiles the profile .")
-                .outerCircleColor(R.color.colorPrimary) // Specify a color for the outer circle
-                .outerCircleAlpha(0.96f) // Specify the alpha amount for the outer circle
-                .targetCircleColor(R.color.white) // Specify a color for the target circle
-                .titleTextSize(20) // Specify the size (in sp) of the title text
-                .titleTextColor(R.color.white) // Specify the color of the title text
-                .descriptionTextSize(10) // Specify the size (in sp) of the description text
-                .descriptionTextColor(R.color.white) // Specify the color of the description text
-                .textColor(R.color.white) // Specify a color for both the title and description text
-                .dimColor(R.color.color_clock) // If set, will dim behind the view with 30% opacity of the given color
-                .drawShadow(true) // Whether to draw a drop shadow or not
-                .cancelable(false) // Whether tapping outside the outer circle dismisses the view
-                .tintTarget(true) // Whether to tint the target view's color
-                .transparentTarget(true) // Specify whether the target is transparent (displays the content underneath)
-                .cancelable(true)
-                .targetRadius(60); // Specify the target radius (in dp)
-
-        new TapTargetSequence(this)
-                .targets(tap_tgt_on_off,
-                        tap_tgt_night)
-                .listener(
-                new TapTargetSequence.Listener() {
-                  @Override
-                  public void onSequenceFinish() {
-
-                  }
-
-                  @Override
-                  public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
-                    currentStep++;
-                  }
-
-                  @Override
-                  public void onSequenceCanceled(TapTarget lastTarget) {
-
-                  }
-
-                }
-        )
-
-                .start();
-
-    /*
-        TapTargetView.showFor(this,
-                tap_tgt_on_off,
-
-                new TapTargetView.Listener() {
-                  @Override
-                  public void onTargetClick(TapTargetView view) {
-                    super.onTargetClick(view);
-                    //startNextTarget();
-                  }
-
-                  @Override
-                  public void onOuterCircleClick(TapTargetView view) {
-
-                  }
-                });
-    */
-
   }
 
-  private int currentStep = 0;
-  private TapTargetSequence tapTargetSequence;
 
-  /*  private void startNextTarget() {
-    if (currentStep < tapTargetSequence.getTargets().size()) {
-      TapTargetView.showFor(this, tapTargetSequence.getTargets().get(currentStep), new TapTargetView.Listener() {
-        @Override
-        public void onTargetClick(TapTargetView view) {
-          super.onTargetClick(view);
-          // Advance to the next target
-          currentStep++;
-          startNextTarget();
-        }
-      });
-    }
-  }*/
 
   private void setOrientationLandscapeIfLocked() {
     if (prefs.getBoolean(
@@ -844,6 +750,12 @@ public class ClockActivity extends AppCompatActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.main_menu, menu);
+    //Toolbar toolbar = findViewById(R.id.toolbar);
+    //toolbar.inflateMenu(R.menu.main_menu);
+    //delayedHide(100);
+    //ShowCaseService showCaseService = new ShowCaseService(this);
+    //showCaseService.showCase();
+
     return true;
   }
 

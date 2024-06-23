@@ -1,0 +1,17 @@
+<!-- tutorial_overlay.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#AA000000">
+
+    <TextView
+        android:id="@+id/tutorial_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Swipe right to do X"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
+
+    <!-- Add more views or animations as needed -->
+</RelativeLayout>

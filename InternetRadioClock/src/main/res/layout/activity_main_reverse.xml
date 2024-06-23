@@ -28,9 +28,9 @@
             android:id="@+id/battery_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/fullscreen_content"
-            android:layout_toRightOf="@id/fullscreen_content"
-            android:visibility="gone"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:visibility="visible"
             app:srcCompat="@drawable/ic_baseline_battery_std_16"
             app:tint="@color/color.clock" />
 
@@ -39,11 +39,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/battery_icon"
-            android:layout_toRightOf="@id/battery_icon"
+            android:layout_toLeftOf="@id/battery_icon"
             android:text="60%"
             android:textColor="@color/color.clock"
             android:textSize="12sp"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </RelativeLayout>
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
