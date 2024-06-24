@@ -41,7 +41,7 @@
             android:textColor="#000000"/>
     <Button
         android:id="@+id/sf_assign_button_stream1"
-        style="?metaButtonBarButtonStyle"
+        style="@style/imageButtonStyle"
         android:layout_width="@dimen/streamFinder.button"
         android:layout_height="@dimen/streamFinder.button"
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
@@ -52,7 +52,7 @@
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream2"
-        style="?metaButtonBarButtonStyle"
+        style="@style/imageButtonStyle"
         android:layout_width="@dimen/streamFinder.button"
         android:layout_height="@dimen/streamFinder.button"
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
@@ -63,7 +63,7 @@
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream3"
-        style="?metaButtonBarButtonStyle"
+        style="@style/imageButtonStyle"
         android:layout_width="@dimen/streamFinder.button"
         android:layout_height="@dimen/streamFinder.button"
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
@@ -74,7 +74,7 @@
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream4"
-        style="?metaButtonBarButtonStyle"
+        style="@style/imageButtonStyle"
         android:layout_width="@dimen/streamFinder.button"
         android:layout_height="@dimen/streamFinder.button"
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
@@ -85,7 +85,7 @@
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream5"
-        style="?metaButtonBarButtonStyle"
+        style="@style/imageButtonStyle"
         android:layout_width="@dimen/streamFinder.button"
         android:layout_height="@dimen/streamFinder.button"
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
@@ -96,7 +96,7 @@
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream6"
-        style="?metaButtonBarButtonStyle"
+        style="@style/imageButtonStyle"
         android:layout_width="@dimen/streamFinder.button"
         android:layout_height="@dimen/streamFinder.button"
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
@@ -107,7 +107,7 @@
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream7"
-        style="?metaButtonBarButtonStyle"
+        style="@style/imageButtonStyle"
         android:layout_width="@dimen/streamFinder.button"
         android:layout_height="@dimen/streamFinder.button"
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
@@ -118,7 +118,7 @@
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream8"
-        style="?metaButtonBarButtonStyle"
+        style="@style/imageButtonStyle"
         android:layout_width="@dimen/streamFinder.button"
         android:layout_height="@dimen/streamFinder.button"
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"

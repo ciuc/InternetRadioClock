@@ -10,6 +10,8 @@ package ro.antiprotv.radioclock.activity;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.TimePickerDialog;
@@ -28,11 +30,13 @@ import android.provider.Settings;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -44,10 +48,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import com.devbrackets.android.exomedia.AudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnErrorListener;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
-import com.getkeepsafe.taptargetview.TapTargetSequence;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +70,7 @@ import ro.antiprotv.radioclock.service.BatteryService;
 import ro.antiprotv.radioclock.service.ButtonManager;
 import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.SettingsManager;
+import ro.antiprotv.radioclock.service.ShowCaseService;
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
 import timber.log.Timber;
@@ -93,9 +98,10 @@ public class ClockActivity extends AppCompatActivity {
    * Some older devices needs a small delay between UI widget updates and a change of the status and
    * navigation bar.
    */
-  private static final int UI_ANIMATION_DELAY = 300;
+  private static final int UI_ANIMATION_DELAY = 0;
 
   private static final String TAG_STATE = "ClockActivity | State: %s";
+  public static final int FADE_IN_OUT_DURATION_MILLIS = 400;
   private final Handler mHideHandler = new Handler();
   // the map of urls; it is a map of the setting key > url (String)
   // url(setting_key_stream1 >  http://something)
@@ -124,14 +130,30 @@ public class ClockActivity extends AppCompatActivity {
       new Runnable() {
         @Override
         public void run() {
+          Animation fadeIn = getFadeInAnimation();
+
+
+
           // Delayed display of UI elements
           ActionBar actionBar = getSupportActionBar();
           if (actionBar != null) {
             actionBar.show();
+            toolbar.startAnimation(AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_from_top));
           }
           mControlsView.setVisibility(VISIBLE);
+          //fadeInView(mControlsView);
+          mControlsView.startAnimation(fadeIn);
         }
       };
+
+  @NonNull
+  private static Animation getFadeInAnimation() {
+    Animation fadeIn = new AlphaAnimation(0, 1);
+    fadeIn.setStartOffset(0);
+    fadeIn.setDuration(FADE_IN_OUT_DURATION_MILLIS);
+    return fadeIn;
+  }
+
   private boolean mVisible;
   private TextView mContentView;
   private final Runnable mHidePart2Runnable =
@@ -374,10 +396,14 @@ public class ClockActivity extends AppCompatActivity {
 
     swipeGestureDetector = new GestureDetector(this, new SwipeGestureDetector());
     pinchGestureDetector = new ScaleGestureDetector(getApplicationContext(), new ScaleListener());
-
+    toolbar = findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
+    // toolbar.inflateMenu(R.menu.main_menu);
+    // ShowCaseService showCaseService = new ShowCaseService(this);
+    // showCaseService.showCase();
   }
 
-
+  private Toolbar toolbar = null;
 
   private void setOrientationLandscapeIfLocked() {
     if (prefs.getBoolean(
@@ -746,16 +772,28 @@ public class ClockActivity extends AppCompatActivity {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // MENU
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.main_menu, menu);
-    //Toolbar toolbar = findViewById(R.id.toolbar);
-    //toolbar.inflateMenu(R.menu.main_menu);
-    //delayedHide(100);
-    //ShowCaseService showCaseService = new ShowCaseService(this);
-    //showCaseService.showCase();
-
+    // MenuInflater inflater = getMenuInflater();
+    // inflater.inflate(R.menu.main_menu, menu);
+    // Toolbar toolbar = findViewById(R.id.toolbar);
+    getMenuInflater().inflate(R.menu.main_menu, menu);
+    // toolbar.inflateMenu(R.menu.main_menu);
+    // setSupportActionBar(toolbar);
+    // delayedHide(100);
+    AppCompatActivity activity = (AppCompatActivity) this;
+    new Handler()
+        .post(
+            new Runnable() {
+              @Override
+              public void run() {
+                final View menuItemView = findViewById(R.id.close);
+                Timber.d(menuItemView.toString());
+                ShowCaseService showCaseService = new ShowCaseService(activity);
+                showCaseService.showCase();
+              }
+            });
     return true;
   }
 
@@ -763,6 +801,9 @@ public class ClockActivity extends AppCompatActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     // Handle item selection
     switch (item.getItemId()) {
+      case R.id.close:
+        finish();
+        return true;
       case R.id.settings:
         Intent settings = new Intent();
         settings.setClassName(this, "ro.antiprotv.radioclock.activity.SettingsActivity");
@@ -770,9 +811,6 @@ public class ClockActivity extends AppCompatActivity {
         return true;
       case R.id.reverse:
         setRequestedOrientation(-1 * (getRequestedOrientation() - 8));
-        return true;
-      case R.id.close:
-        finish();
         return true;
       case R.id.buttons:
         Intent intent = new Intent();
@@ -825,17 +863,29 @@ public class ClockActivity extends AppCompatActivity {
       alarmManager.setAlarm();
       setAlarmPlaying(false);
     }
+    Animation fadeOut = getFadeOutAnimation();
     // Hide UI first
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
+      toolbar.startAnimation(AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_to_top));
       actionBar.hide();
     }
     mControlsView.setVisibility(GONE);
+    // fadeOutView(mControlsView);
+    mControlsView.startAnimation(fadeOut);
     mVisible = false;
 
     // Schedule a runnable to remove the status and navigation bar after a delay
     mHideHandler.removeCallbacks(mShowPart2Runnable);
     mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+  }
+
+  @NonNull
+  private static Animation getFadeOutAnimation() {
+    Animation fadeOut = new AlphaAnimation(1, 0);
+    fadeOut.setStartOffset(0);
+    fadeOut.setDuration(FADE_IN_OUT_DURATION_MILLIS);
+    return fadeOut;
   }
 
   @SuppressLint("InlinedApi")
@@ -1030,29 +1080,12 @@ public class ClockActivity extends AppCompatActivity {
   }
 
   // --/////////////////////////////////////////////////////////////////////////
-  // --- TOUCH EVENTS ---
+  // --- GESTURES ---
   // --/////////////////////////////////////////////////////////////////////////
   private boolean isScaling = false;
 
-  /*  @Override
-  public boolean onTouchEvent(MotionEvent event) {
-
-    if (swipeGestureDetector.onTouchEvent(event)) {
-      return true;
-    }
-    return super.onTouchEvent(event);
-  }*/
-
   @Override
   public boolean dispatchTouchEvent(MotionEvent event) {
-    /*    boolean gestureHandled = swipeGestureDetector.onTouchEvent(event);
-    boolean scaleHandled = pinchGestureDetector.onTouchEvent(event);
-    if (event.getAction() == MotionEvent.ACTION_UP) {
-      RelativeLayout overlay = findViewById(R.id.overlay);
-      overlay.callOnClick();
-      return true;
-    }
-    return gestureHandled || scaleHandled || super.dispatchTouchEvent(event);*/
     // Pass the touch event to the scale gesture detector first
     pinchGestureDetector.onTouchEvent(event);
     swipeGestureDetector.onTouchEvent(event);
@@ -1140,5 +1173,79 @@ public class ClockActivity extends AppCompatActivity {
       profileManager.changeSize(scaleFactor);
       return true;
     }
+  }
+
+  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  // --- END GESTURES ---
+  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  // --/////////////////////////////////////////////////////////////////////////
+  // --- ANIMATION ---
+  // --/////////////////////////////////////////////////////////////////////////
+  public void fadeOutView(final View view) {
+    // Create an ObjectAnimator that fades out the view
+    ObjectAnimator fadeOut = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f);
+    fadeOut.setDuration(1500); // Set the duration of the animation (in milliseconds)
+
+    // Set an AnimatorListener to change visibility to GONE after the animation ends
+    fadeOut.addListener(new Animator.AnimatorListener() {
+      @Override
+      public void onAnimationStart(Animator animation) {
+        // Do nothing
+      }
+
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        // Set the visibility to GONE after the animation ends
+        view.setVisibility(View.GONE);
+
+      }
+
+      @Override
+      public void onAnimationCancel(Animator animation) {
+        // Do nothing
+      }
+
+      @Override
+      public void onAnimationRepeat(Animator animation) {
+        // Do nothing
+      }
+    });
+
+    // Start the fade-out animation
+    fadeOut.start();
+  }
+
+  public void fadeInView(final View view) {
+    // Create an ObjectAnimator that fades out the view
+    ObjectAnimator fadeOut = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
+    fadeOut.setDuration(1500); // Set the duration of the animation (in milliseconds)
+
+    // Set an AnimatorListener to change visibility to GONE after the animation ends
+    fadeOut.addListener(new Animator.AnimatorListener() {
+      @Override
+      public void onAnimationStart(Animator animation) {
+        // Do nothing
+      }
+
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        // Set the visibility to GONE after the animation ends
+        view.setVisibility(VISIBLE);
+      }
+
+      @Override
+      public void onAnimationCancel(Animator animation) {
+        // Do nothing
+      }
+
+      @Override
+      public void onAnimationRepeat(Animator animation) {
+        // Do nothing
+      }
+    });
+
+    // Start the fade-out animation
+    fadeOut.start();
   }
 }

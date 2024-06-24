@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/buttons"
-        android:icon="@android:drawable/ic_menu_preferences"
-        android:title="@string/settings.menu.buttons"
-        app:showAsAction="never"/>
     <item
         android:id="@+id/close"
         android:icon="@drawable/ic_close_white_24dp"
@@ -24,6 +20,10 @@
         android:icon="@drawable/ic_night_24dp"
         android:title="@string/menu_night_profile"
         app:showAsAction="always"/>
+    <item android:id="@+id/buttons"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="@string/settings.menu.buttons"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/streamFinder"
         android:icon="@android:drawable/ic_menu_preferences"

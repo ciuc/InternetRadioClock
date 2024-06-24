@@ -8,73 +8,71 @@
     android:fitsSystemWindows="true">
 
     <!--com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:title="@string/title.settings"
-        android:theme="@style/AppBarOverlay">
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       app:title="@string/title.settings"
+       android:theme="@style/AppBarOverlay"-->
+   <androidx.appcompat.widget.Toolbar
+       android:id="@+id/toolbar"
+       android:layout_width="match_parent"
+       android:layout_height="?attr/actionBarSize"
+       android:background="?attr/colorPrimary"
+       android:elevation="4dp"
+       android:theme="@style/AppBarOverlay"
+       app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
+    <!--/com.google.android.material.appbar.AppBarLayout-->
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:title="@string/title.settings"
-            app:popupTheme="@style/PopupOverlay" />
+   <RelativeLayout
+       android:id="@+id/overlay"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
 
-    </com.google.android.material.appbar.AppBarLayout-->
+       <TextView
+           android:id="@+id/fullscreen_content"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_centerInParent="true"
+           android:gravity="center"
+           android:keepScreenOn="true"
+           android:text="11:11:11"
+           android:textColor="@color/color.clock"
+           android:textSize="150sp"
+           android:textStyle="bold" />
 
+       <ImageView
+           android:id="@+id/battery_icon"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignParentTop="true"
+           android:layout_alignParentRight="true"
+           android:visibility="visible"
+           app:srcCompat="@drawable/ic_baseline_battery_std_16"
+           app:tint="@color/color.clock" />
 
-    <RelativeLayout
-        android:id="@+id/overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+       <TextView
+           android:id="@+id/batteryPct"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_alignTop="@id/battery_icon"
+           android:layout_toLeftOf="@id/battery_icon"
+           android:text="60%"
+           android:textColor="@color/color.clock"
+           android:textSize="12sp"
+           android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/fullscreen_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:keepScreenOn="true"
-            android:text="11:11:11"
-            android:textColor="@color/color.clock"
-            android:textSize="150sp"
-            android:textStyle="bold" />
+       <RelativeLayout
+           android:id="@+id/mainLayout"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:layout_marginTop="50dp"
+           android:layout_marginBottom="2dp"
+           android:background="#00FFFFFF"
+           android:fitsSystemWindows="true">
 
-        <ImageView
-            android:id="@+id/battery_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:visibility="visible"
-            app:srcCompat="@drawable/ic_baseline_battery_std_16"
-            app:tint="@color/color.clock" />
-
-        <TextView
-            android:id="@+id/batteryPct"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/battery_icon"
-            android:layout_toLeftOf="@id/battery_icon"
-            android:text="60%"
-            android:textColor="@color/color.clock"
-            android:textSize="12sp"
-            android:visibility="visible" />
-
-        <RelativeLayout
-            android:id="@+id/mainLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="2dp"
-            android:background="#00FFFFFF"
-            android:fitsSystemWindows="true">
-
-            <!-- ALARMS -->
+           <!-- ALARMS -->
             <ImageButton
                 android:id="@+id/alarm_icon"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
@@ -95,7 +93,7 @@
 
             <ImageButton
                 android:id="@+id/alarm_icon_turn_off"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_toRightOf="@+id/alarm_time"
@@ -107,7 +105,7 @@
 
             <ImageButton
                 android:id="@+id/alarm_icon_snooze"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -120,7 +118,7 @@
 
             <ImageButton
                 android:id="@+id/alarm_icon_snooze_cancel"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -133,7 +131,7 @@
 
             <ImageButton
                 android:id="@+id/alarm_icon_cancel"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -146,7 +144,7 @@
 
             <ImageButton
                 android:id="@+id/alarm_icon_close"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -165,7 +163,7 @@
 
                 <ImageButton
                     android:id="@+id/alarm_icon2"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -186,7 +184,7 @@
 
                 <ImageButton
                     android:id="@+id/alarm_icon_turn_off2"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_toRightOf="@+id/alarm_time2"
@@ -201,7 +199,7 @@
 
             <ImageButton
                 android:id="@+id/sleep"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -222,7 +220,7 @@
 
             <ImageButton
                 android:id="@+id/night_mode_button"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -235,7 +233,7 @@
 
             <ImageButton
                 android:id="@+id/volumeup_button"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -258,7 +256,7 @@
 
             <ImageButton
                 android:id="@+id/main_help_button"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_marginRight="5dp"
@@ -270,7 +268,7 @@
 
             <ImageButton
                 android:id="@+id/on_off_button"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_marginRight="55dp"
@@ -288,7 +286,7 @@
 
                 <ImageButton
                     android:id="@+id/font_cycle_button_fwd"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -303,7 +301,7 @@
 
                 <ImageButton
                     android:id="@+id/font_cycle_button_rev"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -318,7 +316,7 @@
 
                 <ImageButton
                     android:id="@+id/text_size_cycle_button_fwd"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/font_cycle_button_fwd"
@@ -333,7 +331,7 @@
 
                 <ImageButton
                     android:id="@+id/text_size_cycle_button_rev"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/font_cycle_button_fwd"
@@ -349,7 +347,7 @@
 
                 <ImageButton
                     android:id="@+id/color_picker_button"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/text_size_cycle_button_fwd"
@@ -377,7 +375,7 @@
 
                 <Button
                     android:id="@+id/stream1"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -389,7 +387,7 @@
 
                 <Button
                     android:id="@+id/stream2"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -401,7 +399,7 @@
 
                 <Button
                     android:id="@+id/stream3"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -413,7 +411,7 @@
 
                 <Button
                     android:id="@+id/stream4"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -425,7 +423,7 @@
 
                 <Button
                     android:id="@+id/stream5"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -437,7 +435,7 @@
 
                 <Button
                     android:id="@+id/stream6"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -449,7 +447,7 @@
 
                 <Button
                     android:id="@+id/stream7"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -461,7 +459,7 @@
 
                 <Button
                     android:id="@+id/stream8"
-                    style="?metaButtonBarButtonStyle"
+                    style="@style/imageButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"

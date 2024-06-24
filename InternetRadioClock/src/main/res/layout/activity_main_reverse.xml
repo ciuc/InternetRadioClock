@@ -59,7 +59,7 @@
         <!-- ALARMS -->
         <ImageButton
             android:id="@+id/alarm_icon"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -81,7 +81,7 @@
 
         <ImageButton
             android:id="@+id/alarm_icon_turn_off"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_alignParentBottom="true"
@@ -94,7 +94,7 @@
 
         <ImageButton
             android:id="@+id/alarm_icon_snooze"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -108,7 +108,7 @@
 
         <ImageButton
             android:id="@+id/alarm_icon_snooze_cancel"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -122,7 +122,7 @@
 
         <ImageButton
             android:id="@+id/alarm_icon_cancel"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -136,7 +136,7 @@
 
         <ImageButton
             android:id="@+id/alarm_icon_close"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -153,7 +153,7 @@
 
         <ImageButton
             android:id="@+id/alarm_icon2"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/alarm_icon"
@@ -175,7 +175,7 @@
 
         <ImageButton
             android:id="@+id/alarm_icon_turn_off2"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_toRightOf="@+id/alarm_time2"
@@ -199,7 +199,7 @@
 
             <ImageButton
                 android:id="@+id/font_cycle_button_fwd"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -213,7 +213,7 @@
 
             <ImageButton
                 android:id="@+id/font_cycle_button_rev"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -228,7 +228,7 @@
 
             <ImageButton
                 android:id="@+id/text_size_cycle_button_fwd"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/font_cycle_button_fwd"
@@ -243,7 +243,7 @@
 
             <ImageButton
                 android:id="@+id/text_size_cycle_button_rev"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/font_cycle_button_fwd"
@@ -259,7 +259,7 @@
 
             <ImageButton
                 android:id="@+id/color_picker_button"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/text_size_cycle_button_fwd"
@@ -276,7 +276,7 @@
 
         <ImageButton
             android:id="@+id/sleep"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -299,7 +299,7 @@
 
         <ImageButton
             android:id="@+id/night_mode_button"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -313,7 +313,7 @@
 
         <ImageButton
             android:id="@+id/volumeup_button"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -336,7 +336,7 @@
 
         <ImageButton
             android:id="@+id/main_help_button"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_alignParentBottom="true"
@@ -349,7 +349,7 @@
 
         <ImageButton
             android:id="@+id/on_off_button"
-            style="?metaButtonBarButtonStyle"
+            style="@style/imageButtonStyle"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginBottom="50dp"
@@ -371,7 +371,7 @@
 
             <Button
                 android:id="@+id/stream1"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -383,7 +383,7 @@
 
             <Button
                 android:id="@+id/stream2"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -395,7 +395,7 @@
 
             <Button
                 android:id="@+id/stream3"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -407,7 +407,7 @@
 
             <Button
                 android:id="@+id/stream4"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -419,7 +419,7 @@
 
             <Button
                 android:id="@+id/stream5"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -431,7 +431,7 @@
 
             <Button
                 android:id="@+id/stream6"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -443,7 +443,7 @@
 
             <Button
                 android:id="@+id/stream7"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -455,7 +455,7 @@
 
             <Button
                 android:id="@+id/stream8"
-                style="?metaButtonBarButtonStyle"
+                style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"

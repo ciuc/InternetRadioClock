@@ -104,7 +104,9 @@ public class ShowCaseService {
             .listener(
                 new TapTargetSequence.Listener() {
                   @Override
-                  public void onSequenceFinish() {}
+                  public void onSequenceFinish() {
+                      activity.findViewById(R.id.toolbar).setVisibility(View.GONE);
+                  }
 
                   @Override
                   public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
@@ -112,7 +114,9 @@ public class ShowCaseService {
                   }
 
                   @Override
-                  public void onSequenceCanceled(TapTarget lastTarget) {}
+                  public void onSequenceCanceled(TapTarget lastTarget) {
+                      activity.findViewById(R.id.toolbar).setVisibility(View.GONE);
+                  }
                 });
   }
 
@@ -121,7 +125,7 @@ public class ShowCaseService {
 
   public void showCase() {
     activity.findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
-    tapTargetSequence.start();
+    //tapTargetSequence.start();
   }
 
   /*  private void startNextTarget() {
