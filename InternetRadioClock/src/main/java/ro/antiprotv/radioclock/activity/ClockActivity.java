@@ -10,8 +10,6 @@ package ro.antiprotv.radioclock.activity;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.TimePickerDialog;
@@ -70,7 +68,7 @@ import ro.antiprotv.radioclock.service.BatteryService;
 import ro.antiprotv.radioclock.service.ButtonManager;
 import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.SettingsManager;
-import ro.antiprotv.radioclock.service.ShowCaseService;
+
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
 import timber.log.Timber;
@@ -101,7 +99,8 @@ public class ClockActivity extends AppCompatActivity {
   private static final int UI_ANIMATION_DELAY = 0;
 
   private static final String TAG_STATE = "ClockActivity | State: %s";
-  public static final int FADE_IN_OUT_DURATION_MILLIS = 400;
+  public static final int FADE_OUT_DURATION_MILLIS = 400;
+  public static final int FADE_IN_DURATION_MILLIS = 200;
   private final Handler mHideHandler = new Handler();
   // the map of urls; it is a map of the setting key > url (String)
   // url(setting_key_stream1 >  http://something)
@@ -132,8 +131,6 @@ public class ClockActivity extends AppCompatActivity {
         public void run() {
           Animation fadeIn = getFadeInAnimation();
 
-
-
           // Delayed display of UI elements
           ActionBar actionBar = getSupportActionBar();
           if (actionBar != null) {
@@ -141,18 +138,10 @@ public class ClockActivity extends AppCompatActivity {
             toolbar.startAnimation(AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_from_top));
           }
           mControlsView.setVisibility(VISIBLE);
-          //fadeInView(mControlsView);
           mControlsView.startAnimation(fadeIn);
         }
       };
 
-  @NonNull
-  private static Animation getFadeInAnimation() {
-    Animation fadeIn = new AlphaAnimation(0, 1);
-    fadeIn.setStartOffset(0);
-    fadeIn.setDuration(FADE_IN_OUT_DURATION_MILLIS);
-    return fadeIn;
-  }
 
   private boolean mVisible;
   private TextView mContentView;
@@ -396,11 +385,10 @@ public class ClockActivity extends AppCompatActivity {
 
     swipeGestureDetector = new GestureDetector(this, new SwipeGestureDetector());
     pinchGestureDetector = new ScaleGestureDetector(getApplicationContext(), new ScaleListener());
+
+    // Toolbar
     toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
-    // toolbar.inflateMenu(R.menu.main_menu);
-    // ShowCaseService showCaseService = new ShowCaseService(this);
-    // showCaseService.showCase();
   }
 
   private Toolbar toolbar = null;
@@ -581,26 +569,14 @@ public class ClockActivity extends AppCompatActivity {
   private void initializeSleepFunction() {
     // sleep timer
     sleepManager = new SleepManager(this, clockUpdater);
+    sleepManager.init();
 
-    int customTimer = 0;
-    try {
-      customTimer =
-          Integer.parseInt(
-              prefs.getString(getResources().getString(R.string.setting_key_sleepMinutes), "0"));
-    } catch (Exception e) {
-      prefs
-          .edit()
-          .putString(getResources().getString(R.string.setting_key_sleepMinutes), "0")
-          .apply();
-    }
-    if (customTimer != 0) {
-      sleepManager.getTimers().add(0, customTimer);
-    }
     // sleep buttons
     ImageButton sleep = findViewById(R.id.sleep);
     sleep.setOnClickListener(sleepManager.sleepButtonOnClickListener);
     sleep.setOnTouchListener(mDelayHideTouchListener);
   }
+
 
   private void initializeUrls() {
     mUrls.add(
@@ -775,25 +751,21 @@ public class ClockActivity extends AppCompatActivity {
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    // MenuInflater inflater = getMenuInflater();
-    // inflater.inflate(R.menu.main_menu, menu);
-    // Toolbar toolbar = findViewById(R.id.toolbar);
     getMenuInflater().inflate(R.menu.main_menu, menu);
-    // toolbar.inflateMenu(R.menu.main_menu);
-    // setSupportActionBar(toolbar);
-    // delayedHide(100);
-    AppCompatActivity activity = (AppCompatActivity) this;
+    /*AppCompatActivity activity = this;
     new Handler()
         .post(
             new Runnable() {
               @Override
               public void run() {
-                final View menuItemView = findViewById(R.id.close);
-                Timber.d(menuItemView.toString());
-                ShowCaseService showCaseService = new ShowCaseService(activity);
-                showCaseService.showCase();
+                boolean showCasePlayed = prefs.getBoolean("SHOW_CASE_PLAYED_1", false);
+                //if (!showCasePlayed) {
+                  ShowCaseService showCaseService = new ShowCaseService(activity);
+                  showCaseService.showCase();
+                  prefs.edit().putBoolean("SHOW_CASE_PLAYED_1", true).apply();
+                //}
               }
-            });
+            });*/
     return true;
   }
 
@@ -871,21 +843,12 @@ public class ClockActivity extends AppCompatActivity {
       actionBar.hide();
     }
     mControlsView.setVisibility(GONE);
-    // fadeOutView(mControlsView);
     mControlsView.startAnimation(fadeOut);
     mVisible = false;
 
     // Schedule a runnable to remove the status and navigation bar after a delay
     mHideHandler.removeCallbacks(mShowPart2Runnable);
     mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
-  }
-
-  @NonNull
-  private static Animation getFadeOutAnimation() {
-    Animation fadeOut = new AlphaAnimation(1, 0);
-    fadeOut.setStartOffset(0);
-    fadeOut.setDuration(FADE_IN_OUT_DURATION_MILLIS);
-    return fadeOut;
   }
 
   @SuppressLint("InlinedApi")
@@ -1108,8 +1071,6 @@ public class ClockActivity extends AppCompatActivity {
       if (!isScaling) {
         // Handle single tap
         Timber.d("Single tap detected");
-        // RelativeLayout overlay = findViewById(R.id.overlay);
-        // overlay.callOnClick();
         return true;
       }
       return super.onSingleTapUp(e);
@@ -1182,70 +1143,22 @@ public class ClockActivity extends AppCompatActivity {
   // --/////////////////////////////////////////////////////////////////////////
   // --- ANIMATION ---
   // --/////////////////////////////////////////////////////////////////////////
-  public void fadeOutView(final View view) {
-    // Create an ObjectAnimator that fades out the view
-    ObjectAnimator fadeOut = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f);
-    fadeOut.setDuration(1500); // Set the duration of the animation (in milliseconds)
-
-    // Set an AnimatorListener to change visibility to GONE after the animation ends
-    fadeOut.addListener(new Animator.AnimatorListener() {
-      @Override
-      public void onAnimationStart(Animator animation) {
-        // Do nothing
-      }
-
-      @Override
-      public void onAnimationEnd(Animator animation) {
-        // Set the visibility to GONE after the animation ends
-        view.setVisibility(View.GONE);
-
-      }
-
-      @Override
-      public void onAnimationCancel(Animator animation) {
-        // Do nothing
-      }
-
-      @Override
-      public void onAnimationRepeat(Animator animation) {
-        // Do nothing
-      }
-    });
-
-    // Start the fade-out animation
-    fadeOut.start();
+  @NonNull
+  private static Animation getFadeInAnimation() {
+    Animation fadeIn = new AlphaAnimation(0, 1);
+    fadeIn.setStartOffset(0);
+    fadeIn.setDuration(FADE_IN_DURATION_MILLIS);
+    return fadeIn;
   }
 
-  public void fadeInView(final View view) {
-    // Create an ObjectAnimator that fades out the view
-    ObjectAnimator fadeOut = ObjectAnimator.ofFloat(view, "alpha", 0f, 1f);
-    fadeOut.setDuration(1500); // Set the duration of the animation (in milliseconds)
-
-    // Set an AnimatorListener to change visibility to GONE after the animation ends
-    fadeOut.addListener(new Animator.AnimatorListener() {
-      @Override
-      public void onAnimationStart(Animator animation) {
-        // Do nothing
-      }
-
-      @Override
-      public void onAnimationEnd(Animator animation) {
-        // Set the visibility to GONE after the animation ends
-        view.setVisibility(VISIBLE);
-      }
-
-      @Override
-      public void onAnimationCancel(Animator animation) {
-        // Do nothing
-      }
-
-      @Override
-      public void onAnimationRepeat(Animator animation) {
-        // Do nothing
-      }
-    });
-
-    // Start the fade-out animation
-    fadeOut.start();
+  @NonNull
+  private static Animation getFadeOutAnimation() {
+    Animation fadeOut = new AlphaAnimation(1, 0);
+    fadeOut.setStartOffset(0);
+    fadeOut.setDuration(FADE_OUT_DURATION_MILLIS);
+    return fadeOut;
   }
+  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  // --- END ANIMATIONS ---
+  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }

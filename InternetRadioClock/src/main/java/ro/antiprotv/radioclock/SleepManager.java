@@ -3,11 +3,14 @@ package ro.antiprotv.radioclock;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.content.SharedPreferences;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,6 +90,27 @@ public class SleepManager {
     this.clockUpdater = clockUpdater;
     sleepTimerText = context.findViewById(R.id.sleep_timer);
     button = context.findViewById(R.id.sleep);
+  }
+
+
+  public void init() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+
+    int customTimer = 0;
+    try {
+      customTimer =
+              Integer.parseInt(
+                      prefs.getString(context.getResources().getString(R.string.setting_key_sleepMinutes), "0"));
+    } catch (Exception e) {
+      prefs
+              .edit()
+              .putString(context.getResources().getString(R.string.setting_key_sleepMinutes), "0")
+              .apply();
+    }
+    if (customTimer != 0) {
+      getTimers().add(0, customTimer);
+    }
   }
 
   private void scheduleClockSleepTimerReset() {

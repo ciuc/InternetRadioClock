@@ -41,18 +41,39 @@ public class ShowCaseService {
                     .color_clock) // If set, will dim behind the view with 30% opacity of the given
             // color
             .drawShadow(true) // Whether to draw a drop shadow or not
-            .cancelable(false) // Whether tapping outside the outer circle dismisses the view
+            .cancelable(true) // Whether tapping outside the outer circle dismisses the view
             .tintTarget(true) // Whether to tint the target view's color
             .transparentTarget(
                 true) // Specify whether the target is transparent (displays the content underneath)
-            .cancelable(true)
             .targetRadius(TARGET_RADIUS); // Specify the target radius (in dp)
+
+      TapTarget tap_tgt_layout_settings =
+              TapTarget.forView(activity.findViewById(R.id.ui_settings_panel), "Ssss", "You can use this button to close the radio.")
+                      .outerCircleColor(R.color.colorPrimary) // Specify a color for the outer circle
+                      .outerCircleAlpha(OUTER_CIRCLE_ALPHA) // Specify the alpha amount for the outer circle
+                      .targetCircleColor(R.color.white) // Specify a color for the target circle
+                      .titleTextSize(TITLE_SIZE) // Specify the size (in sp) of the title text
+                      .titleTextColor(R.color.white) // Specify the color of the title text
+                      .descriptionTextSize(
+                              DESCRIPTION_SIZE) // Specify the size (in sp) of the description text
+                      .descriptionTextColor(R.color.white) // Specify the color of the description text
+                      .textColor(R.color.white) // Specify a color for both the title and description text
+                      .dimColor(
+                              R.color
+                                      .color_clock) // If set, will dim behind the view with 30% opacity of the given
+                      // color
+                      .drawShadow(true) // Whether to draw a drop shadow or not
+                      .cancelable(true) // Whether tapping outside the outer circle dismisses the view
+                      .tintTarget(true) // Whether to tint the target view's color
+                      .transparentTarget(
+                              true) // Specify whether the target is transparent (displays the content underneath)
+                      .targetRadius(200); // Specify the target radius (in dp)
 
     TapTarget tap_tgt_night =
         TapTarget.forView(
                 nightModeButton,
-                "Night profile",
-                "Click to toggle between the profiles the profile .")
+                "Night/Day Mode",
+                "Click to toggle between night and day modes.")
             .outerCircleColor(R.color.colorPrimary) // Specify a color for the outer circle
             .outerCircleAlpha(OUTER_CIRCLE_ALPHA) // Specify the alpha amount for the outer circle
             .targetCircleColor(R.color.white) // Specify a color for the target circle
@@ -67,7 +88,6 @@ public class ShowCaseService {
                     .color_clock) // If set, will dim behind the view with 30% opacity of the given
             // color
             .drawShadow(true) // Whether to draw a drop shadow or not
-            .cancelable(false) // Whether tapping outside the outer circle dismisses the view
             .tintTarget(true) // Whether to tint the target view's color
             .transparentTarget(
                 true) // Specify whether the target is transparent (displays the content underneath)
@@ -91,7 +111,6 @@ public class ShowCaseService {
                     .color_clock) // If set, will dim behind the view with 30% opacity of the given
             // color
             .drawShadow(true) // Whether to draw a drop shadow or not
-            .cancelable(false) // Whether tapping outside the outer circle dismisses the view
             .tintTarget(true) // Whether to tint the target view's color
             .transparentTarget(
                 true) // Specify whether the target is transparent (displays the content underneath)
@@ -100,7 +119,7 @@ public class ShowCaseService {
 
     tapTargetSequence =
         new TapTargetSequence(activity)
-            .targets(tap_tgt_on_off, tap_tgt_night, tap_tgt_close)
+            .targets(tap_tgt_on_off, tap_tgt_night, tap_tgt_layout_settings, tap_tgt_close)
             .listener(
                 new TapTargetSequence.Listener() {
                   @Override
@@ -125,20 +144,7 @@ public class ShowCaseService {
 
   public void showCase() {
     activity.findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
-    //tapTargetSequence.start();
+    tapTargetSequence.start();
   }
 
-  /*  private void startNextTarget() {
-    if (currentStep < tapTargetSequence.getTargets().size()) {
-      TapTargetView.showFor(this, tapTargetSequence.getTargets().get(currentStep), new TapTargetView.Listener() {
-        @Override
-        public void onTargetClick(TapTargetView view) {
-          super.onTargetClick(view);
-          // Advance to the next target
-          currentStep++;
-          startNextTarget();
-        }
-      });
-    }
-  }*/
 }
