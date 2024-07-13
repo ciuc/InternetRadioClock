@@ -330,9 +330,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_gravity="fill"
+            android:text="100%"
             android:layout_toLeftOf="@+id/volumeup_button"
             android:textColor="@color/button.color.off"
-            android:textSize="10sp" />
+            android:textSize="15sp" />
 
         <ImageButton
             android:id="@+id/main_help_button"

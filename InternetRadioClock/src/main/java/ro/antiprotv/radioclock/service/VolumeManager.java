@@ -12,7 +12,12 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+
 import java.text.DecimalFormat;
+import java.util.Date;
+
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.activity.ClockActivity;
 import timber.log.Timber;
@@ -40,12 +45,39 @@ public class VolumeManager {
     audioManager = (AudioManager) ctx.getApplicationContext().getSystemService(AUDIO_SERVICE);
     maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
     setVolumeText(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+    int currentVolume = getVolume();
     ctx.getApplicationContext()
         .getContentResolver()
         .registerContentObserver(
             android.provider.Settings.System.CONTENT_URI,
             true,
             new SettingsContentObserver(new Handler()));
+
+    SeekBar seekBar = view.findViewById(R.id.volume_seekbar);
+    if (seekBar == null) {
+      AlertDialog dialog = new AlertDialog.Builder(ctx).create();
+      dialog.setTitle("ERROR");
+      dialog.setMessage("Could not find seekbar " + new Date(System.currentTimeMillis()));
+      dialog.show();
+      return;
+    }
+    seekBar.setMax(maxVolume);
+    seekBar.setProgress(currentVolume);
+    seekBar.setOnSeekBarChangeListener(
+            new SeekBar.OnSeekBarChangeListener() {
+
+              @Override
+              public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                setVolume(progress);
+              }
+
+              @Override
+              public void onStartTrackingTouch(SeekBar seekBar) {}
+
+              @Override
+              public void onStopTrackingTouch(SeekBar seekBar) {}
+            });
+
   }
 
   /** increase volume */

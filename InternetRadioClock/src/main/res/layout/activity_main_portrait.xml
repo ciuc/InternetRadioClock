@@ -233,29 +233,49 @@
             android:layout_below="@id/sleep"
             android:layout_alignParentEnd="true"
             android:textColor="@color/button.color.off" />
-        <ImageButton
-            android:id="@+id/volumeup_button"
-            style="@style/imageButtonStyle"
+
+        <!-- VOLUME BAR -->
+        <RelativeLayout
+            android:id="@+id/volume_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_below="@id/night_mode_button"
-            android:layout_alignParentEnd="true"
-            android:clickable="false"
-            app:srcCompat="@drawable/ic_volume_dialog_24dp"
-            android:background="@drawable/memory"
-            android:textColor="@color/button.color.off" />
+
+            android:layout_marginEnd="5dp"
+            android:layout_toLeftOf="@+id/night_mode_button"
+            android:alpha="0.9"
+            android:background="@drawable/seekbar"
+            android:orientation="horizontal"
+            android:padding="7dp">
+
+            <ImageView
+                android:id="@+id/image_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_volume_dialog_24dp"/>
+
+            <ro.antiprotv.radioclock.service.VerticalSeekBar
+                android:id="@+id/volume_seekbar"
+                android:layout_width="wrap_content"
+                android:layout_height="180dp"
+                android:layout_below="@id/image_note"
+                android:background="@drawable/memory"
+                android:progressTint="@color/color.clock"
+                android:thumb="@drawable/scrubber_control_focused_holo" />
+        </RelativeLayout>
+        <!-- VOLUME BAR END -->
 
         <TextView
             android:id="@+id/volume"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="fill"
-            android:layout_alignParentEnd="true"
             android:textColor="@color/button.color.off"
-            android:textSize="10sp"
+            android:textSize="15sp"
+            android:text="100%"
             android:layout_marginBottom="5dp"
-            android:layout_below="@+id/volumeup_button"/>
+            android:layout_toLeftOf="@+id/volume_bar"/>
+
         <ImageButton
             android:id="@+id/main_help_button"
             style="@style/imageButtonStyle"
@@ -265,7 +285,7 @@
             android:background="@android:color/transparent"
             android:textColor="@color/button.color.off"
             android:layout_alignParentEnd="true"
-            android:layout_below="@id/volume"
+            android:layout_below="@id/night_mode_button"
             android:layout_width="45dp"
             android:layout_height="45dp"/>
         <RelativeLayout
@@ -293,7 +313,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_below="@+id/main_help_button"
             android:layout_toStartOf="@id/font_cycle_button_fwd"
             android:layout_marginTop="5dp"
             android:background="@drawable/memory"
