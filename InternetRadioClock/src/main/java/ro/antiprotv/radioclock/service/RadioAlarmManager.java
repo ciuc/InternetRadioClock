@@ -14,7 +14,6 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -183,11 +182,11 @@ public class RadioAlarmManager extends BroadcastReceiver {
     }
     alarmMgr.cancel(alarmIntent);
     try {
-      // alarmMgr.setExactAndAllowWhileIdle(
-      //    AlarmManager.RTC_WAKEUP, nextAlarm.getTimeInMillis(), alarmIntent);
-      // TESTING: enable this line to have the alarm in 5 secs;
       alarmMgr.setExactAndAllowWhileIdle(
-          AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
+          AlarmManager.RTC_WAKEUP, nextAlarm.getTimeInMillis(), alarmIntent);
+      // TESTING: enable this line to have the alarm in 5 secs;
+      //alarmMgr.setExactAndAllowWhileIdle(
+      //    AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
     } catch (SecurityException securityException) {
       toaster.toast(
           clockActivity,
@@ -336,7 +335,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     shutDownRadioAlarm(true);
     Calendar now = Calendar.getInstance();
     now.setTimeInMillis(System.currentTimeMillis());
-    //now.add(Calendar.SECOND, 10); // FOR TESTING
+    // now.add(Calendar.SECOND, 10); // FOR TESTING
     now.add(Calendar.MINUTE, snooze); // FOR PRODUCTION
     if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
       alarmMgr.setExact(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), alarmIntent);

@@ -234,19 +234,6 @@
                 android:textColor="@color/button.color.off"
                 app:srcCompat="@drawable/ic_night_24dp" />
 
-            <ImageButton
-                android:id="@+id/volumeup_button"
-                style="@style/imageButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_toLeftOf="@+id/night_mode_button"
-                android:background="@drawable/memory"
-                android:clickable="false"
-                android:textColor="@color/button.color.off"
-                app:srcCompat="@drawable/ic_volume_dialog_24dp"
-                android:visibility="gone"/>
-
             <!-- VOLUME BAR -->
             <RelativeLayout
                 android:id="@+id/volume_bar"

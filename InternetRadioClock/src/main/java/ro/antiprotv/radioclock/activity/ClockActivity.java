@@ -54,7 +54,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -68,7 +67,6 @@ import ro.antiprotv.radioclock.service.BatteryService;
 import ro.antiprotv.radioclock.service.ButtonManager;
 import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.SettingsManager;
-
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
 import timber.log.Timber;
@@ -135,13 +133,13 @@ public class ClockActivity extends AppCompatActivity {
           ActionBar actionBar = getSupportActionBar();
           if (actionBar != null) {
             actionBar.show();
-            toolbar.startAnimation(AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_from_top));
+            toolbar.startAnimation(
+                AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_from_top));
           }
           mControlsView.setVisibility(VISIBLE);
           mControlsView.startAnimation(fadeIn);
         }
       };
-
 
   private boolean mVisible;
   private TextView mContentView;
@@ -423,7 +421,11 @@ public class ClockActivity extends AppCompatActivity {
   protected void onResume() {
     super.onResume();
     IntentFilter filter = new IntentFilter("alarmReceiver");
-    this.registerReceiver(this.alarmManager, filter);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      this.registerReceiver(this.alarmManager, filter, Context.RECEIVER_NOT_EXPORTED);
+    } else {
+      this.registerReceiver(this.alarmManager, filter);
+    }
     setOrientationLandscapeIfLocked();
     initializeAlarmFunction();
   }
@@ -576,7 +578,6 @@ public class ClockActivity extends AppCompatActivity {
     sleep.setOnClickListener(sleepManager.sleepButtonOnClickListener);
     sleep.setOnTouchListener(mDelayHideTouchListener);
   }
-
 
   private void initializeUrls() {
     mUrls.add(
@@ -839,7 +840,8 @@ public class ClockActivity extends AppCompatActivity {
     // Hide UI first
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
-      toolbar.startAnimation(AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_to_top));
+      toolbar.startAnimation(
+          AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_to_top));
       actionBar.hide();
     }
     mControlsView.setVisibility(GONE);
@@ -1018,8 +1020,10 @@ public class ClockActivity extends AppCompatActivity {
       String defaultKey = mPlayingStreamTag.replace("setting.key.stream", "");
       int index = Integer.parseInt(defaultKey) - 1;
       Toast.makeText(ClockActivity.this, "Playing " + mUrls.get(index), Toast.LENGTH_SHORT).show();
-      Objects.requireNonNull(getSupportActionBar())
-          .setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
+      if (getSupportActionBar() != null) {
+        getSupportActionBar()
+            .setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
+      }
       // setAlarmPlaying(false);
     }
   }

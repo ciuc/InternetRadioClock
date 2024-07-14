@@ -149,7 +149,6 @@ public class SleepManager {
   private void hideUiElements() {
     context.findViewById(R.id.ui_settings_panel).setVisibility(GONE);
     context.findViewById(R.id.night_mode_button).setVisibility(GONE);
-    context.findViewById(R.id.volumeup_button).setVisibility(GONE);
     context.findViewById(R.id.volume).setVisibility(GONE);
     context.findViewById(R.id.main_help_button).setVisibility(GONE);
     context.findViewById(R.id.fullscreen_content_controls).setVisibility(GONE);
@@ -158,7 +157,6 @@ public class SleepManager {
   private void showUiElements() {
     context.findViewById(R.id.ui_settings_panel).setVisibility(VISIBLE);
     context.findViewById(R.id.night_mode_button).setVisibility(VISIBLE);
-    context.findViewById(R.id.volumeup_button).setVisibility(VISIBLE);
     context.findViewById(R.id.volume).setVisibility(VISIBLE);
     context.findViewById(R.id.main_help_button).setVisibility(VISIBLE);
     context.findViewById(R.id.fullscreen_content_controls).setVisibility(VISIBLE);

@@ -29,7 +29,6 @@ import timber.log.Timber;
  * buttons
  */
 public class VolumeManager {
-  private final ImageButton volumeUpButton;
   private final Context ctx;
   private final TextView volumeText;
   private final DecimalFormat fmt = new DecimalFormat("#");
@@ -38,9 +37,7 @@ public class VolumeManager {
 
   public VolumeManager(Context ctx, View view) {
     this.ctx = ctx;
-    volumeUpButton = view.findViewById(R.id.volumeup_button);
     this.volumeText = view.findViewById(R.id.volume);
-    volumeUpButton.setOnClickListener(new VolumeUpOnClickListener());
 
     audioManager = (AudioManager) ctx.getApplicationContext().getSystemService(AUDIO_SERVICE);
     maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);

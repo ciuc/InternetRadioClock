@@ -218,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
-                android:layout_toStartOf="@id/font_cycle_button_fwd"
+                android:layout_toStartOf="@+id/font_cycle_button_fwd"
                 android:background="@drawable/memory"
                 android:clickable="false"
                 android:scaleX="-1"
@@ -311,18 +311,37 @@
             android:textColor="@color/button.color.off"
             app:srcCompat="@drawable/ic_night_24dp" />
 
-        <ImageButton
-            android:id="@+id/volumeup_button"
-            style="@style/imageButtonStyle"
+        <!-- VOLUME BAR -->
+        <RelativeLayout
+            android:id="@+id/volume_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginRight="5dp"
             android:layout_toLeftOf="@+id/night_mode_button"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/ic_volume_dialog_24dp" />
+            android:alpha="0.9"
+            android:background="@drawable/seekbar"
+            android:orientation="horizontal"
+            android:padding="7dp">
+
+            <ro.antiprotv.radioclock.service.VerticalSeekBar
+                android:id="@+id/volume_seekbar"
+                android:layout_width="wrap_content"
+                android:layout_height="180dp"
+                android:layout_below="@id/image_note"
+                android:background="@drawable/memory"
+                android:progressTint="@color/color.clock"
+                android:thumb="@drawable/scrubber_control_focused_holo" />
+
+            <ImageView
+                android:id="@+id/image_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_volume_dialog_24dp"/>
+
+        </RelativeLayout>
+        <!-- VOLUME BAR END -->
 
         <TextView
             android:id="@+id/volume"
@@ -331,7 +350,7 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="fill"
             android:text="100%"
-            android:layout_toLeftOf="@+id/volumeup_button"
+            android:layout_toLeftOf="@+id/volume_bar"
             android:textColor="@color/button.color.off"
             android:textSize="15sp" />
 
