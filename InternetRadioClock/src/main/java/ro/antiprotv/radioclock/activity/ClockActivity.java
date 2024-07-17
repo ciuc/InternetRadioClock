@@ -427,7 +427,6 @@ public class ClockActivity extends AppCompatActivity {
       this.registerReceiver(this.alarmManager, filter);
     }
     setOrientationLandscapeIfLocked();
-    initializeAlarmFunction();
   }
 
   @Override

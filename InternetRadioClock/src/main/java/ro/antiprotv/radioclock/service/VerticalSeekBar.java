@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.SeekBar;
 
 public class VerticalSeekBar extends androidx.appcompat.widget.AppCompatSeekBar {
 
@@ -20,7 +19,7 @@ public class VerticalSeekBar extends androidx.appcompat.widget.AppCompatSeekBar 
         super(context, attrs);
     }
 
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    public void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(h, w, oldh, oldw);
     }
 
@@ -55,5 +54,11 @@ public class VerticalSeekBar extends androidx.appcompat.widget.AppCompatSeekBar 
                 break;
         }
         return true;
+    }
+
+    @Override
+    public synchronized void setProgress(int progress) {
+        super.setProgress(progress);
+        onSizeChanged(getWidth(), getHeight(), 0, 0);
     }
 }

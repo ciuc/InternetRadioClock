@@ -34,6 +34,7 @@ public class VolumeManager {
   private final DecimalFormat fmt = new DecimalFormat("#");
   private final AudioManager audioManager;
   private final int maxVolume;
+  private VerticalSeekBar seekBar;
 
   public VolumeManager(Context ctx, View view) {
     this.ctx = ctx;
@@ -50,7 +51,7 @@ public class VolumeManager {
             true,
             new SettingsContentObserver(new Handler()));
 
-    SeekBar seekBar = view.findViewById(R.id.volume_seekbar);
+    seekBar = view.findViewById(R.id.volume_seekbar);
     if (seekBar == null) {
       AlertDialog dialog = new AlertDialog.Builder(ctx).create();
       dialog.setTitle("ERROR");
@@ -65,6 +66,7 @@ public class VolumeManager {
 
               @Override
               public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                Timber.d("vol: " + progress);
                 setVolume(progress);
               }
 
@@ -137,44 +139,6 @@ public class VolumeManager {
     ((ClockActivity) ctx).runOnUiThread(() -> volumeText.setText(getVolumePct(volume)));
   }
 
-  private class VolumeUpOnClickListener implements View.OnClickListener {
-
-    @Override
-    public void onClick(View v) {
-      // earlier on we had soem fancy stuff here, with onTouch and setting
-      // stroke
-      Dialog dialog = new Dialog(ctx);
-      dialog.setContentView(R.layout.dialog_volume);
-      dialog.setTitle("Set size!");
-      dialog.setCancelable(true);
-
-      dialog.show();
-
-      final TextView volume = dialog.findViewById(R.id.volume_pct);
-      int currentVolume = getVolume();
-
-      SeekBar seekBar = dialog.findViewById(R.id.volume_seekbar);
-      seekBar.setMax(maxVolume);
-      seekBar.setProgress(currentVolume);
-      volume.setText(getVolumePct(currentVolume));
-      seekBar.setOnSeekBarChangeListener(
-          new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-              setVolume(progress);
-              volume.setText(getVolumePct(progress));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-          });
-    }
-  }
-
   public class SettingsContentObserver extends ContentObserver {
     public SettingsContentObserver(Handler handler) {
       super(handler);
@@ -185,6 +149,7 @@ public class VolumeManager {
       int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
       Timber.d("Volume now " + currentVolume);
       setVolumeText(currentVolume);
+      seekBar.setProgress(currentVolume);
     }
   }
 }
