@@ -30,6 +30,7 @@ import ro.antiprotv.radioclock.ClockUpdater;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.activity.ClockActivity;
 import ro.antiprotv.radioclock.service.BatteryService;
+import ro.antiprotv.radioclock.service.BrightnessManager;
 import timber.log.Timber;
 
 public class ProfileManager implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -41,6 +42,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   private final SharedPreferences prefs;
   private final ClockUpdater clockUpdater;
   private final ScheduledExecutorService scheduledExecutorService;
+  private BrightnessManager brightnessManager;
   private final ProfileUtils profileUtils;
   private final ImageView battery_icon;
   private final TextView battery_pct;
@@ -50,6 +52,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   private ScheduledFuture currentScheduledNightTask;
   private ScheduledFuture currentScheduledDayTask;
   private Profile currentProfile;
+  // SeekBar seekbar_brightness;
 
   private boolean disableProfileChangeOnSettingChange = false;
   private int font_index = 0;
@@ -64,7 +67,6 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     this.profileUtils = ProfileUtils.getInstance(clockActivity);
     battery_pct = clockActivity.findViewById(R.id.batteryPct);
     battery_icon = clockActivity.findViewById(R.id.battery_icon);
-
     fonts_files = clockActivity.getResources().getStringArray(R.array.clock_typefaces);
 
     for (String fontsFile : fonts_files) {
@@ -187,14 +189,14 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
       Timber.d("Task day change = null");
     }
     /*for (StackTraceElement ste : Thread.currentThread().getTrace()) {
-      Timber.d(ste.toString());
-    }*/
-    Timber.d("Configured:");
-    Timber.d("now: " + profileUtils.getHumanReadableCalendar(now));
-    Timber.d("night profile start: " + profileUtils.getHumanReadableCalendar(nightProfile_start));
-    Timber.d("night profile end: " + profileUtils.getHumanReadableCalendar(nightProfile_end));
-
-    if (isNight(nightProfile_start, nightProfile_end, now)) {
+          Timber.d(ste.toString());
+        }
+        Timber.d("Configured:");
+        Timber.d("now: " + profileUtils.getHumanReadableCalendar(now));
+        Timber.d("night profile start: " + profileUtils.getHumanReadableCalendar(nightProfile_start));
+        Timber.d("night profile end: " + profileUtils.getHumanReadableCalendar(nightProfile_end));
+    */
+    if (ProfileUtils.isNight(nightProfile_start, nightProfile_end, now)) {
       Timber.d("apply night");
       applyNightProfile();
 
@@ -216,16 +218,17 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
               Toast.LENGTH_LONG)
           .show();
     } else {
-      Timber.d("apply day");
+      // Timber.d("apply day");
       applyDayProfile();
       String h_r_nightProfile_start = profileUtils.getHumanReadableCalendar(nightProfile_start);
 
-      Timber.d("Night profile start: " + h_r_nightProfile_start);
-      Timber.d(
-          "Schedule next task (night change) in "
-              + (nightProfile_start.getTimeInMillis() - now.getTimeInMillis()) / 1000
-              + " seconds");
-
+      /*
+            Timber.d("Night profile start: " + h_r_nightProfile_start);
+            Timber.d(
+                "Schedule next task (night change) in "
+                    + (nightProfile_start.getTimeInMillis() - now.getTimeInMillis()) / 1000
+                    + " seconds");
+      */
       currentScheduledNightTask =
           scheduledExecutorService.schedule(
               new ChangeToNightProfileTask(),
@@ -253,16 +256,23 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockActivity.getmContentView().setTextSize(nightProfile.clockSize);
     clockActivity.getmContentView().setTypeface(fonts.get(nightProfile.font));
     clockActivity.getmContentView().setTextColor(nightProfile.clockColor);
-    Window window = clockActivity.getWindow();
-    WindowManager.LayoutParams layoutParams = window.getAttributes();
-    layoutParams.screenBrightness = nightProfile.alpha;
-    window.setAttributes(layoutParams);
 
     clockUpdater.setMoveText(nightProfile.moveText);
     clockActivity.getmContentView().setGravity(Gravity.CENTER);
     applyBatteryProfile(nightProfile.clockColor);
     currentProfile = nightProfile;
     size_index = sizes.indexOf((int) nightProfile.clockSize);
+
+    Window window = clockActivity.getWindow();
+    WindowManager.LayoutParams layoutParams = window.getAttributes();
+    Timber.d("(applyNightProfile) brightness: " + nightProfile.brightness);
+    layoutParams.screenBrightness = nightProfile.brightness / 100f;
+    window.setAttributes(layoutParams);
+    if (brightnessManager != null) {
+      brightnessManager.setupSeekbar(currentProfile.brightness);
+    } else {
+      Timber.d("brightness manager null");
+    }
   }
 
   private void applyDayProfile() {
@@ -279,15 +289,22 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockUpdater.setSdf(dayProfile.clockFormat);
     clockActivity.getmContentView().setTextColor(dayProfile.clockColor);
 
-    Window window = clockActivity.getWindow();
-    WindowManager.LayoutParams layoutParams = window.getAttributes();
-    layoutParams.screenBrightness = dayProfile.alpha;
-    window.setAttributes(layoutParams);
     clockUpdater.setMoveText(dayProfile.moveText);
     clockActivity.getmContentView().setGravity(Gravity.CENTER);
     applyBatteryProfile(dayProfile.clockColor);
     currentProfile = dayProfile;
     size_index = sizes.indexOf((int) dayProfile.clockSize);
+
+    Window window = clockActivity.getWindow();
+    WindowManager.LayoutParams layoutParams = window.getAttributes();
+    Timber.d("(applyDayProfile) " + dayProfile.brightness);
+    layoutParams.screenBrightness = dayProfile.brightness / 100f;
+    window.setAttributes(layoutParams);
+    if (brightnessManager != null) {
+      brightnessManager.setupSeekbar(currentProfile.brightness);
+    } else {
+      Timber.d("brightness manager null");
+    }
   }
 
   public void applyBatteryProfile(int currentProfileColor) {
@@ -371,10 +388,16 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   }
 
   public void changeSize(float diff) {
-    diff *= 1.5;
-    Timber.d("size now : " + currentProfile.getSize() + "; diff " + diff+ "; applied diff " + diff*10);
+    diff *= 1.5f;
+    Timber.d(
+        "size now : "
+            + currentProfile.getSize()
+            + "; diff "
+            + diff
+            + "; applied diff "
+            + diff * 10);
     float size = currentProfile.getSize();
-    size += diff*2;
+    size += diff * 2;
     if (size < 0) {
       size *= -1;
     }
@@ -386,36 +409,23 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     currentProfile.setSize(size);
   }
 
-  private boolean isNight(Calendar nightStart, Calendar nightEnd, Calendar now) {
-    if (nightStart.before(nightEnd)) {
-      // | ------- start +++++++++ end -------- |
-      if (now.after(nightStart) && now.before(nightEnd)) {
-        // | ------- start +++!+++ end -------- |
-        return true; // and do nothing with the calendars
-      } else if (now.before(nightStart)) {
-        // | ----!--- start ++++++++ end -------- |
-        return false; // and do nothing with the calendars
-      } else {
-        // apply night and schedule day tomorrow
-        // | ------- start ++++++++ end ----!---- |
-        nightStart.add(Calendar.DAY_OF_MONTH, 1);
-        return false;
-      }
-    } else {
-      // | +++++++ end ------- start +++++++ |
-      if (now.before(nightEnd)) {
-        // | +++!++++ end ------- start +++++++ |
-        return true; // and do nothing with the calendars
-      }
-      if (now.after(nightStart)) {
-        // | +++++++ end ------- start ++++!+++ |
-        nightEnd.add(Calendar.DAY_OF_MONTH, 1);
-        return true;
-      } else {
-        // | +++++++ end ---!---- start +++++++ |
-        return false; // and do nothing with the calendars
-      }
-    }
+  public void setBrightness(int brightness) {
+    Timber.d("brightness: " + brightness);
+    disableProfileChangeOnSettingChange = true;
+    currentProfile.setBrightness(brightness);
+    Window window = clockActivity.getWindow();
+    WindowManager.LayoutParams layoutParams = window.getAttributes();
+    layoutParams.screenBrightness = brightness / 100f;
+    window.setAttributes(layoutParams);
+  }
+
+  public int getBrightness() {
+    Timber.d("brightness: " + currentProfile.brightness);
+    return currentProfile.brightness;
+  }
+
+  public void setBrightnessManager(BrightnessManager brightnessManager) {
+    this.brightnessManager = brightnessManager;
   }
 
   public class ColorPickerClickListner implements View.OnClickListener {

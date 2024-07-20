@@ -53,4 +53,36 @@ public class ProfileUtils {
     }
     return context.getResources().getString(R.string.today);
   }
+
+  public static boolean isNight(Calendar nightStart, Calendar nightEnd, Calendar now) {
+    if (nightStart.before(nightEnd)) {
+      // | ------- start +++++++++ end -------- |
+      if (now.after(nightStart) && now.before(nightEnd)) {
+        // | ------- start +++!+++ end -------- |
+        return true; // and do nothing with the calendars
+      } else if (now.before(nightStart)) {
+        // | ----!--- start ++++++++ end -------- |
+        return false; // and do nothing with the calendars
+      } else {
+        // apply night and schedule day tomorrow
+        // | ------- start ++++++++ end ----!---- |
+        nightStart.add(Calendar.DAY_OF_MONTH, 1);
+        return false;
+      }
+    } else {
+      // | +++++++ end ------- start +++++++ |
+      if (now.before(nightEnd)) {
+        // | +++!++++ end ------- start +++++++ |
+        return true; // and do nothing with the calendars
+      }
+      if (now.after(nightStart)) {
+        // | +++++++ end ------- start ++++!+++ |
+        nightEnd.add(Calendar.DAY_OF_MONTH, 1);
+        return true;
+      } else {
+        // | +++++++ end ---!---- start +++++++ |
+        return false; // and do nothing with the calendars
+      }
+    }
+  }
 }

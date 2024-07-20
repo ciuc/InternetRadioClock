@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import ro.antiprotv.radioclock.R;
+import timber.log.Timber;
 
 public class DayProfile extends Profile {
 
@@ -19,10 +20,7 @@ public class DayProfile extends Profile {
             prefs.getString(
                 context.getResources().getString(R.string.setting_key_clockSize),
                 context.getResources().getString(R.string.setting_default_clockSize))),
-        (float)
-                prefs.getInt(
-                    context.getResources().getString(R.string.setting_key_clockBrightness), -1)
-            / 100,
+        prefs.getInt(context.getResources().getString(R.string.setting_key_clockBrightness), -1),
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_clockMove), true),
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_seconds), true),
         prefs.getString(
@@ -44,6 +42,15 @@ public class DayProfile extends Profile {
         .edit()
         .putString(
             context.getResources().getString(R.string.setting_key_clockSize), String.valueOf(size))
+        .apply();
+  }
+
+  @Override
+  public void setBrightness(int brightness) {
+    Timber.d("(Day) Save brightness: " + brightness);
+    prefs
+        .edit()
+        .putInt(context.getResources().getString(R.string.setting_key_clockBrightness), brightness)
         .apply();
   }
 

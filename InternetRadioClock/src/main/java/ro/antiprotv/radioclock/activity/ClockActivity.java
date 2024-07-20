@@ -64,6 +64,7 @@ import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.SleepManager;
 import ro.antiprotv.radioclock.TipsDialog;
 import ro.antiprotv.radioclock.service.BatteryService;
+import ro.antiprotv.radioclock.service.BrightnessManager;
 import ro.antiprotv.radioclock.service.ButtonManager;
 import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.SettingsManager;
@@ -308,12 +309,15 @@ public class ClockActivity extends AppCompatActivity {
     initializeAlarmFunction();
 
     profileManager = new ProfileManager(this, prefs, clockUpdater);
+
     this.batteryService = new BatteryService(this, profileManager);
     preferenceChangeListener =
         new SettingsManager(this, buttonManager, sleepManager, clockUpdater, batteryService);
     profileManager.clearTask();
     profileManager.applyProfile();
-
+    BrightnessManager brightnessManager =
+            new BrightnessManager(this, mControlsView, profileManager);
+    profileManager.setBrightnessManager(brightnessManager);
     // Initialize the player
     // TODO: maybe initialize on first run
     if (mMediaPlayer == null) {
@@ -887,6 +891,9 @@ public class ClockActivity extends AppCompatActivity {
     return mContentView;
   }
 
+  public View getmControlsView() {
+    return mControlsView;
+  }
   public List<String> getmUrls() {
     return mUrls;
   }
@@ -1048,10 +1055,22 @@ public class ClockActivity extends AppCompatActivity {
   // --/////////////////////////////////////////////////////////////////////////
   // --- GESTURES ---
   // --/////////////////////////////////////////////////////////////////////////
+  private boolean disallowSwipe = false;
+
+  public void setDisallowSwipe(boolean disallowSwipe) {
+    Timber.d("set disallow swipe: " + disallowSwipe);
+    this.disallowSwipe = disallowSwipe;
+  }
+
   private boolean isScaling = false;
 
   @Override
   public boolean dispatchTouchEvent(MotionEvent event) {
+
+    Timber.d("Motion disallowed: " + disallowSwipe);
+    if (disallowSwipe) {
+      return super.dispatchTouchEvent(event);
+    }
     // Pass the touch event to the scale gesture detector first
     pinchGestureDetector.onTouchEvent(event);
     swipeGestureDetector.onTouchEvent(event);

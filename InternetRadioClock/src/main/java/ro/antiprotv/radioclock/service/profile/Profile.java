@@ -8,7 +8,7 @@ import ro.antiprotv.radioclock.R;
 
 public abstract class Profile {
   protected final int clockColor;
-  protected final float alpha;
+  protected int brightness;
   protected float clockSize;
   protected final boolean moveText;
   protected final boolean showSeconds;
@@ -24,13 +24,13 @@ public abstract class Profile {
       Context context,
       int clockColor,
       float clockSize,
-      float alpha,
+      int brightness,
       boolean moveText,
       boolean showSeconds,
       String font) {
     this.clockColor = clockColor;
     this.clockSize = clockSize;
-    this.alpha = alpha;
+    this.brightness = brightness;
     this.moveText = moveText;
     this.showSeconds = showSeconds;
     this.context = context;
@@ -69,17 +69,23 @@ public abstract class Profile {
       pattern = pattern.replaceAll(":", "");
     }
     clockFormat = new SimpleDateFormat(pattern);
-
   }
 
-  abstract public void setFont(String font);
+  public abstract void setFont(String font);
+
   public void setSize(float size) {
     this.clockSize = size;
   }
 
-  abstract public void setClockColor(String color);
-  public int getColor(){
+  public abstract void setBrightness(int brightness);
+
+  public abstract void setClockColor(String color);
+
+  public int getColor() {
     return clockColor;
   }
-  public int getSize() {return (int) clockSize;}
+
+  public int getSize() {
+    return (int) clockSize;
+  }
 }

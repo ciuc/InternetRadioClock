@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import ro.antiprotv.radioclock.R;
+import timber.log.Timber;
 
 public class NightProfile extends Profile {
 
@@ -19,11 +20,8 @@ public class NightProfile extends Profile {
             prefs.getString(
                 context.getResources().getString(R.string.setting_key_clockSize_night),
                 context.getResources().getString(R.string.setting_default_clockSize))),
-        (float)
-                prefs.getInt(
-                    context.getResources().getString(R.string.setting_key_clockBrightness_night),
-                    -1)
-            / 100,
+        prefs.getInt(
+            context.getResources().getString(R.string.setting_key_clockBrightness_night), -1),
         prefs.getBoolean(
             context.getResources().getString(R.string.setting_key_clockMove_night), true),
         prefs.getBoolean(
@@ -48,6 +46,17 @@ public class NightProfile extends Profile {
         .putString(
             context.getResources().getString(R.string.setting_key_clockSize_night),
             String.valueOf(size))
+        .apply();
+  }
+
+  @Override
+  public void setBrightness(int brightness) {
+    Timber.d("(Night) Save brightness: " + brightness);
+    prefs
+        .edit()
+        .putInt(
+            context.getResources().getString(R.string.setting_key_clockBrightness_night),
+            brightness)
         .apply();
   }
 

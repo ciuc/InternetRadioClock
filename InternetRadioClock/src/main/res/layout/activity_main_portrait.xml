@@ -368,6 +368,53 @@
             android:tag="@string/setting.key.alarmIcon"
             android:textColor="@color/button.color.off"
             app:srcCompat="@drawable/outline_color_lens_24"/>
+
+            <!-- BRIGHTNESS BAR -->
+            <RelativeLayout
+                android:id="@+id/brightness_bar"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_below="@id/color_picker_button"
+                android:layout_alignParentEnd="true"
+                android:alpha="0.9"
+                android:background="@drawable/seekbar"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp"
+                android:padding="7dp">
+
+                <ImageView
+                    android:id="@+id/image_brightness"
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/outline_brightness_6_24"/>
+
+                <SeekBar
+                    android:id="@+id/seekbar_brightness"
+                    android:layout_width="220dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/memory"
+                    android:progressTint="@color/color.clock"
+                    android:thumb="@drawable/scrubber_control_focused_holo"
+                    android:layout_toLeftOf="@+id/image_brightness"
+                    />
+                <ImageButton
+                    android:id="@+id/brightness_auto"
+                    android:background="@android:color/transparent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/seekbar_brightness"
+                    android:clickable="false"
+                    app:srcCompat="@drawable/outline_brightness_auto_24" />
+
+            </RelativeLayout>
+            <!-- END BRIGHTNESS BAR -->
+
+
         </RelativeLayout>
 
         <LinearLayout
