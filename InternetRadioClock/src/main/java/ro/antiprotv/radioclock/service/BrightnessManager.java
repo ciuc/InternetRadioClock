@@ -39,6 +39,7 @@ public class BrightnessManager {
       return;
     }
     seekBar.setMax(100);
+    disableOnProgressChanged = true;
     seekBar.setProgress(currentBrightness > 0 ? currentBrightness : 50);
     seekBar.setOnSeekBarChangeListener(
         new SeekBar.OnSeekBarChangeListener() {

@@ -189,6 +189,7 @@
         <item>pixel.regular.ttf</item>
         <item>Bazaronite.ttf</item>
         <item>square-sans-serif-7.regular.ttf</item>
+        <item>linear-beam.0-5.ttf</item>
     </string-array>
     <string-array name="clock_human_typefaces">
         <item>Dots 1 (Repet)</item>
@@ -204,6 +205,7 @@
         <item>Pixel Regular</item>
         <item>Bazaronite</item>
         <item>Square Sans-serif</item>
+        <item>Linear Beam</item>
     </string-array>
     <string name="setting.key.clockSize">setting.key.clockSize</string>
     <string name="setting.name.clockSize">Clock Size</string>
