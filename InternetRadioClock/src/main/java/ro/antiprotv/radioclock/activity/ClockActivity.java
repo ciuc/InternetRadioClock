@@ -68,6 +68,7 @@ import ro.antiprotv.radioclock.service.BrightnessManager;
 import ro.antiprotv.radioclock.service.ButtonManager;
 import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.SettingsManager;
+import ro.antiprotv.radioclock.service.ShowCaseService;
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
 import timber.log.Timber;
@@ -338,7 +339,7 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     final ImageButton helpButton = findViewById(R.id.main_help_button);
-    helpButton.setOnClickListener(new OnHelpClickListener());
+    helpButton.setOnClickListener(new HelpOnClickListener(this));
 
     onOffButton = findViewById(R.id.on_off_button);
     onOffButton.setOnClickListener(new OnOnOffClickListener());
@@ -902,12 +903,20 @@ public class ClockActivity extends AppCompatActivity {
     return mPlayingStreamTag;
   }
 
-  private static class OnHelpClickListener implements View.OnClickListener {
+  private class HelpOnClickListener implements View.OnClickListener {
+    private AppCompatActivity activity;
+
+    public HelpOnClickListener(AppCompatActivity activity) {
+      this.activity = activity;
+    }
     @Override
     public void onClick(View view) {
       android.app.AlertDialog tipsDialog = new TipsDialog(view.getContext());
       tipsDialog.show();
+      //ShowCaseService service = new ShowCaseService(activity);
+      //service.showCase();
     }
+
   }
 
   /**

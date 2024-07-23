@@ -276,14 +276,18 @@
     <string-array name="tips">
         <item>@string/tips.1</item>
         <item>
+- there are two profiles -> a day and a night profile\n
+- you can set each to start and end at a certain time\n
+- you can define different appearance for each profile\n
+        </item>
+        <item>
 - you can change the look of the clock from the main screen or from the settings\n
 - you can choose from multiple fonts, colors, sizes for the clock\n
 - changes to the looks of the clock are persisted for each profile
         </item>
         <item>
-- there are two profiles -> a day and a night profile\n
-- you can set each to start and end at a certain time\n
-- you can define different appearance for each profile\n
+- swipe to change fonts\n
+- pinch to increaze text size
         </item>
         <item>
 - you can set the brightness of the clock for day profile or night profile\n
