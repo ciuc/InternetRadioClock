@@ -10,10 +10,10 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,10 +50,10 @@ public class RadioAlarmManager extends BroadcastReceiver {
   }
 
   private final ImageButton alarmButton1;
-  private final ImageButton cancelButton1;
-  private final ImageButton snoozeButton1;
-  private final ImageButton closeButton1;
-  private final ImageButton snoozeCancelButton1;
+  private final Button cancelButton1;
+  private final Button snoozeButton1;
+  // private final Button closeButton1;
+  private final Button snoozeCancelButton1;
   private final TextView alarmText1;
   private final ImageButton alarmOffButton1;
   private final ImageButton alarmButton2;
@@ -69,6 +69,8 @@ public class RadioAlarmManager extends BroadcastReceiver {
   private SharedPreferences prefs;
   // private List<String> alarmsDays = new ArrayList<>();
   private Toaster toaster = new Toaster();
+  private boolean alarmPlaying = false;
+  private MediaPlayerService mediaPlayerService;
 
   public RadioAlarmManager(ClockActivity context, ButtonManager buttonManager) {
     this.buttonManager = buttonManager;
@@ -82,7 +84,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
     cancelButton1 = clockActivity.findViewById(R.id.alarm_icon_cancel);
     snoozeButton1 = clockActivity.findViewById(R.id.alarm_icon_snooze);
     snoozeCancelButton1 = clockActivity.findViewById(R.id.alarm_icon_snooze_cancel);
-    closeButton1 = clockActivity.findViewById(R.id.alarm_icon_close);
     alarmOffButton1.setOnClickListener(view -> cancelAlarm(1));
     cancelButton1.setOnClickListener(
         view -> {
@@ -93,14 +94,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
         });
     snoozeButton1.setOnClickListener(view -> snooze());
     snoozeCancelButton1.setOnClickListener(view -> cancelSnooze());
-    closeButton1.setOnClickListener(
-        view -> {
-          // shutDownDefaultAlarm();
-          // shutDownRadioAlarm(false);
-          // This has the same function as the click which hides the clcockActivity
-          clockActivity.hide();
-          // setAlarm();
-        });
 
     alarmButton2 = clockActivity.findViewById(R.id.alarm_icon2);
     alarmText2 = clockActivity.findViewById(R.id.alarm_time2);
@@ -128,7 +121,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     setupAlarmText(nextAlarm1, nextAlarm2);
 
     setupAlarmViews(nextAlarm1, nextAlarm2);
-    hideAlarmButtons();
+    hideSnoozeAndCancelButtons();
   }
 
   private void setupAlarmViews(Alarm nextAlarm1, Alarm nextAlarm2) {
@@ -185,7 +178,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
       alarmMgr.setExactAndAllowWhileIdle(
           AlarmManager.RTC_WAKEUP, nextAlarm.getTimeInMillis(), alarmIntent);
       // TESTING: enable this line to have the alarm in 5 secs;
-      //alarmMgr.setExactAndAllowWhileIdle(
+      // alarmMgr.setExactAndAllowWhileIdle(
       //    AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
     } catch (SecurityException securityException) {
       toaster.toast(
@@ -274,7 +267,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     return null;
   }
 
-  private void hideAlarmButtons() {
+  private void hideSnoozeAndCancelButtons() {
     // not sure how necessary is this here, but we seem to have a race condition
     // in which the runnable started by the Executor (MediaPlayerCanceler)
     // finishes before both actions are completed
@@ -286,7 +279,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
           cancelButton1.setVisibility(View.GONE);
           snoozeButton1.setVisibility(View.GONE);
           snoozeCancelButton1.setVisibility(View.GONE);
-          closeButton1.setVisibility(View.GONE);
         });
   }
 
@@ -294,7 +286,16 @@ public class RadioAlarmManager extends BroadcastReceiver {
     snoozeCancelButton1.setVisibility(View.GONE);
     snoozeButton1.setVisibility(View.VISIBLE);
     cancelButton1.setVisibility(View.VISIBLE);
-    closeButton1.setVisibility(View.VISIBLE);
+  }
+
+  public void hideAlarmButtons() {
+    alarmButton1.setVisibility(View.GONE);
+    alarmButton2.setVisibility(View.GONE);
+  }
+
+  public void showAlarmButtons() {
+    alarmButton1.setVisibility(View.VISIBLE);
+    alarmButton2.setVisibility(View.VISIBLE);
   }
 
   public void cancelAlarm(int alarmId) {
@@ -312,6 +313,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
 
     Toast.makeText(clockActivity, R.string.text_alarm_canceled, Toast.LENGTH_SHORT).show();
     clockActivity.setAlarmPlaying(false);
+    showAlarmButtons();
     changeAlarmIconAndTextOnCancel();
     setAlarm();
   }
@@ -337,11 +339,14 @@ public class RadioAlarmManager extends BroadcastReceiver {
     now.setTimeInMillis(System.currentTimeMillis());
     // now.add(Calendar.SECOND, 10); // FOR TESTING
     now.add(Calendar.MINUTE, snooze); // FOR PRODUCTION
-    if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-      alarmMgr.setExact(AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), alarmIntent);
-    } else {
+    try {
       alarmMgr.setExactAndAllowWhileIdle(
           AlarmManager.RTC_WAKEUP, now.getTimeInMillis(), alarmIntent);
+    } catch (SecurityException securityException) {
+      toaster.toast(
+          clockActivity,
+          "Cannot set the alarm: make sure you give Exact Alarm permission to the app.",
+          Toast.LENGTH_LONG);
     }
     snoozeCancelButton1.setVisibility(View.VISIBLE);
     clockActivity.setAlarmPlaying(false);
@@ -350,9 +355,9 @@ public class RadioAlarmManager extends BroadcastReceiver {
 
   public void shutDownRadioAlarm(boolean stopPlaying) {
     if (stopPlaying) {
-      clockActivity.stopPlaying();
+      mediaPlayerService.stopPlaying();
     }
-    hideAlarmButtons();
+    hideSnoozeAndCancelButtons();
   }
 
   /** restores the alarm view to its original state */
@@ -366,7 +371,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
   }
 
   public void cancelSnooze() {
-    hideAlarmButtons();
+    hideSnoozeAndCancelButtons();
     cancelNonRecurringAlarm();
     setAlarm();
     clockActivity.setAlarmSnoozing(false);
@@ -386,7 +391,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
   public void shutDownDefaultAlarm() {
     if (player != null && player.isPlaying()) {
       player.stop();
-      hideAlarmButtons();
+      hideSnoozeAndCancelButtons();
     }
   }
 
@@ -410,9 +415,10 @@ public class RadioAlarmManager extends BroadcastReceiver {
             context, context.getString(R.string.text_alarm_playing, memory), Toast.LENGTH_SHORT)
         .show();
     changeAlarmIconAndTextOnCancel();
+    hideAlarmButtons();
     showSnoozeAndCancel();
     clockActivity.setAlarmPlaying(true);
-    clockActivity.play(memory);
+    mediaPlayerService.play(memory);
     clockActivity.show();
   }
 
@@ -426,6 +432,18 @@ public class RadioAlarmManager extends BroadcastReceiver {
 
   public void setToaster(Toaster toaster) {
     this.toaster = toaster;
+  }
+
+  public boolean isAlarmPlaying() {
+    return alarmPlaying;
+  }
+
+  public void setAlarmPlaying(boolean alarmPlaying) {
+    this.alarmPlaying = alarmPlaying;
+  }
+
+  public void setMediaPlayerService(MediaPlayerService mediaPlayerService) {
+    this.mediaPlayerService = mediaPlayerService;
   }
 
   protected static class Alarm implements Comparable<Alarm> {

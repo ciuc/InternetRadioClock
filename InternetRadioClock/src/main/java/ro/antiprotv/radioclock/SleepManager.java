@@ -9,9 +9,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.preference.PreferenceManager;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +18,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
 import ro.antiprotv.radioclock.activity.ClockActivity;
+import ro.antiprotv.radioclock.service.MediaPlayerService;
 
 public class SleepManager {
   private static final int MOVEMENT_SECCONDS =
@@ -37,6 +35,8 @@ public class SleepManager {
   private int sleepTimerIndex;
   private ScheduledFuture sleepFuture;
   private ScheduledFuture sleepCounterFuture;
+  MediaPlayerService mediaPlayerService;
+
   public final Button.OnClickListener sleepButtonOnClickListener =
       new View.OnClickListener() {
         @Override
@@ -79,34 +79,35 @@ public class SleepManager {
             if (sleepCounterFuture == null || sleepCounterFuture.isDone()) {
               sleepCounterFuture =
                   ((ScheduledExecutorService) sleepExecutorService)
-                      .scheduleAtFixedRate(sleepCounterUpdater, 1, 1, TimeUnit.MINUTES);
+                      .scheduleWithFixedDelay(sleepCounterUpdater, 1, 1, TimeUnit.MINUTES);
             }
           }
         }
       };
 
-  public SleepManager(ClockActivity context, ClockUpdater clockUpdater) {
+  public SleepManager(
+      ClockActivity context, ClockUpdater clockUpdater, MediaPlayerService mediaPlayerService) {
     this.context = context;
     this.clockUpdater = clockUpdater;
-    sleepTimerText = context.findViewById(R.id.sleep_timer);
-    button = context.findViewById(R.id.sleep);
+    this.sleepTimerText = context.findViewById(R.id.sleep_timer);
+    this.button = context.findViewById(R.id.sleep);
+    this.mediaPlayerService = mediaPlayerService;
   }
-
 
   public void init() {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-
     int customTimer = 0;
     try {
       customTimer =
-              Integer.parseInt(
-                      prefs.getString(context.getResources().getString(R.string.setting_key_sleepMinutes), "0"));
+          Integer.parseInt(
+              prefs.getString(
+                  context.getResources().getString(R.string.setting_key_sleepMinutes), "0"));
     } catch (Exception e) {
       prefs
-              .edit()
-              .putString(context.getResources().getString(R.string.setting_key_sleepMinutes), "0")
-              .apply();
+          .edit()
+          .putString(context.getResources().getString(R.string.setting_key_sleepMinutes), "0")
+          .apply();
     }
     if (customTimer != 0) {
       getTimers().add(0, customTimer);
@@ -173,7 +174,7 @@ public class SleepManager {
       context.runOnUiThread(
           () -> {
             Toast.makeText(context, "Time's up", Toast.LENGTH_SHORT).show();
-            context.stopPlaying();
+            mediaPlayerService.stopPlaying();
             resetSleepTimer();
           });
     }

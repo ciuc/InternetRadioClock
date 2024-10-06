@@ -19,7 +19,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +31,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -41,23 +41,14 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import com.devbrackets.android.exomedia.AudioPlayer;
-import com.devbrackets.android.exomedia.listener.OnErrorListener;
-import com.devbrackets.android.exomedia.listener.OnPreparedListener;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import ro.antiprotv.radioclock.BuildConfig;
 import ro.antiprotv.radioclock.ClockUpdater;
 import ro.antiprotv.radioclock.R;
@@ -66,17 +57,21 @@ import ro.antiprotv.radioclock.TipsDialog;
 import ro.antiprotv.radioclock.service.BatteryService;
 import ro.antiprotv.radioclock.service.BrightnessManager;
 import ro.antiprotv.radioclock.service.ButtonManager;
+import ro.antiprotv.radioclock.service.MediaPlayerService;
 import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.SettingsManager;
-import ro.antiprotv.radioclock.service.ShowCaseService;
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
 import timber.log.Timber;
 
 /** Main Activity. Just displays the clock and buttons */
 public class ClockActivity extends AppCompatActivity {
+
   public static final String PREF_NIGHT_MODE = "NIGHT_MODE";
   public static final String LAST_PLAYED = "LAST_PLAYED";
+  private static final String TAG_STATE = "ClockActivity | State: %s";
+  public static final String IS_PLAYING = "IS_PLAYING";
+  public static final String PLAYING_STREAM_NO = "PLAYING_STREAM_NO";
 
   public static final String USER_ALARM_PERMISSION_NOT_ALLOWED_PREF = "USER_PERM_NOK";
 
@@ -98,16 +93,8 @@ public class ClockActivity extends AppCompatActivity {
    */
   private static final int UI_ANIMATION_DELAY = 0;
 
-  private static final String TAG_STATE = "ClockActivity | State: %s";
   public static final int FADE_OUT_DURATION_MILLIS = 400;
   public static final int FADE_IN_DURATION_MILLIS = 200;
-  private final Handler mHideHandler = new Handler();
-  // the map of urls; it is a map of the setting key > url (String)
-  // url(setting_key_stream1 >  http://something)
-  private final List<String> mUrls = new ArrayList<>();
-  private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
-  private GestureDetector swipeGestureDetector;
-  private ScaleGestureDetector pinchGestureDetector;
 
   /**
    * The user has explicitly denied setting alarms permissions.
@@ -122,27 +109,23 @@ public class ClockActivity extends AppCompatActivity {
   public boolean USER_ALARM_PERMISSION_NOT_ALLOWED = false;
 
   public boolean HAS_ALARM_PERMISSIONS = true;
-  private SharedPreferences prefs;
+
+  // some initializations
   private ClockUpdater clockUpdater;
-  private View mControlsView;
-  private final Runnable mShowPart2Runnable =
-      new Runnable() {
-        @Override
-        public void run() {
-          Animation fadeIn = getFadeInAnimation();
+  private SharedPreferences prefs;
+  // private AudioPlayer mMediaPlayer;
+  private ButtonManager buttonManager;
+  private SleepManager sleepManager;
+  private VolumeManager volumeManager;
+  private RadioAlarmManager alarmManager;
+  private BatteryService batteryService;
+  private ProfileManager profileManager;
+  private MediaPlayerService mediaPlayerService;
 
-          // Delayed display of UI elements
-          ActionBar actionBar = getSupportActionBar();
-          if (actionBar != null) {
-            actionBar.show();
-            toolbar.startAnimation(
-                AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_from_top));
-          }
-          mControlsView.setVisibility(VISIBLE);
-          mControlsView.startAnimation(fadeIn);
-        }
-      };
+  private GestureDetector swipeGestureDetector;
+  private ScaleGestureDetector pinchGestureDetector;
 
+  // stuff for the hide/unhide ui elements
   private boolean mVisible;
   private TextView mContentView;
   private final Runnable mHidePart2Runnable =
@@ -164,35 +147,26 @@ public class ClockActivity extends AppCompatActivity {
                   | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
       };
-  private AudioPlayer mMediaPlayer;
-  private ButtonManager buttonManager;
-  private SleepManager sleepManager;
-  private VolumeManager volumeManager;
-  private ImageButton onOffButton;
-  // remember the playing stream number and tag
-  // they will have to be reset when stopping
-  private int mPlayingStreamNo;
-  private String mPlayingStreamTag;
-  // Alarm stuff
-  // remember last picked hour
-  private int h = 0;
-  private int m = 0;
-  private boolean alarmPlaying;
-  private boolean alarmSnoozing;
-  private RadioAlarmManager alarmManager;
-  private BatteryService batteryService;
-  private ProfileManager profileManager;
-  private final Button.OnClickListener nightModeOnClickListener =
-      new View.OnClickListener() {
-
+  private final Runnable mHideRunnable = this::hide;
+  private View mControlsView;
+  private final Runnable mShowPart2Runnable =
+      new Runnable() {
         @Override
-        public void onClick(final View view) {
-          profileManager.toggleNightMode();
+        public void run() {
+          Animation fadeIn = getFadeInAnimation();
+
+          // Delayed display of UI elements
+          ActionBar actionBar = getSupportActionBar();
+          if (actionBar != null) {
+            actionBar.show();
+            toolbar.startAnimation(
+                AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_from_top));
+          }
+          mControlsView.setVisibility(VISIBLE);
+          mControlsView.startAnimation(fadeIn);
         }
       };
-  private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
-  private ScheduledFuture progressiveVolumeTask;
-  private final Runnable mHideRunnable = () -> hide();
+  private final Handler mHideHandler = new Handler();
 
   /**
    * Touch listener to use for in-layout UI controls to delay hiding the system UI. This is to
@@ -206,6 +180,35 @@ public class ClockActivity extends AppCompatActivity {
         return false;
       };
 
+  // ^^^^^
+
+  // stuff to remember (like state stuff)
+  // remember the playing stream number and tag
+  // they will have to be reset when stopping
+  private int mPlayingStreamNo;
+  private String mPlayingStreamTag;
+  // Alarm stuff
+  // remember last picked hour
+  private int h = 0;
+  private int m = 0;
+  private boolean alarmPlaying;
+  private boolean alarmSnoozing;
+  private boolean isPlaying;
+
+  // the saved state; used for keep playing if it the case
+  private Bundle savedInstanceState;
+
+  // LISTENERS
+  private final Button.OnClickListener nightModeOnClickListener =
+      new View.OnClickListener() {
+
+        @Override
+        public void onClick(final View view) {
+          profileManager.toggleNightMode();
+        }
+      };
+  private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
+
   private final Button.OnClickListener playOnClickListener =
       new View.OnClickListener() {
 
@@ -213,20 +216,21 @@ public class ClockActivity extends AppCompatActivity {
         public void onClick(final View view) {
           buttonManager.setButtonClicked((Button) view);
           buttonManager.disableButtons();
-          if (mMediaPlayer != null) {
-            if (mMediaPlayer.isPlaying()) {
-              if (mPlayingStreamNo == buttonManager.getButtonClicked().getId()) {
-                stopPlaying();
-              } else {
-                play(buttonManager.getButtonClicked().getId());
-              }
+          mediaPlayerService.initMediaPlayer();
+          // if (mMediaPlayer != null) {
+          if (mediaPlayerService.isPlaying()) {
+            if (mPlayingStreamNo == buttonManager.getButtonClicked().getId()) {
+              mediaPlayerService.stopPlaying();
             } else {
-              play(buttonManager.getButtonClicked().getId());
+              mediaPlayerService.play(buttonManager.getButtonClicked().getId());
             }
           } else {
-            initMediaPlayer();
-            buttonManager.enableButtons();
+            mediaPlayerService.play(buttonManager.getButtonClicked().getId());
           }
+          // } else {
+          //  initMediaPlayer();
+          //  buttonManager.enableButtons();
+          // }
           // I want to hide the snooze button on any interaction with the radio buttons
           if (alarmSnoozing) {
             alarmManager.cancelSnooze();
@@ -239,10 +243,40 @@ public class ClockActivity extends AppCompatActivity {
   ///////////////////////////////////////////////////////////////////////////
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
     if (BuildConfig.DEBUG && Timber.treeCount() == 0) {
       Timber.plant(new Timber.DebugTree());
     }
+    this.savedInstanceState = savedInstanceState;
+    Timber.d(TAG_STATE, "onCreate");
+    super.onCreate(savedInstanceState);
+    StringBuilder sb = new StringBuilder(new Date(System.currentTimeMillis()).toString());
+    if (savedInstanceState != null) {
+      sb.append("is playing ")
+          .append(savedInstanceState.getBoolean(IS_PLAYING, false))
+          .append("\n");
+      sb.append("mem ").append(savedInstanceState.getInt(PLAYING_STREAM_NO, 1)).append("\n");
+      Timber.d(sb.toString());
+    } else {
+      sb.append("savedInstanceState is null\n");
+    }
+
+    Timber.d(sb.toString());
+    /* AlertDialog.Builder builder =
+        new AlertDialog.Builder(this)
+            .setTitle("Stack trace")
+            .setPositiveButton("OK", (dialog, id) -> dialog.cancel())
+            .setMessage(sb.toString());
+    AlertDialog stacktracedialog = builder.create();
+    stacktracedialog.show();*/
+
+    /*    Executors.newSingleThreadExecutor().execute(new Runnable() {
+          @Override
+          public void run() {
+            EmailSender.sendEmail("cristi.ciuc@gmail.com",
+                    "100LuftBallons1!", "cristi.ciuc@gmail.com", "Test", "Test");
+          }
+        });
+    */
     // SOME INITIALIZATIONS
     // Initialize the preferences_buttons
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -287,7 +321,6 @@ public class ClockActivity extends AppCompatActivity {
     // Set up the user interaction to manually show or hide the system UI.
     overlay.setOnClickListener(view -> toggle());
 
-    initializeUrls();
     buttonManager =
         new ButtonManager(
             getApplicationContext(),
@@ -295,7 +328,8 @@ public class ClockActivity extends AppCompatActivity {
             prefs,
             mDelayHideTouchListener,
             playOnClickListener);
-    buttonManager.initializeButtons(mUrls);
+    buttonManager.initializeUrls();
+    buttonManager.initializeButtons();
 
     displayDialogsOnOpen();
 
@@ -305,25 +339,19 @@ public class ClockActivity extends AppCompatActivity {
     // and get threadHandler null if we try it here)
     clockUpdater = new ClockUpdater(mContentView);
     clockUpdater.start();
-    initializeSleepFunction();
 
     initializeAlarmFunction();
 
     profileManager = new ProfileManager(this, prefs, clockUpdater);
 
     this.batteryService = new BatteryService(this, profileManager);
-    preferenceChangeListener =
-        new SettingsManager(this, buttonManager, sleepManager, clockUpdater, batteryService);
+
     profileManager.clearTask();
     profileManager.applyProfile();
     BrightnessManager brightnessManager =
-            new BrightnessManager(this, mControlsView, profileManager);
+        new BrightnessManager(this, mControlsView, profileManager);
     profileManager.setBrightnessManager(brightnessManager);
-    // Initialize the player
-    // TODO: maybe initialize on first run
-    if (mMediaPlayer == null) {
-      initMediaPlayer();
-    }
+
     // preferences and profile
     ImageButton nightModeButton = findViewById(R.id.night_mode_button);
     nightModeButton.setOnClickListener(nightModeOnClickListener);
@@ -332,16 +360,24 @@ public class ClockActivity extends AppCompatActivity {
     // Volume
     volumeManager = new VolumeManager(this, mControlsView);
 
+    // Initialize the player
+    mediaPlayerService =
+        new MediaPlayerService(this, alarmManager, buttonManager, volumeManager, prefs);
+    preferenceChangeListener =
+        new SettingsManager(
+            this, buttonManager, sleepManager, batteryService, mediaPlayerService);
+    alarmManager.setMediaPlayerService(mediaPlayerService);
+    initializeSleepFunction();
     // Play at start?
     // button clicked is either last played, or the first; will also set
     if (prefs.getBoolean(getResources().getString(R.string.setting_key_playAtStart), false)) {
-      play(buttonManager.getButtonClicked().getId());
+      mediaPlayerService.play(buttonManager.getButtonClicked().getId());
     }
 
     final ImageButton helpButton = findViewById(R.id.main_help_button);
     helpButton.setOnClickListener(new HelpOnClickListener(this));
 
-    onOffButton = findViewById(R.id.on_off_button);
+    ImageButton onOffButton = findViewById(R.id.on_off_button);
     onOffButton.setOnClickListener(new OnOnOffClickListener());
 
     if (((SettingsManager) preferenceChangeListener).isAlwaysDisplayBattery()) {
@@ -392,6 +428,15 @@ public class ClockActivity extends AppCompatActivity {
     // Toolbar
     toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
+    if (savedInstanceState != null) {
+      if (savedInstanceState.getBoolean(IS_PLAYING, false)) {
+        int buttonClicked = savedInstanceState.getInt(PLAYING_STREAM_NO, 1);
+
+        buttonManager.setButtonClicked(buttonClicked);
+        mediaPlayerService.play(buttonClicked);
+      }
+    }
   }
 
   private Toolbar toolbar = null;
@@ -435,16 +480,36 @@ public class ClockActivity extends AppCompatActivity {
   }
 
   @Override
-  protected void onStop() {
-    super.onStop();
+  protected void onPause() {
+    Timber.d(TAG_STATE, "onPause");
+    if (savedInstanceState != null) {
+      Timber.d(savedInstanceState.toString());
+      onSaveInstanceState(savedInstanceState);
+    }
+    super.onPause();
+  }
 
+  @Override
+  protected void onStop() {
+    Timber.d(TAG_STATE, "onStop");
+    super.onStop();
     clockUpdater.setSemaphore(false);
     clockUpdater.getThreadHandler().removeMessages(0);
   }
 
   @Override
+  public void onSaveInstanceState(@NonNull Bundle outState) {
+    outState.putBoolean(IS_PLAYING, isPlaying);
+    outState.putInt(PLAYING_STREAM_NO, mPlayingStreamNo);
+    Timber.d(TAG_STATE, "onSaveInstanceState");
+    Timber.d(outState.toString());
+    super.onSaveInstanceState(outState);
+  }
+
+  @Override
   protected void onDestroy() {
-    resetMediaPlayer();
+    Timber.d(TAG_STATE, "onDestroy");
+    mediaPlayerService.resetMediaPlayer();
     if (clockUpdater != null && !clockUpdater.isInterrupted()) {
       clockUpdater.interrupt();
     }
@@ -468,11 +533,9 @@ public class ClockActivity extends AppCompatActivity {
 
   @Override
   protected void onRestart() {
-    // Timber.d(TAG_STATE, "onRestart");
+    Timber.d(TAG_STATE, "onRestart");
     super.onRestart();
-    if (mMediaPlayer == null) {
-      initMediaPlayer();
-    }
+    mediaPlayerService.onRestart();
     clockUpdater.setSemaphore(true);
   }
 
@@ -569,44 +632,19 @@ public class ClockActivity extends AppCompatActivity {
     alarmButton2.setOnClickListener(view -> showDialogPermissionAlarm());
   }
 
-  // ......................
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^
   // ALARM END
-  // ......................
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
   private void initializeSleepFunction() {
     // sleep timer
-    sleepManager = new SleepManager(this, clockUpdater);
+    sleepManager = new SleepManager(this, clockUpdater, mediaPlayerService);
     sleepManager.init();
 
     // sleep buttons
     ImageButton sleep = findViewById(R.id.sleep);
     sleep.setOnClickListener(sleepManager.sleepButtonOnClickListener);
     sleep.setOnTouchListener(mDelayHideTouchListener);
-  }
-
-  private void initializeUrls() {
-    mUrls.add(
-        prefs.getString(
-            getResources().getString(R.string.setting_key_stream1),
-            getResources().getString(R.string.setting_default_stream1)));
-    mUrls.add(
-        prefs.getString(
-            getResources().getString(R.string.setting_key_stream2),
-            getResources().getString(R.string.setting_default_stream2)));
-    mUrls.add(
-        prefs.getString(
-            getResources().getString(R.string.setting_key_stream3),
-            getResources().getString(R.string.setting_default_stream3)));
-    mUrls.add(
-        prefs.getString(
-            getResources().getString(R.string.setting_key_stream4),
-            getResources().getString(R.string.setting_default_stream4)));
-    mUrls.add(
-        prefs.getString(
-            getResources().getString(R.string.setting_key_stream5),
-            getResources().getString(R.string.setting_default_stream5)));
-    mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream6), ""));
-    mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream7), ""));
-    mUrls.add(prefs.getString(getResources().getString(R.string.setting_key_stream8), ""));
   }
 
   private void displayDialogsOnOpen() {
@@ -641,113 +679,6 @@ public class ClockActivity extends AppCompatActivity {
 
       dialog.show();
     }
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Media Player
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // init
-  private void initMediaPlayer() {
-    mMediaPlayer = new AudioPlayer(getBaseContext());
-    mMediaPlayer.setOnPreparedListener(new CustomOnPreparedListener());
-    mMediaPlayer.setOnErrorListener(new CustomOnErrorListener());
-  }
-
-  private void resetMediaPlayer() {
-    if (mMediaPlayer != null) {
-      stopPlaying();
-      mMediaPlayer = null;
-    }
-  }
-
-  public void cancelProgressiveVolumeTask() {
-    if (progressiveVolumeTask != null && !progressiveVolumeTask.isCancelled()) {
-      progressiveVolumeTask.cancel(true);
-    }
-  }
-
-  public void play(int buttonId) {
-    // if already playing and comes from alarm -do nothing
-    if (mMediaPlayer == null) {
-      initMediaPlayer();
-    }
-    if (mMediaPlayer.isPlaying() && alarmPlaying) {
-      alarmManager.changeAlarmIconAndTextOnCancel();
-      return;
-    }
-    // we might have a default alarm playing, so need to shut it off
-    alarmManager.shutDownDefaultAlarm();
-    boolean isProgressiveSound =
-        prefs.getBoolean(
-            getResources().getString(R.string.setting_key_alarmProgressiveSound), false);
-    Timber.d(String.format("progressive: %b", isProgressiveSound));
-    if (alarmPlaying && isProgressiveSound) {
-      cancelProgressiveVolumeTask();
-      volumeManager.setVolume(1);
-      // Timber.d("Scheduling progressive volume task");
-      progressiveVolumeTask =
-          executorService.scheduleWithFixedDelay(
-              new AlarmProgressiveVolume(), 10, 20, TimeUnit.SECONDS);
-    }
-    String url;
-    // index in th list
-    int index = -1;
-    switch (buttonId) {
-      case R.id.stream1:
-        index = 0;
-        break;
-      case R.id.stream2:
-        index = 1;
-        break;
-      case R.id.stream3:
-        index = 2;
-        break;
-      case R.id.stream4:
-        index = 3;
-        break;
-      case R.id.stream5:
-        index = 4;
-        break;
-      case R.id.stream6:
-        index = 5;
-        break;
-      case R.id.stream7:
-        index = 6;
-        break;
-      case R.id.stream8:
-        index = 7;
-        break;
-      default:
-        break;
-    }
-    url = mUrls.get(index);
-    buttonManager.resetButtons();
-    Toast.makeText(ClockActivity.this, "Connecting to " + url, Toast.LENGTH_SHORT).show();
-    if (url != null) {
-      mMediaPlayer.setDataSource(Uri.parse(url));
-    } else { // Something went wrong, resetting
-      resetMediaPlayer();
-      buttonManager.enableButtons();
-    }
-  }
-
-  public void stopPlaying() {
-    if (mMediaPlayer != null) {
-      if (mMediaPlayer.isPlaying()) {
-        Toast.makeText(ClockActivity.this, "Stopping stream", Toast.LENGTH_SHORT).show();
-      }
-      mMediaPlayer.reset();
-    }
-    buttonManager.enableButtons();
-    buttonManager.unlightButton();
-    onOffButton.setColorFilter(getResources().getColor(R.color.color_clock_red));
-
-    if (getSupportActionBar() != null) {
-      getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-    }
-    mPlayingStreamNo = 0;
-    mPlayingStreamTag = null;
-    cancelProgressiveVolumeTask();
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -821,65 +752,9 @@ public class ClockActivity extends AppCompatActivity {
     }
   }
 
-  ///////////////////////////////////////////////////////////////////////////
-  // Delaying removal of nav bar (android studio default stuff)
-  ///////////////////////////////////////////////////////////////////////////
-  private void toggle() {
-    if (mVisible) {
-      hide();
-    } else {
-      show();
-    }
-  }
-
-  public void hide() {
-    if (alarmPlaying) {
-      cancelProgressiveVolumeTask();
-      alarmManager.shutDownRadioAlarm(false);
-      alarmManager.cancelNonRecurringAlarm();
-      alarmManager.setAlarm();
-      setAlarmPlaying(false);
-    }
-    Animation fadeOut = getFadeOutAnimation();
-    // Hide UI first
-    ActionBar actionBar = getSupportActionBar();
-    if (actionBar != null) {
-      toolbar.startAnimation(
-          AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_to_top));
-      actionBar.hide();
-    }
-    mControlsView.setVisibility(GONE);
-    mControlsView.startAnimation(fadeOut);
-    mVisible = false;
-
-    // Schedule a runnable to remove the status and navigation bar after a delay
-    mHideHandler.removeCallbacks(mShowPart2Runnable);
-    mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
-  }
-
-  @SuppressLint("InlinedApi")
-  public void show() {
-    // Show the system bar
-    mContentView.setSystemUiVisibility(
-        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-    mVisible = true;
-
-    // Schedule a runnable to display UI elements after a delay
-    mHideHandler.removeCallbacks(mHidePart2Runnable);
-    mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
-  }
-
-  /**
-   * Schedules a call to hide() in [delay] milliseconds, canceling any previously scheduled calls.
-   */
-  private void delayedHide(int delayMillis) {
-    mHideHandler.removeCallbacks(mHideRunnable);
-    mHideHandler.postDelayed(mHideRunnable, delayMillis);
-  }
-
-  // --/////////////////////////////////////////////////////////////////////////
-  // END Delaying removal of nav bar (android studio default stuff)
-  // --/////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // GETTERS AND SETTERS
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   public void setAlarmPlaying(boolean alarmPlaying) {
     this.alarmPlaying = alarmPlaying;
   }
@@ -895,13 +770,26 @@ public class ClockActivity extends AppCompatActivity {
   public View getmControlsView() {
     return mControlsView;
   }
-  public List<String> getmUrls() {
-    return mUrls;
-  }
 
   public String getmPlayingStreamTag() {
     return mPlayingStreamTag;
   }
+
+  public void setmPlayingStreamNo(int mPlayingStreamNo) {
+    this.mPlayingStreamNo = mPlayingStreamNo;
+  }
+
+  public void setmPlayingStreamTag(String mPlayingStreamTag) {
+    this.mPlayingStreamTag = mPlayingStreamTag;
+  }
+
+
+  public void setPlaying(boolean playing) {
+    isPlaying = playing;
+  }
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  // GETTERS AND SETTERS END
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
   private class HelpOnClickListener implements View.OnClickListener {
     private AppCompatActivity activity;
@@ -909,14 +797,31 @@ public class ClockActivity extends AppCompatActivity {
     public HelpOnClickListener(AppCompatActivity activity) {
       this.activity = activity;
     }
+
     @Override
     public void onClick(View view) {
       android.app.AlertDialog tipsDialog = new TipsDialog(view.getContext());
       tipsDialog.show();
-      //ShowCaseService service = new ShowCaseService(activity);
-      //service.showCase();
-    }
+      WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+      lp.copyFrom(tipsDialog.getWindow().getAttributes());
+      lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+      lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+      tipsDialog.getWindow().setAttributes(lp);
 
+      // ShowCaseService service = new ShowCaseService(activity);
+      // service.showCase();
+      /*      TutoShowcase.from(activity)
+      .on(mContentView)
+      .displaySwipableLeft()
+      .delayed(250)
+      .animated(true)
+      //.show()
+      .on(mContentView)
+      .displaySwipableRight()
+      .delayed(500)
+      .show();*/
+      ;
+    }
   }
 
   /**
@@ -940,23 +845,13 @@ public class ClockActivity extends AppCompatActivity {
     }
   }
 
-  private class AlarmProgressiveVolume implements Runnable {
-    public void run() {
-      if (volumeManager.getVolume() > volumeManager.getMaxVolume()) {
-        cancelProgressiveVolumeTask();
-        return;
-      }
-      volumeManager.volumeUp();
-    }
-  }
-
   private class OnOnOffClickListener implements View.OnClickListener {
     @Override
     public void onClick(View view) {
-      if (mMediaPlayer.isPlaying()) {
-        stopPlaying();
+      if (mediaPlayerService.isPlaying()) {
+        mediaPlayerService.stopPlaying();
       } else {
-        play(buttonManager.getButtonClicked().getId());
+        mediaPlayerService.play(buttonManager.getButtonClicked().getId());
       }
       delayedHide(AUTO_HIDE_DELAY_MILLIS);
     }
@@ -1021,53 +916,13 @@ public class ClockActivity extends AppCompatActivity {
     }
   }
 
-  private class CustomOnPreparedListener implements OnPreparedListener {
-    @Override
-    public void onPrepared() {
-      mMediaPlayer.start();
-
-      buttonManager.lightButton();
-      mPlayingStreamNo = buttonManager.getButtonClicked().getId();
-      mPlayingStreamTag = buttonManager.getButtonClicked().getTag().toString();
-      buttonManager.enableButtons();
-      onOffButton.setColorFilter(getResources().getColor(R.color.color_clock));
-      // default url do not show, b/c they are not present in prefs at first
-      String defaultKey = mPlayingStreamTag.replace("setting.key.stream", "");
-      int index = Integer.parseInt(defaultKey) - 1;
-      Toast.makeText(ClockActivity.this, "Playing " + mUrls.get(index), Toast.LENGTH_SHORT).show();
-      if (getSupportActionBar() != null) {
-        getSupportActionBar()
-            .setTitle(getResources().getString(R.string.app_name) + ": " + mUrls.get(index));
-      }
-      // setAlarmPlaying(false);
-    }
-  }
-
-  private class CustomOnErrorListener implements OnErrorListener {
-    @Override
-    public boolean onError(Exception e) {
-      Toast.makeText(ClockActivity.this, "Error playing stream", Toast.LENGTH_SHORT).show();
-      resetMediaPlayer();
-      initMediaPlayer();
-      buttonManager.resetButtons();
-      onOffButton.setColorFilter(getResources().getColor(R.color.color_clock_red));
-      if (getSupportActionBar() != null) {
-        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-      }
-      if (alarmPlaying) {
-        alarmManager.playDefaultAlarmOnStreamError();
-      }
-      return false;
-    }
-  }
-
   // --/////////////////////////////////////////////////////////////////////////
   // --- GESTURES ---
   // --/////////////////////////////////////////////////////////////////////////
   private boolean disallowSwipe = false;
 
   public void setDisallowSwipe(boolean disallowSwipe) {
-    Timber.d("set disallow swipe: " + disallowSwipe);
+    // Timber.d("set disallow swipe: " + disallowSwipe);
     this.disallowSwipe = disallowSwipe;
   }
 
@@ -1076,7 +931,7 @@ public class ClockActivity extends AppCompatActivity {
   @Override
   public boolean dispatchTouchEvent(MotionEvent event) {
 
-    Timber.d("Motion disallowed: " + disallowSwipe);
+    // Timber.d("Motion disallowed: " + disallowSwipe);
     if (disallowSwipe) {
       return super.dispatchTouchEvent(event);
     }
@@ -1101,7 +956,7 @@ public class ClockActivity extends AppCompatActivity {
     public boolean onSingleTapUp(MotionEvent e) {
       if (!isScaling) {
         // Handle single tap
-        Timber.d("Single tap detected");
+        // Timber.d("Single tap detected");
         return true;
       }
       return super.onSingleTapUp(e);
@@ -1154,11 +1009,11 @@ public class ClockActivity extends AppCompatActivity {
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-      Timber.d("Scaling: detected " + detector.getScaleFactor());
+      // Timber.d("Scaling: detected " + detector.getScaleFactor());
 
       float scaleFactor = detector.getScaleFactor();
       scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 8.0f));
-      Timber.d("Scale, factor: " + scaleFactor);
+      // Timber.d("Scale, factor: " + scaleFactor);
       if (scaleFactor < 1.0) {
         scaleFactor *= -1;
       }
@@ -1189,7 +1044,64 @@ public class ClockActivity extends AppCompatActivity {
     fadeOut.setDuration(FADE_OUT_DURATION_MILLIS);
     return fadeOut;
   }
+
   // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   // --- END ANIMATIONS ---
   // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  ///////////////////////////////////////////////////////////////////////////
+  // Delaying removal of nav bar (android studio default stuff)
+  ///////////////////////////////////////////////////////////////////////////
+  private void toggle() {
+    if (mVisible) {
+      hide();
+    } else {
+      show();
+    }
+  }
+
+  public void hide() {
+    if (alarmPlaying) {
+      volumeManager.cancelProgressiveVolumeTask();
+      alarmManager.shutDownRadioAlarm(false);
+      alarmManager.cancelNonRecurringAlarm();
+      alarmManager.setAlarm();
+      setAlarmPlaying(false);
+    }
+    Animation fadeOut = getFadeOutAnimation();
+    // Hide UI first
+    ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null) {
+      toolbar.startAnimation(
+          AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_to_top));
+      actionBar.hide();
+    }
+    mControlsView.setVisibility(GONE);
+    mControlsView.startAnimation(fadeOut);
+    mVisible = false;
+
+    // Schedule a runnable to remove the status and navigation bar after a delay
+    mHideHandler.removeCallbacks(mShowPart2Runnable);
+    mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+  }
+
+  @SuppressLint("InlinedApi")
+  public void show() {
+    // Show the system bar
+    mContentView.setSystemUiVisibility(
+        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+    mVisible = true;
+
+    // Schedule a runnable to display UI elements after a delay
+    mHideHandler.removeCallbacks(mHidePart2Runnable);
+    mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
+  }
+
+  /**
+   * Schedules a call to hide() in [delay] milliseconds, canceling any previously scheduled calls.
+   */
+  private void delayedHide(int delayMillis) {
+    mHideHandler.removeCallbacks(mHideRunnable);
+    mHideHandler.postDelayed(mHideRunnable, delayMillis);
+  }
 }

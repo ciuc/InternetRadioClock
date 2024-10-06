@@ -8,16 +8,14 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
-
 import com.google.android.material.textfield.TextInputEditText;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.activity.ClockActivity;
 
@@ -34,6 +32,10 @@ public class ButtonManager {
   private View.OnLongClickListener addEditLabelClickListener;
   // the button we have clicked on
   private Button mButtonClicked;
+  private ImageButton onOffButton;
+  // the map of urls; it is a map of the setting key > url (String)
+  // url(setting_key_stream1 >  http://something)
+  private final List<String> mUrls = new ArrayList<>();
 
   public ButtonManager(Context ctx) {
     this(ctx, null, null, null, null);
@@ -51,9 +53,10 @@ public class ButtonManager {
     this.onTouchListener = onTouchListener;
     this.playListener = playListener;
     resources = context.getResources();
+    onOffButton = view.findViewById(R.id.on_off_button);
   }
 
-  public void initializeButtons(List<String> mUrls) {
+  public void initializeButtons() {
     Button stream1 = view.findViewById(R.id.stream1);
     Button stream2 = view.findViewById(R.id.stream2);
     Button stream3 = view.findViewById(R.id.stream3);
@@ -95,16 +98,14 @@ public class ButtonManager {
       b.setOnLongClickListener(addEditLabelClickListener);
       b.setOnLongClickListener(new AddLabelOnLongClickListener(i + 1));
     }
-    hideUnhideButtons(mUrls);
+    hideUnhideButtons();
     enableButtons();
-    // onOff button
-
   }
 
-  void hideUnhideButtons(List<String> urls) {
+  void hideUnhideButtons() {
     for (int i = 0; i < buttons.size(); i++) {
       Button b = buttons.get(i);
-      String url = urls.get(i);
+      String url = mUrls.get(i);
       if (b.getVisibility() == View.GONE && !url.isEmpty()) {
         b.setVisibility(View.VISIBLE);
       } else if (b.getVisibility() == View.VISIBLE && url.isEmpty()) {
@@ -123,6 +124,11 @@ public class ButtonManager {
 
   public void setButtonClicked(Button mButtonClicked) {
     this.mButtonClicked = mButtonClicked;
+    prefs.edit().putString(ClockActivity.LAST_PLAYED, mButtonClicked.getTag().toString()).apply();
+  }
+
+  public void setButtonClicked(int id) {
+    this.mButtonClicked = findButtonById(id);
     prefs.edit().putString(ClockActivity.LAST_PLAYED, mButtonClicked.getTag().toString()).apply();
   }
 
@@ -193,12 +199,23 @@ public class ButtonManager {
     return null;
   }
 
+  Button findButtonById(int id) {
+    for (Button button : buttons) {
+      if (button.getId() == id) {
+        return button;
+      }
+    }
+    return null;
+  }
+
   public void lightButton() {
     resetButtons();
     mButtonClicked.setTextColor(resources.getColor(R.color.color_clock));
     GradientDrawable buttonShape = (GradientDrawable) mButtonClicked.getBackground();
     buttonShape.setStroke(1, resources.getColor(R.color.color_clock));
   }
+
+  public void lightButton(int buttonId) {}
 
   public void unlightButton() {
     Button clicked = getButtonClicked();
@@ -207,6 +224,22 @@ public class ButtonManager {
       GradientDrawable buttonShape = (GradientDrawable) clicked.getBackground();
       buttonShape.setStroke(1, context.getResources().getColor(R.color.button_color));
     }
+  }
+
+  public void onStopPlaying() {
+    enableButtons();
+    unlightButton();
+    onOffButton.setColorFilter(context.getResources().getColor(R.color.color_clock_red));
+  }
+
+  public void onPrepared() {
+    enableButtons();
+    onOffButton.setColorFilter(context.getResources().getColor(R.color.color_clock));
+  }
+
+  public void onError() {
+    resetButtons();
+    onOffButton.setColorFilter(context.getResources().getColor(R.color.color_clock_red));
   }
 
   private class AddLabelOnLongClickListener implements View.OnLongClickListener {
@@ -237,5 +270,71 @@ public class ButtonManager {
       builder.show();
       return true;
     }
+  }
+
+  public void initializeUrls() {
+    mUrls.add(
+        prefs.getString(
+            context.getResources().getString(R.string.setting_key_stream1),
+            context.getResources().getString(R.string.setting_default_stream1)));
+    mUrls.add(
+        prefs.getString(
+            context.getResources().getString(R.string.setting_key_stream2),
+            context.getResources().getString(R.string.setting_default_stream2)));
+    mUrls.add(
+        prefs.getString(
+            context.getResources().getString(R.string.setting_key_stream3),
+            context.getResources().getString(R.string.setting_default_stream3)));
+    mUrls.add(
+        prefs.getString(
+            context.getResources().getString(R.string.setting_key_stream4),
+            context.getResources().getString(R.string.setting_default_stream4)));
+    mUrls.add(
+        prefs.getString(
+            context.getResources().getString(R.string.setting_key_stream5),
+            context.getResources().getString(R.string.setting_default_stream5)));
+    mUrls.add(prefs.getString(context.getResources().getString(R.string.setting_key_stream6), ""));
+    mUrls.add(prefs.getString(context.getResources().getString(R.string.setting_key_stream7), ""));
+    mUrls.add(prefs.getString(context.getResources().getString(R.string.setting_key_stream8), ""));
+  }
+
+  public List<String> getmUrls() {
+    return mUrls;
+  }
+
+  String getUrl(int buttonId) {
+    String url;
+    // index in th list
+    int index = -1;
+    switch (buttonId) {
+      case R.id.stream1:
+        index = 0;
+        break;
+      case R.id.stream2:
+        index = 1;
+        break;
+      case R.id.stream3:
+        index = 2;
+        break;
+      case R.id.stream4:
+        index = 3;
+        break;
+      case R.id.stream5:
+        index = 4;
+        break;
+      case R.id.stream6:
+        index = 5;
+        break;
+      case R.id.stream7:
+        index = 6;
+        break;
+      case R.id.stream8:
+        index = 7;
+        break;
+      default:
+        break;
+    }
+    url = mUrls.get(index);
+    return url;
   }
 }

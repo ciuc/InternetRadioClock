@@ -12,22 +12,21 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
   private final ClockActivity clockActivity;
   private final ButtonManager buttonManager;
   private final SleepManager sleepManager;
-  private final ClockUpdater clockUpdater;
   private final SharedPreferences prefs;
   private final BatteryService batteryService;
+  private final MediaPlayerService mediaPlayerService;
 
   public SettingsManager(
-      ClockActivity clockActivity,
-      ButtonManager buttonManager,
-      SleepManager sleepManager,
-      ClockUpdater clockUpdater,
-      BatteryService batteryService) {
+          ClockActivity clockActivity,
+          ButtonManager buttonManager,
+          SleepManager sleepManager,
+          BatteryService batteryService, MediaPlayerService mediaPlayerService) {
     this.clockActivity = clockActivity;
     this.buttonManager = buttonManager;
     this.sleepManager = sleepManager;
-    this.clockUpdater = clockUpdater;
     this.prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
     this.batteryService = batteryService;
+    this.mediaPlayerService = mediaPlayerService;
   }
 
   @Override
@@ -37,12 +36,12 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
     setupTimers(prefs, key);
 
     if (key.equals(clockActivity.getmPlayingStreamTag())) {
-      clockActivity.stopPlaying();
+      mediaPlayerService.stopPlaying();
       // since we stopped, the clicked button is reset
       // set this one here
       // TODO: find a better solution
       buttonManager.setButtonClicked(buttonManager.findButtonByTag(key));
-      clockActivity.play(buttonManager.findButtonByTag(key).getId());
+      mediaPlayerService.play(buttonManager.findButtonByTag(key).getId());
     }
 
     setupBatteryMonitoring(key);
@@ -129,8 +128,8 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
     }
     if (key.contains("stream")) {
       String url = prefs.getString(key, "");
-      clockActivity.getmUrls().set(streamIndex, url);
-      buttonManager.hideUnhideButtons(clockActivity.getmUrls());
+      buttonManager.getmUrls().set(streamIndex, url);
+      buttonManager.hideUnhideButtons();
     }
   }
 

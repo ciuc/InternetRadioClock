@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">InternetRadioClock</string>
+    <string name="app_name">Simple Radio Clock</string>
 
     <string name="dialog.button.ok">GOT IT!</string>
     <string name="dialog.button.ok.amoled">I UNDERSTAND AND I CONTINUE!</string>
@@ -260,7 +260,7 @@
     <string name="title.streams">Configure Buttons</string>
     <string name="title.settings">Settings</string>
 
-    <string name="title.streamFinder">InternetRadioClock: Stream Finder</string>
+    <string name="title.streamFinder">SimpleRadioClock: Stream Finder</string>
     <string name="streamFinder.hint">The list with radio streams is retrieved from the internet. It is maintained by community efforts and might not be 100% accurate.\n
 \nThere are aver 15.000 radios so this is why you need to provide at least a country as search criteria, otherwise the list would be huge.\n
 \nYou can add more search criteria like a category or the name of the radio.\n
@@ -656,4 +656,6 @@ in this section you can set some neat stuff:
     <string name="previous_tip">Previous tip</string>
     <string name="auto.brightness.description">"Auto (Leave the brightness to the system's sensor.)"</string>
     <string name="assigned.to.memory">%s assigned to memory %d</string>
+    <string name="cancel_snooze">Cancel Snooze</string>
+    <string name="snooze">Snooze</string>
 </resources>

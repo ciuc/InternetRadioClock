@@ -2,22 +2,21 @@ package ro.antiprotv.radioclock.service;
 
 import static android.content.Context.AUDIO_SERVICE;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
-
 import java.text.DecimalFormat;
 import java.util.Date;
-
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.activity.ClockActivity;
 import timber.log.Timber;
@@ -35,6 +34,8 @@ public class VolumeManager {
   private final AudioManager audioManager;
   private final int maxVolume;
   private VerticalSeekBar seekBar;
+  private ScheduledFuture progressiveVolumeTask;
+  private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
 
   public VolumeManager(Context ctx, View view) {
     this.ctx = ctx;
@@ -62,21 +63,20 @@ public class VolumeManager {
     seekBar.setMax(maxVolume);
     seekBar.setProgress(currentVolume);
     seekBar.setOnSeekBarChangeListener(
-            new SeekBar.OnSeekBarChangeListener() {
+        new SeekBar.OnSeekBarChangeListener() {
 
-              @Override
-              public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                Timber.d("vol: " + progress);
-                setVolume(progress);
-              }
+          @Override
+          public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            // Timber.d("vol: " + progress);
+            setVolume(progress);
+          }
 
-              @Override
-              public void onStartTrackingTouch(SeekBar seekBar) {}
+          @Override
+          public void onStartTrackingTouch(SeekBar seekBar) {}
 
-              @Override
-              public void onStopTrackingTouch(SeekBar seekBar) {}
-            });
-
+          @Override
+          public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
   }
 
   /** increase volume */
@@ -139,6 +139,18 @@ public class VolumeManager {
     ((ClockActivity) ctx).runOnUiThread(() -> volumeText.setText(getVolumePct(volume)));
   }
 
+  public void cancelProgressiveVolumeTask() {
+    if (progressiveVolumeTask != null && !progressiveVolumeTask.isCancelled()) {
+      progressiveVolumeTask.cancel(true);
+    }
+  }
+
+  public void setupProgressiveVolumeTask() {
+    progressiveVolumeTask =
+        executorService.scheduleWithFixedDelay(
+            new AlarmProgressiveVolume(), 10, 20, TimeUnit.SECONDS);
+  }
+
   public class SettingsContentObserver extends ContentObserver {
     public SettingsContentObserver(Handler handler) {
       super(handler);
@@ -147,9 +159,19 @@ public class VolumeManager {
     @Override
     public void onChange(boolean selfChange) {
       int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-      Timber.d("Volume now " + currentVolume);
+      // Timber.d("Volume now " + currentVolume);
       setVolumeText(currentVolume);
       seekBar.setProgress(currentVolume);
+    }
+  }
+
+  private class AlarmProgressiveVolume implements Runnable {
+    public void run() {
+      if (getVolume() > getMaxVolume()) {
+        cancelProgressiveVolumeTask();
+        return;
+      }
+      volumeUp();
     }
   }
 }

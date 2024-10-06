@@ -2,6 +2,7 @@ package ro.antiprotv.radioclock.service;
 
 import android.app.AlarmManager;
 import android.content.SharedPreferences;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -37,7 +38,7 @@ public class RadioAlarmManagerTest {
         when(clockActivity.findViewById(R.id.alarm_icon_turn_off)).thenReturn(mock(ImageButton.class));
         when(clockActivity.findViewById(R.id.alarm_icon_cancel)).thenReturn(mock(ImageButton.class));
         when(clockActivity.findViewById(R.id.alarm_icon_snooze)).thenReturn(mock(ImageButton.class));
-        when(clockActivity.findViewById(R.id.alarm_icon_close)).thenReturn(mock(ImageButton.class));
+        //when(clockActivity.findViewById(R.id.alarm_icon_close)).thenReturn(mock(Button.class));
         when(clockActivity.findViewById(R.id.alarm_time)).thenReturn(mock(TextView.class));
         when(clockActivity.findViewById(R.id.alarm_icon)).thenReturn(mock(ImageButton.class));
         when(clockActivity.findViewById(R.id.alarm_icon_turn_off)).thenReturn(mock(ImageButton.class));

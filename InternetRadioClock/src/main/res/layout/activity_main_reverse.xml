@@ -92,64 +92,49 @@
             android:visibility="gone"
             app:srcCompat="@drawable/ic_alarm_off_black_24dp" />
 
-        <ImageButton
+        <Button
             android:id="@+id/alarm_icon_snooze"
-            style="@style/imageButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="130dp"
+            android:layout_height="96dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="20dp"
             android:layout_toRightOf="@+id/alarm_time"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_snooze_black_24dp" />
+            android:alpha=".9"
+            android:background="@drawable/snooze_tns"
+            android:drawableTop="@drawable/snooze_big"
+            android:text="@string/snooze"
+            android:textColor="#FFFFFF"
+            tools:ignore="RtlHardcoded"
+            android:visibility="gone" />
 
-        <ImageButton
+        <Button
             android:id="@+id/alarm_icon_snooze_cancel"
-            style="@style/imageButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="130dp"
+            android:layout_height="96dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/alarm_time"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_snooze_cancel_black_24dp" />
+            android:alpha=".9"
+            android:background="@drawable/snooze_tns"
+            android:drawableTop="@drawable/mediamodifier_design"
+            android:text="@string/cancel_snooze"
+            android:textColor="#FFFFFF"
+            android:visibility="gone" />
 
-        <ImageButton
+        <Button
             android:id="@+id/alarm_icon_cancel"
-            style="@style/imageButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="130dp"
+            android:layout_height="96dp"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="20dp"
             android:layout_toRightOf="@+id/alarm_icon_snooze"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_cancel_black_24dp" />
-
-        <ImageButton
-            android:id="@+id/alarm_icon_close"
-            style="@style/imageButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/alarm_icon_cancel"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_check_24dp" />
+            android:alpha=".9"
+            android:background="@drawable/snooze_tns"
+            android:drawableTop="@drawable/baseline_cancel_48"
+            android:text="Stop"
+            android:textColor="#FFFFFF"
+            android:visibility="gone" />
 
         <!-- ALARM 2-->
-
 
         <ImageButton
             android:id="@+id/alarm_icon2"

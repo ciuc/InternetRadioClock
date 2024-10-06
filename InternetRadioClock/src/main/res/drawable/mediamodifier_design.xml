@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="48dp"
+    android:width="48dp"
+    android:viewportHeight="1080"
+    android:viewportWidth="1080"
+    >
+      
+    <path android:fillColor="@android:color/transparent" android:pathData="M0,0h1080v1080h-1080z"/>
+      
+    <path android:fillColor="@android:color/transparent" android:fillType="nonZero" android:pathData="M0,0h1080v1080h-1080z" android:strokeColor="#00000000" android:strokeLineCap="butt" android:strokeLineJoin="miter" android:strokeWidth="1"/>
+      
+    <path android:fillColor="#FFFFFF" android:fillType="nonZero" android:pathData="M440,679L640,679L640,619L528,619L640,493L640,439L440,439L440,499L554,499L440,627L440,679ZM540,933Q465,933 399.5,904.5Q334,876 285.5,827.5Q237,779 208.5,713.5Q180,648 180,573Q180,498 208.5,432.5Q237,367 285.5,318.5Q334,270 399.5,241.5Q465,213 540,213Q615,213 680.5,241.5Q746,270 794.5,318.5Q843,367 871.5,432.5Q900,498 900,573Q900,648 871.5,713.5Q843,779 794.5,827.5Q746,876 680.5,904.5Q615,933 540,933ZM540,573ZM284,147L340,203L170,373L114,317L284,147ZM796,147L966,317L910,373L740,203L796,147ZM540,853Q657,853 738.5,771.5Q820,690 820,573Q820,456 738.5,374.5Q657,293 540,293Q423,293 341.5,374.5Q260,456 260,573Q260,690 341.5,771.5Q423,853 540,853Z" android:strokeColor="#000000" android:strokeLineCap="butt" android:strokeLineJoin="miter" android:strokeWidth="0"/>
+      
+    <path android:fillColor="#FFFFFF" android:fillType="nonZero" android:pathData="M309.9,337.9L338,310.2C354.1,293.7 381,293.7 397.1,310.2L567.9,480.6L738.7,310.2C754.8,293.7 781.7,293.7 797.8,310.2L825.5,337.9C842,354 842,380.9 825.5,397L655.1,567.8L825.5,738.6C842,754.7 842,781.6 825.5,797.7L797.8,825.8C781.7,841.9 754.8,841.9 738.7,825.8L567.9,655L397.1,825.8C381,841.9 354.1,841.9 338,825.8L309.9,797.7C293.8,781.6 293.8,754.7 309.9,738.6L480.7,567.8L309.9,397C293.8,380.9 293.8,354 309.9,337.9z" android:strokeColor="#000000" android:strokeLineCap="butt" android:strokeLineJoin="miter" android:strokeWidth="0"/>
+    
+</vector>
