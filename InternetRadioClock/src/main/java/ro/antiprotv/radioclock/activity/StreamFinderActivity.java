@@ -69,8 +69,7 @@ public class StreamFinderActivity extends AppCompatActivity {
 
   private void getStreams() {
     HttpRequestManager requestManager = new HttpRequestManager(this);
-    Toast.makeText(this, "Retrieving radios. This might take a while...", Toast.LENGTH_SHORT)
-        .show();
+    Toast.makeText(this, R.string.toast_retrieving_radios, Toast.LENGTH_SHORT).show();
     Spinner countrySpinner = findViewById(R.id.streamFinder_dropdown_country);
     // There is no null here, b/c there is always something selected
     String country = countrySpinner.getSelectedItem().toString();
@@ -115,7 +114,7 @@ public class StreamFinderActivity extends AppCompatActivity {
       }
       adapter.notifyDataSetChanged();
     } else {
-      Toast.makeText(this, "Error retrieving station list!", Toast.LENGTH_SHORT).show();
+      Toast.makeText(this, R.string.error_retrieving_station_list, Toast.LENGTH_SHORT).show();
     }
   }
 
@@ -133,7 +132,7 @@ public class StreamFinderActivity extends AppCompatActivity {
     @Override
     public void onClick(View view) {
       AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(view.getContext());
-      dialogBuilder.setTitle("About the StreamFinder");
+      dialogBuilder.setTitle(R.string.about_the_streamfinder);
       dialogBuilder.setView(
           LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_streamfinder_help, null));
       dialogBuilder.setPositiveButton(

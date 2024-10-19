@@ -16,7 +16,7 @@ public class TipsDialog extends AlertDialog {
     final String[] tips = context.getResources().getStringArray(R.array.tips);
     View view = LayoutInflater.from(context).inflate(R.layout.dialog_main_help, null);
     setView(view);
-    setTitle("Tips & Tricks");
+    setTitle(context.getString(R.string.tips_tricks));
     setIcon(R.drawable.ic_help_outline_green_24);
     Button previous = view.findViewById(R.id.button_tips_previousTip);
     Button next = view.findViewById(R.id.button_tips_nextTip);

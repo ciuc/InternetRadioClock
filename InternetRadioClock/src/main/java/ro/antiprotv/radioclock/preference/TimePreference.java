@@ -3,16 +3,9 @@ package ro.antiprotv.radioclock.preference;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.TimePicker;
-
 import androidx.preference.DialogPreference;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
-import ro.antiprotv.radioclock.service.profile.ProfileUtils;
 
 /** Time Picker for use in preference dialog in night profile activity */
 public class TimePreference extends DialogPreference {

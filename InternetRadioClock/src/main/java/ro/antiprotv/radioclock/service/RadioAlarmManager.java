@@ -175,22 +175,23 @@ public class RadioAlarmManager extends BroadcastReceiver {
     }
     alarmMgr.cancel(alarmIntent);
     try {
-      alarmMgr.setExactAndAllowWhileIdle(
-          AlarmManager.RTC_WAKEUP, nextAlarm.getTimeInMillis(), alarmIntent);
-      // TESTING: enable this line to have the alarm in 5 secs;
-      // alarmMgr.setExactAndAllowWhileIdle(
-      //    AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, alarmIntent);
+      long alarmAfterMillis = nextAlarm.getTimeInMillis();
+      // UNCOMMENT FOR TESTING
+      // alarmAfterMillis = 5000;
+      // ^^^ COMMENT FOR PROD
+
+      alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmAfterMillis, alarmIntent);
     } catch (SecurityException securityException) {
       toaster.toast(
-          clockActivity,
-          "Cannot set the alarm: make sure you give Exact Alarm permission to the app.",
-          Toast.LENGTH_LONG);
+          clockActivity, clockActivity.getString(R.string.alarm_set_error), Toast.LENGTH_LONG);
     }
     toaster.toast(
         clockActivity,
         String.format(
-            "Alarm set for %s at %02d:%02d",
-            calendarDays2Names.get(nextAlarm.day), nextAlarm.hh, nextAlarm.mm),
+            clockActivity.getString(R.string.alarm_set_for_s_at_02d_02d),
+            calendarDays2Names.get(nextAlarm.day),
+            nextAlarm.hh,
+            nextAlarm.mm),
         Toast.LENGTH_SHORT);
     return nextAlarm.id;
   }
@@ -345,7 +346,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     } catch (SecurityException securityException) {
       toaster.toast(
           clockActivity,
-          "Cannot set the alarm: make sure you give Exact Alarm permission to the app.",
+          clockActivity.getString(R.string.cannot_set_the_alarm_permission),
           Toast.LENGTH_LONG);
     }
     snoozeCancelButton1.setVisibility(View.VISIBLE);
@@ -432,14 +433,6 @@ public class RadioAlarmManager extends BroadcastReceiver {
 
   public void setToaster(Toaster toaster) {
     this.toaster = toaster;
-  }
-
-  public boolean isAlarmPlaying() {
-    return alarmPlaying;
-  }
-
-  public void setAlarmPlaying(boolean alarmPlaying) {
-    this.alarmPlaying = alarmPlaying;
   }
 
   public void setMediaPlayerService(MediaPlayerService mediaPlayerService) {

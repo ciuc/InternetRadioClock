@@ -19,22 +19,26 @@ import timber.log.Timber;
 
 public class BrightnessManager {
   private final SeekBar seekBar;
-  private ProfileManager profileManager;
-  private ImageView thumb;
   ImageButton autoBrightnessButton;
   Context context;
+  private final ProfileManager profileManager;
+  private ImageView thumb;
   private boolean disableOnProgressChanged = false;
+
   @SuppressLint("ClickableViewAccessibility")
   public BrightnessManager(Context context, View view, ProfileManager profileManager) {
     this.profileManager = profileManager;
     this.context = context;
     seekBar = view.findViewById(R.id.seekbar_brightness);
     int currentBrightness = profileManager.getBrightness();
-    Timber.d("BrightnessManager - saved in settings (currentProfile.Brightness): " + currentBrightness);
+    Timber.d(
+        "BrightnessManager - saved in settings (currentProfile.Brightness): " + currentBrightness);
     if (seekBar == null) {
       AlertDialog dialog = new AlertDialog.Builder(context).create();
       dialog.setTitle("ERROR");
-      dialog.setMessage("Could not find seekbar " + new Date(System.currentTimeMillis()));
+      dialog.setMessage(
+          context.getString(R.string.could_not_find_seekbar)
+              + new Date(System.currentTimeMillis()));
       dialog.show();
       return;
     }
@@ -69,13 +73,13 @@ public class BrightnessManager {
             // Handle the SeekBar touch events here
             switch (event.getAction()) {
               case MotionEvent.ACTION_DOWN:
-                //Timber.d("Seekbar ontouch: action ACTION_DOWN ");
+              // Timber.d("Seekbar ontouch: action ACTION_DOWN ");
               case MotionEvent.ACTION_MOVE:
-                //Timber.d("Seekbar ontouch: action ACTION_MOVE");
+                // Timber.d("Seekbar ontouch: action ACTION_MOVE");
                 ((ClockActivity) context).setDisallowSwipe(true);
                 return false;
               case MotionEvent.ACTION_UP:
-                //Timber.d("Seekbar ontouch: action ACTION_UP");
+                // Timber.d("Seekbar ontouch: action ACTION_UP");
                 ((ClockActivity) context).setDisallowSwipe(false);
                 return false; // Let the SeekBar handle its own events
             }
@@ -127,7 +131,6 @@ public class BrightnessManager {
       seekBar.setProgress(brightness);
     }
   }
-
 
   public void setupSeekbar(int brightness) {
     disableOnProgressChanged = true;

@@ -25,6 +25,9 @@ public class ButtonManager {
   private final View view;
   private final View.OnTouchListener onTouchListener;
   private final View.OnClickListener playListener;
+  // the map of urls; it is a map of the setting key > url (String)
+  // url(setting_key_stream1 >  http://something)
+  private final List<String> mUrls = new ArrayList<>();
   private List<Button> buttons;
   private List<Integer> settingKeys;
   private List<Integer> defaultNames;
@@ -32,10 +35,7 @@ public class ButtonManager {
   private View.OnLongClickListener addEditLabelClickListener;
   // the button we have clicked on
   private Button mButtonClicked;
-  private ImageButton onOffButton;
-  // the map of urls; it is a map of the setting key > url (String)
-  // url(setting_key_stream1 >  http://something)
-  private final List<String> mUrls = new ArrayList<>();
+  private final ImageButton onOffButton;
 
   public ButtonManager(Context ctx) {
     this(ctx, null, null, null, null);
@@ -242,36 +242,6 @@ public class ButtonManager {
     onOffButton.setColorFilter(context.getResources().getColor(R.color.color_clock_red));
   }
 
-  private class AddLabelOnLongClickListener implements View.OnLongClickListener {
-    private final int streamNo;
-
-    AddLabelOnLongClickListener(int stream) {
-      streamNo = stream;
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-      final Button button = (Button) view;
-      AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-      LinearLayout layout =
-          (LinearLayout)
-              LayoutInflater.from(view.getContext())
-                  .inflate(R.layout.dialog_edit_radio_label, null);
-      final TextInputEditText labelInput =
-          layout.findViewById(R.id.streamFinder_textinput_labelDialog_label);
-      labelInput.setText(button.getText());
-      labelInput.setSelectAllOnFocus(true);
-      builder.setView(layout);
-      builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
-      builder.setPositiveButton(
-          R.string.yes,
-          (dialog, which) -> setButtonLabel(streamNo, labelInput.getText().toString()));
-      builder.setNeutralButton(R.string.remove, (dialog, which) -> setButtonUrl(streamNo));
-      builder.show();
-      return true;
-    }
-  }
-
   public void initializeUrls() {
     mUrls.add(
         prefs.getString(
@@ -336,5 +306,35 @@ public class ButtonManager {
     }
     url = mUrls.get(index);
     return url;
+  }
+
+  private class AddLabelOnLongClickListener implements View.OnLongClickListener {
+    private final int streamNo;
+
+    AddLabelOnLongClickListener(int stream) {
+      streamNo = stream;
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+      final Button button = (Button) view;
+      AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+      LinearLayout layout =
+          (LinearLayout)
+              LayoutInflater.from(view.getContext())
+                  .inflate(R.layout.dialog_edit_radio_label, null);
+      final TextInputEditText labelInput =
+          layout.findViewById(R.id.streamFinder_textinput_labelDialog_label);
+      labelInput.setText(button.getText());
+      labelInput.setSelectAllOnFocus(true);
+      builder.setView(layout);
+      builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+      builder.setPositiveButton(
+          R.string.yes,
+          (dialog, which) -> setButtonLabel(streamNo, labelInput.getText().toString()));
+      builder.setNeutralButton(R.string.remove, (dialog, which) -> setButtonUrl(streamNo));
+      builder.show();
+      return true;
+    }
   }
 }

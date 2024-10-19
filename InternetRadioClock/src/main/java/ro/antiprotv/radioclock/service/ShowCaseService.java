@@ -10,15 +10,16 @@ import com.getkeepsafe.taptargetview.TapTargetSequence;
 import ro.antiprotv.radioclock.R;
 
 public class ShowCaseService {
-  private static final int TITLE_SIZE = 40;
-  private static final int DESCRIPTION_SIZE = 20;
   public static final int TARGET_RADIUS = 60;
   public static final float OUTER_CIRCLE_ALPHA = 0.96f;
   public static final int OUTER_CIRCLE_COLOR = R.color.colorPrimary;
   public static final int TARGET_CIRCLE_COLOR = R.color.white;
   public static final int DIM_COLOR = R.color.color_clock;
+  private static final int TITLE_SIZE = 40;
+  private static final int DESCRIPTION_SIZE = 20;
   private final AppCompatActivity activity;
-
+  private int currentStep = 0;
+  private final TapTargetSequence tapTargetSequence;
   public ShowCaseService(AppCompatActivity activity) {
     this.activity = activity;
     Toolbar toolbar = activity.findViewById(R.id.toolbar);
@@ -27,7 +28,10 @@ public class ShowCaseService {
 
     // tap targets
     TapTarget tap_tgt_text_size =
-        TapTarget.forView(activity.findViewById(R.id.text_size_cycle_button_rev), "Clock Face", "Use this panel to adjust the clock face: font, size, color.")
+        TapTarget.forView(
+                activity.findViewById(R.id.text_size_cycle_button_rev),
+                "Clock Face",
+                "Use this panel to adjust the clock face: font, size, color.")
             .outerCircleColor(OUTER_CIRCLE_COLOR) // Specify a color for the outer circle
             .outerCircleAlpha(OUTER_CIRCLE_ALPHA) // Specify the alpha amount for the outer circle
             .targetCircleColor(TARGET_CIRCLE_COLOR) // Specify a color for the target circle
@@ -47,7 +51,7 @@ public class ShowCaseService {
                 true) // Specify whether the target is transparent (displays the content underneath)
             .targetRadius(TARGET_RADIUS + 30); // Specify the target radius (in dp)
 
-  TapTarget bouded =  TapTarget.forBounds(new Rect(0, 0, 200, 200),"aaa");
+    TapTarget bouded = TapTarget.forBounds(new Rect(0, 0, 200, 200), "aaa");
 
     TapTarget tap_tgt_layout_settings =
         TapTarget.forView(
@@ -119,7 +123,8 @@ public class ShowCaseService {
 
     tapTargetSequence =
         new TapTargetSequence(activity)
-            .targets(tap_tgt_text_size, bouded, tap_tgt_night, tap_tgt_layout_settings, tap_tgt_close)
+            .targets(
+                tap_tgt_text_size, bouded, tap_tgt_night, tap_tgt_layout_settings, tap_tgt_close)
             .listener(
                 new TapTargetSequence.Listener() {
                   @Override
@@ -138,9 +143,6 @@ public class ShowCaseService {
                   }
                 });
   }
-
-  private int currentStep = 0;
-  private TapTargetSequence tapTargetSequence;
 
   public void showCase() {
     activity.findViewById(R.id.toolbar).setVisibility(View.VISIBLE);

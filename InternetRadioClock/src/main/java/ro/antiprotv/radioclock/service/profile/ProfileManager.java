@@ -1,5 +1,6 @@
 package ro.antiprotv.radioclock.service.profile;
 
+import static ro.antiprotv.radioclock.R.string.apply_day_profile_next_change;
 import static ro.antiprotv.radioclock.activity.ClockActivity.PREF_NIGHT_MODE;
 
 import android.content.SharedPreferences;
@@ -42,13 +43,13 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   private final SharedPreferences prefs;
   private final ClockUpdater clockUpdater;
   private final ScheduledExecutorService scheduledExecutorService;
-  private BrightnessManager brightnessManager;
   private final ProfileUtils profileUtils;
   private final ImageView battery_icon;
   private final TextView battery_pct;
   private final String[] fonts_files;
   private final Map<String, Typeface> fonts = new HashMap<>();
   private final List<Integer> sizes = new ArrayList<>();
+  private BrightnessManager brightnessManager;
   private ScheduledFuture currentScheduledNightTask;
   private ScheduledFuture currentScheduledDayTask;
   private Profile currentProfile;
@@ -214,7 +215,8 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
               TimeUnit.MILLISECONDS);
       Toast.makeText(
               clockActivity,
-              "Apply night profile. Next change: " + h_r_nightProfile_end,
+              clockActivity.getString(R.string.apply_night_profile_next_change)
+                  + h_r_nightProfile_end,
               Toast.LENGTH_LONG)
           .show();
     } else {
@@ -236,7 +238,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
               TimeUnit.MILLISECONDS);
       Toast.makeText(
               clockActivity,
-              "Apply day profile. Next change: " + h_r_nightProfile_start,
+              clockActivity.getString(apply_day_profile_next_change) + h_r_nightProfile_start,
               Toast.LENGTH_LONG)
           .show();
     }
@@ -409,6 +411,11 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     currentProfile.setSize(size);
   }
 
+  public int getBrightness() {
+    Timber.d("brightness: " + currentProfile.brightness);
+    return currentProfile.brightness;
+  }
+
   public void setBrightness(int brightness) {
     Timber.d("brightness: " + brightness);
     disableProfileChangeOnSettingChange = true;
@@ -417,11 +424,6 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     WindowManager.LayoutParams layoutParams = window.getAttributes();
     layoutParams.screenBrightness = brightness / 100f;
     window.setAttributes(layoutParams);
-  }
-
-  public int getBrightness() {
-    Timber.d("brightness: " + currentProfile.brightness);
-    return currentProfile.brightness;
   }
 
   public void setBrightnessManager(BrightnessManager brightnessManager) {
@@ -436,7 +438,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
       colorPickerPopUp
           .setShowAlpha(false) // By default show alpha is true.
           .setDefaultColor(currentProfile.getColor()) // By default red color is set.
-          .setDialogTitle("Pick a Color")
+          .setDialogTitle(clockActivity.getString(R.string.pick_a_color))
           .setOnPickColorListener(
               new ColorPickerPopUp.OnPickColorListener() {
                 @Override

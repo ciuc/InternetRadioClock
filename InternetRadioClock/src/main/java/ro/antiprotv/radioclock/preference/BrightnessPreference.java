@@ -2,9 +2,6 @@ package ro.antiprotv.radioclock.preference;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.CheckBox;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.DialogPreference;

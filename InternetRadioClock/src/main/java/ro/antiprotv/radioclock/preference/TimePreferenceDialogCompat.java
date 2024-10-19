@@ -39,11 +39,10 @@ public class TimePreferenceDialogCompat extends PreferenceDialogFragmentCompat {
   @Override
   public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
     SharedPreferences prefs = getPreference().getSharedPreferences();
-      String currentTime = prefs.getString(this_key, ((TimePreference) getPreference()).getDefaultValue());
-      int currentHour =
-          ProfileUtils.getHour(currentTime);
-      int currentMinute =
-          ProfileUtils.getMinute(currentTime);
+    String currentTime =
+        prefs.getString(this_key, ((TimePreference) getPreference()).getDefaultValue());
+    int currentHour = ProfileUtils.getHour(currentTime);
+    int currentMinute = ProfileUtils.getMinute(currentTime);
     try {
       TimePicker picker = new TimePicker(getContext());
       picker.setIs24HourView(true);

@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.textfield.TextInputEditText;
 import java.util.List;
-
 import ro.antiprotv.radioclock.activity.StreamFinderActivity;
 import ro.antiprotv.radioclock.service.ButtonManager;
 

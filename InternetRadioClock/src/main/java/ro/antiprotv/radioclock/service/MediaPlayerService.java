@@ -11,12 +11,12 @@ import ro.antiprotv.radioclock.activity.ClockActivity;
 import timber.log.Timber;
 
 public class MediaPlayerService {
-  private AudioPlayer mMediaPlayer;
   private final ClockActivity clockActivity;
   private final RadioAlarmManager alarmManager;
   private final ButtonManager buttonManager;
   private final VolumeManager volumeManager;
   private final SharedPreferences prefs;
+  private AudioPlayer mMediaPlayer;
 
   public MediaPlayerService(
       ClockActivity clockActivity,
@@ -59,7 +59,7 @@ public class MediaPlayerService {
       initMediaPlayer();
     }
     // if already playing and comes from alarm -do nothing
-    if (mMediaPlayer.isPlaying() && alarmManager.isAlarmPlaying()) {
+    if (mMediaPlayer.isPlaying() && clockActivity.isAlarmPlaying()) {
       alarmManager.changeAlarmIconAndTextOnCancel();
       return;
     }
@@ -69,16 +69,20 @@ public class MediaPlayerService {
         prefs.getBoolean(
             clockActivity.getResources().getString(R.string.setting_key_alarmProgressiveSound),
             false);
-    Timber.d(String.format("progressive: %b", isProgressiveSound));
-    if (alarmManager.isAlarmPlaying() && isProgressiveSound) {
+    Timber.d(String.format("alarm playing %b, progressive: %b", clockActivity.isAlarmPlaying(), isProgressiveSound));
+    if (clockActivity.isAlarmPlaying() && isProgressiveSound) {
       volumeManager.cancelProgressiveVolumeTask();
       volumeManager.setVolume(1);
-      // Timber.d("Scheduling progressive volume task");
+      Timber.d("Scheduling progressive volume task");
       volumeManager.setupProgressiveVolumeTask();
     }
     String url = buttonManager.getUrl(buttonId);
     buttonManager.resetButtons();
-    Toast.makeText(clockActivity, "Connecting to " + url, Toast.LENGTH_SHORT).show();
+    Toast.makeText(
+            clockActivity,
+            clockActivity.getString(R.string.connecting_to) + url,
+            Toast.LENGTH_SHORT)
+        .show();
     if (url != null) {
       mMediaPlayer.setMedia(Uri.parse(url));
     } else { // Something went wrong, resetting
@@ -90,7 +94,7 @@ public class MediaPlayerService {
   public void stopPlaying() {
     if (mMediaPlayer != null) {
       if (mMediaPlayer.isPlaying()) {
-        Toast.makeText(clockActivity, "Stopping stream", Toast.LENGTH_SHORT).show();
+        Toast.makeText(clockActivity, R.string.stopping_stream, Toast.LENGTH_SHORT).show();
       }
       mMediaPlayer.reset();
     }
@@ -107,6 +111,17 @@ public class MediaPlayerService {
     volumeManager.cancelProgressiveVolumeTask();
   }
 
+  public boolean isPlaying() {
+    return mMediaPlayer.isPlaying();
+  }
+
+  public void onRestart() {
+    // Timber.d(TAG_STATE, "onRestart");
+    if (mMediaPlayer == null) {
+      initMediaPlayer();
+    }
+  }
+
   private class CustomOnPreparedListener implements OnPreparedListener {
     @Override
     public void onPrepared() {
@@ -121,7 +136,9 @@ public class MediaPlayerService {
       String defaultKey = clockActivity.getmPlayingStreamTag().replace("setting.key.stream", "");
       int index = Integer.parseInt(defaultKey) - 1;
       Toast.makeText(
-              clockActivity, "Playing " + buttonManager.getmUrls().get(index), Toast.LENGTH_SHORT)
+              clockActivity,
+              clockActivity.getString(R.string.playing) + buttonManager.getmUrls().get(index),
+              Toast.LENGTH_SHORT)
           .show();
       if (clockActivity.getSupportActionBar() != null) {
         clockActivity
@@ -138,7 +155,7 @@ public class MediaPlayerService {
   private class CustomOnErrorListener implements OnErrorListener {
     @Override
     public boolean onError(Exception e) {
-      Toast.makeText(clockActivity, "Error playing stream", Toast.LENGTH_SHORT).show();
+      Toast.makeText(clockActivity, R.string.error_playing_stream, Toast.LENGTH_SHORT).show();
       resetMediaPlayer();
       initMediaPlayer();
       buttonManager.onError();
@@ -147,21 +164,10 @@ public class MediaPlayerService {
             .getSupportActionBar()
             .setTitle(clockActivity.getResources().getString(R.string.app_name));
       }
-      if (alarmManager.isAlarmPlaying()) {
+      if (clockActivity.isAlarmPlaying()) {
         alarmManager.playDefaultAlarmOnStreamError();
       }
       return false;
-    }
-  }
-
-  public boolean isPlaying() {
-    return mMediaPlayer.isPlaying();
-  }
-
-  public void onRestart() {
-    // Timber.d(TAG_STATE, "onRestart");
-    if (mMediaPlayer == null) {
-      initMediaPlayer();
     }
   }
 }

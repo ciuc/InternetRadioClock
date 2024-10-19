@@ -3,7 +3,6 @@ package ro.antiprotv.radioclock.service;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
-import ro.antiprotv.radioclock.ClockUpdater;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.SleepManager;
 import ro.antiprotv.radioclock.activity.ClockActivity;

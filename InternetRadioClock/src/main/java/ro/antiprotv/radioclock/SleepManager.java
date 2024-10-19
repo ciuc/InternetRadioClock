@@ -32,11 +32,10 @@ public class SleepManager {
   private final TextView sleepTimerText;
   private final ClockUpdater clockUpdater;
   private final SleepCounterUpdater sleepCounterUpdater = new SleepCounterUpdater();
+  MediaPlayerService mediaPlayerService;
   private int sleepTimerIndex;
   private ScheduledFuture sleepFuture;
   private ScheduledFuture sleepCounterFuture;
-  MediaPlayerService mediaPlayerService;
-
   public final Button.OnClickListener sleepButtonOnClickListener =
       new View.OnClickListener() {
         @Override

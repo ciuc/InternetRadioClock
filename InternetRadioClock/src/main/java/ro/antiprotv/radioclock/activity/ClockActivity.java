@@ -69,33 +69,28 @@ public class ClockActivity extends AppCompatActivity {
 
   public static final String PREF_NIGHT_MODE = "NIGHT_MODE";
   public static final String LAST_PLAYED = "LAST_PLAYED";
-  private static final String TAG_STATE = "ClockActivity | State: %s";
   public static final String IS_PLAYING = "IS_PLAYING";
   public static final String PLAYING_STREAM_NO = "PLAYING_STREAM_NO";
-
   public static final String USER_ALARM_PERMISSION_NOT_ALLOWED_PREF = "USER_PERM_NOK";
-
+  public static final int FADE_OUT_DURATION_MILLIS = 400;
+  public static final int FADE_IN_DURATION_MILLIS = 200;
+  private static final String TAG_STATE = "ClockActivity | State: %s";
   /**
    * Whether or not the system UI should be auto-hidden after {@link #AUTO_HIDE_DELAY_MILLIS}
    * milliseconds.
    */
   private static final boolean AUTO_HIDE = true;
-
   /**
    * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after user interaction before
    * hiding the system UI.
    */
   private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
-
   /**
    * Some older devices needs a small delay between UI widget updates and a change of the status and
    * navigation bar.
    */
   private static final int UI_ANIMATION_DELAY = 0;
-
-  public static final int FADE_OUT_DURATION_MILLIS = 400;
-  public static final int FADE_IN_DURATION_MILLIS = 200;
-
+  private final Handler mHideHandler = new Handler();
   /**
    * The user has explicitly denied setting alarms permissions.
    *
@@ -107,9 +102,7 @@ public class ClockActivity extends AppCompatActivity {
    *     <p>FALSE = (default) user has not explicitly denied
    */
   public boolean USER_ALARM_PERMISSION_NOT_ALLOWED = false;
-
   public boolean HAS_ALARM_PERMISSIONS = true;
-
   // some initializations
   private ClockUpdater clockUpdater;
   private SharedPreferences prefs;
@@ -120,11 +113,18 @@ public class ClockActivity extends AppCompatActivity {
   private RadioAlarmManager alarmManager;
   private BatteryService batteryService;
   private ProfileManager profileManager;
-  private MediaPlayerService mediaPlayerService;
+  // LISTENERS
+  private final Button.OnClickListener nightModeOnClickListener =
+      new View.OnClickListener() {
 
+        @Override
+        public void onClick(final View view) {
+          profileManager.toggleNightMode();
+        }
+      };
+  private MediaPlayerService mediaPlayerService;
   private GestureDetector swipeGestureDetector;
   private ScaleGestureDetector pinchGestureDetector;
-
   // stuff for the hide/unhide ui elements
   private boolean mVisible;
   private TextView mContentView;
@@ -147,46 +147,14 @@ public class ClockActivity extends AppCompatActivity {
                   | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
       };
-  private final Runnable mHideRunnable = this::hide;
   private View mControlsView;
-  private final Runnable mShowPart2Runnable =
-      new Runnable() {
-        @Override
-        public void run() {
-          Animation fadeIn = getFadeInAnimation();
-
-          // Delayed display of UI elements
-          ActionBar actionBar = getSupportActionBar();
-          if (actionBar != null) {
-            actionBar.show();
-            toolbar.startAnimation(
-                AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_from_top));
-          }
-          mControlsView.setVisibility(VISIBLE);
-          mControlsView.startAnimation(fadeIn);
-        }
-      };
-  private final Handler mHideHandler = new Handler();
-
-  /**
-   * Touch listener to use for in-layout UI controls to delay hiding the system UI. This is to
-   * prevent the jarring behavior of controls going away while interacting with activity UI.
-   */
-  private final View.OnTouchListener mDelayHideTouchListener =
-      (view, motionEvent) -> {
-        if (AUTO_HIDE) {
-          delayedHide(AUTO_HIDE_DELAY_MILLIS);
-        }
-        return false;
-      };
-
-  // ^^^^^
-
   // stuff to remember (like state stuff)
   // remember the playing stream number and tag
   // they will have to be reset when stopping
   private int mPlayingStreamNo;
   private String mPlayingStreamTag;
+
+  // ^^^^^
   // Alarm stuff
   // remember last picked hour
   private int h = 0;
@@ -194,21 +162,6 @@ public class ClockActivity extends AppCompatActivity {
   private boolean alarmPlaying;
   private boolean alarmSnoozing;
   private boolean isPlaying;
-
-  // the saved state; used for keep playing if it the case
-  private Bundle savedInstanceState;
-
-  // LISTENERS
-  private final Button.OnClickListener nightModeOnClickListener =
-      new View.OnClickListener() {
-
-        @Override
-        public void onClick(final View view) {
-          profileManager.toggleNightMode();
-        }
-      };
-  private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
-
   private final Button.OnClickListener playOnClickListener =
       new View.OnClickListener() {
 
@@ -237,6 +190,63 @@ public class ClockActivity extends AppCompatActivity {
           }
         }
       };
+  // the saved state; used for keep playing if it the case
+  private Bundle savedInstanceState;
+  private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
+  private Toolbar toolbar = null;
+  private final Runnable mShowPart2Runnable =
+      new Runnable() {
+        @Override
+        public void run() {
+          Animation fadeIn = getFadeInAnimation();
+
+          // Delayed display of UI elements
+          ActionBar actionBar = getSupportActionBar();
+          if (actionBar != null) {
+            actionBar.show();
+            toolbar.startAnimation(
+                AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_from_top));
+          }
+          mControlsView.setVisibility(VISIBLE);
+          mControlsView.startAnimation(fadeIn);
+        }
+      };
+  private final Runnable mHideRunnable = this::hide;
+  /**
+   * Touch listener to use for in-layout UI controls to delay hiding the system UI. This is to
+   * prevent the jarring behavior of controls going away while interacting with activity UI.
+   */
+  private final View.OnTouchListener mDelayHideTouchListener =
+      (view, motionEvent) -> {
+        if (AUTO_HIDE) {
+          delayedHide(AUTO_HIDE_DELAY_MILLIS);
+        }
+        return false;
+      };
+  // --/////////////////////////////////////////////////////////////////////////
+  // --- GESTURES ---
+  // --/////////////////////////////////////////////////////////////////////////
+  private boolean disallowSwipe = false;
+  private boolean isScaling = false;
+
+  // --/////////////////////////////////////////////////////////////////////////
+  // --- ANIMATION ---
+  // --/////////////////////////////////////////////////////////////////////////
+  @NonNull
+  private static Animation getFadeInAnimation() {
+    Animation fadeIn = new AlphaAnimation(0, 1);
+    fadeIn.setStartOffset(0);
+    fadeIn.setDuration(FADE_IN_DURATION_MILLIS);
+    return fadeIn;
+  }
+
+  @NonNull
+  private static Animation getFadeOutAnimation() {
+    Animation fadeOut = new AlphaAnimation(1, 0);
+    fadeOut.setStartOffset(0);
+    fadeOut.setDuration(FADE_OUT_DURATION_MILLIS);
+    return fadeOut;
+  }
 
   ///////////////////////////////////////////////////////////////////////////
   // State methods
@@ -364,8 +374,7 @@ public class ClockActivity extends AppCompatActivity {
     mediaPlayerService =
         new MediaPlayerService(this, alarmManager, buttonManager, volumeManager, prefs);
     preferenceChangeListener =
-        new SettingsManager(
-            this, buttonManager, sleepManager, batteryService, mediaPlayerService);
+        new SettingsManager(this, buttonManager, sleepManager, batteryService, mediaPlayerService);
     alarmManager.setMediaPlayerService(mediaPlayerService);
     initializeSleepFunction();
     // Play at start?
@@ -438,8 +447,6 @@ public class ClockActivity extends AppCompatActivity {
       }
     }
   }
-
-  private Toolbar toolbar = null;
 
   private void setOrientationLandscapeIfLocked() {
     if (prefs.getBoolean(
@@ -531,6 +538,10 @@ public class ClockActivity extends AppCompatActivity {
     super.onDestroy();
   }
 
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  // ALARM END
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
   @Override
   protected void onRestart() {
     Timber.d(TAG_STATE, "onRestart");
@@ -548,9 +559,8 @@ public class ClockActivity extends AppCompatActivity {
   private void showDialogPermissionAlarm() {
     AlertDialog.Builder builder = new AlertDialog.Builder(this);
     builder
-        .setMessage(
-            "In order to use the alarm functionality, you need to \nallow the app to set alarms and reminders. \nYou can always do this later, or revoke the permission at any time.")
-        .setTitle("Use alarms?")
+        .setMessage(getString(R.string.alarm_permission_message_info))
+        .setTitle(getString(R.string.use_alarms))
         .setIcon(R.drawable.outline_icon_alarm_24)
         .setPositiveButton(
             R.string.dialog_button_permission_OK,
@@ -568,6 +578,10 @@ public class ClockActivity extends AppCompatActivity {
     AlertDialog dialog = builder.create();
     dialog.show();
   }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MENU
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   private void initializeAlarmFunction() {
     alarmManager = new RadioAlarmManager(this, buttonManager);
@@ -632,10 +646,6 @@ public class ClockActivity extends AppCompatActivity {
     alarmButton2.setOnClickListener(view -> showDialogPermissionAlarm());
   }
 
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  // ALARM END
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
   private void initializeSleepFunction() {
     // sleep timer
     sleepManager = new SleepManager(this, clockUpdater, mediaPlayerService);
@@ -653,8 +663,8 @@ public class ClockActivity extends AppCompatActivity {
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
       builder
           .setMessage(
-              "Swipe to change fonts and pinch to change font size.\nThere are two alarms and both can be recurring.\nYou can setup the night profile to start automatically at a certain time.")
-          .setTitle("New Stuff!")
+              getString(R.string.display_dialog_text_swipe_to_change))
+          .setTitle(R.string.new_stuff)
           .setIcon(R.drawable.baseline_info_24)
           .setPositiveButton(
               R.string.dialog_button_ok,
@@ -668,9 +678,8 @@ public class ClockActivity extends AppCompatActivity {
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
       builder
           .setMessage(
-              "Having an image on the screen for a long time might damage your AMOLED screen.\n"
-                  + "The text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen you are highly discouraged to do so.")
-          .setTitle("AMOLED WARNING")
+              R.string.dialog_amoled_warning)
+          .setTitle(R.string.amoled_warning)
           .setIcon(R.drawable.ic_warning_black_24dp)
           .setPositiveButton(
               getString(R.string.dialog_button_ok_amoled),
@@ -680,10 +689,6 @@ public class ClockActivity extends AppCompatActivity {
       dialog.show();
     }
   }
-
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // MENU
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -759,6 +764,10 @@ public class ClockActivity extends AppCompatActivity {
     this.alarmPlaying = alarmPlaying;
   }
 
+  public boolean isAlarmPlaying() {
+    return alarmPlaying;
+  }
+
   public void setAlarmSnoozing(boolean alarmSnoozing) {
     this.alarmSnoozing = alarmSnoozing;
   }
@@ -771,28 +780,141 @@ public class ClockActivity extends AppCompatActivity {
     return mControlsView;
   }
 
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  // GETTERS AND SETTERS END
+  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
   public String getmPlayingStreamTag() {
     return mPlayingStreamTag;
-  }
-
-  public void setmPlayingStreamNo(int mPlayingStreamNo) {
-    this.mPlayingStreamNo = mPlayingStreamNo;
   }
 
   public void setmPlayingStreamTag(String mPlayingStreamTag) {
     this.mPlayingStreamTag = mPlayingStreamTag;
   }
 
+  public void setmPlayingStreamNo(int mPlayingStreamNo) {
+    this.mPlayingStreamNo = mPlayingStreamNo;
+  }
 
   public void setPlaying(boolean playing) {
     isPlaying = playing;
   }
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  // GETTERS AND SETTERS END
-  // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  public void setDisallowSwipe(boolean disallowSwipe) {
+    // Timber.d("set disallow swipe: " + disallowSwipe);
+    this.disallowSwipe = disallowSwipe;
+  }
+
+  @Override
+  public boolean dispatchTouchEvent(MotionEvent event) {
+
+    // Timber.d("Motion disallowed: " + disallowSwipe);
+    if (disallowSwipe) {
+      return super.dispatchTouchEvent(event);
+    }
+    // Pass the touch event to the scale gesture detector first
+    pinchGestureDetector.onTouchEvent(event);
+    swipeGestureDetector.onTouchEvent(event);
+
+    // If scaling, consume the event, otherwise let it propagate
+    if (isScaling) {
+      return true; // Consume the event
+    } else {
+      return super.dispatchTouchEvent(event); // Propagate the event
+    }
+  }
+
+  private void onSwipeRight() {
+    profileManager.cycleThroughFonts(false);
+  }
+
+  private void onSwipeLeft() {
+    profileManager.cycleThroughFonts(true);
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+  // Delaying removal of nav bar (android studio default stuff)
+  ///////////////////////////////////////////////////////////////////////////
+  private void toggle() {
+    if (mVisible) {
+      hide();
+    } else {
+      show();
+    }
+  }
+
+  public void hide() {
+    if (alarmPlaying) {
+      volumeManager.cancelProgressiveVolumeTask();
+      alarmManager.shutDownRadioAlarm(false);
+      alarmManager.cancelNonRecurringAlarm();
+      alarmManager.setAlarm();
+      setAlarmPlaying(false);
+    }
+    Animation fadeOut = getFadeOutAnimation();
+    // Hide UI first
+    ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null) {
+      toolbar.startAnimation(
+          AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_to_top));
+      actionBar.hide();
+    }
+    mControlsView.setVisibility(GONE);
+    mControlsView.startAnimation(fadeOut);
+    mVisible = false;
+
+    // Schedule a runnable to remove the status and navigation bar after a delay
+    mHideHandler.removeCallbacks(mShowPart2Runnable);
+    mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
+  }
+
+  @SuppressLint("InlinedApi")
+  public void show() {
+    // Show the system bar
+    mContentView.setSystemUiVisibility(
+        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+    mVisible = true;
+
+    // Schedule a runnable to display UI elements after a delay
+    mHideHandler.removeCallbacks(mHidePart2Runnable);
+    mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
+  }
+
+  /**
+   * Schedules a call to hide() in [delay] milliseconds, canceling any previously scheduled calls.
+   */
+  private void delayedHide(int delayMillis) {
+    mHideHandler.removeCallbacks(mHideRunnable);
+    mHideHandler.postDelayed(mHideRunnable, delayMillis);
+  }
+
+  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  // --- END GESTURES ---
+  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  /**
+   * Necessary just to inhibit onStop to prevent double onTimeSet call on certain versions of
+   * android
+   */
+  private static class CustomTimePickerDialog extends TimePickerDialog {
+
+    public CustomTimePickerDialog(
+        Context context,
+        OnTimeSetListener listener,
+        int hourOfDay,
+        int minute,
+        boolean is24HourView) {
+      super(context, listener, hourOfDay, minute, is24HourView);
+    }
+
+    @Override
+    protected void onStop() {
+      // inhibit
+    }
+  }
 
   private class HelpOnClickListener implements View.OnClickListener {
-    private AppCompatActivity activity;
+    private final AppCompatActivity activity;
 
     public HelpOnClickListener(AppCompatActivity activity) {
       this.activity = activity;
@@ -820,30 +942,12 @@ public class ClockActivity extends AppCompatActivity {
       .displaySwipableRight()
       .delayed(500)
       .show();*/
-      ;
     }
   }
 
-  /**
-   * Necessary just to inhibit onStop to prevent double onTimeSet call on certain versions of
-   * android
-   */
-  private static class CustomTimePickerDialog extends TimePickerDialog {
-
-    public CustomTimePickerDialog(
-        Context context,
-        OnTimeSetListener listener,
-        int hourOfDay,
-        int minute,
-        boolean is24HourView) {
-      super(context, listener, hourOfDay, minute, is24HourView);
-    }
-
-    @Override
-    protected void onStop() {
-      // inhibit
-    }
-  }
+  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  // --- END ANIMATIONS ---
+  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
   private class OnOnOffClickListener implements View.OnClickListener {
     @Override
@@ -916,37 +1020,6 @@ public class ClockActivity extends AppCompatActivity {
     }
   }
 
-  // --/////////////////////////////////////////////////////////////////////////
-  // --- GESTURES ---
-  // --/////////////////////////////////////////////////////////////////////////
-  private boolean disallowSwipe = false;
-
-  public void setDisallowSwipe(boolean disallowSwipe) {
-    // Timber.d("set disallow swipe: " + disallowSwipe);
-    this.disallowSwipe = disallowSwipe;
-  }
-
-  private boolean isScaling = false;
-
-  @Override
-  public boolean dispatchTouchEvent(MotionEvent event) {
-
-    // Timber.d("Motion disallowed: " + disallowSwipe);
-    if (disallowSwipe) {
-      return super.dispatchTouchEvent(event);
-    }
-    // Pass the touch event to the scale gesture detector first
-    pinchGestureDetector.onTouchEvent(event);
-    swipeGestureDetector.onTouchEvent(event);
-
-    // If scaling, consume the event, otherwise let it propagate
-    if (isScaling) {
-      return true; // Consume the event
-    } else {
-      return super.dispatchTouchEvent(event); // Propagate the event
-    }
-  }
-
   private class SwipeGestureDetector extends GestureDetector.SimpleOnGestureListener {
 
     private static final int SWIPE_THRESHOLD = 100;
@@ -985,14 +1058,6 @@ public class ClockActivity extends AppCompatActivity {
     }
   }
 
-  private void onSwipeRight() {
-    profileManager.cycleThroughFonts(false);
-  }
-
-  private void onSwipeLeft() {
-    profileManager.cycleThroughFonts(true);
-  }
-
   private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
     // private float scaleFactor = 1.0f;
 
@@ -1020,88 +1085,5 @@ public class ClockActivity extends AppCompatActivity {
       profileManager.changeSize(scaleFactor);
       return true;
     }
-  }
-
-  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  // --- END GESTURES ---
-  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-  // --/////////////////////////////////////////////////////////////////////////
-  // --- ANIMATION ---
-  // --/////////////////////////////////////////////////////////////////////////
-  @NonNull
-  private static Animation getFadeInAnimation() {
-    Animation fadeIn = new AlphaAnimation(0, 1);
-    fadeIn.setStartOffset(0);
-    fadeIn.setDuration(FADE_IN_DURATION_MILLIS);
-    return fadeIn;
-  }
-
-  @NonNull
-  private static Animation getFadeOutAnimation() {
-    Animation fadeOut = new AlphaAnimation(1, 0);
-    fadeOut.setStartOffset(0);
-    fadeOut.setDuration(FADE_OUT_DURATION_MILLIS);
-    return fadeOut;
-  }
-
-  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  // --- END ANIMATIONS ---
-  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-  ///////////////////////////////////////////////////////////////////////////
-  // Delaying removal of nav bar (android studio default stuff)
-  ///////////////////////////////////////////////////////////////////////////
-  private void toggle() {
-    if (mVisible) {
-      hide();
-    } else {
-      show();
-    }
-  }
-
-  public void hide() {
-    if (alarmPlaying) {
-      volumeManager.cancelProgressiveVolumeTask();
-      alarmManager.shutDownRadioAlarm(false);
-      alarmManager.cancelNonRecurringAlarm();
-      alarmManager.setAlarm();
-      setAlarmPlaying(false);
-    }
-    Animation fadeOut = getFadeOutAnimation();
-    // Hide UI first
-    ActionBar actionBar = getSupportActionBar();
-    if (actionBar != null) {
-      toolbar.startAnimation(
-          AnimationUtils.loadAnimation(mControlsView.getContext(), R.anim.slide_to_top));
-      actionBar.hide();
-    }
-    mControlsView.setVisibility(GONE);
-    mControlsView.startAnimation(fadeOut);
-    mVisible = false;
-
-    // Schedule a runnable to remove the status and navigation bar after a delay
-    mHideHandler.removeCallbacks(mShowPart2Runnable);
-    mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
-  }
-
-  @SuppressLint("InlinedApi")
-  public void show() {
-    // Show the system bar
-    mContentView.setSystemUiVisibility(
-        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-    mVisible = true;
-
-    // Schedule a runnable to display UI elements after a delay
-    mHideHandler.removeCallbacks(mHidePart2Runnable);
-    mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
-  }
-
-  /**
-   * Schedules a call to hide() in [delay] milliseconds, canceling any previously scheduled calls.
-   */
-  private void delayedHide(int delayMillis) {
-    mHideHandler.removeCallbacks(mHideRunnable);
-    mHideHandler.postDelayed(mHideRunnable, delayMillis);
   }
 }

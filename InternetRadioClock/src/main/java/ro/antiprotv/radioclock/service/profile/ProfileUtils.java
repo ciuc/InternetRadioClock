@@ -34,26 +34,6 @@ public class ProfileUtils {
     return (Integer.parseInt(pieces[1]));
   }
 
-  protected String getHumanReadableCalendar(Calendar calendar) {
-    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-    if (BuildConfig.DEBUG) {
-      sdf = new SimpleDateFormat("dd/MM/y HH:mm:mm");
-    }
-    return String.format(
-        HUMAN_READABLE_TIME_FORMAT, today_tomorrow(calendar), sdf.format(calendar.getTime()));
-  }
-
-  private String today_tomorrow(Calendar calendar) {
-    Calendar hour24 = Calendar.getInstance();
-    hour24.set(Calendar.HOUR_OF_DAY, 23);
-    hour24.set(Calendar.MINUTE, 59);
-    hour24.set(Calendar.SECOND, 59);
-    if (calendar.after(hour24)) {
-      return context.getResources().getString(R.string.text_tomorrow);
-    }
-    return context.getResources().getString(R.string.today);
-  }
-
   public static boolean isNight(Calendar nightStart, Calendar nightEnd, Calendar now) {
     if (nightStart.before(nightEnd)) {
       // | ------- start +++++++++ end -------- |
@@ -84,5 +64,25 @@ public class ProfileUtils {
         return false; // and do nothing with the calendars
       }
     }
+  }
+
+  protected String getHumanReadableCalendar(Calendar calendar) {
+    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+    if (BuildConfig.DEBUG) {
+      sdf = new SimpleDateFormat("dd/MM/y HH:mm:mm");
+    }
+    return String.format(
+        HUMAN_READABLE_TIME_FORMAT, today_tomorrow(calendar), sdf.format(calendar.getTime()));
+  }
+
+  private String today_tomorrow(Calendar calendar) {
+    Calendar hour24 = Calendar.getInstance();
+    hour24.set(Calendar.HOUR_OF_DAY, 23);
+    hour24.set(Calendar.MINUTE, 59);
+    hour24.set(Calendar.SECOND, 59);
+    if (calendar.after(hour24)) {
+      return context.getResources().getString(R.string.text_tomorrow);
+    }
+    return context.getResources().getString(R.string.today);
   }
 }

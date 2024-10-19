@@ -33,9 +33,9 @@ public class VolumeManager {
   private final DecimalFormat fmt = new DecimalFormat("#");
   private final AudioManager audioManager;
   private final int maxVolume;
-  private VerticalSeekBar seekBar;
-  private ScheduledFuture progressiveVolumeTask;
   private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+  private final VerticalSeekBar seekBar;
+  private ScheduledFuture progressiveVolumeTask;
 
   public VolumeManager(Context ctx, View view) {
     this.ctx = ctx;
@@ -88,7 +88,7 @@ public class VolumeManager {
     if (currentVolume >= maxVolume) {
       // run on ui thread, b/c this is accessed by the progressive volume task
       ((ClockActivity) ctx)
-          .runOnUiThread(() -> Toast.makeText(ctx, "Volume MAX", Toast.LENGTH_SHORT).show());
+          .runOnUiThread(() -> Toast.makeText(ctx, R.string.volume_max, Toast.LENGTH_SHORT).show());
     }
     // setVolumeText(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), maxVolume);
     Timber.d("vol up: after change " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
@@ -100,7 +100,7 @@ public class VolumeManager {
     Timber.d("vol dn: current " + currentVolume);
     if (currentVolume <= 0) {
       ((ClockActivity) ctx)
-          .runOnUiThread(() -> Toast.makeText(ctx, "Muted", Toast.LENGTH_SHORT).show());
+          .runOnUiThread(() -> Toast.makeText(ctx, R.string.muted, Toast.LENGTH_SHORT).show());
     }
     audioManager.adjustVolume(
         AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
@@ -140,12 +140,14 @@ public class VolumeManager {
   }
 
   public void cancelProgressiveVolumeTask() {
+    Timber.d("cancelProgressiveVolumeTask");
     if (progressiveVolumeTask != null && !progressiveVolumeTask.isCancelled()) {
       progressiveVolumeTask.cancel(true);
     }
   }
 
   public void setupProgressiveVolumeTask() {
+    Timber.d("setupProgressiveVolumeTask");
     progressiveVolumeTask =
         executorService.scheduleWithFixedDelay(
             new AlarmProgressiveVolume(), 10, 20, TimeUnit.SECONDS);
