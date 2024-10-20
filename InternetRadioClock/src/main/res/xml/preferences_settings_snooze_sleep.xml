@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:inputType="number"
+        android:key="@string/setting.key.sleepMinutes"
+        android:summary="@string/setting.summary.sleepMinutes"
+        android:title="@string/setting.name.sleepMinutes" />
+    <EditTextPreference
+        android:defaultValue="10"
+        android:inputType="number"
+        android:key="@string/setting.key.snoozeMinutes"
+        android:summary="@string/setting.summary.snoozeMinutes"
+        android:title="@string/setting.name.snoozeMinutes" />
+</PreferenceScreen>

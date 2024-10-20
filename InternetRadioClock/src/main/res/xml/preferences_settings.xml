@@ -1,121 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
-        android:defaultValue="#00ff00"
-        android:entries="@array/clock_colors"
-        android:entryValues="@array/clock_color_codes"
-        android:key="@string/setting.key.clockColor"
-        android:summary="%s"
-        android:title="@string/setting.name.clockColor" />
-    <ro.antiprotv.radioclock.preference.BrightnessPreference
-        android:defaultValue="-1"
-        android:key="@string/setting.key.clockBrightness"
-        android:max="100"
-        android:summary="@string/setting.summary.clockBrightness"
-        android:text="%"
-        android:title="@string/setting.name.clockBrightness" />
-    <ListPreference
-        android:defaultValue="@string/setting.default.clockSize"
-        android:entries="@array/clock_human_sizes"
-        android:entryValues="@array/clock_sizes"
-        android:key="@string/setting.key.clockSize"
-        android:summary="%s"
-        android:title="@string/setting.name.clockSize" />
-    <ListPreference
-        android:defaultValue="@string/setting.default.typeface"
-        android:entries="@array/clock_human_typefaces"
-        android:entryValues="@array/clock_typefaces"
-        android:key="@string/setting.key.typeface"
-        android:summary="%s"
-        android:title="@string/setting.name.typeface" />
-    <SwitchPreference
-        android:id="@+id/switch_clock24"
-        android:defaultValue="false"
-        android:key="@string/setting.key.clock24"
-        android:summary="@string/setting.summary.clock24"
-        android:title="@string/setting.name.clock24" />
-    <SwitchPreference
-        android:id="@+id/switch_clock24_ampm"
-        android:defaultValue="true"
-        android:dependency="@string/setting.key.clock24"
-        android:key="@string/setting.key.clock24ampm"
-        android:summary="@string/setting.summary.clock24ampm"
-        android:title="@string/setting.name.clock24ampm" />
-    <SwitchPreference
-        android:id="@+id/switch_clock_dots"
-        android:defaultValue="true"
-        android:key="@string/setting.key.clock_dots"
-        android:summary="@string/setting.summary.clock_dots"
-        android:title="@string/setting.name.clock_dots"/>
-    <SwitchPreference
-        android:id="@+id/switch_display_seconds"
-        android:defaultValue="true"
-        android:key="@string/setting.key.seconds"
-        android:summary="@string/setting.summary.seconds"
-        android:title="@string/setting.name.seconds" />
-    <SwitchPreference
-        android:id="@+id/switch_clock_vertical"
-        android:defaultValue="true"
-        android:key="@string/setting.key.clock_vertical"
-        android:summary="@string/setting.summary.clock_vertical"
-        android:title="@string/setting.name.clock_vertical" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreference
-        android:id="@+id/switch_enable_clock_move"
-        android:defaultValue="true"
-        android:key="@string/setting.key.clockMove"
-        android:summary="@string/setting.summary.clockMove"
-        android:title="@string/setting.name.clockMove" />
-    <EditTextPreference
-        android:inputType="number"
-        android:key="@string/setting.key.sleepMinutes"
-        android:summary="@string/setting.summary.sleepMinutes"
-        android:title="@string/setting.name.sleepMinutes" />
-    <ListPreference
-        android:defaultValue="0"
-        android:key="@string/setting.key.wake_up_station"
-        android:summary="%s"
-        android:title="@string/setting.name.wake_up_station" />
-    <EditTextPreference
-        android:defaultValue="10"
-        android:inputType="number"
-        android:key="@string/setting.key.snoozeMinutes"
-        android:summary="@string/setting.summary.snoozeMinutes"
-        android:title="@string/setting.name.snoozeMinutes" />
-    <SwitchPreference
-        android:id="@+id/alarm_progressive_sound"
-        android:defaultValue="true"
-        android:key="@string/setting.key.alarmProgressiveSound"
-        android:summary="@string/setting.summary.alarmProgressiveSound"
-        android:title="@string/setting.name.alarmProgressiveSound" />
-    <SwitchPreference
-        android:id="@+id/play_at_start"
-        android:defaultValue="false"
-        android:key="@string/setting.key.playAtStart"
-        android:summary="@string/setting.summary.playAtStart"
-        android:title="@string/setting.name.playAtStart" />
-    <SwitchPreference
-        android:id="@+id/switch_reverse_buttons"
-        android:defaultValue="false"
-        android:key="@string/setting.key.reverseButtons"
-        android:summary="@string/setting.summary.reverseButtons"
-        android:title="@string/setting.name.reverseButtons" />
-    <SwitchPreference
-        android:id="@+id/lock_orientation_landscape"
-        android:defaultValue="true"
-        android:key="@string/setting.key.lockOrientationLandscape"
-        android:summary="@string/setting.summary.lockOrientationLandscape"
-        android:title="@string/setting.name.lockOrientationLandscape" />
-    <SwitchPreference
-        android:id="@+id/always_display_battery"
-        android:defaultValue="false"
-        android:key="@string/setting.key.alwaysDisplayBattery"
-        android:summary="@string/setting.summary.alwaysDisplayBattery"
-        android:title="@string/setting.name.alwaysDisplayBattery" />
-    <SwitchPreference
-        android:id="@+id/battery_in_clock_color"
-        android:defaultValue="false"
-        android:key="@string/setting.key.batteryInClockColor"
-        android:summary="@string/setting.summary.batteryInClockColor"
-        android:title="@string/setting.name.batteryInClockColor" />
+    <Preference
+        app:fragment="ro.antiprotv.radioclock.fragment.SettingsLookAndFeelFragment"
+        app:key="category_look_feel"
+        app:summary="@string/category_summary_lookfeel"
+        app:title="@string/category_title_lookfeel" />
+    <Preference
+        app:fragment="ro.antiprotv.radioclock.fragment.SettingsAlarmsFragment"
+        app:key="category_alarm"
+        app:summary="@string/category_summary_alarm"
+        app:title="@string/category_title_alarm" />
+
+    <Preference
+        app:fragment="ro.antiprotv.radioclock.fragment.SettingsSnoozeSleepFragment"
+        app:key="category_snooze_sleep"
+        app:summary="@string/category_summary_snooze_sleep"
+        app:title="@string/category_title_snooze_sleep" />
+
+
+    <PreferenceCategory
+        app:key="category_advanced"
+        app:summary="Advanced settings"
+        app:title="Advanced">
+
+        <SwitchPreference
+            android:id="@+id/play_at_start"
+            android:defaultValue="false"
+            android:key="@string/setting.key.playAtStart"
+            android:summary="@string/setting.summary.playAtStart"
+            android:title="@string/setting.name.playAtStart" />
+        <SwitchPreference
+            android:id="@+id/switch_reverse_buttons"
+            android:defaultValue="false"
+            android:key="@string/setting.key.reverseButtons"
+            android:summary="@string/setting.summary.reverseButtons"
+            android:title="@string/setting.name.reverseButtons" />
+        <SwitchPreference
+            android:id="@+id/lock_orientation_landscape"
+            android:defaultValue="true"
+            android:key="@string/setting.key.lockOrientationLandscape"
+            android:summary="@string/setting.summary.lockOrientationLandscape"
+            android:title="@string/setting.name.lockOrientationLandscape" />
+    </PreferenceCategory>
 </PreferenceScreen>

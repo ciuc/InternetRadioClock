@@ -23,16 +23,14 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-   <LinearLayout
-       android:id="@+id/settings_content"
-       android:orientation="vertical"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/settings_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
-   </LinearLayout>
-
-
+    </LinearLayout>
 
 
 </LinearLayout>

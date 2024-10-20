@@ -5,7 +5,6 @@
 */
 package ro.antiprotv.radioclock.fragment;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +18,11 @@ import ro.antiprotv.radioclock.preference.BrightnessPreference;
 import ro.antiprotv.radioclock.preference.BrightnessPreferencesDialogCompat;
 
 /** Created by ciuc on 7/12/16. */
-public class SettingsFragment extends PreferenceFragmentCompat {
-
+public class SettingsSnoozeSleepFragment extends PreferenceFragmentCompat {
 
   @Override
   public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
-    setPreferencesFromResource(R.xml.preferences_settings, rootKey);
+    setPreferencesFromResource(R.xml.preferences_settings_snooze_sleep, rootKey);
   }
+
 }

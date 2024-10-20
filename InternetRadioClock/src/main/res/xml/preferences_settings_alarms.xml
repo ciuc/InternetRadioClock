@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:id="@+id/alarm_progressive_sound"
+        android:defaultValue="true"
+        android:key="@string/setting.key.alarmProgressiveSound"
+        android:summary="@string/setting.summary.alarmProgressiveSound"
+        android:title="@string/setting.name.alarmProgressiveSound" />
+    <ListPreference
+        android:defaultValue="0"
+        android:key="@string/setting.key.wake_up_station"
+        android:summary="%s"
+        android:title="@string/setting.name.wake_up_station" />
+</PreferenceScreen>
