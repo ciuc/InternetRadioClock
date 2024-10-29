@@ -35,7 +35,7 @@ public class ButtonManager {
   private View.OnLongClickListener addEditLabelClickListener;
   // the button we have clicked on
   private Button mButtonClicked;
-  private final ImageButton onOffButton;
+  private ImageButton onOffButton;
 
   public ButtonManager(Context ctx) {
     this(ctx, null, null, null, null);
@@ -53,7 +53,6 @@ public class ButtonManager {
     this.onTouchListener = onTouchListener;
     this.playListener = playListener;
     resources = context.getResources();
-    onOffButton = view.findViewById(R.id.on_off_button);
   }
 
   public void initializeButtons() {
@@ -100,6 +99,7 @@ public class ButtonManager {
     }
     hideUnhideButtons();
     enableButtons();
+    onOffButton = view.findViewById(R.id.on_off_button);
   }
 
   void hideUnhideButtons() {

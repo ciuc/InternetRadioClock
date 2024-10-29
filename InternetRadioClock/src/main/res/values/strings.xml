@@ -249,7 +249,7 @@
 
     <string name="back">Back</string>
     <string name="find">Go Find!</string>
-    <string name="assign_to">Assign\nto memory:</string>
+    <string name="assign_to">Assign to memory:</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="ok">OK</string>
@@ -264,13 +264,7 @@
 \nYou can add more search criteria like a category or the name of the radio.\n
 \nIf you want to assign a radio to a memory button, click on the button corresponding to the desired memory.
     </string>
-    <string name="tips.1">
- - you can setup up to two alarms; they can be recurring by choosing the days\n
- - after alarm starts, clicking on the screen will stop the alarm, but radio continues playing at the current volume; use the volume buttons to set desired volume\n
- - after alarm starts - click the alarm cancel button (x) to cancel the alarm and stop playing the radio\n
- - you can also snooze the alarm; you can define your own snooze time (default is 10 minutes)\n
- - enable progressive alarm sound from settings menu
-    </string>
+    <string name="tips.1">"  - you can setup up to two alarms; they can be recurring by choosing the days   - after alarm starts, clicking on the screen will stop the alarm, but radio continues playing at the current volume; use the volume buttons to set desired volume   - after alarm starts - click the alarm cancel button (x) to cancel the alarm and stop playing the radio   - you can also snooze the alarm; you can define your own snooze time (default is 10 minutes)   - enable progressive alarm sound from settings menu     "</string>
     <string-array name="tips">
         <item>@string/tips.1</item>
         <item>
@@ -559,17 +553,7 @@
         <item>Yiddish</item>
     </string-array>
 
-    <string name="cheers.text"><![CDATA[
-<p>First of all, thanks for downloading and using the Internet Radio Clock.</p>
-<p>I\'ve created this app in my spare time, just for fun, but also trying to keep a good overall quality, and constantly improving it.</p>
-<p>This app is and will always remain <b>free</b> and <b>with no ads</b>. All of its features will always be included with <b>no in-app purchases</b>.</p>
-<p>If you like it, drink a beer for me. If you\'d also like me to drink a beer for you, rate 5 stars :)</p>
-
-<p>Cheers!</p>
-</body>
-</html>
-]]>
-    </string>
+    <string name="cheers.text">"<![CDATA[ <p>First of all, thanks for downloading and using the Internet Radio Clock.</p> <p>I\'ve created this app in my spare time, just for fun, but also trying to keep a good overall quality, and constantly improving it.</p> <p>This app is and will always remain <b>free</b> and <b>with no ads</b>. All of its features will always be included with <b>no in-app purchases</b>.</p> <p>If you like it, drink a beer for me. If you\'d also like me to drink a beer for you, rate 5 stars :)</p>  <p>Cheers!</p> </body> </html> ]]>     "</string>
 
     <string name="title_activity_stream_finder">StreamFinder</string>
     <string name="snooze_toast_text">Snooze for %1$d minutes.</string>
@@ -592,10 +576,9 @@
     <string name="alarm_permission_message_info">In order to use the alarm functionality, you need to \nallow the app to set alarms and reminders. \nYou can always do this later, or revoke the permission at any time.</string>
     <string name="use_alarms">Use alarms?</string>
     <string name="display_dialog_text_swipe_to_change">Swipe to change fonts and pinch to change font size.\nThere are two alarms and both can be recurring.\nYou can setup the night profile to start automatically at a certain time.</string>
-    <string name="dialog_amoled_warning">Having an image on the screen for a long time might damage your AMOLED screen.\nThe text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen you are highly discouraged to do so.</string>
+    <string name="dialog_amoled_warning">Having an image on the screen for a long time might damage your AMOLED screen. The text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen you are highly discouraged to do so.</string>
     <string name="amoled_warning">AMOLED WARNING</string>
     <string name="new_stuff">New Stuff!</string>
-    <string name="any">Any</string>
     <string name="no_radios_matching">No radios matching the criteria! Please try again.</string>
     <string name="error_retrieving_radios">"Something went wrong while retrieving list. Please try again later. (error %d) "</string>
     <string name="found_radios">Found %d radios...</string>
@@ -625,4 +608,7 @@
     <string name="category_summary_alarm">Set up some alarms settings</string>
     <string name="category_title_snooze_sleep">Snooze &amp; Sleep</string>
     <string name="category_summary_snooze_sleep">Set up snooze and sleep stuff</string>
+    <string name="any">Any</string>
+    <string name="dialog_radio_list_title">Radios List</string>
+    <string name="close">Close</string>
 </resources>

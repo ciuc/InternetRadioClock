@@ -3,22 +3,20 @@ package ro.antiprotv.radioclock.preference;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.DialogPreference;
-import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
 
 /** Time Picker for use in preference dialog in night profile activity */
 public class TimePreference extends DialogPreference {
 
-  public TimePreference(Context ctxt, AttributeSet attrs) {
-    this(ctxt, attrs, android.R.attr.dialogPreferenceStyle);
+  public TimePreference(@NonNull Context context, @Nullable AttributeSet attrs) {
+    super(context, attrs);
   }
 
   public TimePreference(Context ctxt, AttributeSet attrs, int defStyle) {
     super(ctxt, attrs, defStyle);
-
-    setPositiveButtonText(R.string.ok);
-    setNegativeButtonText(R.string.cancel);
   }
 
   @Override

@@ -7,13 +7,6 @@
         android:entryValues="@array/clock_color_codes"
         android:key="@string/setting.key.clockColor.night"
         android:title="@string/setting.name.clockColor" />
-    <ro.antiprotv.radioclock.preference.BrightnessPreference
-        android:defaultValue="-1"
-        android:key="@string/setting.key.clockBrightness.night"
-        android:max="100"
-        android:summary="@string/setting.summary.clockBrightness"
-        android:text="%"
-        android:title="@string/setting.name.clockBrightness"/>
     <ListPreference
         android:summary="%s"
         android:defaultValue="@string/setting.default.clockSize"
@@ -21,6 +14,13 @@
         android:entryValues="@array/clock_sizes"
         android:key="@string/setting.key.clockSize.night"
         android:title="@string/setting.name.clockSize" />
+    <ro.antiprotv.radioclock.preference.BrightnessPreference
+        android:defaultValue="-1"
+        android:key="@string/setting.key.clockBrightness.night"
+        android:max="100"
+        android:summary="@string/setting.summary.clockBrightness"
+        android:text="%"
+        android:title="@string/setting.name.clockBrightness"/>
     <ListPreference
         android:defaultValue="@string/setting.default.typeface"
         android:entries="@array/clock_human_typefaces"

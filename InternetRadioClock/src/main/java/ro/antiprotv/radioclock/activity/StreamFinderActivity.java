@@ -1,5 +1,6 @@
 package ro.antiprotv.radioclock.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
@@ -24,12 +25,11 @@ import java.util.Objects;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import ro.antiprotv.radioclock.service.ButtonManager;
-import ro.antiprotv.radioclock.service.HttpRequestManager;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.Stream;
 import ro.antiprotv.radioclock.StreamListAdapter;
+import ro.antiprotv.radioclock.service.ButtonManager;
+import ro.antiprotv.radioclock.service.HttpRequestManager;
 
 public class StreamFinderActivity extends AppCompatActivity {
   private List<Stream> streams;
@@ -44,9 +44,6 @@ public class StreamFinderActivity extends AppCompatActivity {
     setSupportActionBar(toolbar);
     Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
-    final RecyclerView recyclerView = findViewById(R.id.stream_list_view);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
     streams = new ArrayList<>();
     // Preselect spinners based on remembered settings
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -56,10 +53,9 @@ public class StreamFinderActivity extends AppCompatActivity {
     languageSpinner.setSelection(prefs.getInt("finder.selected.language", 0));
 
     adapter = new StreamListAdapter(this, new ButtonManager(this), streams);
-    recyclerView.setAdapter(adapter);
 
     final Button findStreamButton = findViewById(R.id.find_stream);
-    findStreamButton.setOnClickListener(view -> getStreams());
+    findStreamButton.setOnClickListener(this::getStreams);
     final ImageButton helpButton = findViewById(R.id.streamFinder_help);
     helpButton.setOnClickListener(new OnHelpClickListener());
 
@@ -67,7 +63,22 @@ public class StreamFinderActivity extends AppCompatActivity {
     hideKeyboard.setOnClickListener(new KeyboardHideOnClickListener(this));
   }
 
-  private void getStreams() {
+  private void getStreams(View view) {
+    // Inflate the custom layout for the dialog
+    View dialogView =
+        LayoutInflater.from(view.getContext()).inflate(R.layout.dialog_radio_list, null);
+    RecyclerView recyclerView = dialogView.findViewById(R.id.stream_list_view);
+    recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+    recyclerView.setAdapter(adapter); // Replace myObjectList with your data
+
+    // Build and display the dialog
+    AlertDialog dialog =
+        new AlertDialog.Builder(view.getContext())
+            .setTitle(R.string.dialog_radio_list_title)
+            .setView(dialogView)
+            .setPositiveButton(R.string.close, null)
+            .create();
+
     HttpRequestManager requestManager = new HttpRequestManager(this);
     Toast.makeText(this, R.string.toast_retrieving_radios, Toast.LENGTH_SHORT).show();
     Spinner countrySpinner = findViewById(R.id.streamFinder_dropdown_country);
@@ -91,8 +102,11 @@ public class StreamFinderActivity extends AppCompatActivity {
     // There is no null here, b/c there is always something selected
     String tags = tagsSpinner.getSelectedItem().toString();
     requestManager.getStations(country, name, language, tags);
+
+    dialog.show();
   }
 
+  @SuppressLint("NotifyDataSetChanged")
   public void fillInStreams(JSONArray jsonStations) {
     if (jsonStations != null) {
       streams.clear();
