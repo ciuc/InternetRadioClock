@@ -22,7 +22,6 @@
 
     <PreferenceCategory
         app:key="category_advanced"
-        app:summary="Advanced settings"
         app:title="Advanced">
 
         <SwitchPreference

@@ -215,7 +215,18 @@ public class ButtonManager {
     buttonShape.setStroke(1, resources.getColor(R.color.color_clock));
   }
 
-  public void lightButton(int buttonId) {}
+  public void lightButton(int buttonId) {
+    ImageButton button = view.findViewById(buttonId);
+    GradientDrawable buttonShape = (GradientDrawable) button.getBackground();
+    buttonShape.setStroke(1, resources.getColor(R.color.color_clock));
+    button.setColorFilter(context.getResources().getColor(R.color.color_clock)      );
+  }
+  public void unlightButton(int buttonId) {
+    ImageButton button = view.findViewById(buttonId);
+    GradientDrawable buttonShape = (GradientDrawable) button.getBackground();
+    buttonShape.setStroke(1, context.getResources().getColor(R.color.button_color));
+    button.clearColorFilter();
+  }
 
   public void unlightButton() {
     Button clicked = getButtonClicked();

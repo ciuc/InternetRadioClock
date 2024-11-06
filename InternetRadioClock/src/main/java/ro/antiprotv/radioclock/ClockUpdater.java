@@ -12,10 +12,13 @@ import android.os.Looper;
 import android.os.Message;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import ro.antiprotv.radioclock.service.RingtoneService;
+import ro.antiprotv.radioclock.service.TimerService;
 
 /** Thread to manage the clock (update the clock and move it) */
 public class ClockUpdater extends Thread {
@@ -36,12 +39,13 @@ public class ClockUpdater extends Thread {
   private SimpleDateFormat sdf;
   private int sleep = 1000;
   private String clockText;
+  private TimerService timerService;
 
   // We create this ui handler to update the clock
   // We need this in order to not block the UI
   @SuppressLint("HandlerLeak")
   private final Handler uiHandler =
-      new Handler() {
+      new Handler(Looper.getMainLooper()) {
         int layoutListIndex = 0;
         int[] addedRules = new int[] {-1};
 
@@ -72,11 +76,15 @@ public class ClockUpdater extends Thread {
   private boolean moveText = true;
 
   public ClockUpdater(TextView tv) {
-    // this.sdf = sdf;
     this.mContentView = tv;
-    // this.moveText = moveText;
   }
 
+  /**
+   * Sets some text instead of the clock for this number of seconds
+   *
+   * @param text
+   * @param seconds
+   */
   public void setClockText(String text, int seconds) {
     clockText = text;
     if (seconds == -1) {
@@ -87,6 +95,10 @@ public class ClockUpdater extends Thread {
   }
 
   private String getClockText() {
+    String timerText = timerService.getTimerText();
+    if (timerText != null) {
+      return timerText;
+    }
     if (clockText == null) {
       return sdf.format(new Date());
     }
@@ -103,25 +115,7 @@ public class ClockUpdater extends Thread {
 
   public void run() {
     Looper.prepare();
-    threadHandler =
-        new Handler() {
-          @Override
-          public void handleMessage(Message msg) {
-            int count = 0;
-            while (semaphore) {
-              try {
-                Thread.sleep(sleep);
-                count++;
-              } catch (InterruptedException e) {
-              }
-              uiHandler.sendEmptyMessage(DO_NOT_MOVE_TEXT);
-              if (moveText && count > 300) {
-                count = 0;
-                uiHandler.sendEmptyMessage(MOVE_TEXT);
-              }
-            }
-          }
-        };
+    threadHandler = new MyHandler(this);
     Looper.loop();
   }
 
@@ -135,5 +129,34 @@ public class ClockUpdater extends Thread {
 
   public void setMoveText(boolean moveText) {
     this.moveText = moveText;
+  }
+
+  private static class MyHandler extends Handler {
+    private final ClockUpdater clockUpdater;
+
+    public MyHandler(ClockUpdater clockUpdater) {
+      this.clockUpdater = clockUpdater;
+    }
+
+    @Override
+    public void handleMessage(@NonNull Message msg) {
+      int count = 0;
+      while (clockUpdater.semaphore) {
+        try {
+          Thread.sleep(clockUpdater.sleep);
+          count++;
+        } catch (InterruptedException e) {
+        }
+        clockUpdater.uiHandler.sendEmptyMessage(DO_NOT_MOVE_TEXT);
+        if (clockUpdater.moveText && count > 300) {
+          count = 0;
+          clockUpdater.uiHandler.sendEmptyMessage(MOVE_TEXT);
+        }
+      }
+    }
+  }
+
+  public void setTimerService(TimerService timerService) {
+    this.timerService = timerService;
   }
 }

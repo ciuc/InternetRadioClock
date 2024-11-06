@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    tools:context=".activity.ClockActivity">
+    tools:context=".activity.ClockActivity"
+    android:fitsSystemWindows="true">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -191,7 +192,40 @@
             android:visibility="gone"
             app:srcCompat="@drawable/ic_alarm_off_black_24dp" />
 
-        <!-- ALARMS -->
+        <!-- ALARMS END-->
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/timer_short"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/baseline_hourglass_top_short"
+                tools:visibility="visible" />
+            <ImageButton
+                android:id="@+id/timer_long"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/timer_short"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/baseline_hourglass_top_long"
+                tools:visibility="visible" />
+        </RelativeLayout>
 
         <ImageButton
             android:id="@+id/sleep"

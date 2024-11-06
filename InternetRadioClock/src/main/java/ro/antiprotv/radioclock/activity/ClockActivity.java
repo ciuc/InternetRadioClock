@@ -59,7 +59,9 @@ import ro.antiprotv.radioclock.service.BrightnessManager;
 import ro.antiprotv.radioclock.service.ButtonManager;
 import ro.antiprotv.radioclock.service.MediaPlayerService;
 import ro.antiprotv.radioclock.service.RadioAlarmManager;
+import ro.antiprotv.radioclock.service.RingtoneService;
 import ro.antiprotv.radioclock.service.SettingsManager;
+import ro.antiprotv.radioclock.service.TimerService;
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
 import timber.log.Timber;
@@ -75,22 +77,27 @@ public class ClockActivity extends AppCompatActivity {
   public static final int FADE_OUT_DURATION_MILLIS = 400;
   public static final int FADE_IN_DURATION_MILLIS = 200;
   private static final String TAG_STATE = "ClockActivity | State: %s";
+
   /**
    * Whether or not the system UI should be auto-hidden after {@link #AUTO_HIDE_DELAY_MILLIS}
    * milliseconds.
    */
   private static final boolean AUTO_HIDE = true;
+
   /**
    * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after user interaction before
    * hiding the system UI.
    */
   private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+
   /**
    * Some older devices needs a small delay between UI widget updates and a change of the status and
    * navigation bar.
    */
   private static final int UI_ANIMATION_DELAY = 0;
+
   private final Handler mHideHandler = new Handler();
+
   /**
    * The user has explicitly denied setting alarms permissions.
    *
@@ -102,6 +109,7 @@ public class ClockActivity extends AppCompatActivity {
    *     <p>FALSE = (default) user has not explicitly denied
    */
   public boolean USER_ALARM_PERMISSION_NOT_ALLOWED = false;
+
   public boolean HAS_ALARM_PERMISSIONS = true;
   // some initializations
   private ClockUpdater clockUpdater;
@@ -190,6 +198,8 @@ public class ClockActivity extends AppCompatActivity {
           }
         }
       };
+  private RingtoneService ringtoneService;
+  private TimerService timerService;
   // the saved state; used for keep playing if it the case
   private Bundle savedInstanceState;
   private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
@@ -212,6 +222,7 @@ public class ClockActivity extends AppCompatActivity {
         }
       };
   private final Runnable mHideRunnable = this::hide;
+
   /**
    * Touch listener to use for in-layout UI controls to delay hiding the system UI. This is to
    * prevent the jarring behavior of controls going away while interacting with activity UI.
@@ -223,6 +234,7 @@ public class ClockActivity extends AppCompatActivity {
         }
         return false;
       };
+
   // --/////////////////////////////////////////////////////////////////////////
   // --- GESTURES ---
   // --/////////////////////////////////////////////////////////////////////////
@@ -371,12 +383,16 @@ public class ClockActivity extends AppCompatActivity {
     volumeManager = new VolumeManager(this, mControlsView);
 
     // Initialize the player
+    initializeSleepFunction();
+
+    initializeTimerFunction(clockUpdater);
+
     mediaPlayerService =
         new MediaPlayerService(this, alarmManager, buttonManager, volumeManager, prefs);
     preferenceChangeListener =
-        new SettingsManager(this, buttonManager, sleepManager, batteryService, mediaPlayerService);
+        new SettingsManager(
+            this, buttonManager, sleepManager, batteryService, mediaPlayerService, timerService);
     alarmManager.setMediaPlayerService(mediaPlayerService);
-    initializeSleepFunction();
     // Play at start?
     // button clicked is either last played, or the first; will also set
     if (prefs.getBoolean(getResources().getString(R.string.setting_key_playAtStart), false)) {
@@ -657,13 +673,34 @@ public class ClockActivity extends AppCompatActivity {
     sleep.setOnTouchListener(mDelayHideTouchListener);
   }
 
+  private void initializeTimerFunction(ClockUpdater clockUpdater) {
+    ringtoneService = new RingtoneService(this);
+    timerService = new TimerService(ringtoneService, buttonManager);
+    clockUpdater.setTimerService(timerService);
+    ImageButton timerLong = findViewById(R.id.timer_long);
+    timerLong.setOnClickListener(
+        v -> {
+          timerService.setTimerSeconds(
+              Integer.parseInt(
+                  prefs.getString(getString(R.string.setting_key_timer_long_seconds), "180")));
+          timerService.setTimer(R.id.timer_long);
+        });
+    ImageButton timerShort = findViewById(R.id.timer_short);
+    timerShort.setOnClickListener(
+        v -> {
+          timerService.setTimerSeconds(
+              Integer.parseInt(
+                  prefs.getString(getString(R.string.setting_key_timer_short_seconds), "10")));
+          timerService.setTimer(R.id.timer_short);
+        });
+  }
+
   private void displayDialogsOnOpen() {
     final String currentDialog = "NINTH_TIME";
     if (prefs.getBoolean(currentDialog, true)) {
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
       builder
-          .setMessage(
-              getString(R.string.display_dialog_text_swipe_to_change))
+          .setMessage(getString(R.string.display_dialog_text_swipe_to_change))
           .setTitle(R.string.new_stuff)
           .setIcon(R.drawable.baseline_info_24)
           .setPositiveButton(
@@ -677,8 +714,7 @@ public class ClockActivity extends AppCompatActivity {
     if (prefs.getBoolean("AMOLED_WARN", true)) {
       AlertDialog.Builder builder = new AlertDialog.Builder(this);
       builder
-          .setMessage(
-              R.string.dialog_amoled_warning)
+          .setMessage(R.string.dialog_amoled_warning)
           .setTitle(R.string.amoled_warning)
           .setIcon(R.drawable.ic_warning_black_24dp)
           .setPositiveButton(

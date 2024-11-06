@@ -3,6 +3,7 @@ package ro.antiprotv.radioclock.service;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
+import android.widget.ImageButton;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.SleepManager;
 import ro.antiprotv.radioclock.activity.ClockActivity;
@@ -14,25 +15,29 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
   private final SharedPreferences prefs;
   private final BatteryService batteryService;
   private final MediaPlayerService mediaPlayerService;
+  private final TimerService timerService;
 
   public SettingsManager(
-          ClockActivity clockActivity,
-          ButtonManager buttonManager,
-          SleepManager sleepManager,
-          BatteryService batteryService, MediaPlayerService mediaPlayerService) {
+      ClockActivity clockActivity,
+      ButtonManager buttonManager,
+      SleepManager sleepManager,
+      BatteryService batteryService,
+      MediaPlayerService mediaPlayerService,
+      TimerService timerService) {
     this.clockActivity = clockActivity;
     this.buttonManager = buttonManager;
     this.sleepManager = sleepManager;
     this.prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
     this.batteryService = batteryService;
     this.mediaPlayerService = mediaPlayerService;
+    this.timerService = timerService;
   }
 
   @Override
   public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
     setupButtons(prefs, key);
 
-    setupTimers(prefs, key);
+    setupSleepTimers(prefs, key);
 
     if (key.equals(clockActivity.getmPlayingStreamTag())) {
       mediaPlayerService.stopPlaying();
@@ -44,9 +49,10 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
     }
 
     setupBatteryMonitoring(key);
+    setupTimers(prefs, key);
   }
 
-  private void setupTimers(SharedPreferences prefs, String key) {
+  private void setupSleepTimers(SharedPreferences prefs, String key) {
     if (key.equals(clockActivity.getResources().getString(R.string.setting_key_sleepMinutes))) {
       int customTimer = 0;
       try {
@@ -65,6 +71,27 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
       } else {
         sleepManager.getTimers().add(0, customTimer);
       }
+    }
+  }
+
+  private void setupTimers(SharedPreferences prefs, String key) {
+    if (key.equals(
+        clockActivity.getResources().getString(R.string.setting_key_timer_long_seconds))) {
+      ImageButton timer = clockActivity.findViewById(R.id.timer_long);
+      timer.setOnClickListener(
+          v -> {
+            timerService.setTimerSeconds(Integer.parseInt(prefs.getString(key, "180")));
+            timerService.setTimer(R.id.timer_long);
+          });
+    }
+    if (key.equals(
+        clockActivity.getResources().getString(R.string.setting_key_timer_short_seconds))) {
+      ImageButton timer = clockActivity.findViewById(R.id.timer_short);
+      timer.setOnClickListener(
+          v -> {
+            timerService.setTimerSeconds(Integer.parseInt(prefs.getString(key, "10")));
+            timerService.setTimer(R.id.timer_short);
+          });
     }
   }
 

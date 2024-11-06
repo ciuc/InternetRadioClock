@@ -383,7 +383,7 @@ public class RadioAlarmManager extends BroadcastReceiver {
     player = MediaPlayer.create(clockActivity, notification);
     player.start();
     executor.schedule(
-        new MediaPlayerCanceller(), DEFAULT_ALARM_PLAY_TIME, TimeUnit.MINUTES); // PROD
+        new MediaPlayerCanceller(), DEFAULT_ALARM_PLAY_TIME, TimeUnit.SECONDS); // PROD
     // executor.schedule(new MediaPlayerCanceller(), 5, TimeUnit.SECONDS);//TEST
     clockActivity.setAlarmPlaying(false);
     showSnoozeAndCancel();

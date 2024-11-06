@@ -225,6 +225,11 @@
     <string name="setting.summary.clock_vertical">In portrait mode, display the hour, minutes and seconds one under the other.</string>
     <string name="setting.key.wake_up_station" translatable="false">setting.key.wake_up_station</string>
     <string name="setting.name.wake_up_station">Always wake up on station</string>
+    <string name="setting.name.category.timers">Timers</string>
+    <string name="setting.key.timer_short_seconds" translatable="false">setting.key.timer_short_seconds</string>
+    <string name="setting.name.timer_short">Short timer</string>
+    <string name="setting.key.timer_long_seconds" translatable="false">setting.key.timer_long_seconds</string>
+    <string name="setting.name.timer_long">Long timer</string>
     <string name="lastPlayed">Last played</string>
 
     <!-- alarm days -->
@@ -604,7 +609,7 @@
     <string name="add_widget">Add widget</string>
     <string name="category_title_lookfeel">Look &amp; Feel</string>
     <string name="category_summary_lookfeel">Change the look and feel of the clock</string>
-    <string name="category_title_alarm">Alarms</string>
+    <string name="category_title_alarm">Alarms &amp; Timers</string>
     <string name="category_summary_alarm">Set up some alarms settings</string>
     <string name="category_title_snooze_sleep">Snooze &amp; Sleep</string>
     <string name="category_summary_snooze_sleep">Set up snooze and sleep stuff</string>
