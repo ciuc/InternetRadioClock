@@ -12,7 +12,11 @@
         app:key="category_alarm"
         app:summary="@string/category_summary_alarm"
         app:title="@string/category_title_alarm" />
-
+    <Preference
+        app:fragment="ro.antiprotv.radioclock.fragment.SettingsTimersFragment"
+        app:key="category_timers"
+        app:summary="@string/category_summary_timers"
+        app:title="@string/category_title_timers" />
     <Preference
         app:fragment="ro.antiprotv.radioclock.fragment.SettingsSnoozeSleepFragment"
         app:key="category_snooze_sleep"
@@ -23,7 +27,12 @@
     <PreferenceCategory
         app:key="category_advanced"
         app:title="Advanced">
-
+        <SwitchPreference
+            android:id="@+id/switch_enable_clock_move"
+            android:defaultValue="true"
+            android:key="@string/setting.key.clockMove"
+            android:summary="@string/setting.summary.clockMove"
+            android:title="@string/setting.name.clockMove" />
         <SwitchPreference
             android:id="@+id/play_at_start"
             android:defaultValue="false"
@@ -31,16 +40,16 @@
             android:summary="@string/setting.summary.playAtStart"
             android:title="@string/setting.name.playAtStart" />
         <SwitchPreference
-            android:id="@+id/switch_reverse_buttons"
-            android:defaultValue="false"
-            android:key="@string/setting.key.reverseButtons"
-            android:summary="@string/setting.summary.reverseButtons"
-            android:title="@string/setting.name.reverseButtons" />
-        <SwitchPreference
             android:id="@+id/lock_orientation_landscape"
             android:defaultValue="true"
             android:key="@string/setting.key.lockOrientationLandscape"
             android:summary="@string/setting.summary.lockOrientationLandscape"
             android:title="@string/setting.name.lockOrientationLandscape" />
+        <SwitchPreference
+            android:id="@+id/switch_reverse_buttons"
+            android:defaultValue="false"
+            android:key="@string/setting.key.reverseButtons"
+            android:summary="@string/setting.summary.reverseButtons"
+            android:title="@string/setting.name.reverseButtons" />
     </PreferenceCategory>
 </PreferenceScreen>

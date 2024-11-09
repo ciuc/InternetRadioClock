@@ -1,28 +1,24 @@
 package ro.antiprotv.radioclock.service;
 
-import android.content.Context;
-
-import ro.antiprotv.radioclock.R;
-
 public class TimerService {
 
   private RingtoneService ringtoneService;
   ButtonManager buttonManager;
   private boolean timer;
-  private int timerSeconds = 180;
   private boolean timerStarted;
-  private int time = timerSeconds;
+  private int countingTime = 10;
   private int currentTimer;
+  private int alarmDuration = 5;
 
   public TimerService(RingtoneService ringtoneService, ButtonManager buttonManager) {
     this.ringtoneService = ringtoneService;
     this.buttonManager = buttonManager;
   }
 
-  public void setTimer(int buttonId) {
+  public void startInstantTimer(int buttonId, int seconds) {
     currentTimer = buttonId;
     if (timerStarted) {
-      time = 0;
+      countingTime = 0;
       timerStarted = false;
       timer = false;
       buttonManager.unlightButton(buttonId);
@@ -30,34 +26,37 @@ public class TimerService {
       buttonManager.lightButton(buttonId);
       timer = true;
       timerStarted = true;
-      time = timerSeconds;
+      countingTime = seconds;
     }
-  }
-
-  public void setTimerSeconds(int timerSeconds) {
-    this.timerSeconds = timerSeconds;
   }
 
   public String getTimerText() {
     if (timer) {
-      if (time == 0) {
-        ringtoneService.playAlarm(7);
+      if (countingTime == 0) {
+        ringtoneService.playAlarm(alarmDuration);
       }
-      if (time <= 0) {
+      if (countingTime <= 0) {
         timerStarted = false;
         timer = false;
         buttonManager.unlightButton(currentTimer);
-        time = timerSeconds;
+        // countingTime = timerSeconds;
       } else {
         if (!timerStarted) {
           timerStarted = true;
         }
       }
-      String text = String.format("%02d:%02d", time / 60, time % 60);
-      time--;
+      String text = String.format("%02d:%02d", countingTime / 60, countingTime % 60);
+      countingTime--;
       return text;
     }
     return null;
   }
 
+  public void stopAlarm() {
+    ringtoneService.stopAlarm();
+  }
+
+  public void setAlarmDuration(int alarmDuration) {
+    this.alarmDuration = alarmDuration;
+  }
 }

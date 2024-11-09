@@ -76,22 +76,8 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
 
   private void setupTimers(SharedPreferences prefs, String key) {
     if (key.equals(
-        clockActivity.getResources().getString(R.string.setting_key_timer_long_seconds))) {
-      ImageButton timer = clockActivity.findViewById(R.id.timer_long);
-      timer.setOnClickListener(
-          v -> {
-            timerService.setTimerSeconds(Integer.parseInt(prefs.getString(key, "180")));
-            timerService.setTimer(R.id.timer_long);
-          });
-    }
-    if (key.equals(
-        clockActivity.getResources().getString(R.string.setting_key_timer_short_seconds))) {
-      ImageButton timer = clockActivity.findViewById(R.id.timer_short);
-      timer.setOnClickListener(
-          v -> {
-            timerService.setTimerSeconds(Integer.parseInt(prefs.getString(key, "10")));
-            timerService.setTimer(R.id.timer_short);
-          });
+        clockActivity.getResources().getString(R.string.setting_key_timer_alarm_duration))) {
+      timerService.setAlarmDuration(Integer.parseInt(prefs.getString(key, "7")));
     }
   }
 

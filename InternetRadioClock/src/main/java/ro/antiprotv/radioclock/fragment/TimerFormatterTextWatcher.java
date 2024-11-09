@@ -5,7 +5,7 @@ import android.widget.EditText;
 import java.util.Arrays;
 import timber.log.Timber;
 
-class TimerFormatterTextWatcher implements android.text.TextWatcher {
+public class TimerFormatterTextWatcher implements android.text.TextWatcher {
 
   private final EditText editText;
   private final char[] chars = {'0', '0', '0', '0'};
@@ -29,7 +29,7 @@ class TimerFormatterTextWatcher implements android.text.TextWatcher {
     Timber.d(Arrays.toString(chars));
     isUpdating = true;
     editText.setText(
-        String.format(SettingsAlarmsFragment.TIMER_FORMAT, totalSeconds / 60, totalSeconds % 60));
+        String.format(SettingsTimersFragment.TIMER_FORMAT, totalSeconds / 60, totalSeconds % 60));
     isUpdating = false;
   }
 

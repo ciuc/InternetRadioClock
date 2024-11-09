@@ -206,6 +206,22 @@
         <item>Square Sans-serif</item>
         <item>Linear Beam</item>
     </string-array>
+    <string-array name="timer_alarm_durations">
+        <item>7</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>75</item>
+    </string-array>
+    <string-array name="timer_alarm_durations_human_readable">
+        <item>Very Short (7s)</item>
+        <item>Short (10s)</item>
+        <item>Medium-Short (15s)</item>
+        <item>Medium-Long (30s)</item>
+        <item>Long (1m)</item>
+        <item>Longer (1m15s)</item>
+    </string-array>
     <string name="setting.key.clockSize" translatable="false">setting.key.clockSize</string>
     <string name="setting.name.clockSize">Clock Size</string>
     <string name="setting.default.clockSize" translatable="false">100</string>
@@ -231,6 +247,8 @@
     <string name="setting.key.timer_long_seconds" translatable="false">setting.key.timer_long_seconds</string>
     <string name="setting.name.timer_long">Long timer</string>
     <string name="lastPlayed">Last played</string>
+    <string name="setting.key.timer_alarm_duration" translatable="false">setting.key.timer_alarm_duration</string>
+    <string name="setting.name.alarm_duration">Timer Alarm Duration</string>
 
     <!-- alarm days -->
     <string name="setting.alarm.1.key.2" translatable="false">setting.alarm.1.key.2</string>
@@ -269,13 +287,23 @@
 \nYou can add more search criteria like a category or the name of the radio.\n
 \nIf you want to assign a radio to a memory button, click on the button corresponding to the desired memory.
     </string>
-    <string name="tips.1">"  - you can setup up to two alarms; they can be recurring by choosing the days   - after alarm starts, clicking on the screen will stop the alarm, but radio continues playing at the current volume; use the volume buttons to set desired volume   - after alarm starts - click the alarm cancel button (x) to cancel the alarm and stop playing the radio   - you can also snooze the alarm; you can define your own snooze time (default is 10 minutes)   - enable progressive alarm sound from settings menu     "</string>
+    <string name="tips.1">- you can setup up to two alarms; they can be recurring by choosing the days\n
+- after alarm starts, clicking on the screen will stop the alarm, but radio continues playing at the current volume; use the volume buttons to set desired volume\n
+- after alarm starts - click the alarm cancel button (x) to cancel the alarm and stop playing the radio\n
+- you can also snooze the alarm; you can define your own snooze time (default is 10 minutes)\n
+- enable progressive alarm sound from settings menu
+    </string>
     <string-array name="tips">
         <item>@string/tips.1</item>
         <item>
 - there are two profiles -> a day and a night profile\n
 - you can set each to start and end at a certain time\n
 - you can define different appearance for each profile\n
+        </item>
+        <item>
+- there are two timers - you can set them up from settings menu\n
+- clicking on the timer will start the timer instantly\n
+- long click on one of the timers buttons you can quickly setup and start a timer, which will not be persisted\n
         </item>
         <item>
 - you can change the look of the clock from the main screen or from the settings\n
@@ -580,7 +608,7 @@
     <string name="could_not_find_seekbar">"Could not find seekbar {0}"</string>
     <string name="alarm_permission_message_info">In order to use the alarm functionality, you need to \nallow the app to set alarms and reminders. \nYou can always do this later, or revoke the permission at any time.</string>
     <string name="use_alarms">Use alarms?</string>
-    <string name="display_dialog_text_swipe_to_change">Swipe to change fonts and pinch to change font size.\nThere are two alarms and both can be recurring.\nYou can setup the night profile to start automatically at a certain time.</string>
+    <string name="display_dialog_text_swipe_to_change">Swipe to change fonts and pinch to change font size.\nThere are two alarms and both can be recurring.\nYou can setup the night profile to start automatically at a certain time.\nThere are two configurable timers.\nClick on help for more.</string>
     <string name="dialog_amoled_warning">Having an image on the screen for a long time might damage your AMOLED screen. The text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen you are highly discouraged to do so.</string>
     <string name="amoled_warning">AMOLED WARNING</string>
     <string name="new_stuff">New Stuff!</string>
@@ -609,11 +637,17 @@
     <string name="add_widget">Add widget</string>
     <string name="category_title_lookfeel">Look &amp; Feel</string>
     <string name="category_summary_lookfeel">Change the look and feel of the clock</string>
-    <string name="category_title_alarm">Alarms &amp; Timers</string>
-    <string name="category_summary_alarm">Set up some alarms settings</string>
+    <string name="category_title_alarm">Alarms</string>
+    <string name="category_title_timers">Timers</string>
     <string name="category_title_snooze_sleep">Snooze &amp; Sleep</string>
+    <string name="category_summary_alarm">Set up some alarms settings</string>
+    <string name="category_summary_timers">Set up the two timers</string>
     <string name="category_summary_snooze_sleep">Set up snooze and sleep stuff</string>
     <string name="any">Any</string>
     <string name="dialog_radio_list_title">Radios List</string>
     <string name="close">Close</string>
+    <string name="will_be_the_name_of_the_memory_instead_of_the_number">(will be the name of the memory instead of the number)</string>
+    <string name="add_edit_label">Add/edit label</string>
+    <string name="intant_timer_explanation">When pressing ok, a timer will start with this value.</string>
+    <string name="set_instant_timer">Set instant timer</string>
 </resources>

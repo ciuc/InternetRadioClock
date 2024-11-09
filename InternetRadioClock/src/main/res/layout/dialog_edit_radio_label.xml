@@ -19,7 +19,7 @@
             android:layout_width="@dimen/sf_spinner_label"
             android:layout_height="match_parent"
             android:layout_marginTop="1pt"
-            android:text="Add/edit label" />
+            android:text="@string/add_edit_label" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/streamFinder.textinput.labelDialog.label"
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="(will be the name of the memory instead of the number)" />
+            android:text="@string/will_be_the_name_of_the_memory_instead_of_the_number" />
     </LinearLayout>
 
 </LinearLayout>

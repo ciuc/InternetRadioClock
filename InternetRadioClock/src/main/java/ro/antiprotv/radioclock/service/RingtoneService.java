@@ -3,6 +3,7 @@ package ro.antiprotv.radioclock.service;
 import android.content.Context;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.os.Build;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,6 +19,9 @@ public class RingtoneService {
     alarmRingtone =
         RingtoneManager.getRingtone(
             context, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM));
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+      alarmRingtone.setLooping(true);
+    }
     executorService = Executors.newSingleThreadScheduledExecutor();
   }
 

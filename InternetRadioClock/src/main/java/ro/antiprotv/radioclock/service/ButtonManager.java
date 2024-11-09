@@ -32,7 +32,6 @@ public class ButtonManager {
   private List<Integer> settingKeys;
   private List<Integer> defaultNames;
   private SharedPreferences prefs;
-  private View.OnLongClickListener addEditLabelClickListener;
   // the button we have clicked on
   private Button mButtonClicked;
   private ImageButton onOffButton;
@@ -94,7 +93,6 @@ public class ButtonManager {
               resources.getString(settingKeys.get(i)), resources.getString(defaultNames.get(i))));
       b.setOnClickListener(playListener);
       b.setOnTouchListener(onTouchListener);
-      b.setOnLongClickListener(addEditLabelClickListener);
       b.setOnLongClickListener(new AddLabelOnLongClickListener(i + 1));
     }
     hideUnhideButtons();

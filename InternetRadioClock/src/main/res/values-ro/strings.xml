@@ -108,7 +108,6 @@
     <string name="title.settings">Setări</string>
     <string name="title.streamFinder">Listă de radiouri online</string>
     <string name="streamFinder.hint">Lista cu radiouri este redată de pe internet. Este mentinută de o comunitate de entuziaști și e posibil să nu fie 100% corectă. Sunt peste 15000 de radiouri, deci din această cauză este necesar să căutați cel puțin pe baza țării. Dacă doriîi să salvați un radio pe unul din butoane, dați click pe butonul corespunzător.</string>
-    <string name="tips.1">"  - you can setup up to two alarms; they can be recurring by choosing the days   - after alarm starts, clicking on the screen will stop the alarm, but radio continues playing at the current volume; use the volume buttons to set desired volume   - after alarm starts - click the alarm cancel button (x) to cancel the alarm and stop playing the radio   - you can also snooze the alarm; you can define your own snooze time (default is 10 minutes)   - enable progressive alarm sound from settings menu     "</string>
     <string name="streamFinder.prompt.country">Alegeți țara</string>
     <string name="streamFinder.prompt.language">Alegeți limba</string>
     <string name="streamFinder.prompt.genre">Alegeți genul</string>
@@ -122,4 +121,8 @@
     <string name="snooze_toast_text">Snooze %1$d minute.</string>
     <string name="dialog_radio_list_title">Radios List</string>
     <string name="close">Close</string>
+    <string name="will_be_the_name_of_the_memory_instead_of_the_number">(will be the name of the memory instead of the number)</string>
+    <string name="add_edit_label">Add/edit label</string>
+    <string name="intant_timer_explanation">When pressing ok, a timer will start with this value.</string>
+    <string name="set_instant_timer">Set instant timer</string>
 </resources>

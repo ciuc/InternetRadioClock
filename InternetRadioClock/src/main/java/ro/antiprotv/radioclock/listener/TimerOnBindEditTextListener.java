@@ -1,4 +1,4 @@
-package ro.antiprotv.radioclock.fragment;
+package ro.antiprotv.radioclock.listener;
 
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
@@ -7,8 +7,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.preference.EditTextPreference;
+import ro.antiprotv.radioclock.fragment.TimerFormatterTextWatcher;
 
-class TimerOnBindEditTextListener implements EditTextPreference.OnBindEditTextListener {
+public class TimerOnBindEditTextListener implements EditTextPreference.OnBindEditTextListener {
   @Override
   public void onBindEditText(@NonNull EditText editText) {
     TimerFormatterTextWatcher textWatcher = new TimerFormatterTextWatcher(editText);
