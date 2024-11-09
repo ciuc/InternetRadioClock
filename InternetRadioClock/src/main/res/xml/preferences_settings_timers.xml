@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <EditTextPreference
+        android:defaultValue="10"
+        android:summary="%s"
+        android:textDirection="rtl"
+        android:imeOptions="flagNoFullscreen"
+        android:key="@string/setting.key.timer_short_seconds"
+        android:title="@string/setting.name.timer_short"
+        />
+    <EditTextPreference
+        android:defaultValue="180"
+        android:summary="%s"
+        android:gravity="end"
+        android:key="@string/setting.key.timer_long_seconds"
+        android:title="@string/setting.name.timer_long"
+        />
+    <ListPreference
+        android:summary="%s"
+        android:defaultValue="@string/setting.default.clockSize"
+        android:entries="@array/timer_alarm_durations_human_readable"
+        android:entryValues="@array/timer_alarm_durations"
+        android:key="@string/setting.key.timer_alarm_duration"
+        android:title="@string/setting.name.alarm_duration" />
+    />
+</PreferenceScreen>
