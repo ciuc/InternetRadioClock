@@ -75,17 +75,21 @@ public class ClockActivity extends AppCompatActivity {
   public static final String USER_ALARM_PERMISSION_NOT_ALLOWED_PREF = "USER_PERM_NOK";
   public static final int FADE_OUT_DURATION_MILLIS = 400;
   public static final int FADE_IN_DURATION_MILLIS = 200;
+
   /**
    * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after user interaction before
    * hiding the system UI.
    */
   public static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+
   private static final String TAG_STATE = "ClockActivity | State: %s";
+
   /**
    * Whether or not the system UI should be auto-hidden after {@link #AUTO_HIDE_DELAY_MILLIS}
    * milliseconds.
    */
   private static final boolean AUTO_HIDE = true;
+
   /**
    * Some older devices needs a small delay between UI widget updates and a change of the status and
    * navigation bar.
@@ -668,7 +672,7 @@ public class ClockActivity extends AppCompatActivity {
 
   private void initializeTimerFunction(ClockUpdater clockUpdater) {
     ringtoneService = new RingtoneService(this);
-    timerService = new TimerService(ringtoneService, buttonManager);
+    timerService = new TimerService(this, ringtoneService, buttonManager);
     clockUpdater.setTimerService(timerService);
     ImageButton timerLong = findViewById(R.id.timer_long);
     ImageButton timerShort = findViewById(R.id.timer_short);
@@ -690,8 +694,8 @@ public class ClockActivity extends AppCompatActivity {
             prefs,
             this));
 
-    timerShort.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService));
-    timerLong.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService));
+    timerShort.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService, prefs));
+    timerLong.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService, prefs));
 
     timerService.setAlarmDuration(
         Integer.parseInt(
@@ -804,6 +808,7 @@ public class ClockActivity extends AppCompatActivity {
   public boolean dispatchTouchEvent(MotionEvent event) {
 
     // Timber.d("Motion disallowed: " + disallowSwipe);
+    timerService.stopAlarm();
     if (disallowSwipe) {
       return super.dispatchTouchEvent(event);
     }

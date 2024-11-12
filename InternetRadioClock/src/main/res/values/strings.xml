@@ -222,6 +222,14 @@
         <item>Long (1m)</item>
         <item>Longer (1m15s)</item>
     </string-array>
+    <string-array name="timer_visual">
+        <item>CIRCLE</item>
+        <item>RECTANGLE</item>
+    </string-array>
+    <string-array name="timer_visual_human_readable">
+        <item>Circle</item>
+        <item>Rectangle</item>
+    </string-array>
     <string name="setting.key.clockSize" translatable="false">setting.key.clockSize</string>
     <string name="setting.name.clockSize">Clock Size</string>
     <string name="setting.default.clockSize" translatable="false">100</string>
@@ -249,6 +257,12 @@
     <string name="lastPlayed">Last played</string>
     <string name="setting.key.timer_alarm_duration" translatable="false">setting.key.timer_alarm_duration</string>
     <string name="setting.name.alarm_duration">Timer Alarm Duration</string>
+    <string name="setting.key.timer_visual_enabled" translatable="false">setting.key.timer_visual_enabled</string>
+    <string name="setting.name.timer_visual_enabled">Visual timer</string>
+    <string name="setting.summary.timer_visual_enabled">Use a visual effect for timers</string>
+    <string name="setting.key.timer_visual" translatable="false">setting.key.timer_visual</string>
+    <string name="setting.name.timer_visual">Shape</string>
+
 
     <!-- alarm days -->
     <string name="setting.alarm.1.key.2" translatable="false">setting.alarm.1.key.2</string>

@@ -25,4 +25,20 @@
         android:key="@string/setting.key.timer_alarm_duration"
         android:title="@string/setting.name.alarm_duration" />
     />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/setting.key.timer_visual_enabled"
+        android:title="@string/setting.name.timer_visual_enabled"
+        android:summary="@string/setting.summary.timer_visual_enabled"
+        />
+    <ListPreference
+        android:defaultValue="@string/setting.default.clockSize"
+        android:entries="@array/timer_visual_human_readable"
+        android:entryValues="@array/timer_visual"
+        android:key="@string/setting.key.timer_visual"
+        android:title="@string/setting.name.timer_visual"
+        android:summary="%s"
+        android:dependency="@string/setting.key.timer_visual_enabled"
+        />
+
 </PreferenceScreen>

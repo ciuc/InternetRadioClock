@@ -27,6 +27,16 @@
        android:layout_width="match_parent"
        android:layout_height="match_parent">
 
+       <ro.antiprotv.radioclock.view.FillCircleView
+           android:id="@+id/fill_pie"
+           android:layout_height="match_parent"
+           android:layout_width="match_parent"
+           android:layout_centerInParent="true"
+           android:visibility="invisible"
+           android:gravity="center"
+           />
+
+
        <TextView
            android:id="@+id/fullscreen_content"
            android:layout_width="wrap_content"
@@ -34,10 +44,23 @@
            android:layout_centerInParent="true"
            android:gravity="center"
            android:keepScreenOn="true"
-           android:text="11:11:11"
+           android:padding="0dp"
+           android:text="12:43:56"
+           android:includeFontPadding="false"
            android:textColor="@color/color.clock"
+           android:lineSpacingExtra="0dp"
            android:textSize="150sp"
+
            android:textStyle="bold" />
+
+       <ro.antiprotv.radioclock.view.FillRectangleView
+           android:id="@+id/fill_rectangle"
+           android:layout_height="20dp"
+           android:layout_width="500dp"
+           android:layout_below="@id/fullscreen_content"
+           android:layout_centerInParent="true"
+            android:visibility="invisible"
+           />
 
        <ImageView
            android:id="@+id/battery_icon"
