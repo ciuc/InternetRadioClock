@@ -42,8 +42,8 @@ android {
         unitTests.returnDefaultValues = true
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_9
+        targetCompatibility JavaVersion.VERSION_1_9
     }
     namespace 'ro.antiprotv.radioclock'
 }
@@ -61,7 +61,7 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.github.mrudultora:Colorpicker:1.2.0'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
-    implementation 'com.github.florent37:tutoshowcase:1.0.1'
+    //implementation 'com.github.florent37:tutoshowcase:1.0.1'
     // for android 8
     implementation 'com.android.support:multidex:1.0.3'
 }

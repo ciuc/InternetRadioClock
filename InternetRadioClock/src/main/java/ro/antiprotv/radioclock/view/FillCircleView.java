@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
+
 public class FillCircleView extends AbstractVisualTimer {
 
   public FillCircleView(Context context, AttributeSet attrs) {
@@ -12,7 +14,7 @@ public class FillCircleView extends AbstractVisualTimer {
   }
 
   @Override
-  protected void onDraw(Canvas canvas) {
+  protected void onDraw(@NonNull Canvas canvas) {
     super.onDraw(canvas);
     int maxDim = Math.min(getWidth(), getHeight());
     int radius = maxDim / 2;
@@ -41,4 +43,9 @@ public class FillCircleView extends AbstractVisualTimer {
     invalidate(); // Redraw the view with the updated width
   }
 
+  @Override
+  public void stopAnimation() {
+    super.stopAnimation();
+    fillPaint.setAlpha(50);
+  }
 }

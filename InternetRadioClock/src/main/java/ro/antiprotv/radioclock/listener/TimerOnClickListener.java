@@ -38,6 +38,9 @@ public class TimerOnClickListener implements View.OnClickListener {
     if (useVisual) {
       visual = prefs.getString(context.getString(R.string.setting_key_timer_visual), "RECTANGLE");
     }
-    timerService.startInstantTimer(button, seconds, visual);
+    boolean animate =
+        prefs.getBoolean(context.getString(R.string.setting_key_timer_animate), false);
+
+    timerService.startInstantTimer(button, seconds, visual, animate);
   }
 }

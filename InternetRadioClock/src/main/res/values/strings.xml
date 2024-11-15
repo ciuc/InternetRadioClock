@@ -262,6 +262,11 @@
     <string name="setting.summary.timer_visual_enabled">Use a visual effect for timers</string>
     <string name="setting.key.timer_visual" translatable="false">setting.key.timer_visual</string>
     <string name="setting.name.timer_visual">Shape</string>
+    <string name="setting.key.timer_animate" translatable="false">setting.key.timer_animate</string>
+    <string name="setting.name.timer_animate">Flash when done</string>
+    <string name="setting.summary.timer_animate">Do some flashing when timer reaches 0 to make sure you notice it (especially the circle)</string>
+
+
 
 
     <!-- alarm days -->

@@ -39,6 +39,8 @@ public class InstantTimerOnLongClickListener implements View.OnLongClickListener
     } else {
       visual = null;
     }
+    boolean animate =
+        prefs.getBoolean(context.getString(R.string.setting_key_timer_animate), false);
 
     InputMethodManager imm =
         (InputMethodManager) view.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
@@ -61,17 +63,13 @@ public class InstantTimerOnLongClickListener implements View.OnLongClickListener
 
     imm.showSoftInput(timerInput, InputMethodManager.SHOW_FORCED);
     builder.setView(layout);
-    builder.setNegativeButton(
-        R.string.cancel,
-        (dialog, which) -> {
-          dialog.cancel();
-        });
+    builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
     builder.setPositiveButton(
         R.string.yes,
         (dialog, which) -> {
           String value = timerInput.getText().toString();
           int timer = SettingsTimersFragment.convertToSeconds(value);
-          timerService.startInstantTimer(view.getId(), timer, visual);
+          timerService.startInstantTimer(view.getId(), timer, visual, animate);
           lastUsed = String.valueOf(timer);
         });
     builder.setOnCancelListener(
