@@ -16,4 +16,6 @@
 #   public *;
 #}
 
+-keep class ro.antiprotv.radioclock.fragment.** { *; }
+
 
