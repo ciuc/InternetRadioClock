@@ -35,6 +35,8 @@ public class ButtonManager {
   // the button we have clicked on
   private Button mButtonClicked;
   private ImageButton onOffButton;
+  private ImageButton timerPauseButton;
+  private Button timerAddTimeButton;
 
   public ButtonManager(Context ctx) {
     this(ctx, null, null, null, null);
@@ -98,6 +100,8 @@ public class ButtonManager {
     hideUnhideButtons();
     enableButtons();
     onOffButton = view.findViewById(R.id.on_off_button);
+    timerPauseButton = view.findViewById(R.id.timer_pause);
+    timerAddTimeButton = view.findViewById(R.id.timer_plus10);
   }
 
   void hideUnhideButtons() {
@@ -217,8 +221,9 @@ public class ButtonManager {
     ImageButton button = view.findViewById(buttonId);
     GradientDrawable buttonShape = (GradientDrawable) button.getBackground();
     buttonShape.setStroke(1, resources.getColor(R.color.color_clock));
-    button.setColorFilter(context.getResources().getColor(R.color.color_clock)      );
+    button.setColorFilter(context.getResources().getColor(R.color.color_clock));
   }
+
   public void unlightButton(int buttonId) {
     ImageButton button = view.findViewById(buttonId);
     GradientDrawable buttonShape = (GradientDrawable) button.getBackground();
@@ -232,6 +237,19 @@ public class ButtonManager {
       clicked.setTextColor(context.getResources().getColor(R.color.button_color_off));
       GradientDrawable buttonShape = (GradientDrawable) clicked.getBackground();
       buttonShape.setStroke(1, context.getResources().getColor(R.color.button_color));
+    }
+  }
+
+  public void toggleTimerButtonsVisibility(int visibility) {
+    timerPauseButton.setVisibility(visibility);
+    timerAddTimeButton.setVisibility(visibility);
+  }
+
+  public void toggleTimerPause(boolean isPaused) {
+    if (isPaused) {
+      timerPauseButton.setImageResource(R.drawable.baseline_play_circle_outline_24);
+    } else {
+      timerPauseButton.setImageResource(R.drawable.baseline_pause_circle_outline_24);
     }
   }
 

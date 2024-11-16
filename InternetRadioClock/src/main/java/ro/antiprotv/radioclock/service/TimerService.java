@@ -1,5 +1,6 @@
 package ro.antiprotv.radioclock.service;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
@@ -26,6 +27,7 @@ public class TimerService {
   private int originalCounter = 0;
   private AbstractVisualTimer abstractVisualTimer;
   private boolean animate;
+  private boolean paused;
 
   public TimerService(
       ClockActivity clockActivity, RingtoneService ringtoneService, ButtonManager buttonManager) {
@@ -73,7 +75,11 @@ public class TimerService {
     if (abstractVisualTimer != null) {
       abstractVisualTimer.updateFillWidth(originalCounter, countingTime);
     }
-    countingTime--;
+    if (!paused) {
+      countingTime--;
+    } else {
+      text = "|| " + text;
+    }
     return text;
   }
 
@@ -90,6 +96,7 @@ public class TimerService {
               + (abstractVisualTimer.getVisibility() == VISIBLE ? "VISIBLE" : "INVISIBLE"));
       abstractVisualTimer.setVisibility(VISIBLE);
     }
+    buttonManager.toggleTimerButtonsVisibility(VISIBLE);
   }
 
   private void stopTimer() {
@@ -106,6 +113,7 @@ public class TimerService {
       abstractVisualTimer.reset();
     }
     countingTime = 10;
+    buttonManager.toggleTimerButtonsVisibility(GONE);
   }
 
   public void stopAlarm() {
@@ -120,6 +128,19 @@ public class TimerService {
     }
 
      */
+  }
+
+  public void toggleTimerPause() {
+    if(!timerEnabled){
+      return;
+    }
+    this.paused = !paused;
+    buttonManager.toggleTimerPause(paused);
+  }
+
+  public void addTime(int seconds) {
+    countingTime += seconds;
+    originalCounter = countingTime;
   }
 
   public void setAlarmDuration(int alarmDuration) {

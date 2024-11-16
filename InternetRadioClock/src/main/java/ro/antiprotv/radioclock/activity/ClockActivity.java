@@ -52,7 +52,9 @@ import ro.antiprotv.radioclock.dialog.DaysDialog;
 import ro.antiprotv.radioclock.listener.HelpOnClickListener;
 import ro.antiprotv.radioclock.listener.InstantTimerOnLongClickListener;
 import ro.antiprotv.radioclock.listener.OnOnOffClickListener;
+import ro.antiprotv.radioclock.listener.TimerAddTimeOnClickListener;
 import ro.antiprotv.radioclock.listener.TimerOnClickListener;
+import ro.antiprotv.radioclock.listener.TimerPauseOnClickListener;
 import ro.antiprotv.radioclock.service.BatteryService;
 import ro.antiprotv.radioclock.service.BrightnessManager;
 import ro.antiprotv.radioclock.service.ButtonManager;
@@ -198,6 +200,7 @@ public class ClockActivity extends AppCompatActivity {
           }
         }
       };
+  // timers
   private RingtoneService ringtoneService;
   private TimerService timerService;
   // the saved state; used for keep playing if it the case
@@ -676,6 +679,8 @@ public class ClockActivity extends AppCompatActivity {
     clockUpdater.setTimerService(timerService);
     ImageButton timerLong = findViewById(R.id.timer_long);
     ImageButton timerShort = findViewById(R.id.timer_short);
+    ImageButton timerPause = findViewById(R.id.timer_pause);
+    Button timerAdd = findViewById(R.id.timer_plus10);
 
     timerShort.setOnClickListener(
         new TimerOnClickListener(
@@ -697,6 +702,8 @@ public class ClockActivity extends AppCompatActivity {
     timerShort.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService, prefs));
     timerLong.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService, prefs));
 
+    timerPause.setOnClickListener(new TimerPauseOnClickListener(timerService));
+    timerAdd.setOnClickListener(new TimerAddTimeOnClickListener(timerService, 10));
     timerService.setAlarmDuration(
         Integer.parseInt(
             prefs.getString(getString(R.string.setting_key_timer_alarm_duration), "7")));

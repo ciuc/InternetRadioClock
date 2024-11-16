@@ -6,6 +6,15 @@
     android:background="#000000"
     tools:context=".activity.ClockActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/AppBarOverlay"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
+
     <RelativeLayout
         android:id="@+id/overlay"
         android:layout_width="match_parent"
@@ -90,7 +99,8 @@
             android:clickable="false"
             android:textColor="@color/button.color.off"
             android:visibility="gone"
-            app:srcCompat="@drawable/ic_alarm_off_black_24dp" />
+            app:srcCompat="@drawable/ic_alarm_off_black_24dp"
+            tools:ignore="RtlHardcoded" />
 
         <Button
             android:id="@+id/alarm_icon_snooze"
@@ -118,7 +128,8 @@
             android:drawableTop="@drawable/mediamodifier_design"
             android:text="@string/cancel_snooze"
             android:textColor="#FFFFFF"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:ignore="RtlHardcoded" />
 
         <Button
             android:id="@+id/alarm_icon_cancel"
@@ -173,6 +184,73 @@
 
         <!-- ALARMS END-->
 
+        <!-- TIMERS -->
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_below="@+id/fullscreen_content_controls">
+            <ImageButton
+                android:id="@+id/timer_short"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/baseline_hourglass_top_short"
+                tools:visibility="visible" />
+            <ImageButton
+                android:id="@+id/timer_long"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/timer_short"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/baseline_hourglass_top_long"
+                tools:visibility="visible" />
+            <ImageButton
+                android:id="@+id/timer_pause"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/baseline_pause_circle_outline_24"
+                android:visibility="gone"
+                android:layout_below="@+id/timer_short"/>
+            <Button
+                android:id="@+id/timer_plus10"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:text="+10s"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/baseline_pause_circle_outline_24"
+                android:visibility="gone"
+                android:layout_below="@+id/timer_long"
+                android:layout_toRightOf="@+id/timer_pause"/>
+        </RelativeLayout>
+        <!-- TIMERS END -->
 
         <RelativeLayout
             android:id="@+id/ui_settings_panel"

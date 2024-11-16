@@ -99,8 +99,11 @@ public class ClockUpdater extends Thread {
   private String getClockText() {
     String timerText = timerService.getTimerText();
     if (timerText != null) {
-      if (timerText.equals("00:00")) {
+      if (timerText.equals("00:00") || timerText.startsWith("|| ")) {
+        //timerText = timerText.replace("|| ", "");
         startBlinkingAnimation(clockView);
+      } else {
+        stopBlinkingAnimation(clockView);
       }
       return timerText;
     }

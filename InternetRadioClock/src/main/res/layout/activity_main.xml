@@ -212,6 +212,8 @@
 
             </RelativeLayout>
 
+           <!-- TIMERS -->
+
            <RelativeLayout
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -244,7 +246,39 @@
                    android:textColor="@color/button.color.off"
                    app:srcCompat="@drawable/baseline_hourglass_top_long"
                    tools:visibility="visible" />
+               <ImageButton
+                   android:id="@+id/timer_pause"
+                   style="@style/imageButtonStyle"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_alignParentStart="true"
+                   android:layout_marginLeft="5dp"
+                   android:layout_marginTop="5dp"
+                   android:background="@drawable/memory"
+                   android:clickable="false"
+                   android:tag="@string/setting.key.alarmIcon"
+                   android:textColor="@color/button.color.off"
+                   app:srcCompat="@drawable/baseline_pause_circle_outline_24"
+                   android:visibility="gone"
+                   android:layout_below="@+id/timer_short"/>
+               <Button
+                   android:id="@+id/timer_plus10"
+                   style="@style/imageButtonStyle"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginLeft="5dp"
+                   android:layout_marginTop="5dp"
+                   android:background="@drawable/memory"
+                   android:clickable="false"
+                   android:text="+10s"
+                   android:tag="@string/setting.key.alarmIcon"
+                   android:textColor="@color/button.color.off"
+                   app:srcCompat="@drawable/baseline_pause_circle_outline_24"
+                   android:visibility="gone"
+                   android:layout_below="@+id/timer_long"
+                   android:layout_toRightOf="@+id/timer_pause"/>
            </RelativeLayout>
+            <!-- TIMERS END -->
 
             <ImageButton
                 android:id="@+id/sleep"
