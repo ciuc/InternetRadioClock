@@ -3,7 +3,6 @@ package ro.antiprotv.radioclock.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-
 import androidx.annotation.NonNull;
 
 public class FillRectangleView extends AbstractVisualTimer {
@@ -21,12 +20,6 @@ public class FillRectangleView extends AbstractVisualTimer {
 
   @Override
   public void startAnimate() {
-    super.startBlinkingAnimation();
-  }
-
-  @Override
-  public void stopAnimation() {
-    super.stopAnimation();
-    setAlpha(1.0f);
+    super.startFadeInOutAnimation();
   }
 }

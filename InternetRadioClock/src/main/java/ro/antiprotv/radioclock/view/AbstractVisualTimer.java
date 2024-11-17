@@ -1,5 +1,7 @@
 package ro.antiprotv.radioclock.view;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
@@ -18,6 +20,7 @@ public class AbstractVisualTimer extends View {
   protected final int strokeWidth = 1; // Set your desired stroke width in pixels
   private ValueAnimator colorAnimator;
   private AlphaAnimation blinkAnimation;
+  private ObjectAnimator fadeInOutAnimation;
 
   public AbstractVisualTimer(Context context, AttributeSet attrs) {
     super(context, attrs);
@@ -73,6 +76,35 @@ public class AbstractVisualTimer extends View {
     isBlinking = true;
   }
 
+  public void startFadeInOutAnimation() {
+    if (isBlinking) {
+      return;
+    }
+    fadeInOutAnimation = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f);
+    fadeInOutAnimation.setDuration(200); // Animation duration in milliseconds
+    fadeInOutAnimation.setRepeatCount(ValueAnimator.INFINITE);
+    fadeInOutAnimation.setRepeatMode(ValueAnimator.REVERSE);
+
+    fadeInOutAnimation.addListener(
+        new Animator.AnimatorListener() {
+          @Override
+          public void onAnimationEnd(Animator animation) {
+            setVisibility(View.INVISIBLE); // Set visibility to invisible after animation
+          }
+
+          @Override
+          public void onAnimationStart(Animator animation) {}
+
+          @Override
+          public void onAnimationCancel(Animator animation) {}
+
+          @Override
+          public void onAnimationRepeat(Animator animation) {}
+        });
+
+    fadeInOutAnimation.start();
+  }
+
   public void startColorAnimation() {
     if (isBlinking) {
       return;
@@ -103,7 +135,9 @@ public class AbstractVisualTimer extends View {
     if (blinkAnimation != null) {
       blinkAnimation.cancel();
     }
+    if (fadeInOutAnimation != null) {
+      fadeInOutAnimation.cancel();
+    }
     fillPaint.setColor(getResources().getColor(R.color.color_clock));
-    invalidate();
   }
 }
