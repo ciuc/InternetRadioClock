@@ -48,5 +48,9 @@
         android:summary="@string/setting.summary.timer_animate"
         android:dependency="@string/setting.key.timer_visual_enabled"
         />
+    <ro.antiprotv.radioclock.preference.PlayableListPreference
+        android:key="@string/setting.key.timer_ringtone"
+        android:title="@string/setting.title.timer_ringtone"
+        android:summary="%s" />
 
 </PreferenceScreen>

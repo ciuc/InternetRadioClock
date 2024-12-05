@@ -265,7 +265,8 @@
     <string name="setting.key.timer_animate" translatable="false">setting.key.timer_animate</string>
     <string name="setting.name.timer_animate">Flash when done</string>
     <string name="setting.summary.timer_animate">Do some flashing when timer reaches 0 to make sure you notice it (especially the circle)</string>
-
+    <string name="setting.key.timer_ringtone" translatable="false">setting.key.timer_ringtone</string>
+    <string name="setting.title.timer_ringtone">Select Timer Alarm</string>
 
 
 

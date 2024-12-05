@@ -674,7 +674,7 @@ public class ClockActivity extends AppCompatActivity {
   }
 
   private void initializeTimerFunction(ClockUpdater clockUpdater) {
-    ringtoneService = new RingtoneService(this);
+    ringtoneService = new RingtoneService(this, prefs);
     timerService = new TimerService(this, ringtoneService, buttonManager);
     clockUpdater.setTimerService(timerService);
     ImageButton timerLong = findViewById(R.id.timer_long);

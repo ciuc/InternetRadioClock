@@ -13,12 +13,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.listener.TimerOnBindEditTextListener;
 import ro.antiprotv.radioclock.listener.TimerOnPreferenceChangeListener;
+import ro.antiprotv.radioclock.utils.AlarmSoundsHelper;
 import timber.log.Timber;
 
 /** Created by ciuc on 7/12/16. */
@@ -92,5 +95,32 @@ public class SettingsTimersFragment extends PreferenceFragmentCompat {
   @Override
   public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
     setPreferencesFromResource(R.xml.preferences_settings_timers, rootKey);
+    ListPreference alarmSoundPreference = findPreference("setting.key.timer_ringtone");
+    if (alarmSoundPreference != null) {
+      // Get the list of alarm sounds
+      List<AlarmSoundsHelper.AlarmSound> alarmSounds =
+          AlarmSoundsHelper.getAlarmSounds(requireContext());
+
+      // Prepare the entries (titles) and entryValues (URIs)
+      String[] titles = new String[alarmSounds.size()];
+      String[] uris = new String[alarmSounds.size()];
+
+      for (int i = 0; i < alarmSounds.size(); i++) {
+        titles[i] = alarmSounds.get(i).getTitle();
+        uris[i] = alarmSounds.get(i).getUri().toString();
+      }
+
+      // Set the entries and entryValues dynamically
+      alarmSoundPreference.setEntries(titles);
+      alarmSoundPreference.setEntryValues(uris);
+
+      // Optionally set the summary to show the currently selected sound
+      alarmSoundPreference.setSummaryProvider(
+          preference -> {
+            String selectedValue = ((ListPreference) preference).getValue();
+            int index = alarmSoundPreference.findIndexOfValue(selectedValue);
+            return (index >= 0) ? titles[index] : "Choose an alarm sound";
+          });
+    }
   }
 }
