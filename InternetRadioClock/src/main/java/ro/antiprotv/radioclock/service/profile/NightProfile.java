@@ -27,20 +27,23 @@ public class NightProfile extends Profile {
         prefs.getBoolean(
             context.getResources().getString(R.string.setting_key_seconds_night), true),
         prefs.getString(
-            context.getResources().getString(R.string.setting_key_typeface_night), "repet___.ttf"));
+            context.getResources().getString(R.string.setting_key_typeface_night), "repet___.ttf"),
+        prefs.getBoolean(context.getResources().getString(R.string.setting_key_showdate_night), false),
+        prefs.getInt(context.getResources().getString(R.string.setting_key_datesize_night), 3));
   }
 
   @Override
-  public void setFont(String font) {
+  public void saveFont(String font) {
     prefs
         .edit()
         .putString(context.getResources().getString(R.string.setting_key_typeface_night), font)
         .apply();
+    super.saveFont(font);
   }
 
   @Override
-  public void setSize(float size) {
-    super.setSize(size);
+  public void saveSize(float size) {
+    super.saveSize(size);
     prefs
         .edit()
         .putString(
@@ -50,7 +53,7 @@ public class NightProfile extends Profile {
   }
 
   @Override
-  public void setBrightness(int brightness) {
+  public void saveBrightness(int brightness) {
     Timber.d("(Night) Save brightness: " + brightness);
     prefs
         .edit()
@@ -61,10 +64,26 @@ public class NightProfile extends Profile {
   }
 
   @Override
-  public void setClockColor(String color) {
+  public void saveClockColor(String color) {
     prefs
         .edit()
         .putString(context.getResources().getString(R.string.setting_key_clockColor_night), color)
         .apply();
+  }
+
+  public void saveDateSize(int dateSize) {
+    prefs
+        .edit()
+        .putInt(context.getResources().getString(R.string.setting_key_datesize_night), dateSize)
+        .apply();
+    super.saveDateSize(dateSize);
+  }
+
+  public void saveShowDate(boolean showDate) {
+    prefs
+        .edit()
+        .putBoolean(context.getResources().getString(R.string.setting_key_showdate_night), showDate)
+        .apply();
+    super.saveShowDate(showDate);
   }
 }

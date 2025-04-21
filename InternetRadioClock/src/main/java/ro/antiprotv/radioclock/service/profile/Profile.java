@@ -17,6 +17,8 @@ public abstract class Profile {
   protected boolean clock12hShowAmPm;
   protected SimpleDateFormat clockFormat;
   protected String font;
+  protected boolean showDate;
+  protected int dateSize;
   protected SharedPreferences prefs;
 
   public Profile(
@@ -27,7 +29,9 @@ public abstract class Profile {
       int brightness,
       boolean moveText,
       boolean showSeconds,
-      String font) {
+      String font,
+      boolean showDate,
+      int dateSize) {
     this.clockColor = clockColor;
     this.clockSize = clockSize;
     this.brightness = brightness;
@@ -36,6 +40,8 @@ public abstract class Profile {
     this.context = context;
     this.prefs = prefs;
     this.font = font;
+    this.showDate = showDate;
+    this.dateSize = dateSize;
 
     this.clock12h =
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_clock24), false);
@@ -71,11 +77,13 @@ public abstract class Profile {
     clockFormat = new SimpleDateFormat(pattern);
   }
 
-  public abstract void setFont(String font);
+  public void saveFont(String font) {
+    this.font = font;
+  }
 
-  public abstract void setBrightness(int brightness);
+  public abstract void saveBrightness(int brightness);
 
-  public abstract void setClockColor(String color);
+  public abstract void saveClockColor(String color);
 
   public int getColor() {
     return clockColor;
@@ -85,7 +93,34 @@ public abstract class Profile {
     return (int) clockSize;
   }
 
-  public void setSize(float size) {
+  public void saveSize(float size) {
     this.clockSize = size;
+  }
+
+  public String getFont() {
+    return font;
+  }
+
+  /**
+   * it is actually either 2 or 3
+   *
+   * <p>- 2 means smaller (font size / 2)
+   *
+   * @return
+   */
+  public int getDateSize() {
+    return dateSize;
+  }
+
+  public boolean isShowDate() {
+    return showDate;
+  }
+
+  protected void saveDateSize(int dateSize) {
+    this.dateSize = dateSize;
+  }
+
+  public void saveShowDate(boolean showDate) {
+    this.showDate = showDate;
   }
 }

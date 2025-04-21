@@ -24,20 +24,23 @@ public class DayProfile extends Profile {
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_clockMove), true),
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_seconds), true),
         prefs.getString(
-            context.getResources().getString(R.string.setting_key_typeface), "repet___.ttf"));
+            context.getResources().getString(R.string.setting_key_typeface), "repet___.ttf"),
+        prefs.getBoolean(context.getResources().getString(R.string.setting_key_showdate), false),
+        prefs.getInt(context.getResources().getString(R.string.setting_key_datesize), 3));
   }
 
   @Override
-  public void setFont(String font) {
+  public void saveFont(String font) {
     prefs
         .edit()
         .putString(context.getResources().getString(R.string.setting_key_typeface), font)
         .apply();
+    super.saveFont(font);
   }
 
   @Override
-  public void setSize(float size) {
-    super.setSize(size);
+  public void saveSize(float size) {
+    super.saveSize(size);
     prefs
         .edit()
         .putString(
@@ -46,7 +49,7 @@ public class DayProfile extends Profile {
   }
 
   @Override
-  public void setBrightness(int brightness) {
+  public void saveBrightness(int brightness) {
     Timber.d("(Day) Save brightness: " + brightness);
     prefs
         .edit()
@@ -55,10 +58,26 @@ public class DayProfile extends Profile {
   }
 
   @Override
-  public void setClockColor(String color) {
+  public void saveClockColor(String color) {
     prefs
         .edit()
         .putString(context.getResources().getString(R.string.setting_key_clockColor), color)
         .apply();
+  }
+
+  public void saveDateSize(int dateSize) {
+    prefs
+        .edit()
+        .putInt(context.getResources().getString(R.string.setting_key_datesize), dateSize)
+        .apply();
+    super.saveDateSize(dateSize);
+  }
+
+  public void saveShowDate(boolean showDate) {
+    prefs
+        .edit()
+        .putBoolean(context.getResources().getString(R.string.setting_key_showdate), showDate)
+        .apply();
+    super.saveShowDate(showDate);
   }
 }

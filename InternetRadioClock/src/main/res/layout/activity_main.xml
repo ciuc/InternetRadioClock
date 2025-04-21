@@ -50,8 +50,22 @@
            android:textColor="@color/color.clock"
            android:lineSpacingExtra="0dp"
            android:textSize="150sp"
+           />
 
-           android:textStyle="bold" />
+       <TextView
+           android:id="@+id/date_text"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_centerInParent="true"
+           android:layout_below="@id/fullscreen_content"
+           android:padding="0dp"
+           android:text="12.02.2025"
+           android:includeFontPadding="false"
+           android:textColor="@color/color.clock"
+           android:lineSpacingExtra="0dp"
+           android:textSize="50sp"
+           android:layout_marginTop="0dp"
+           />
 
        <ro.antiprotv.radioclock.view.FillRectangleView
            android:id="@+id/fill_rectangle"
@@ -89,7 +103,6 @@
            android:layout_height="match_parent"
            android:layout_marginTop="@dimen/margin_top"
            android:layout_marginBottom="2dp"
-           android:background="#00FFFFFF"
            android:fitsSystemWindows="true">
 
            <!-- ALARMS -->
@@ -397,7 +410,7 @@
 
             <TextView
                 android:id="@+id/volume"
-                android:layout_width="wrap_content"
+                android:layout_width="17pt"
                 android:layout_height="wrap_content"
                 android:layout_gravity="fill"
                 android:layout_toLeftOf="@+id/volume_bar"
@@ -432,7 +445,7 @@
 
             <RelativeLayout
                 android:id="@+id/ui_settings_panel"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/sleep">
 
@@ -512,6 +525,24 @@
                     android:textColor="@color/button.color.off"
                     app:srcCompat="@drawable/outline_color_lens_24" />
 
+                <Button
+                    android:id="@+id/date_button"
+                    style="@style/imageButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text_size_cycle_button_fwd"
+                    android:layout_toLeftOf="@id/color_picker_button"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/memory"
+                    android:clickable="true"
+                    android:text="12.01.25"
+                    android:textSize="6pt"
+                    android:tag="@string/setting.key.alarmIcon"
+                    android:textColor="@color/button.color.off"
+                    app:srcCompat="@drawable/outline_color_lens_24" />
+
+
             </RelativeLayout>
 
             <LinearLayout
@@ -520,7 +551,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="@color/black_overlay"
                 android:orientation="horizontal"
                 tools:ignore="UselessParent">
 

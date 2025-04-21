@@ -34,6 +34,7 @@ public class ClockUpdater extends Thread {
           new int[] {ALIGN_PARENT_TOP, ALIGN_PARENT_LEFT},
           new int[] {CENTER_IN_PARENT});
   private final TextView clockView;
+  private final TextView dateView;
   private boolean semaphore = true;
   // Threading stuff
   private Handler threadHandler = null;
@@ -54,6 +55,7 @@ public class ClockUpdater extends Thread {
         @Override
         public void handleMessage(Message msg) {
           clockView.setText(getClockText());
+          dateView.setText(new SimpleDateFormat("dd.MM.yyyy").format(new Date()));
           if (msg.what == MOVE_TEXT) {
             RelativeLayout.LayoutParams params =
                 (RelativeLayout.LayoutParams) clockView.getLayoutParams();
@@ -66,6 +68,17 @@ public class ClockUpdater extends Thread {
             for (int addedRule : addedRules) {
               params.addRule(addedRule);
             }
+            if (layoutListIndex == 0 || layoutListIndex == 3) {
+              RelativeLayout.LayoutParams paramsDate =
+                      (RelativeLayout.LayoutParams) dateView.getLayoutParams();
+              paramsDate.removeRule(RelativeLayout.BELOW);
+              paramsDate.addRule(RelativeLayout.ABOVE, clockView.getId());
+            } else {
+              RelativeLayout.LayoutParams paramsDate =
+                      (RelativeLayout.LayoutParams) dateView.getLayoutParams();
+              paramsDate.removeRule(RelativeLayout.ABOVE);
+              paramsDate.addRule(RelativeLayout.BELOW, clockView.getId());
+            }
             clockView.setLayoutParams(params);
             layoutListIndex++;
             if (layoutListIndex == LAYOUT_ALIGNS.size()) {
@@ -77,8 +90,9 @@ public class ClockUpdater extends Thread {
 
   private boolean moveText = true;
 
-  public ClockUpdater(TextView tv) {
-    this.clockView = tv;
+  public ClockUpdater(TextView clock, TextView dateView) {
+    this.clockView = clock;
+    this.dateView = dateView;
   }
 
   /**

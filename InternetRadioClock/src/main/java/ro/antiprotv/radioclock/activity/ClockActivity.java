@@ -19,6 +19,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -64,6 +65,7 @@ import ro.antiprotv.radioclock.service.RingtoneService;
 import ro.antiprotv.radioclock.service.SettingsManager;
 import ro.antiprotv.radioclock.service.TimerService;
 import ro.antiprotv.radioclock.service.VolumeManager;
+import ro.antiprotv.radioclock.service.profile.Profile;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
 import timber.log.Timber;
 
@@ -137,7 +139,8 @@ public class ClockActivity extends AppCompatActivity {
   private ScaleGestureDetector pinchGestureDetector;
   // stuff for the hide/unhide ui elements
   private boolean mVisible;
-  private TextView mContentView;
+  private TextView clockTextView;
+  private TextView dateTextView;
   private final Runnable mHidePart2Runnable =
       new Runnable() {
         @SuppressLint("InlinedApi")
@@ -148,7 +151,7 @@ public class ClockActivity extends AppCompatActivity {
           // Note that some of these constants are new as of API 16 (Jelly Bean)
           // and API 19 (KitKat). It is safe to use them, as they are inlined
           // at compile-time and do nothing on earlier devices.
-          mContentView.setSystemUiVisibility(
+          clockTextView.setSystemUiVisibility(
               View.SYSTEM_UI_FLAG_LOW_PROFILE
                   | View.SYSTEM_UI_FLAG_FULLSCREEN
                   | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -266,6 +269,7 @@ public class ClockActivity extends AppCompatActivity {
   ///////////////////////////////////////////////////////////////////////////
   // State methods
   ///////////////////////////////////////////////////////////////////////////
+  @SuppressLint("ClickableViewAccessibility")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     if (BuildConfig.DEBUG && Timber.treeCount() == 0) {
@@ -340,7 +344,8 @@ public class ClockActivity extends AppCompatActivity {
 
     mVisible = true;
     mControlsView = findViewById(R.id.mainLayout);
-    mContentView = findViewById(R.id.fullscreen_content);
+    clockTextView = findViewById(R.id.fullscreen_content);
+    dateTextView = findViewById(R.id.date_text);
     RelativeLayout overlay = findViewById(R.id.overlay);
 
     // Set up the user interaction to manually show or hide the system UI.
@@ -362,7 +367,7 @@ public class ClockActivity extends AppCompatActivity {
     // Thread for communicating with the ui handler
     // We start it here , and we sendMessage to the threadHandler in onStart (we might have a race
     // and get threadHandler null if we try it here)
-    clockUpdater = new ClockUpdater(mContentView);
+    clockUpdater = new ClockUpdater(clockTextView, dateTextView);
     clockUpdater.start();
 
     initializeAlarmFunction();
@@ -385,13 +390,12 @@ public class ClockActivity extends AppCompatActivity {
     // Volume
     volumeManager = new VolumeManager(this, mControlsView);
 
-    // Initialize the player
-    initializeSleepFunction();
-
     initializeTimerFunction(clockUpdater);
 
+    // Initialize the player
     mediaPlayerService =
         new MediaPlayerService(this, alarmManager, buttonManager, volumeManager, prefs);
+    initializeSleepFunction();
     preferenceChangeListener =
         new SettingsManager(
             this, buttonManager, sleepManager, batteryService, mediaPlayerService, timerService);
@@ -436,7 +440,7 @@ public class ClockActivity extends AppCompatActivity {
             new View.OnClickListener() {
               @Override
               public void onClick(View v) {
-                profileManager.cycleThroughSizes(true);
+                profileManager.changeSize(true);
               }
             });
     findViewById(R.id.text_size_cycle_button_rev)
@@ -444,12 +448,53 @@ public class ClockActivity extends AppCompatActivity {
             new View.OnClickListener() {
               @Override
               public void onClick(View v) {
-                profileManager.cycleThroughSizes(false);
+                profileManager.changeSize(false);
               }
             });
 
     findViewById(R.id.color_picker_button)
         .setOnClickListener(profileManager.new ColorPickerClickListner());
+
+    Button dateEnableButton = findViewById(R.id.date_button);
+
+    // final boolean[] dateEnable = {profileManager.isDateEnabled()};
+    // final int[] dateSize = {profileManager.dateSize()};
+
+    dateEnableButton.setOnClickListener(
+        new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            if (!profileManager.isDateEnabled()) {
+              profileManager.setDateEnabled(true);
+            } else if (profileManager.dateSize() == 3) {
+              profileManager.setDateSize(2);
+            } else if (profileManager.dateSize() == 2) {
+              profileManager.setDateSize(3);
+              profileManager.setDateEnabled(false);
+            }
+          }
+        });
+
+    dateEnableButton.setOnTouchListener(
+        new View.OnTouchListener() {
+          @Override
+          public boolean onTouch(View v, MotionEvent event) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+              // Apply stroke when pressed
+              GradientDrawable buttonShape = (GradientDrawable) dateEnableButton.getBackground();
+              buttonShape.mutate();
+              buttonShape.setStroke(1, getResources().getColor(R.color.color_clock));
+            } else if (event.getAction() == MotionEvent.ACTION_UP
+                || event.getAction() == MotionEvent.ACTION_CANCEL) {
+              // Remove stroke when released
+              GradientDrawable buttonShape = (GradientDrawable) dateEnableButton.getBackground();
+              buttonShape.mutate();
+              buttonShape.setStroke(1, getResources().getColor(R.color.button_color));
+              v.performClick();
+            }
+            return false;
+          }
+        });
 
     swipeGestureDetector = new GestureDetector(this, new SwipeGestureDetector());
     pinchGestureDetector = new ScaleGestureDetector(getApplicationContext(), new ScaleListener());
@@ -564,6 +609,20 @@ public class ClockActivity extends AppCompatActivity {
     super.onRestart();
     mediaPlayerService.onRestart();
     clockUpdater.setSemaphore(true);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // UI MANIPULATION
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  public void applyProfile(Profile profile) {
+    clockTextView.setTextSize(profile.getSize());
+    clockTextView.setTypeface(ProfileManager.fonts.get(profile.getFont()));
+    clockTextView.setTextColor(profile.getColor());
+
+    dateTextView.setVisibility(profile.isShowDate() ? View.VISIBLE : View.GONE);
+    dateTextView.setTextSize((float) profile.getSize() / profile.getDateSize());
+    dateTextView.setTypeface(ProfileManager.fonts.get(profile.getFont()));
+    dateTextView.setTextColor(profile.getColor());
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -878,7 +937,7 @@ public class ClockActivity extends AppCompatActivity {
   @SuppressLint("InlinedApi")
   public void show() {
     // Show the system bar
-    mContentView.setSystemUiVisibility(
+    clockTextView.setSystemUiVisibility(
         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
     mVisible = true;
 
@@ -899,10 +958,6 @@ public class ClockActivity extends AppCompatActivity {
   // --- END ANIMATIONS ---
   // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-  ///////////////////////////////////////////////////////////////////////////
-  // GESTURES
-  ///////////////////////////////////////////////////////////////////////////
-
   public boolean isAlarmPlaying() {
     return alarmPlaying;
   }
@@ -914,42 +969,9 @@ public class ClockActivity extends AppCompatActivity {
     this.alarmPlaying = alarmPlaying;
   }
 
-  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  // --- END GESTURES ---
-  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-  public void setAlarmSnoozing(boolean alarmSnoozing) {
-    this.alarmSnoozing = alarmSnoozing;
-  }
-
-  public TextView getmContentView() {
-    return mContentView;
-  }
-
-  public View getmControlsView() {
-    return mControlsView;
-  }
-
-  public String getmPlayingStreamTag() {
-    return mPlayingStreamTag;
-  }
-
-  public void setmPlayingStreamTag(String mPlayingStreamTag) {
-    this.mPlayingStreamTag = mPlayingStreamTag;
-  }
-
-  public void setmPlayingStreamNo(int mPlayingStreamNo) {
-    this.mPlayingStreamNo = mPlayingStreamNo;
-  }
-
-  public void setPlaying(boolean playing) {
-    isPlaying = playing;
-  }
-
-  public void setDisallowSwipe(boolean disallowSwipe) {
-    // Timber.d("set disallow swipe: " + disallowSwipe);
-    this.disallowSwipe = disallowSwipe;
-  }
+  ///////////////////////////////////////////////////////////////////////////
+  // GESTURES
+  ///////////////////////////////////////////////////////////////////////////
 
   private class SwipeGestureDetector extends GestureDetector.SimpleOnGestureListener {
 
@@ -1017,6 +1039,45 @@ public class ClockActivity extends AppCompatActivity {
       return true;
     }
   }
+
+  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  // --- END GESTURES ---
+  // --^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  public void setAlarmSnoozing(boolean alarmSnoozing) {
+    this.alarmSnoozing = alarmSnoozing;
+  }
+
+  public TextView getClockTextView() {
+    return clockTextView;
+  }
+
+  public View getmControlsView() {
+    return mControlsView;
+  }
+
+  public String getmPlayingStreamTag() {
+    return mPlayingStreamTag;
+  }
+
+  public void setmPlayingStreamTag(String mPlayingStreamTag) {
+    this.mPlayingStreamTag = mPlayingStreamTag;
+  }
+
+  public void setmPlayingStreamNo(int mPlayingStreamNo) {
+    this.mPlayingStreamNo = mPlayingStreamNo;
+  }
+
+  public void setPlaying(boolean playing) {
+    isPlaying = playing;
+  }
+
+  public void setDisallowSwipe(boolean disallowSwipe) {
+    // Timber.d("set disallow swipe: " + disallowSwipe);
+    this.disallowSwipe = disallowSwipe;
+  }
+
+
 
   // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   // GETTERS AND SETTERS END

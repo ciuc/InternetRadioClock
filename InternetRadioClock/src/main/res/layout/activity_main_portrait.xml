@@ -33,6 +33,21 @@
             android:textStyle="bold"
             android:text="11:11:11"/>
 
+        <TextView
+            android:id="@+id/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_below="@id/fullscreen_content"
+            android:padding="0dp"
+            android:text="12.02.2025"
+            android:includeFontPadding="false"
+            android:textColor="@color/color.clock"
+            android:lineSpacingExtra="0dp"
+            android:textSize="50sp"
+            android:layout_marginTop="0dp"
+            />
+
         <ImageView
             android:id="@+id/battery_icon"
             android:layout_width="wrap_content"
@@ -356,19 +371,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/main_help_button">
-        <ImageButton
-            android:id="@+id/font_cycle_button_fwd"
-            style="@style/imageButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:tag="@string/setting.key.alarmIcon"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/baseline_text_rotation_none_24"/>
+
+            <ImageButton
+                android:id="@+id/font_cycle_button_fwd"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/baseline_text_rotation_none_24" />
 
         <ImageButton
             android:id="@+id/font_cycle_button_rev"
@@ -432,6 +448,23 @@
             android:textColor="@color/button.color.off"
             app:srcCompat="@drawable/outline_color_lens_24"/>
 
+        <Button
+            android:id="@+id/date_button"
+            style="@style/imageButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/font_cycle_button_rev"
+            android:layout_toLeftOf="@id/color_picker_button"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/memory"
+            android:clickable="true"
+            android:text="12.01.25"
+            android:textSize="6pt"
+            android:tag="@string/setting.key.alarmIcon"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/outline_color_lens_24" />
+
             <!-- BRIGHTNESS BAR -->
             <RelativeLayout
                 android:id="@+id/brightness_bar"
@@ -475,6 +508,8 @@
                     app:srcCompat="@drawable/outline_brightness_auto_24" />
 
             </RelativeLayout>
+
+
             <!-- END BRIGHTNESS BAR -->
 
 
@@ -514,14 +549,14 @@
                 android:textColor="@color/button.color.off" />
             <Button
                 android:id="@+id/stream3"
-                android:tag="@string/setting.key.stream3"
                 style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:text="@string/button.name.stream3"
-                android:clickable="false"
                 android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.stream3"
+                android:text="@string/button.name.stream3"
                 android:textColor="@color/button.color.off" />
             <Button
                 android:id="@+id/stream4"

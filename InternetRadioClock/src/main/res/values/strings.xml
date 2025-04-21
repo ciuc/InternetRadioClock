@@ -238,6 +238,10 @@
     <string name="setting.name.clock24">Use 12h Clock</string>
     <string name="setting.key.typeface" translatable="false">setting.key.typeface</string>
     <string name="setting.name.typeface">Change the font of the clock</string>
+    <string name="setting.key.showdate" translatable="false">setting.key.showdate</string>
+    <string name="setting.key.datesize" translatable="false">setting.key.datesize</string>
+    <string name="setting.key.showdate_night" translatable="false">setting.key.showdate_night</string>
+    <string name="setting.key.datesize_night" translatable="false">setting.key.datesize_night</string>
     <string name="setting.key.clock24ampm" translatable="false">setting.key.clock24ampm</string>
     <string name="setting.name.clock24ampm">Display am/pm</string>
     <string name="setting.summary.clock24ampm">When using 12h clock, display am or pm or not.</string>

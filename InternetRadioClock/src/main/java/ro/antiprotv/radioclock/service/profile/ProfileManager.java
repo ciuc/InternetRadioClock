@@ -47,7 +47,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   private final ImageView battery_icon;
   private final TextView battery_pct;
   private final String[] fonts_files;
-  private final Map<String, Typeface> fonts = new HashMap<>();
+  public static final Map<String, Typeface> fonts = new HashMap<>();
   private final List<Integer> sizes = new ArrayList<>();
   private BrightnessManager brightnessManager;
   private ScheduledFuture currentScheduledNightTask;
@@ -255,12 +255,13 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     nightProfile.setup();
 
     clockUpdater.setSdf(nightProfile.clockFormat);
-    clockActivity.getmContentView().setTextSize(nightProfile.clockSize);
-    clockActivity.getmContentView().setTypeface(fonts.get(nightProfile.font));
-    clockActivity.getmContentView().setTextColor(nightProfile.clockColor);
+    // clockActivity.getmContentView().setTextSize(nightProfile.clockSize);
+    // clockActivity.getmContentView().setTypeface(fonts.get(nightProfile.font));
+    // clockActivity.getmContentView().setTextColor(nightProfile.clockColor);
+    clockActivity.applyProfile(nightProfile);
 
     clockUpdater.setMoveText(nightProfile.moveText);
-    clockActivity.getmContentView().setGravity(Gravity.CENTER);
+    clockActivity.getClockTextView().setGravity(Gravity.CENTER);
     applyBatteryProfile(nightProfile.clockColor);
     currentProfile = nightProfile;
     size_index = sizes.indexOf((int) nightProfile.clockSize);
@@ -286,13 +287,14 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
 
     Profile dayProfile = new DayProfile(prefs, clockActivity);
     dayProfile.setup();
-    clockActivity.getmContentView().setTextSize(dayProfile.clockSize);
-    clockActivity.getmContentView().setTypeface(fonts.get(dayProfile.font));
     clockUpdater.setSdf(dayProfile.clockFormat);
-    clockActivity.getmContentView().setTextColor(dayProfile.clockColor);
+    // clockActivity.getmContentView().setTextSize(dayProfile.clockSize);
+    // clockActivity.getmContentView().setTypeface(fonts.get(dayProfile.font));
+    // clockActivity.getmContentView().setTextColor(dayProfile.clockColor);
+    clockActivity.applyProfile(dayProfile);
 
     clockUpdater.setMoveText(dayProfile.moveText);
-    clockActivity.getmContentView().setGravity(Gravity.CENTER);
+    clockActivity.getClockTextView().setGravity(Gravity.CENTER);
     applyBatteryProfile(dayProfile.clockColor);
     currentProfile = dayProfile;
     size_index = sizes.indexOf((int) dayProfile.clockSize);
@@ -362,12 +364,14 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     String font = fonts_files[font_index];
     Timber.d("font index: " + font_index);
     Timber.d("font file: " + font);
-    clockActivity.getmContentView().setTypeface(fonts.get(font));
     disableProfileChangeOnSettingChange = true;
-    currentProfile.setFont(font);
+    currentProfile.saveFont(font);
+    // clockActivity.getClockTextView().setTypeface(fonts.get(font));
+    clockActivity.applyProfile(currentProfile);
     // Toast.makeText(clockActivity,fonts_files[font_index], Toast.LENGTH_SHORT).show();
   }
 
+  @Deprecated
   public void cycleThroughSizes(boolean forward) {
     if (forward && size_index == sizes.size() - 1) {
       size_index = 0;
@@ -383,9 +387,27 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     int size = sizes.get(size_index);
     Timber.d("size index: " + size_index);
     Timber.d("size: " + size);
-    clockActivity.getmContentView().setTextSize(size);
+    // clockActivity.getClockTextView().setTextSize(size);
     disableProfileChangeOnSettingChange = true;
-    currentProfile.setSize(size);
+    currentProfile.saveSize(size);
+    clockActivity.applyProfile(currentProfile);
+    // Toast.makeText(clockActivity,fonts_files[font_index], Toast.LENGTH_SHORT).show();
+  }
+
+  /**
+   * increases/decreases the size of the font, from buttons, with small increments
+   *
+   * @param forward
+   */
+  public void changeSize(boolean forward) {
+    int increment = 1;
+    if (!forward) {
+      increment = -increment;
+    }
+
+    disableProfileChangeOnSettingChange = true;
+    currentProfile.saveSize(currentProfile.getSize() + increment);
+    clockActivity.applyProfile(currentProfile);
     // Toast.makeText(clockActivity,fonts_files[font_index], Toast.LENGTH_SHORT).show();
   }
 
@@ -406,9 +428,9 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     size = Math.min(size, 300);
     size = Math.max(size, 20);
     Timber.d("new size: " + size);
-    clockActivity.getmContentView().setTextSize(size);
+    clockActivity.applyProfile(currentProfile);
     disableProfileChangeOnSettingChange = true;
-    currentProfile.setSize(size);
+    currentProfile.saveSize(size);
   }
 
   public int getBrightness() {
@@ -419,11 +441,29 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   public void setBrightness(int brightness) {
     Timber.d("brightness: " + brightness);
     disableProfileChangeOnSettingChange = true;
-    currentProfile.setBrightness(brightness);
+    currentProfile.saveBrightness(brightness);
     Window window = clockActivity.getWindow();
     WindowManager.LayoutParams layoutParams = window.getAttributes();
     layoutParams.screenBrightness = brightness / 100f;
     window.setAttributes(layoutParams);
+  }
+
+  public boolean isDateEnabled() {
+    return currentProfile.showDate;
+  }
+
+  public void setDateEnabled(boolean showDate) {
+    currentProfile.saveShowDate(showDate);
+    clockActivity.applyProfile(currentProfile);
+  }
+
+  public int dateSize() {
+    return currentProfile.dateSize;
+  }
+
+  public void setDateSize(int dateSize) {
+    currentProfile.saveDateSize(dateSize);
+    clockActivity.applyProfile(currentProfile);
   }
 
   public void setBrightnessManager(BrightnessManager brightnessManager) {
@@ -445,8 +485,8 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
                 public void onColorPicked(int color) {
                   String hexColor = String.format("#%06X", (0xFFFFFF & color));
                   disableProfileChangeOnSettingChange = true;
-                  clockActivity.getmContentView().setTextColor(color);
-                  currentProfile.setClockColor(hexColor);
+                  clockActivity.getClockTextView().setTextColor(color);
+                  currentProfile.saveClockColor(hexColor);
                 }
 
                 @Override
