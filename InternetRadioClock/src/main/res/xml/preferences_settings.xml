@@ -40,6 +40,12 @@
             android:summary="@string/setting.summary.playAtStart"
             android:title="@string/setting.name.playAtStart" />
         <SwitchPreference
+            android:id="@+id/background_play"
+            android:defaultValue="false"
+            android:key="@string/setting.key.backgroundPlay"
+            android:summary="@string/setting.summary.backgroundPlay"
+            android:title="@string/setting.name.backgroundPlay" />
+        <SwitchPreference
             android:id="@+id/lock_orientation_landscape"
             android:defaultValue="true"
             android:key="@string/setting.key.lockOrientationLandscape"

@@ -77,5 +77,10 @@
         android:key="@string/setting.key.batteryInClockColor"
         android:summary="@string/setting.summary.batteryInClockColor"
         android:title="@string/setting.name.batteryInClockColor" />
-
+    <SwitchPreference
+        android:id="@+id/display_battery_when_not_plugged"
+        android:defaultValue="false"
+        android:key="@string/setting.key.displayBatteryWhenDischarging"
+        android:summary="@string/setting.summary.dsplayBatteryWhenNotPlugged"
+        android:title="@string/setting.name.displayBatteryWhenDischarging" />
 </PreferenceScreen>

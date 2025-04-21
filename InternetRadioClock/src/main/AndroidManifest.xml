@@ -4,6 +4,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <!-- background play -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
         android:icon="@mipmap/ic_launcher_internetradioclock"
@@ -11,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:imeOptions="flagNoFullscreen"
+        android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true">
 
         <!-- main activity -->
@@ -68,6 +74,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ro.antiprotv.radioclock.activity.ClockActivity" />
         </activity>
+        <activity
+            android:name=".activity.SlideshowSettingsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Slideshow Settings"
+            android:screenOrientation="fullSensor">
+        </activity>
+
+        <!-- keeps the radio alive while the app is not in the foreground -->
+        <service
+            android:name=".service.BackgroundPlaybackService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
     </application>
 
 </manifest>

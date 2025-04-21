@@ -24,28 +24,22 @@ public class BatteryService extends BroadcastReceiver {
   private final TextView battery_pct;
   private final SharedPreferences prefs;
   private final ClockActivity clockActivity;
-  private final ImageView battery_icon;
   private final ProfileManager profileManager;
 
   public BatteryService(ClockActivity clockActivity, ProfileManager profileManager) {
     this.prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
     this.clockActivity = clockActivity;
     battery_pct = clockActivity.findViewById(R.id.batteryPct);
-    battery_icon = clockActivity.findViewById(R.id.battery_icon);
     this.profileManager = profileManager;
   }
 
   public void registerBatteryLevelReceiver() {
     IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
     clockActivity.registerReceiver(this, ifilter);
-    battery_pct.setVisibility(VISIBLE);
-    battery_icon.setVisibility(VISIBLE);
   }
 
   public void unregisterBatteryLevelReceiver() {
     try {
-      battery_pct.setVisibility(GONE);
-      battery_icon.setVisibility(GONE);
       clockActivity.unregisterReceiver(this);
     } catch (Throwable t) {
       // nothing

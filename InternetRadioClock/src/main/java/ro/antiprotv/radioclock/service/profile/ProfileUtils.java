@@ -3,8 +3,9 @@ package ro.antiprotv.radioclock.service.profile;
 import android.content.Context;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
+import ro.antiprotv.radioclock.BuildConfig;
 import ro.antiprotv.radioclock.R;
-import timber.log.BuildConfig;
 
 public class ProfileUtils {
   private static final String HUMAN_READABLE_TIME_FORMAT = "%s, %s";

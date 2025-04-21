@@ -28,8 +28,10 @@ public class NightProfile extends Profile {
             context.getResources().getString(R.string.setting_key_seconds_night), true),
         prefs.getString(
             context.getResources().getString(R.string.setting_key_typeface_night), "repet___.ttf"),
-        prefs.getBoolean(context.getResources().getString(R.string.setting_key_showdate_night), false),
-        prefs.getInt(context.getResources().getString(R.string.setting_key_datesize_night), 3));
+        prefs.getBoolean(
+            context.getResources().getString(R.string.setting_key_showdate_night), false),
+        prefs.getInt(context.getResources().getString(R.string.setting_key_datesize_night), 3),
+        prefs.getBoolean(context.getString(R.string.setting_key_slideshow_enabled_night), false));
   }
 
   @Override
@@ -69,6 +71,7 @@ public class NightProfile extends Profile {
         .edit()
         .putString(context.getResources().getString(R.string.setting_key_clockColor_night), color)
         .apply();
+    super.saveClockColor(color);
   }
 
   public void saveDateSize(int dateSize) {
@@ -86,4 +89,23 @@ public class NightProfile extends Profile {
         .apply();
     super.saveShowDate(showDate);
   }
+
+  public void saveSlideshowEnabled(boolean slideShowEnabled) {
+    prefs
+        .edit()
+        .putBoolean(
+            context.getString(R.string.setting_key_slideshow_enabled_night), slideShowEnabled)
+        .apply();
+  }
+
+  @Override
+  public void saveShowSeconds(boolean showSeconds) {
+    prefs
+        .edit()
+        .putBoolean(
+            context.getResources().getString(R.string.setting_key_seconds_night), showSeconds)
+        .apply();
+    super.saveShowSeconds(showSeconds);
+  }
+
 }

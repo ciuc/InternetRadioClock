@@ -3,13 +3,13 @@ package ro.antiprotv.radioclock.service.profile;
 import static ro.antiprotv.radioclock.R.string.apply_day_profile_next_change;
 import static ro.antiprotv.radioclock.activity.ClockActivity.PREF_NIGHT_MODE;
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -261,7 +261,6 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockActivity.applyProfile(nightProfile);
 
     clockUpdater.setMoveText(nightProfile.moveText);
-    clockActivity.getClockTextView().setGravity(Gravity.CENTER);
     applyBatteryProfile(nightProfile.clockColor);
     currentProfile = nightProfile;
     size_index = sizes.indexOf((int) nightProfile.clockSize);
@@ -294,7 +293,6 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockActivity.applyProfile(dayProfile);
 
     clockUpdater.setMoveText(dayProfile.moveText);
-    clockActivity.getClockTextView().setGravity(Gravity.CENTER);
     applyBatteryProfile(dayProfile.clockColor);
     currentProfile = dayProfile;
     size_index = sizes.indexOf((int) dayProfile.clockSize);
@@ -312,6 +310,14 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   }
 
   public void applyBatteryProfile(int currentProfileColor) {
+    if (isAlwaysDisplayBattery()
+        || (isDisplayBatteryWhenNotPlugged() && !BatteryService.charging)) {
+      battery_icon.setVisibility(View.VISIBLE);
+      battery_pct.setVisibility(View.VISIBLE);
+    } else {
+      battery_icon.setVisibility(View.GONE);
+      battery_pct.setVisibility(View.GONE);
+    }
     int color = clockActivity.getResources().getColor(R.color.color_clock, null);
     boolean batteryInClockColor =
         prefs.getBoolean(
@@ -319,7 +325,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
             false);
     if (BatteryService.low && !BatteryService.charging) {
       color = clockActivity.getResources().getColor(R.color.color_clock_red, null);
-      if (BatteryService.status > 5) {
+      if (BatteryService.status > 10) {
         battery_icon.setImageResource(R.drawable.baseline_battery_1_bar_24);
         battery_pct.setTextSize(20);
       } else {
@@ -433,6 +439,20 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     currentProfile.saveSize(size);
   }
 
+  public void toggleSecconds() {
+    disableProfileChangeOnSettingChange = true;
+    currentProfile.saveShowSeconds(!currentProfile.showSeconds);
+    applyProfile();
+    disableProfileChangeOnSettingChange = false;
+  }
+
+  public void toggle1224() {
+    disableProfileChangeOnSettingChange = true;
+    currentProfile.saveClock24(!currentProfile.clock24h);
+    applyProfile();
+    disableProfileChangeOnSettingChange = false;
+  }
+
   public int getBrightness() {
     Timber.d("brightness: " + currentProfile.brightness);
     return currentProfile.brightness;
@@ -466,8 +486,35 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockActivity.applyProfile(currentProfile);
   }
 
+  public void enableSlideshow() {
+    currentProfile.saveSlideshowEnabled(true);
+  }
+
+  public void disableSlideshow() {
+    currentProfile.saveSlideshowEnabled(false);
+  }
+
+  public boolean isSlideshowEnabled() {
+    return currentProfile.isSlideshowEnabled();
+  }
+
   public void setBrightnessManager(BrightnessManager brightnessManager) {
     this.brightnessManager = brightnessManager;
+  }
+
+  public Profile getCurrentProfile() {
+    return currentProfile;
+  }
+
+  public boolean isAlwaysDisplayBattery() {
+    return prefs.getBoolean(
+        clockActivity.getResources().getString(R.string.setting_key_alwaysDisplayBattery), false);
+  }
+
+  public boolean isDisplayBatteryWhenNotPlugged() {
+    return prefs.getBoolean(
+        clockActivity.getResources().getString(R.string.setting_key_displayBatteryWhenDischarging),
+        false);
   }
 
   public class ColorPickerClickListner implements View.OnClickListener {
@@ -485,16 +532,21 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
                 public void onColorPicked(int color) {
                   String hexColor = String.format("#%06X", (0xFFFFFF & color));
                   disableProfileChangeOnSettingChange = true;
-                  clockActivity.getClockTextView().setTextColor(color);
+                  currentProfile.clockColor = color;
                   currentProfile.saveClockColor(hexColor);
+                  clockActivity.applyProfile(currentProfile);
                 }
 
                 @Override
                 public void onCancel() {
-                  colorPickerPopUp.dismissDialog(); // Dismiss the dialog.
+                  colorPickerPopUp.dismissDialog();
+                  clockActivity.cancelPreview();
                 }
               })
+          .setPreviewCallback(clockActivity)
           .show();
+      Dialog dialog = colorPickerPopUp.getDialog();
+      dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
   }
 

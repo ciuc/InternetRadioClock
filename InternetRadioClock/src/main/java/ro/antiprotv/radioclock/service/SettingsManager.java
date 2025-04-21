@@ -13,7 +13,6 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
   private final ButtonManager buttonManager;
   private final SleepManager sleepManager;
   private final SharedPreferences prefs;
-  private final BatteryService batteryService;
   private final MediaPlayerService mediaPlayerService;
   private final TimerService timerService;
 
@@ -21,14 +20,12 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
       ClockActivity clockActivity,
       ButtonManager buttonManager,
       SleepManager sleepManager,
-      BatteryService batteryService,
       MediaPlayerService mediaPlayerService,
       TimerService timerService) {
     this.clockActivity = clockActivity;
     this.buttonManager = buttonManager;
     this.sleepManager = sleepManager;
     this.prefs = PreferenceManager.getDefaultSharedPreferences(clockActivity);
-    this.batteryService = batteryService;
     this.mediaPlayerService = mediaPlayerService;
     this.timerService = timerService;
   }
@@ -48,8 +45,24 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
       mediaPlayerService.play(buttonManager.findButtonByTag(key).getId());
     }
 
-    setupBatteryMonitoring(key);
     setupTimers(prefs, key);
+
+    setupBackgroundPlay(prefs, key);
+  }
+
+  /** Apply the background play setting right away when it is toggled while the radio is playing. */
+  private void setupBackgroundPlay(SharedPreferences prefs, String key) {
+    if (!key.equals(clockActivity.getResources().getString(R.string.setting_key_backgroundPlay))) {
+      return;
+    }
+    if (!mediaPlayerService.isPlaying()) {
+      return;
+    }
+    if (prefs.getBoolean(key, false)) {
+      mediaPlayerService.startBackgroundPlayback();
+    } else {
+      mediaPlayerService.stopBackgroundPlayback();
+    }
   }
 
   private void setupSleepTimers(SharedPreferences prefs, String key) {
@@ -145,20 +158,7 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
     }
   }
 
-  private void setupBatteryMonitoring(String key) {
-    if (key.equals(
-        clockActivity.getResources().getString(R.string.setting_key_alwaysDisplayBattery))) {
-      boolean show = isAlwaysDisplayBattery();
-      if (show) {
-        batteryService.registerBatteryLevelReceiver();
-      } else {
-        batteryService.unregisterBatteryLevelReceiver();
-      }
-    }
-  }
 
-  public boolean isAlwaysDisplayBattery() {
-    return prefs.getBoolean(
-        clockActivity.getResources().getString(R.string.setting_key_alwaysDisplayBattery), false);
-  }
+
+
 }

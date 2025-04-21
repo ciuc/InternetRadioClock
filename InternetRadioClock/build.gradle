@@ -12,22 +12,22 @@ android {
     //        storePassword keystoreProperties['storePassword']
     //    }
    // }
-    compileSdk 34
+    compileSdk = 37
     defaultConfig {
         applicationId "ro.antiprotv.radioclock2"
         minSdkVersion 23
-        targetSdkVersion 34
-        versionCode 446
-        versionName "v4.46"
+        targetSdkVersion 37
+        versionCode 470
+        versionName "v4.70"
         vectorDrawables.useSupportLibrary = true
         // android 8
-        multiDexEnabled true
+        multiDexEnabled = true
     }
     buildTypes {
         release {
             minifyEnabled true
             debuggable false
-            signingConfig signingConfigs.debug
+            signingConfig = signingConfigs.debug
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
                     'proguard-rules.pro'
         }
@@ -45,23 +45,29 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_9
         targetCompatibility JavaVersion.VERSION_1_9
     }
-    namespace 'ro.antiprotv.radioclock'
+    namespace = 'ro.antiprotv.radioclock'
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.devbrackets.android:exomedia:5.1.0'
-    testImplementation 'junit:junit:4.12'
+    implementation 'com.devbrackets.android:exomedia:5.2.0'
+    testImplementation 'junit:junit:4.13.2'
     // Optional -- Mockito framework
-    testImplementation "org.mockito:mockito-core:4.3.1"
-    implementation 'androidx.appcompat:appcompat:1.7.0'
+    testImplementation "org.mockito:mockito-core:5.20.0"
+    implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation "androidx.preference:preference:1.2.1"
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'com.jakewharton.timber:timber:4.1.2'
+    implementation 'com.google.android.material:material:1.13.0'
+    implementation 'com.jakewharton.timber:timber:5.0.1'
     implementation 'com.android.volley:volley:1.2.1'
-    implementation 'com.github.mrudultora:Colorpicker:1.2.0'
-    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
+    //implementation 'com.github.mrudultora:Colorpicker:1.2.0'
+    implementation project(":colorpicker")
+
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.15.0'
     //implementation 'com.github.florent37:tutoshowcase:1.0.1'
     // for android 8
     implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.github.bumptech.glide:glide:5.0.5'
+    annotationProcessor 'com.github.bumptech.glide:compiler:5.0.5'
+
+    implementation 'com.flaviofaria:kenburnsview:1.0.7'
 }

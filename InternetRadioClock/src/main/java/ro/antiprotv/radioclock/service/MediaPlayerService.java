@@ -1,7 +1,9 @@
 package ro.antiprotv.radioclock.service;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.widget.Button;
 import android.widget.Toast;
 import com.devbrackets.android.exomedia.AudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnErrorListener;
@@ -16,7 +18,10 @@ public class MediaPlayerService {
   private final ButtonManager buttonManager;
   private final VolumeManager volumeManager;
   private final SharedPreferences prefs;
+  private final Context appContext;
   private AudioPlayer mMediaPlayer;
+  /** Label of the station currently playing; shown in the background play notification. */
+  private String playingStationLabel;
 
   public MediaPlayerService(
       ClockActivity clockActivity,
@@ -28,10 +33,12 @@ public class MediaPlayerService {
     this.alarmManager = alarmManager;
     this.buttonManager = buttonManager;
     this.volumeManager = volumeManager;
+    this.prefs = prefs;
+    this.appContext = clockActivity.getApplicationContext();
     if (mMediaPlayer == null) {
       initMediaPlayer();
     }
-    this.prefs = prefs;
+    BackgroundPlaybackService.setStopListener(this::stopPlaying);
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,15 +48,22 @@ public class MediaPlayerService {
   /** Initialize or reinitialize the media player */
   public void initMediaPlayer() {
     if (mMediaPlayer == null) {
-      mMediaPlayer = new AudioPlayer(clockActivity);
+      mMediaPlayer = new AudioPlayer(appContext);
       mMediaPlayer.setOnPreparedListener(new MediaPlayerService.CustomOnPreparedListener());
       mMediaPlayer.setOnErrorListener(new MediaPlayerService.CustomOnErrorListener());
     }
   }
 
+  /**
+   * Tears the player down for good. Since we drop the reference here, the player has to be released
+   * as well: otherwise its playback thread, audio track and decoder stay alive for the life of the
+   * process. To merely stop the radio, use {@link #stopPlaying()} - the player stays reusable, a
+   * later {@link #play(int)} prepares it again.
+   */
   public void resetMediaPlayer() {
     if (mMediaPlayer != null) {
       stopPlaying();
+      mMediaPlayer.release();
       mMediaPlayer = null;
     }
   }
@@ -84,6 +98,9 @@ public class MediaPlayerService {
             Toast.LENGTH_SHORT)
         .show();
     if (url != null) {
+      Button button = buttonManager.findButtonById(buttonId);
+      playingStationLabel = button == null ? url : button.getText().toString();
+      startBackgroundPlayback();
       mMediaPlayer.setMedia(Uri.parse(url));
     } else { // Something went wrong, resetting
       resetMediaPlayer();
@@ -91,7 +108,33 @@ public class MediaPlayerService {
     }
   }
 
+  /** Is the radio allowed to keep playing once the app is no longer in the foreground? */
+  public boolean isBackgroundPlayEnabled() {
+    return prefs.getBoolean(
+        clockActivity.getResources().getString(R.string.setting_key_backgroundPlay), false);
+  }
+
+  /**
+   * Hands playback over to the foreground service so the system keeps our process (and the stream)
+   * alive when the clock is not visible. Does nothing when the setting is off.
+   *
+   * <p>No wake lock is needed on top of this: the audio server holds one on our behalf ('AudioMix')
+   * for as long as a track is actually playing, which covers a sleeping screen.
+   */
+  public void startBackgroundPlayback() {
+    if (mMediaPlayer == null || !isBackgroundPlayEnabled()) {
+      return;
+    }
+    BackgroundPlaybackService.start(appContext, playingStationLabel);
+  }
+
+  public void stopBackgroundPlayback() {
+    BackgroundPlaybackService.stop(appContext);
+  }
+
   public void stopPlaying() {
+    stopBackgroundPlayback();
+    playingStationLabel = null;
     if (mMediaPlayer != null) {
       if (mMediaPlayer.isPlaying()) {
         Toast.makeText(clockActivity, R.string.stopping_stream, Toast.LENGTH_SHORT).show();
@@ -112,7 +155,7 @@ public class MediaPlayerService {
   }
 
   public boolean isPlaying() {
-    return mMediaPlayer.isPlaying();
+    return mMediaPlayer != null && mMediaPlayer.isPlaying();
   }
 
   public void onRestart() {
@@ -156,8 +199,9 @@ public class MediaPlayerService {
     @Override
     public boolean onError(Exception e) {
       Toast.makeText(clockActivity, R.string.error_playing_stream, Toast.LENGTH_SHORT).show();
-      resetMediaPlayer();
-      initMediaPlayer();
+      // keep the player: it is reusable after a stop, and throwing it away on every failed stream
+      // (dead station, network drop) would abandon a live playback thread each time
+      stopPlaying();
       buttonManager.onError();
       if (clockActivity.getSupportActionBar() != null) {
         clockActivity

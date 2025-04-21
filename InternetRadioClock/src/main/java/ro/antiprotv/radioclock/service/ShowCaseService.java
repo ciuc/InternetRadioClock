@@ -53,30 +53,6 @@ public class ShowCaseService {
 
     TapTarget bouded = TapTarget.forBounds(new Rect(0, 0, 200, 200), "aaa");
 
-    TapTarget tap_tgt_layout_settings =
-        TapTarget.forView(
-                activity.findViewById(R.id.font_cycle_button_fwd),
-                "Change font",
-                "Use these buttons to cycle through fonts. You can also use swipe.")
-            .outerCircleColor(OUTER_CIRCLE_COLOR) // Specify a color for the outer circle
-            .outerCircleAlpha(OUTER_CIRCLE_ALPHA) // Specify the alpha amount for the outer circle
-            .targetCircleColor(TARGET_CIRCLE_COLOR) // Specify a color for the target circle
-            .titleTextSize(TITLE_SIZE) // Specify the size (in sp) of the title text
-            .titleTextColor(TARGET_CIRCLE_COLOR) // Specify the color of the title text
-            .descriptionTextSize(
-                DESCRIPTION_SIZE) // Specify the size (in sp) of the description text
-            .descriptionTextColor(TARGET_CIRCLE_COLOR) // Specify the color of the description text
-            .textColor(
-                TARGET_CIRCLE_COLOR) // Specify a color for both the title and description text
-            .dimColor(DIM_COLOR) // If set, will dim behind the view with 30% opacity of the given
-            // color
-            .drawShadow(true) // Whether to draw a drop shadow or not
-            .cancelable(true) // Whether tapping outside the outer circle dismisses the view
-            .tintTarget(true) // Whether to tint the target view's color
-            .transparentTarget(
-                true) // Specify whether the target is transparent (displays the content underneath)
-            .targetRadius(200); // Specify the target radius (in dp)
-
     TapTarget tap_tgt_night =
         TapTarget.forView(
                 nightModeButton, "Night/Day Mode", "Click to toggle between night and day modes.")
@@ -124,7 +100,7 @@ public class ShowCaseService {
     tapTargetSequence =
         new TapTargetSequence(activity)
             .targets(
-                tap_tgt_text_size, bouded, tap_tgt_night, tap_tgt_layout_settings, tap_tgt_close)
+                tap_tgt_text_size, bouded, tap_tgt_night, tap_tgt_close)
             .listener(
                 new TapTargetSequence.Listener() {
                   @Override

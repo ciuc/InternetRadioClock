@@ -10,6 +10,7 @@ package ro.antiprotv.radioclock.activity;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.TimePickerDialog;
@@ -18,6 +19,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -26,6 +28,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -36,6 +39,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -43,6 +47,14 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.mrudultora.colorpicker.IPreviewCallback;
 import java.util.Date;
 import ro.antiprotv.radioclock.BuildConfig;
 import ro.antiprotv.radioclock.ClockUpdater;
@@ -56,6 +68,7 @@ import ro.antiprotv.radioclock.listener.OnOnOffClickListener;
 import ro.antiprotv.radioclock.listener.TimerAddTimeOnClickListener;
 import ro.antiprotv.radioclock.listener.TimerOnClickListener;
 import ro.antiprotv.radioclock.listener.TimerPauseOnClickListener;
+import ro.antiprotv.radioclock.service.BackgroundPlaybackService;
 import ro.antiprotv.radioclock.service.BatteryService;
 import ro.antiprotv.radioclock.service.BrightnessManager;
 import ro.antiprotv.radioclock.service.ButtonManager;
@@ -63,6 +76,7 @@ import ro.antiprotv.radioclock.service.MediaPlayerService;
 import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.RingtoneService;
 import ro.antiprotv.radioclock.service.SettingsManager;
+import ro.antiprotv.radioclock.service.SlideshowManager;
 import ro.antiprotv.radioclock.service.TimerService;
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.Profile;
@@ -70,7 +84,7 @@ import ro.antiprotv.radioclock.service.profile.ProfileManager;
 import timber.log.Timber;
 
 /** Main Activity. Just displays the clock and buttons */
-public class ClockActivity extends AppCompatActivity {
+public class ClockActivity extends AppCompatActivity implements IPreviewCallback {
 
   public static final String PREF_NIGHT_MODE = "NIGHT_MODE";
   public static final String LAST_PLAYED = "LAST_PLAYED";
@@ -266,6 +280,13 @@ public class ClockActivity extends AppCompatActivity {
     return fadeOut;
   }
 
+  // --/////////////////////////////////////////////////////////////////////////
+  // --- SLIDESHOW ---
+  // --/////////////////////////////////////////////////////////////////////////
+  private KenBurnsView kenBurnsView;
+  private ImageView simpleSlideshowView;
+  private SlideshowManager slideshowManager;
+
   ///////////////////////////////////////////////////////////////////////////
   // State methods
   ///////////////////////////////////////////////////////////////////////////
@@ -290,22 +311,7 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     Timber.d(sb.toString());
-    /* AlertDialog.Builder builder =
-        new AlertDialog.Builder(this)
-            .setTitle("Stack trace")
-            .setPositiveButton("OK", (dialog, id) -> dialog.cancel())
-            .setMessage(sb.toString());
-    AlertDialog stacktracedialog = builder.create();
-    stacktracedialog.show();*/
 
-    /*    Executors.newSingleThreadExecutor().execute(new Runnable() {
-          @Override
-          public void run() {
-            EmailSender.sendEmail("cristi.ciuc@gmail.com",
-                    "100LuftBallons1!", "cristi.ciuc@gmail.com", "Test", "Test");
-          }
-        });
-    */
     // SOME INITIALIZATIONS
     // Initialize the preferences_buttons
     prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -377,6 +383,24 @@ public class ClockActivity extends AppCompatActivity {
     this.batteryService = new BatteryService(this, profileManager);
 
     profileManager.clearTask();
+
+    // slideshow, initialize, since applyProfile needs it
+    kenBurnsView = findViewById(R.id.kenBurnsView);
+    simpleSlideshowView = findViewById(R.id.slideshowSimpleImageView);
+    ImageButton selectImagesButton = findViewById(R.id.button_slideshow_enable);
+    slideshowManager =
+        SlideshowManager.getInstance(
+            this, prefs, kenBurnsView, simpleSlideshowView, buttonManager, profileManager);
+
+    selectImagesButton.setOnClickListener(
+        v -> {
+          if (slideshowManager.isSlideshowEnabled()) {
+            slideshowManager.disableSlideshow();
+          } else {
+            slideshowManager.enableSlideshow();
+          }
+        });
+
     profileManager.applyProfile();
     BrightnessManager brightnessManager =
         new BrightnessManager(this, mControlsView, profileManager);
@@ -398,7 +422,7 @@ public class ClockActivity extends AppCompatActivity {
     initializeSleepFunction();
     preferenceChangeListener =
         new SettingsManager(
-            this, buttonManager, sleepManager, batteryService, mediaPlayerService, timerService);
+            this, buttonManager, sleepManager, mediaPlayerService, timerService);
     alarmManager.setMediaPlayerService(mediaPlayerService);
     // Play at start?
     // button clicked is either last played, or the first; will also set
@@ -413,28 +437,8 @@ public class ClockActivity extends AppCompatActivity {
     onOffButton.setOnClickListener(
         new OnOnOffClickListener(mediaPlayerService, buttonManager, this));
 
-    if (((SettingsManager) preferenceChangeListener).isAlwaysDisplayBattery()) {
-      batteryService.registerBatteryLevelReceiver();
-    } else {
-      batteryService.unregisterBatteryLevelReceiver();
-    }
+    batteryService.registerBatteryLevelReceiver();
 
-    findViewById(R.id.font_cycle_button_fwd)
-        .setOnClickListener(
-            new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                profileManager.cycleThroughFonts();
-              }
-            });
-    findViewById(R.id.font_cycle_button_rev)
-        .setOnClickListener(
-            new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                profileManager.cycleThroughFonts(false);
-              }
-            });
     findViewById(R.id.text_size_cycle_button_fwd)
         .setOnClickListener(
             new View.OnClickListener() {
@@ -496,6 +500,43 @@ public class ClockActivity extends AppCompatActivity {
           }
         });
 
+    Button showSecondsButton = findViewById(R.id.seconds_button);
+    showSecondsButton.setOnClickListener(
+        new View.OnClickListener() {
+
+          @Override
+          public void onClick(View view) {
+            profileManager.toggleSecconds();
+          }
+        });
+    Button _12_24Button = findViewById(R.id._12_24_button);
+    _12_24Button.setOnClickListener(
+        new View.OnClickListener() {
+
+          @Override
+          public void onClick(View view) {
+            profileManager.toggle1224();
+          }
+        });
+
+    ImageButton volumeUpButton = findViewById(R.id.volume_up_button);
+    volumeUpButton.setOnClickListener(
+        new View.OnClickListener() {
+
+          @Override
+          public void onClick(View view) {
+            volumeManager.volumeUp();
+          }
+        });
+    ImageButton volumeDownButton = findViewById(R.id.volume_down_button);
+    volumeDownButton.setOnClickListener(
+        new View.OnClickListener() {
+
+          @Override
+          public void onClick(View view) {
+            volumeManager.volumeDown();
+          }
+        });
     swipeGestureDetector = new GestureDetector(this, new SwipeGestureDetector());
     pinchGestureDetector = new ScaleGestureDetector(getApplicationContext(), new ScaleListener());
 
@@ -511,6 +552,32 @@ public class ClockActivity extends AppCompatActivity {
         mediaPlayerService.play(buttonClicked);
       }
     }
+    View rootLayout = findViewById(R.id.layout_root_clock_activity);
+    ViewCompat.setOnApplyWindowInsetsListener(
+        rootLayout,
+        new OnApplyWindowInsetsListener() {
+          @NonNull
+          @Override
+          public WindowInsetsCompat onApplyWindowInsets(
+              @NonNull View v, @NonNull WindowInsetsCompat insets) {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+          }
+        });
+
+    ViewCompat.setOnApplyWindowInsetsListener(
+        mControlsView,
+        new OnApplyWindowInsetsListener() {
+          @NonNull
+          @Override
+          public WindowInsetsCompat onApplyWindowInsets(
+              @NonNull View v, @NonNull WindowInsetsCompat insets) {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, toolbar.getHeight() + 2, 10, 10);
+            return insets;
+          }
+        });
   }
 
   private void setOrientationLandscapeIfLocked() {
@@ -549,6 +616,9 @@ public class ClockActivity extends AppCompatActivity {
       this.registerReceiver(this.alarmManager, filter);
     }
     setOrientationLandscapeIfLocked();
+    /*    if (slideshowManager.isSlideshowEnabled()) {
+      slideshowManager.startSlideshow();
+    }*/
   }
 
   @Override
@@ -581,7 +651,9 @@ public class ClockActivity extends AppCompatActivity {
   @Override
   protected void onDestroy() {
     Timber.d(TAG_STATE, "onDestroy");
+    // stops playing, which also takes down the background playback notification
     mediaPlayerService.resetMediaPlayer();
+    BackgroundPlaybackService.setStopListener(null);
     if (clockUpdater != null && !clockUpdater.isInterrupted()) {
       clockUpdater.interrupt();
     }
@@ -600,6 +672,8 @@ public class ClockActivity extends AppCompatActivity {
     }
     prefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
     prefs.unregisterOnSharedPreferenceChangeListener(profileManager);
+    slideshowManager.stopSlideshow();
+    slideshowManager.destroy();
     super.onDestroy();
   }
 
@@ -615,6 +689,7 @@ public class ClockActivity extends AppCompatActivity {
   // UI MANIPULATION
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   public void applyProfile(Profile profile) {
+    clockTextView.setGravity(Gravity.CENTER);
     clockTextView.setTextSize(profile.getSize());
     clockTextView.setTypeface(ProfileManager.fonts.get(profile.getFont()));
     clockTextView.setTextColor(profile.getColor());
@@ -623,6 +698,23 @@ public class ClockActivity extends AppCompatActivity {
     dateTextView.setTextSize((float) profile.getSize() / profile.getDateSize());
     dateTextView.setTypeface(ProfileManager.fonts.get(profile.getFont()));
     dateTextView.setTextColor(profile.getColor());
+    if (profile.isSlideshowEnabled()) {
+      slideshowManager.startSlideshow();
+    } else {
+      slideshowManager.stopSlideshow();
+    }
+  }
+
+  public void applyProfile() {
+    applyProfile(profileManager.getCurrentProfile());
+  }
+
+  public void preview(int color) {
+    clockTextView.setTextColor(color);
+  }
+
+  public void cancelPreview() {
+    clockTextView.setTextColor(profileManager.getCurrentProfile().getColor());
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -738,8 +830,13 @@ public class ClockActivity extends AppCompatActivity {
     clockUpdater.setTimerService(timerService);
     ImageButton timerLong = findViewById(R.id.timer_long);
     ImageButton timerShort = findViewById(R.id.timer_short);
+    ImageButton timerLonger = findViewById(R.id.timer_longer);
     ImageButton timerPause = findViewById(R.id.timer_pause);
-    Button timerAdd = findViewById(R.id.timer_plus10);
+    Button timerPlus10 = findViewById(R.id.timer_plus10);
+    Button timerMinus10 = findViewById(R.id.timer_minus10);
+    Button timerPlus1m = findViewById(R.id.timer_plus1m);
+    Button timerMinus1m = findViewById(R.id.timer_minus1m);
+
 
     timerShort.setOnClickListener(
         new TimerOnClickListener(
@@ -754,15 +851,28 @@ public class ClockActivity extends AppCompatActivity {
             R.string.setting_key_timer_long_seconds,
             R.id.timer_long,
             timerService,
+            "60",
+            prefs,
+            this));
+
+    timerLonger.setOnClickListener(
+        new TimerOnClickListener(
+            R.string.setting_key_timer_longer_seconds,
+            R.id.timer_longer,
+            timerService,
             "180",
             prefs,
             this));
 
     timerShort.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService, prefs));
     timerLong.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService, prefs));
+    timerLonger.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService, prefs));
 
     timerPause.setOnClickListener(new TimerPauseOnClickListener(timerService));
-    timerAdd.setOnClickListener(new TimerAddTimeOnClickListener(timerService, 10));
+    timerPlus10.setOnClickListener(new TimerAddTimeOnClickListener(timerService, 10));
+    timerMinus10.setOnClickListener(new TimerAddTimeOnClickListener(timerService, -10));
+    timerPlus1m.setOnClickListener(new TimerAddTimeOnClickListener(timerService, 60));
+    timerMinus1m.setOnClickListener(new TimerAddTimeOnClickListener(timerService, -60));
     timerService.setAlarmDuration(
         Integer.parseInt(
             prefs.getString(getString(R.string.setting_key_timer_alarm_duration), "7")));
@@ -848,6 +958,12 @@ public class ClockActivity extends AppCompatActivity {
         night.setClassName(this, "ro.antiprotv.radioclock.activity.NightProfileActivity");
         startActivity(night);
         return true;
+      case R.id.slideshow:
+        requestStoragePermissionIfNeeded();
+        Intent slideshow = new Intent();
+        slideshow.setClassName(this, "ro.antiprotv.radioclock.activity.SlideshowSettingsActivity");
+        startActivity(slideshow);
+        return true;
       case R.id.about:
         Intent about = new Intent();
         about.setClassName(this, "ro.antiprotv.radioclock.activity.AboutActivity");
@@ -867,6 +983,17 @@ public class ClockActivity extends AppCompatActivity {
         finish();
       default:
         return super.onOptionsItemSelected(item);
+    }
+  }
+
+  private void requestStoragePermissionIfNeeded() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      // Android 13+
+      if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+          != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(
+            this, new String[] {Manifest.permission.READ_MEDIA_IMAGES}, 1001);
+      }
     }
   }
 
@@ -1076,8 +1203,6 @@ public class ClockActivity extends AppCompatActivity {
     // Timber.d("set disallow swipe: " + disallowSwipe);
     this.disallowSwipe = disallowSwipe;
   }
-
-
 
   // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   // GETTERS AND SETTERS END

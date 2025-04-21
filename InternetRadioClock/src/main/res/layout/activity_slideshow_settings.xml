@@ -6,30 +6,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:title="@string/title.settings"
-    tools:context=".activity.SettingsActivity"
     android:theme="@style/AppBarOverlay"
-    android:id="@+id/layout_root_activity_settings">
-
+    android:id="@+id/layout_root_activity_settings"
+    tools:context=".activity.SlideshowSettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        app:title="@string/title.settings"
-        app:titleTextColor="@color/white"
+        app:title="@string/title_slideshow_settings"
         app:popupTheme="@style/PopupOverlay" />
 
 
+   <LinearLayout
+       android:id="@+id/slideshow_settings_content"
+       android:orientation="vertical"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/settings_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+
+   </LinearLayout>
 
 
-    </LinearLayout>
 
 
 </LinearLayout>

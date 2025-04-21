@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:title="@string/category_title_lookfeel">
+
+
+
+
+        <Preference
+            android:key="@string/setting.key.slideshow_images"
+            android:title="Select Images"
+            android:summary="Choose images to show in background\n[%s]" />
+    <PreferenceCategory>
+        <ListPreference
+            android:defaultValue="NONE"
+            android:entries="@array/slideshow_effect_human_readable"
+            android:entryValues="@array/slideshow_effect"
+            android:key="@string/setting.key.slideshow.effect"
+            android:summary="%s"
+            android:title="@string/setting.name.slideshow.effect" />
+        <SwitchPreference
+            android:key="@string/setting.key.slideshow.randomize"
+            android:title="@string/setting.name.slideshow.randomize"
+            android:summary="@string/setting.summary.slideshow.randomize"
+            android:defaultValue="false"
+            />
+        <EditTextPreference
+            android:key="@string/setting.key.slideshow.image.stay.duration"
+            android:title="@string/setting.name.slideshow.image.stay.duration"
+            android:summary="@string/setting.summary.slideshow.image.stay.duration"
+            android:defaultValue="5000"
+            />
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

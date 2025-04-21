@@ -20,6 +20,10 @@
         android:icon="@drawable/ic_night_24dp"
         android:title="@string/menu_night_profile"
         app:showAsAction="always"/>
+    <item android:id="@+id/slideshow"
+        android:icon="@drawable/baseline_slideshow_24"
+        android:title="@string/title_slideshow_settings"
+        app:showAsAction="always"/>
     <item android:id="@+id/buttons"
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/settings.menu.buttons"

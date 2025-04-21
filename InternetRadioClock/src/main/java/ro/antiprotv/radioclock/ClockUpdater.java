@@ -119,6 +119,7 @@ public class ClockUpdater extends Thread {
       } else {
         stopBlinkingAnimation(clockView);
       }
+      dateView.setVisibility(TextView.GONE);
       return timerText;
     }
     stopBlinkingAnimation(clockView);
