@@ -17,8 +17,8 @@ android {
         applicationId "ro.antiprotv.radioclock2"
         minSdkVersion 23
         targetSdkVersion 35
-        versionCode 447
-        versionName "v4.47"
+        versionCode 448
+        versionName "v4.48"
         vectorDrawables.useSupportLibrary = true
         // android 8
         multiDexEnabled true
