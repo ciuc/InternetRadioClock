@@ -15,6 +15,7 @@ public class TimerService {
 
   private final RingtoneService ringtoneService;
   private final ButtonManager buttonManager;
+  private final ClockActivity clockActivity;
   //private ClockActivity clockActivity;
   private boolean timerEnabled;
   private boolean timerStarted;
@@ -35,6 +36,7 @@ public class TimerService {
     this.buttonManager = buttonManager;
     this.fillRectangleView = clockActivity.findViewById(R.id.fill_rectangle);
     this.fillCircleView = clockActivity.findViewById(R.id.fill_pie);
+    this.clockActivity = clockActivity;
   }
 
   public void startInstantTimer(int buttonId, int seconds, String visual, boolean animate) {
@@ -114,6 +116,7 @@ public class TimerService {
     }
     countingTime = 10;
     buttonManager.toggleTimerButtonsVisibility(GONE);
+    clockActivity.applyProfile();
   }
 
   public void stopAlarm() {

@@ -335,6 +335,26 @@
                 android:tag="@string/setting.key.alarmIcon"
                 android:textColor="@color/button.color.off"
                 app:srcCompat="@drawable/outline_color_lens_24" />
+
+            <Button
+                android:id="@+id/date_button"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/text_size_cycle_button_fwd"
+                android:layout_toLeftOf="@id/color_picker_button"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/memory"
+                android:clickable="true"
+                android:textStyle="bold"
+                android:text="12.01.25"
+                android:textSize="6pt"
+
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/outline_color_lens_24" />
+
         </RelativeLayout>
 
         <ImageButton

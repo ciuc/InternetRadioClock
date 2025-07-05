@@ -63,6 +63,7 @@ public class DayProfile extends Profile {
         .edit()
         .putString(context.getResources().getString(R.string.setting_key_clockColor), color)
         .apply();
+    super.saveClockColor(color);
   }
 
   public void saveDateSize(int dateSize) {

@@ -189,6 +189,7 @@
         <item>Bazaronite.ttf</item>
         <item>square-sans-serif-7.regular.ttf</item>
         <item>linear-beam.0-5.ttf</item>
+        <!--item>Hidrant-Frumos.otf</item-->
     </string-array>
     <string-array name="clock_human_typefaces">
         <item>Dots 1 (Repet)</item>
@@ -205,6 +206,7 @@
         <item>Bazaronite</item>
         <item>Square Sans-serif</item>
         <item>Linear Beam</item>
+        <!--item>Om normal\'s Hidrant</item-->
     </string-array>
     <string-array name="timer_alarm_durations">
         <item>7</item>

@@ -3,13 +3,15 @@ package ro.antiprotv.radioclock.service.profile;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
+
 import java.text.SimpleDateFormat;
 import ro.antiprotv.radioclock.R;
 
 public abstract class Profile {
-  protected final int clockColor;
-  protected final boolean moveText;
-  protected final boolean showSeconds;
+  protected int clockColor;
+  protected boolean moveText;
+  protected boolean showSeconds;
   protected final Context context;
   protected int brightness;
   protected float clockSize;
@@ -83,7 +85,9 @@ public abstract class Profile {
 
   public abstract void saveBrightness(int brightness);
 
-  public abstract void saveClockColor(String color);
+  public void saveClockColor(String color){
+    this.clockColor = Color.parseColor(color);
+  }
 
   public int getColor() {
     return clockColor;

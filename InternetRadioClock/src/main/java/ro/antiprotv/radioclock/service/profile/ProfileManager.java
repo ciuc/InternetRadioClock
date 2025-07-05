@@ -470,6 +470,10 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     this.brightnessManager = brightnessManager;
   }
 
+  public Profile getCurrentProfile() {
+    return currentProfile;
+  }
+
   public class ColorPickerClickListner implements View.OnClickListener {
 
     @Override
@@ -485,8 +489,9 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
                 public void onColorPicked(int color) {
                   String hexColor = String.format("#%06X", (0xFFFFFF & color));
                   disableProfileChangeOnSettingChange = true;
-                  clockActivity.getClockTextView().setTextColor(color);
+                  currentProfile.clockColor = color;
                   currentProfile.saveClockColor(hexColor);
+                  clockActivity.applyProfile(currentProfile);
                 }
 
                 @Override

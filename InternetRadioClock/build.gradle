@@ -12,11 +12,11 @@ android {
     //        storePassword keystoreProperties['storePassword']
     //    }
    // }
-    compileSdk 34
+    compileSdk 35
     defaultConfig {
         applicationId "ro.antiprotv.radioclock2"
         minSdkVersion 23
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode 447
         versionName "v4.47"
         vectorDrawables.useSupportLibrary = true
