@@ -26,7 +26,8 @@ public class DayProfile extends Profile {
         prefs.getString(
             context.getResources().getString(R.string.setting_key_typeface), "repet___.ttf"),
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_showdate), false),
-        prefs.getInt(context.getResources().getString(R.string.setting_key_datesize), 3));
+        prefs.getInt(context.getResources().getString(R.string.setting_key_datesize), 3),
+        prefs.getBoolean(context.getString(R.string.setting_key_slideshow_enabled_day), false));
   }
 
   @Override
@@ -81,4 +82,23 @@ public class DayProfile extends Profile {
         .apply();
     super.saveShowDate(showDate);
   }
+
+  @Override
+  public void saveSlideshowEnabled(boolean slideShowEnabled) {
+    prefs
+        .edit()
+        .putBoolean(context.getString(R.string.setting_key_slideshow_enabled_day), slideShowEnabled)
+        .apply();
+    super.saveSlideshowEnabled(slideShowEnabled);
+  }
+
+  @Override
+  public void saveShowSeconds(boolean showSeconds) {
+    prefs
+        .edit()
+        .putBoolean(context.getResources().getString(R.string.setting_key_seconds), showSeconds)
+        .apply();
+    super.saveShowSeconds(showSeconds);
+  }
+
 }

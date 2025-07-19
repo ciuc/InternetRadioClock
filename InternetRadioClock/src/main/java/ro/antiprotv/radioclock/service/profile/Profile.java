@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
-
 import java.text.SimpleDateFormat;
 import ro.antiprotv.radioclock.R;
 
@@ -15,13 +14,14 @@ public abstract class Profile {
   protected final Context context;
   protected int brightness;
   protected float clockSize;
-  protected boolean clock12h;
+  protected boolean clock24h;
   protected boolean clock12hShowAmPm;
   protected SimpleDateFormat clockFormat;
   protected String font;
   protected boolean showDate;
   protected int dateSize;
   protected SharedPreferences prefs;
+  protected boolean slideShowEnabled;
 
   public Profile(
       SharedPreferences prefs,
@@ -33,7 +33,8 @@ public abstract class Profile {
       boolean showSeconds,
       String font,
       boolean showDate,
-      int dateSize) {
+      int dateSize,
+      boolean slideShowEnabled) {
     this.clockColor = clockColor;
     this.clockSize = clockSize;
     this.brightness = brightness;
@@ -45,23 +46,24 @@ public abstract class Profile {
     this.showDate = showDate;
     this.dateSize = dateSize;
 
-    this.clock12h =
+    this.clock24h =
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_clock24), false);
     this.clock12hShowAmPm =
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_clock24ampm), true);
+    this.slideShowEnabled = slideShowEnabled;
   }
 
   protected void setup() {
     StringBuilder clockPattern = new StringBuilder();
-    if (!clock12h) {
-      clockPattern.append("HH:mm");
-    } else {
+    if (clock24h) {
       clockPattern.append("hh:mm");
+    } else {
+      clockPattern.append("HH:mm");
     }
     if (showSeconds) {
       clockPattern.append(":ss");
     }
-    if (clock12h && clock12hShowAmPm) {
+    if (clock24h && clock12hShowAmPm) {
       clockPattern.append(" a");
     }
     String pattern = clockPattern.toString();
@@ -85,7 +87,7 @@ public abstract class Profile {
 
   public abstract void saveBrightness(int brightness);
 
-  public void saveClockColor(String color){
+  public void saveClockColor(String color) {
     this.clockColor = Color.parseColor(color);
   }
 
@@ -126,5 +128,25 @@ public abstract class Profile {
 
   public void saveShowDate(boolean showDate) {
     this.showDate = showDate;
+  }
+
+  public void saveSlideshowEnabled(boolean slideShowEnabled) {
+    this.slideShowEnabled = slideShowEnabled;
+  }
+
+  public boolean isSlideshowEnabled() {
+    return slideShowEnabled;
+  }
+
+  public void saveShowSeconds(boolean showSeconds) {
+    this.showSeconds = showSeconds;
+  }
+
+  public void saveClock24(boolean clock24h) {
+    prefs
+        .edit()
+        .putBoolean(context.getResources().getString(R.string.setting_key_clock24), clock24h)
+        .apply();
+    this.clock24h = clock24h;
   }
 }

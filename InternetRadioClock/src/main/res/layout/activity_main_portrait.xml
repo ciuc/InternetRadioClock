@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#000000"
     tools:context=".activity.ClockActivity"
-    android:fitsSystemWindows="true">
+    android:id="@+id/layout_root_clock_activity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -15,6 +15,18 @@
         android:elevation="4dp"
         android:theme="@style/AppBarOverlay"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+    <com.flaviofaria.kenburnsview.KenBurnsView
+        android:id="@+id/kenBurnsView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+    <ImageView
+        android:id="@+id/slideshowSimpleImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="TODO"
+        android:scaleType="centerCrop" />
 
     <RelativeLayout
         android:id="@+id/overlay"
@@ -271,6 +283,22 @@
                 android:visibility="gone"
                 android:layout_below="@+id/timer_long"
                 android:layout_toRightOf="@+id/timer_pause"/>
+            <ImageButton
+                android:id="@+id/button_slideshow_enable"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/baseline_slideshow_24"
+                tools:visibility="visible"
+                android:layout_below="@+id/timer_long"/>
+
         </RelativeLayout>
 
         <ImageButton
@@ -372,8 +400,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/main_help_button">
 
-            <ImageButton
-                android:id="@+id/font_cycle_button_fwd"
+            <Button
+                android:id="@+id/seconds_button"
                 style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -382,24 +410,26 @@
                 android:layout_marginEnd="5dp"
                 android:background="@drawable/memory"
                 android:clickable="false"
+                android:text=":55"
+                android:textSize="6pt"
                 android:tag="@string/setting.key.alarmIcon"
                 android:textColor="@color/button.color.off"
-                app:srcCompat="@drawable/baseline_text_rotation_none_24" />
-
-        <ImageButton
-            android:id="@+id/font_cycle_button_rev"
-            style="@style/imageButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_toStartOf="@id/font_cycle_button_fwd"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:scaleX="-1"
-            android:tag="@string/setting.key.alarmIcon"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/baseline_text_rotation_none_24"/>
+                app:srcCompat="@drawable/outline_color_lens_24" />
+            <Button
+                android:id="@+id/_12_24_button"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_toStartOf="@id/seconds_button"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:text="12/24"
+                android:textSize="6pt"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/outline_color_lens_24" />
 
         <ImageButton
             android:id="@+id/text_size_cycle_button_fwd"
@@ -407,7 +437,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_below="@+id/font_cycle_button_fwd"
+            android:layout_below="@+id/seconds_button"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
             android:background="@drawable/memory"
@@ -422,8 +452,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_below="@+id/font_cycle_button_fwd"
-            android:layout_toStartOf="@+id/font_cycle_button_fwd"
+            android:layout_below="@+id/seconds_button"
+            android:layout_toStartOf="@+id/seconds_button"
             android:layout_marginTop="5dp"
             android:background="@drawable/memory"
             android:clickable="false"
@@ -438,8 +468,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_below="@+id/font_cycle_button_rev"
-            android:layout_toLeftOf="@id/text_size_cycle_button_rev"
+            android:layout_below="@+id/text_size_cycle_button_rev"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
             android:background="@drawable/memory"
             android:clickable="false"
@@ -453,7 +483,7 @@
             style="@style/imageButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/font_cycle_button_rev"
+            android:layout_below="@+id/text_size_cycle_button_rev"
             android:layout_toLeftOf="@id/color_picker_button"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"

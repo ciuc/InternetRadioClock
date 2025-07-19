@@ -10,6 +10,7 @@ package ro.antiprotv.radioclock.activity;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.TimePickerDialog;
@@ -18,6 +19,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -26,6 +28,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -36,6 +39,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -43,6 +47,13 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+import com.flaviofaria.kenburnsview.KenBurnsView;
 import java.util.Date;
 import ro.antiprotv.radioclock.BuildConfig;
 import ro.antiprotv.radioclock.ClockUpdater;
@@ -63,6 +74,7 @@ import ro.antiprotv.radioclock.service.MediaPlayerService;
 import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.RingtoneService;
 import ro.antiprotv.radioclock.service.SettingsManager;
+import ro.antiprotv.radioclock.service.SlideshowManager;
 import ro.antiprotv.radioclock.service.TimerService;
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.Profile;
@@ -266,6 +278,13 @@ public class ClockActivity extends AppCompatActivity {
     return fadeOut;
   }
 
+  // --/////////////////////////////////////////////////////////////////////////
+  // --- SLIDESHOW ---
+  // --/////////////////////////////////////////////////////////////////////////
+  private KenBurnsView kenBurnsView;
+  private ImageView simpleSlideshowView;
+  private SlideshowManager slideshowManager;
+
   ///////////////////////////////////////////////////////////////////////////
   // State methods
   ///////////////////////////////////////////////////////////////////////////
@@ -377,6 +396,24 @@ public class ClockActivity extends AppCompatActivity {
     this.batteryService = new BatteryService(this, profileManager);
 
     profileManager.clearTask();
+
+    // slideshow, initialize, since applyProfile needs it
+    kenBurnsView = findViewById(R.id.kenBurnsView);
+    simpleSlideshowView = findViewById(R.id.slideshowSimpleImageView);
+    ImageButton selectImagesButton = findViewById(R.id.button_slideshow_enable);
+    slideshowManager =
+        new SlideshowManager(
+            this, prefs, kenBurnsView, simpleSlideshowView, buttonManager, profileManager);
+
+    selectImagesButton.setOnClickListener(
+        v -> {
+          if (slideshowManager.isSlideshowEnabled()) {
+            slideshowManager.disableSlideshow();
+          } else {
+            slideshowManager.enableSlideshow();
+          }
+        });
+
     profileManager.applyProfile();
     BrightnessManager brightnessManager =
         new BrightnessManager(this, mControlsView, profileManager);
@@ -419,22 +456,6 @@ public class ClockActivity extends AppCompatActivity {
       batteryService.unregisterBatteryLevelReceiver();
     }
 
-    findViewById(R.id.font_cycle_button_fwd)
-        .setOnClickListener(
-            new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                profileManager.cycleThroughFonts();
-              }
-            });
-    findViewById(R.id.font_cycle_button_rev)
-        .setOnClickListener(
-            new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                profileManager.cycleThroughFonts(false);
-              }
-            });
     findViewById(R.id.text_size_cycle_button_fwd)
         .setOnClickListener(
             new View.OnClickListener() {
@@ -496,6 +517,24 @@ public class ClockActivity extends AppCompatActivity {
           }
         });
 
+    Button showSecondsButton = findViewById(R.id.seconds_button);
+    showSecondsButton.setOnClickListener(
+        new View.OnClickListener() {
+
+          @Override
+          public void onClick(View view) {
+            profileManager.toggleSecconds();
+          }
+        });
+    Button _12_24Button = findViewById(R.id._12_24_button);
+    _12_24Button.setOnClickListener(
+            new View.OnClickListener() {
+
+              @Override
+              public void onClick(View view) {
+                profileManager.toggle1224();
+              }
+            });
     swipeGestureDetector = new GestureDetector(this, new SwipeGestureDetector());
     pinchGestureDetector = new ScaleGestureDetector(getApplicationContext(), new ScaleListener());
 
@@ -511,6 +550,32 @@ public class ClockActivity extends AppCompatActivity {
         mediaPlayerService.play(buttonClicked);
       }
     }
+    View rootLayout = findViewById(R.id.layout_root_clock_activity);
+    ViewCompat.setOnApplyWindowInsetsListener(
+        rootLayout,
+        new OnApplyWindowInsetsListener() {
+          @NonNull
+          @Override
+          public WindowInsetsCompat onApplyWindowInsets(
+              @NonNull View v, @NonNull WindowInsetsCompat insets) {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+          }
+        });
+
+    ViewCompat.setOnApplyWindowInsetsListener(
+        mControlsView,
+        new OnApplyWindowInsetsListener() {
+          @NonNull
+          @Override
+          public WindowInsetsCompat onApplyWindowInsets(
+              @NonNull View v, @NonNull WindowInsetsCompat insets) {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, toolbar.getHeight() + 2, 10, 10);
+            return insets;
+          }
+        });
   }
 
   private void setOrientationLandscapeIfLocked() {
@@ -549,6 +614,9 @@ public class ClockActivity extends AppCompatActivity {
       this.registerReceiver(this.alarmManager, filter);
     }
     setOrientationLandscapeIfLocked();
+    if (slideshowManager.isSlideshowEnabled()) {
+      slideshowManager.startSlideshow();
+    }
   }
 
   @Override
@@ -600,6 +668,7 @@ public class ClockActivity extends AppCompatActivity {
     }
     prefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
     prefs.unregisterOnSharedPreferenceChangeListener(profileManager);
+    slideshowManager.stopSlideshow();
     super.onDestroy();
   }
 
@@ -615,6 +684,7 @@ public class ClockActivity extends AppCompatActivity {
   // UI MANIPULATION
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   public void applyProfile(Profile profile) {
+    clockTextView.setGravity(Gravity.CENTER);
     clockTextView.setTextSize(profile.getSize());
     clockTextView.setTypeface(ProfileManager.fonts.get(profile.getFont()));
     clockTextView.setTextColor(profile.getColor());
@@ -623,11 +693,17 @@ public class ClockActivity extends AppCompatActivity {
     dateTextView.setTextSize((float) profile.getSize() / profile.getDateSize());
     dateTextView.setTypeface(ProfileManager.fonts.get(profile.getFont()));
     dateTextView.setTextColor(profile.getColor());
+    if (profile.isSlideshowEnabled()) {
+      slideshowManager.startSlideshow();
+    } else {
+      slideshowManager.stopSlideshow();
+    }
   }
 
   public void applyProfile() {
     applyProfile(profileManager.getCurrentProfile());
   }
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // INITIALIZATIONS
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -851,6 +927,12 @@ public class ClockActivity extends AppCompatActivity {
         night.setClassName(this, "ro.antiprotv.radioclock.activity.NightProfileActivity");
         startActivity(night);
         return true;
+      case R.id.slideshow:
+        requestStoragePermissionIfNeeded();
+        Intent slideshow = new Intent();
+        slideshow.setClassName(this, "ro.antiprotv.radioclock.activity.SlideshowSettingsActivity");
+        startActivity(slideshow);
+        return true;
       case R.id.about:
         Intent about = new Intent();
         about.setClassName(this, "ro.antiprotv.radioclock.activity.AboutActivity");
@@ -870,6 +952,17 @@ public class ClockActivity extends AppCompatActivity {
         finish();
       default:
         return super.onOptionsItemSelected(item);
+    }
+  }
+
+  private void requestStoragePermissionIfNeeded() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      // Android 13+
+      if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+          != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(
+            this, new String[] {Manifest.permission.READ_MEDIA_IMAGES}, 1001);
+      }
     }
   }
 
@@ -1079,8 +1172,6 @@ public class ClockActivity extends AppCompatActivity {
     // Timber.d("set disallow swipe: " + disallowSwipe);
     this.disallowSwipe = disallowSwipe;
   }
-
-
 
   // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   // GETTERS AND SETTERS END

@@ -261,7 +261,6 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockActivity.applyProfile(nightProfile);
 
     clockUpdater.setMoveText(nightProfile.moveText);
-    clockActivity.getClockTextView().setGravity(Gravity.CENTER);
     applyBatteryProfile(nightProfile.clockColor);
     currentProfile = nightProfile;
     size_index = sizes.indexOf((int) nightProfile.clockSize);
@@ -294,7 +293,6 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     clockActivity.applyProfile(dayProfile);
 
     clockUpdater.setMoveText(dayProfile.moveText);
-    clockActivity.getClockTextView().setGravity(Gravity.CENTER);
     applyBatteryProfile(dayProfile.clockColor);
     currentProfile = dayProfile;
     size_index = sizes.indexOf((int) dayProfile.clockSize);
@@ -433,6 +431,20 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     currentProfile.saveSize(size);
   }
 
+  public void toggleSecconds() {
+    disableProfileChangeOnSettingChange = true;
+    currentProfile.saveShowSeconds(!currentProfile.showSeconds);
+    applyProfile();
+    disableProfileChangeOnSettingChange = false;
+  }
+
+  public void toggle1224() {
+    disableProfileChangeOnSettingChange = true;
+    currentProfile.saveClock24(!currentProfile.clock24h);
+    applyProfile();
+    disableProfileChangeOnSettingChange = false;
+  }
+
   public int getBrightness() {
     Timber.d("brightness: " + currentProfile.brightness);
     return currentProfile.brightness;
@@ -464,6 +476,18 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   public void setDateSize(int dateSize) {
     currentProfile.saveDateSize(dateSize);
     clockActivity.applyProfile(currentProfile);
+  }
+
+  public void enableSlideshow() {
+    currentProfile.saveSlideshowEnabled(true);
+  }
+
+  public void disableSlideshow() {
+    currentProfile.saveSlideshowEnabled(false);
+  }
+
+  public boolean isSlideshowEnabled() {
+    return currentProfile.isSlideshowEnabled();
   }
 
   public void setBrightnessManager(BrightnessManager brightnessManager) {

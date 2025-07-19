@@ -121,6 +121,20 @@
     <string name="setting.name.clockBrightness">Brightness</string>
     <string name="setting.summary.clockBrightness" translatable="false">$1%</string>
 
+    <string name="setting.key.slideshow_enabled.day" translatable="false">setting.key.slideshow_enabled.day</string>
+    <string name="setting.key.slideshow_enabled.night" translatable="false">setting.key.slideshow_enabled.night</string>
+    <string name="setting.key.slideshow_images" translatable="false">setting.key.slideshowImages</string>
+    <string name="setting.key.slideshow.effect" translatable="false">setting.key.slideshow.effect</string>
+    <string name="setting.name.slideshow.effect" >Effect</string>
+    <string name="setting.title.slideshow.settings">Slideshow Settings</string>
+    <string name="setting.key.slideshow.randomize" translatable="false">setting.key.slideshow.randomize</string>
+    <string name="setting.name.slideshow.randomize">Randomize</string>
+    <string name="setting.summary.slideshow.randomize">Randomize the order of images</string>
+    <string name="setting.key.slideshow.image.stay.duration" translatable="false">setting.key.slideshow.image.stay.duration</string>
+    <string name="setting.name.slideshow.image.stay.duration">Image stay duration</string>
+    <string name="setting.summary.slideshow.image.stay.duration">How long to stay on each image</string>
+
+
     <string name="text.sleep.timer">Sleep in %d minutes</string>
     <string name="text.sleep.timer.short">Sleep: %d min</string>
     <string name="text.sleep.off">Sleep off</string>
@@ -231,6 +245,16 @@
     <string-array name="timer_visual_human_readable">
         <item>Circle</item>
         <item>Rectangle</item>
+    </string-array>
+    <string-array name="slideshow_effect">
+        <item>NONE</item>
+        <item>PAN_ZOOM</item>
+        <item>ZOOM_OUT</item>
+    </string-array>
+    <string-array name="slideshow_effect_human_readable">
+        <item>No effect</item>
+        <item>Pan/Zoom (Ken Burns effect)</item>
+        <item>Zoom out</item>
     </string-array>
     <string name="setting.key.clockSize" translatable="false">setting.key.clockSize</string>
     <string name="setting.name.clockSize">Clock Size</string>
@@ -623,6 +647,7 @@
     <string name="text_alarm_set_for">Alarm set for %1$s</string>
     <string name="menu_night_profile">Night Profile</string>
     <string name="title_night_profile">Night Profile</string>
+    <string name="title_slideshow_settings">Slideshow Settings</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="title_dialog_alarm_days">Choose days</string>
     <string name="next_tip">Next Tip</string>
@@ -676,4 +701,5 @@
     <string name="add_edit_label">Add/edit label</string>
     <string name="intant_timer_explanation">When pressing ok, a timer will start with this value.</string>
     <string name="set_instant_timer">Set instant timer</string>
+    <string name="slideshow_empty_dialog_msg">No images selected. Use the button on the toolbar to select some images.</string>
 </resources>

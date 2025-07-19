@@ -6,22 +6,19 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:title="@string/title.settings"
-    tools:context=".activity.NightProfileActivity">
-    <com.google.android.material.appbar.AppBarLayout
+    android:theme="@style/AppBarOverlay"
+    tools:context=".activity.NightProfileActivity"
+    android:id="@+id/layout_root_activity_settings">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:title="@string/title.settings"
-        android:theme="@style/AppBarOverlay">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:title="@string/title_night_profile"
+        app:popupTheme="@style/PopupOverlay" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:title="@string/title_night_profile"
-            app:popupTheme="@style/PopupOverlay" />
-
-    </com.google.android.material.appbar.AppBarLayout>
 
    <LinearLayout
        android:id="@+id/night_profile_content"
