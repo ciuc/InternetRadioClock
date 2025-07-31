@@ -133,6 +133,7 @@
     <string name="setting.key.slideshow.image.stay.duration" translatable="false">setting.key.slideshow.image.stay.duration</string>
     <string name="setting.name.slideshow.image.stay.duration">Image stay duration</string>
     <string name="setting.summary.slideshow.image.stay.duration">How long to stay on each image</string>
+    <string name="setting.summary.slideshow.images">Choose images to show in background\n[%d images selected]</string>
 
 
     <string name="text.sleep.timer">Sleep in %d minutes</string>

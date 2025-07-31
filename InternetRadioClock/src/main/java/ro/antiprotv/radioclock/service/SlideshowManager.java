@@ -102,6 +102,7 @@ public class SlideshowManager {
   }
 
   private void loadSavedImageUris() {
+    imageUris.clear();
     Set<String> uriStrings =
         prefs.getStringSet(clockActivity.getString(R.string.setting_key_slideshow_images), null);
 
