@@ -54,6 +54,7 @@ import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.mrudultora.colorpicker.IPreviewCallback;
 import java.util.Date;
 import ro.antiprotv.radioclock.BuildConfig;
 import ro.antiprotv.radioclock.ClockUpdater;
@@ -82,7 +83,7 @@ import ro.antiprotv.radioclock.service.profile.ProfileManager;
 import timber.log.Timber;
 
 /** Main Activity. Just displays the clock and buttons */
-public class ClockActivity extends AppCompatActivity {
+public class ClockActivity extends AppCompatActivity implements IPreviewCallback {
 
   public static final String PREF_NIGHT_MODE = "NIGHT_MODE";
   public static final String LAST_PLAYED = "LAST_PLAYED";
@@ -402,7 +403,7 @@ public class ClockActivity extends AppCompatActivity {
     simpleSlideshowView = findViewById(R.id.slideshowSimpleImageView);
     ImageButton selectImagesButton = findViewById(R.id.button_slideshow_enable);
     slideshowManager =
-        new SlideshowManager(
+        SlideshowManager.getInstance(
             this, prefs, kenBurnsView, simpleSlideshowView, buttonManager, profileManager);
 
     selectImagesButton.setOnClickListener(
@@ -614,9 +615,9 @@ public class ClockActivity extends AppCompatActivity {
       this.registerReceiver(this.alarmManager, filter);
     }
     setOrientationLandscapeIfLocked();
-    if (slideshowManager.isSlideshowEnabled()) {
+/*    if (slideshowManager.isSlideshowEnabled()) {
       slideshowManager.startSlideshow();
-    }
+    }*/
   }
 
   @Override
@@ -669,6 +670,7 @@ public class ClockActivity extends AppCompatActivity {
     prefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
     prefs.unregisterOnSharedPreferenceChangeListener(profileManager);
     slideshowManager.stopSlideshow();
+    slideshowManager.destroy();
     super.onDestroy();
   }
 
@@ -704,6 +706,12 @@ public class ClockActivity extends AppCompatActivity {
     applyProfile(profileManager.getCurrentProfile());
   }
 
+  public void preview(int color) {
+    clockTextView.setTextColor(color);
+  }
+  public void cancelPreview() {
+    clockTextView.setTextColor(profileManager.getCurrentProfile().getColor());
+  }
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // INITIALIZATIONS
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

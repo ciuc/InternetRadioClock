@@ -1,1 +1,3 @@
-include ':InternetRadioClock'
+include ':InternetRadioClock',':colorpicker'
+project(":colorpicker").projectDir = new File("../ColorpickerC/colorpicker");
+

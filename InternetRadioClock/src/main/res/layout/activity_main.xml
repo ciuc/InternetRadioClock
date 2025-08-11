@@ -64,9 +64,9 @@
            android:textSize="150sp"
            android:textColorHint="@color/color.clock.red"
            android:shadowColor="#000000"
-           android:shadowDx="8"
-           android:shadowDy="8"
-           android:shadowRadius="1.6"
+           android:shadowDx="18"
+           android:shadowDy="15"
+           android:shadowRadius="10"
            />
 
        <TextView
@@ -83,9 +83,9 @@
            android:textSize="50sp"
            android:layout_marginTop="0dp"
            android:shadowColor="#000000"
-           android:shadowDx="8"
-           android:shadowDy="8"
-           android:shadowRadius="1.6"
+           android:shadowDx="10"
+           android:shadowDy="10"
+           android:shadowRadius="8.6"
            />
 
        <ro.antiprotv.radioclock.view.FillRectangleView

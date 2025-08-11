@@ -13,11 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.json.JSONArray;
 import ro.antiprotv.radioclock.R;
+import ro.antiprotv.radioclock.service.SlideshowManager;
 import timber.log.Timber;
 
 public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
@@ -45,12 +45,12 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
             return true;
           });
     }
-    updateImageCountSummary(
-        selectImagesPref,
-        android.preference.PreferenceManager.getDefaultSharedPreferences(requireContext())
-            .getStringSet(
-                requireContext().getString(R.string.setting_key_slideshow_images), new HashSet<>())
-            .size());
+    SlideshowManager slideshowManager = SlideshowManager.getInstance();
+    if (slideshowManager != null) {
+      updateImageCountSummary(selectImagesPref, slideshowManager.getImagesCount());
+    } else {
+      updateImageCountSummary(selectImagesPref, 0);
+    }
   }
 
   private void openImagePicker() {
@@ -62,9 +62,10 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
   }
 
   private void handleImageSelection(Intent data) {
-    Set<String> uriSet = new HashSet<>();
+    // Set<String> uriSet = new HashSet<>();
     int duplicates = 0;
     int permissions = 0;
+    JSONArray jsonArray = new JSONArray();
     if (data.getClipData() != null) {
       int count = data.getClipData().getItemCount();
       Timber.d("count: " + count + " selected");
@@ -76,7 +77,8 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
               .takePersistableUriPermission(
                   uri,
                   Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-          if (uriSet.contains(uri.toString())) {
+
+          /*          if (uriSet.contains(uri.toString())) {
             Cursor cursor =
                 requireContext().getContentResolver().query(uri, null, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
@@ -89,7 +91,8 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
             }
           } else {
             uriSet.add(uri.toString());
-          }
+          }*/
+          jsonArray.put(uri.toString());
         } catch (SecurityException e) {
 
           Cursor cursor = requireContext().getContentResolver().query(uri, null, null, null, null);
@@ -110,15 +113,26 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
       requireContext()
           .getContentResolver()
           .takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-      uriSet.add(uri.toString());
+      // uriSet.add(uri.toString());
+      jsonArray.put(uri.toString());
     }
 
     Timber.d(
-        "uriSet: " + uriSet.size() + " duplicates: " + duplicates + " permissions: " + permissions);
+        "uriSet: "
+            + jsonArray.length()
+            + " duplicates: "
+            + duplicates
+            + " permissions: "
+            + permissions);
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
-    prefs.edit().putStringSet(getString(R.string.setting_key_slideshow_images), uriSet).commit();
 
-    // updateImageCountSummary(uriSet.size());
+    // updateImageCountSummary(
+    //    findPreference(getString(R.string.setting_key_slideshow_images)), jsonArray.length());
+
+    prefs
+        .edit()
+        .putString(getString(R.string.setting_key_slideshow_images), jsonArray.toString())
+        .apply();
   }
 
   private void updateImageCountSummary(Preference selectImagesPref, int count) {

@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AlertDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
@@ -21,16 +20,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
+import org.json.JSONArray;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.activity.ClockActivity;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
+import timber.log.Timber;
 
 public class SlideshowManager {
+  private static SlideshowManager INSTANCE;
   private final SharedPreferences prefs;
   private final ClockActivity clockActivity;
   private final KenBurnsView kenBurnsView;
-  private ImageView slideshowSimpleView;
+  private final ImageView slideshowSimpleView;
   private final List<Uri> imageUris = new ArrayList<>();
   private int currentSlideshowIndex = 0;
   private final Handler slideShowhandler = new Handler();
@@ -53,7 +54,29 @@ public class SlideshowManager {
     }
   }
 
-  public SlideshowManager(
+  public static SlideshowManager getInstance(
+      ClockActivity activity,
+      SharedPreferences prefs,
+      KenBurnsView kenBurnsView,
+      ImageView slideshowSimpleView,
+      ButtonManager buttonManager,
+      ProfileManager profileManager) {
+    if (INSTANCE == null) {
+      INSTANCE =
+          new SlideshowManager(
+              activity, prefs, kenBurnsView, slideshowSimpleView, buttonManager, profileManager);
+    }
+    return INSTANCE;
+  }
+
+  public static SlideshowManager getInstance() {
+    if (INSTANCE == null) {
+      Timber.e("SlideshowManager not initialized");
+    }
+    return INSTANCE;
+  }
+
+  private SlideshowManager(
       ClockActivity activity,
       SharedPreferences prefs,
       KenBurnsView kenBurnsView,
@@ -103,18 +126,27 @@ public class SlideshowManager {
 
   private void loadSavedImageUris() {
     imageUris.clear();
-    Set<String> uriStrings =
-        prefs.getStringSet(clockActivity.getString(R.string.setting_key_slideshow_images), null);
+    try {
 
-    if (uriStrings != null) {
-      for (String uriStr : uriStrings) {
-        imageUris.add(Uri.parse(uriStr));
+      String json =
+          prefs.getString(clockActivity.getString(R.string.setting_key_slideshow_images), "[]");
+      Timber.d(json);
+      JSONArray jsonArray = new JSONArray(json);
+      for (int i = 0; i < jsonArray.length(); i++) {
+        imageUris.add(Uri.parse(jsonArray.getString(i)));
       }
+
+      if (prefs.getBoolean(
+          clockActivity.getString(R.string.setting_key_slideshow_randomize), false)) {
+        Collections.shuffle(imageUris);
+      }
+    } catch (Exception e) {
+      Timber.e(e.getMessage());
     }
-    if (prefs.getBoolean(
-        clockActivity.getString(R.string.setting_key_slideshow_randomize), false)) {
-      Collections.shuffle(imageUris);
-    }
+  }
+
+  public int getImagesCount() {
+    return imageUris.size();
   }
 
   public boolean isSlideshowEnabled() {
@@ -163,10 +195,10 @@ public class SlideshowManager {
     slideshowView.setVisibility(VISIBLE);
     buttonManager.lightButton(R.id.button_slideshow_enable);
     Toast.makeText(
-                    clockActivity,
-                    String.format("Slideshow {%s}, {%s}, {%s}", effect, imageUris.size(), imageDuration),
-                    Toast.LENGTH_SHORT)
-            .show();
+            clockActivity,
+            String.format("Slideshow {%s}, {%s}, {%s}", effect, imageUris.size(), imageDuration),
+            Toast.LENGTH_SHORT)
+        .show();
   }
 
   public void stopSlideshow() {
@@ -207,5 +239,9 @@ public class SlideshowManager {
 
       return new Transition(startRect, endRect, duration, new AccelerateDecelerateInterpolator());
     }
+  }
+
+  public void destroy() {
+    INSTANCE = null;
   }
 }

@@ -3,13 +3,13 @@ package ro.antiprotv.radioclock.service.profile;
 import static ro.antiprotv.radioclock.R.string.apply_day_profile_next_change;
 import static ro.antiprotv.radioclock.activity.ClockActivity.PREF_NIGHT_MODE;
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -520,10 +520,14 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
 
                 @Override
                 public void onCancel() {
-                  colorPickerPopUp.dismissDialog(); // Dismiss the dialog.
+                  colorPickerPopUp.dismissDialog();
+                  clockActivity.cancelPreview();
                 }
               })
+          .setPreviewCallback(clockActivity)
           .show();
+      Dialog dialog = colorPickerPopUp.getDialog();
+      dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
     }
   }
 
