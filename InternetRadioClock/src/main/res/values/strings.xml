@@ -284,7 +284,9 @@
     <string name="setting.key.timer_short_seconds" translatable="false">setting.key.timer_short_seconds</string>
     <string name="setting.name.timer_short">Short timer</string>
     <string name="setting.key.timer_long_seconds" translatable="false">setting.key.timer_long_seconds</string>
-    <string name="setting.name.timer_long">Long timer</string>
+    <string name="setting.name.timer_long">Medium timer</string>
+    <string name="setting.key.timer_longer_seconds" translatable="false">setting.key.timer_longer_seconds</string>
+    <string name="setting.name.timer_longer">Long timer</string>
     <string name="lastPlayed">Last played</string>
     <string name="setting.key.timer_alarm_duration" translatable="false">setting.key.timer_alarm_duration</string>
     <string name="setting.name.alarm_duration">Timer Alarm Duration</string>

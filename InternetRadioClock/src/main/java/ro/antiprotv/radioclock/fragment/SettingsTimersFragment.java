@@ -90,6 +90,24 @@ public class SettingsTimersFragment extends PreferenceFragmentCompat {
     timerLong.setOnPreferenceChangeListener(
         new TimerOnPreferenceChangeListener(
             timerLong, prefs, R.string.setting_key_timer_long_seconds, this.getContext()));
+
+    EditTextPreference timerLonger =
+            findPreference(getString(R.string.setting_key_timer_longer_seconds));
+    if (timerLonger != null) {
+      timerLonger.setOnBindEditTextListener(new TimerOnBindEditTextListener());
+    }
+    try {
+
+      int longerTimer =
+              Integer.parseInt(
+                      prefs.getString(getString(R.string.setting_key_timer_longer_seconds), "180"));
+      timerLonger.setSummary(String.format(TIMER_FORMAT, longerTimer / 60, longerTimer % 60));
+    } catch (NumberFormatException e) {
+      timerLonger.setSummary(String.format(TIMER_FORMAT, 180 / 60, 180 % 60));
+    }
+    timerLonger.setOnPreferenceChangeListener(
+            new TimerOnPreferenceChangeListener(
+                    timerLonger, prefs, R.string.setting_key_timer_longer_seconds, this.getContext()));
   }
 
   @Override

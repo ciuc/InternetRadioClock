@@ -529,13 +529,32 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
         });
     Button _12_24Button = findViewById(R.id._12_24_button);
     _12_24Button.setOnClickListener(
-            new View.OnClickListener() {
+        new View.OnClickListener() {
 
-              @Override
-              public void onClick(View view) {
-                profileManager.toggle1224();
-              }
-            });
+          @Override
+          public void onClick(View view) {
+            profileManager.toggle1224();
+          }
+        });
+
+    ImageButton volumeUpButton = findViewById(R.id.volume_up_button);
+    volumeUpButton.setOnClickListener(
+        new View.OnClickListener() {
+
+          @Override
+          public void onClick(View view) {
+            volumeManager.volumeUp();
+          }
+        });
+    ImageButton volumeDownButton = findViewById(R.id.volume_down_button);
+    volumeDownButton.setOnClickListener(
+        new View.OnClickListener() {
+
+          @Override
+          public void onClick(View view) {
+            volumeManager.volumeDown();
+          }
+        });
     swipeGestureDetector = new GestureDetector(this, new SwipeGestureDetector());
     pinchGestureDetector = new ScaleGestureDetector(getApplicationContext(), new ScaleListener());
 
@@ -615,7 +634,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
       this.registerReceiver(this.alarmManager, filter);
     }
     setOrientationLandscapeIfLocked();
-/*    if (slideshowManager.isSlideshowEnabled()) {
+    /*    if (slideshowManager.isSlideshowEnabled()) {
       slideshowManager.startSlideshow();
     }*/
   }
@@ -709,9 +728,11 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
   public void preview(int color) {
     clockTextView.setTextColor(color);
   }
+
   public void cancelPreview() {
     clockTextView.setTextColor(profileManager.getCurrentProfile().getColor());
   }
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // INITIALIZATIONS
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -825,8 +846,13 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     clockUpdater.setTimerService(timerService);
     ImageButton timerLong = findViewById(R.id.timer_long);
     ImageButton timerShort = findViewById(R.id.timer_short);
+    ImageButton timerLonger = findViewById(R.id.timer_longer);
     ImageButton timerPause = findViewById(R.id.timer_pause);
-    Button timerAdd = findViewById(R.id.timer_plus10);
+    Button timerPlus10 = findViewById(R.id.timer_plus10);
+    Button timerMinus10 = findViewById(R.id.timer_minus10);
+    Button timerPlus1m = findViewById(R.id.timer_plus1m);
+    Button timerMinus1m = findViewById(R.id.timer_minus1m);
+
 
     timerShort.setOnClickListener(
         new TimerOnClickListener(
@@ -841,15 +867,28 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
             R.string.setting_key_timer_long_seconds,
             R.id.timer_long,
             timerService,
+            "60",
+            prefs,
+            this));
+
+    timerLonger.setOnClickListener(
+        new TimerOnClickListener(
+            R.string.setting_key_timer_longer_seconds,
+            R.id.timer_longer,
+            timerService,
             "180",
             prefs,
             this));
 
     timerShort.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService, prefs));
     timerLong.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService, prefs));
+    timerLonger.setOnLongClickListener(new InstantTimerOnLongClickListener(timerService, prefs));
 
     timerPause.setOnClickListener(new TimerPauseOnClickListener(timerService));
-    timerAdd.setOnClickListener(new TimerAddTimeOnClickListener(timerService, 10));
+    timerPlus10.setOnClickListener(new TimerAddTimeOnClickListener(timerService, 10));
+    timerMinus10.setOnClickListener(new TimerAddTimeOnClickListener(timerService, -10));
+    timerPlus1m.setOnClickListener(new TimerAddTimeOnClickListener(timerService, 60));
+    timerMinus1m.setOnClickListener(new TimerAddTimeOnClickListener(timerService, -60));
     timerService.setAlarmDuration(
         Integer.parseInt(
             prefs.getString(getString(R.string.setting_key_timer_alarm_duration), "7")));

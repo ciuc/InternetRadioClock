@@ -253,6 +253,20 @@
                 app:srcCompat="@drawable/baseline_hourglass_top_long"
                 tools:visibility="visible" />
             <ImageButton
+                android:id="@+id/timer_longer"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@id/timer_long"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/sharp_hourglass_longer"
+                tools:visibility="visible" />
+            <ImageButton
                 android:id="@+id/timer_pause"
                 style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
@@ -268,6 +282,22 @@
                 android:visibility="gone"
                 android:layout_below="@+id/timer_short"/>
             <Button
+                android:id="@+id/timer_minus10"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/timer_long"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/timer_pause"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:text="-10s"
+                android:textColor="@color/button.color.off"
+                android:visibility="gone"
+                app:srcCompat="@drawable/baseline_pause_circle_outline_24" />
+            <Button
                 android:id="@+id/timer_plus10"
                 style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
@@ -282,7 +312,7 @@
                 app:srcCompat="@drawable/baseline_pause_circle_outline_24"
                 android:visibility="gone"
                 android:layout_below="@+id/timer_long"
-                android:layout_toRightOf="@+id/timer_pause"/>
+                android:layout_toRightOf="@+id/timer_minus10"/>
             <ImageButton
                 android:id="@+id/button_slideshow_enable"
                 style="@style/imageButtonStyle"
@@ -298,6 +328,38 @@
                 app:srcCompat="@drawable/baseline_slideshow_24"
                 tools:visibility="visible"
                 android:layout_below="@+id/timer_long"/>
+            <Button
+                android:id="@+id/timer_minus1m"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/timer_long"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/timer_plus10"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:text="-1m"
+                android:textColor="@color/button.color.off"
+                android:visibility="gone"
+                app:srcCompat="@drawable/baseline_pause_circle_outline_24" />
+            <Button
+                android:id="@+id/timer_plus1m"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/timer_long"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/timer_minus1m"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:tag="@string/setting.key.alarmIcon"
+                android:text="+1ms"
+                android:textColor="@color/button.color.off"
+                android:visibility="gone"
+                app:srcCompat="@drawable/baseline_pause_circle_outline_24" />
 
         </RelativeLayout>
 
@@ -339,6 +401,32 @@
             android:layout_below="@id/sleep"
             android:layout_alignParentEnd="true"
             android:textColor="@color/button.color.off" />
+
+        <ImageButton
+            android:id="@+id/volume_up_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/volume_bar"
+            android:layout_below="@id/sleep"
+            android:background="@drawable/memory"
+            android:clickable="false"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/outline_volume_up_24" />
+
+        <ImageButton
+            android:id="@+id/volume_down_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/volume_up_button"
+            android:layout_below="@id/sleep"
+            android:background="@drawable/memory"
+            android:clickable="false"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/outline_volume_down_24" />
 
         <!-- VOLUME BAR -->
         <RelativeLayout

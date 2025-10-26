@@ -11,11 +11,18 @@
         android:title="@string/setting.name.timer_short"
         />
     <EditTextPreference
-        android:defaultValue="180"
+        android:defaultValue="60"
         android:summary="%s"
         android:gravity="end"
         android:key="@string/setting.key.timer_long_seconds"
         android:title="@string/setting.name.timer_long"
+        />
+    <EditTextPreference
+        android:defaultValue="60"
+        android:summary="%s"
+        android:gravity="end"
+        android:key="@string/setting.key.timer_longer_seconds"
+        android:title="@string/setting.name.timer_longer"
         />
     <ListPreference
         android:summary="%s"

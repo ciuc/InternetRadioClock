@@ -123,6 +123,11 @@
            android:layout_width="match_parent"
            android:layout_height="match_parent">
 
+           <!--
+             ========================================================
+             ============ LEFT SIDE START ================
+             ========================================================
+             -->
            <!-- ALARMS -->
            <ImageButton
                android:id="@+id/alarm_icon"
@@ -239,8 +244,6 @@
                    android:visibility="gone"
                    app:srcCompat="@drawable/ic_alarm_off_black_24dp" />
                <!-- ALARMS END -->
-
-
            </RelativeLayout>
 
            <!-- TIMERS -->
@@ -281,6 +284,21 @@
                    tools:visibility="visible" />
 
                <ImageButton
+                   android:id="@+id/timer_longer"
+                   style="@style/imageButtonStyle"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginLeft="5dp"
+                   android:layout_marginTop="5dp"
+                   android:layout_toRightOf="@id/timer_long"
+                   android:background="@drawable/memory"
+                   android:clickable="false"
+                   android:tag="@string/setting.key.alarmIcon"
+                   android:textColor="@color/button.color.off"
+                   app:srcCompat="@drawable/sharp_hourglass_longer"
+                   tools:visibility="visible" />
+
+               <ImageButton
                    android:id="@+id/timer_pause"
                    style="@style/imageButtonStyle"
                    android:layout_width="wrap_content"
@@ -297,7 +315,7 @@
                    app:srcCompat="@drawable/baseline_pause_circle_outline_24" />
 
                <Button
-                   android:id="@+id/timer_plus10"
+                   android:id="@+id/timer_minus10"
                    style="@style/imageButtonStyle"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
@@ -308,7 +326,55 @@
                    android:background="@drawable/memory"
                    android:clickable="false"
                    android:tag="@string/setting.key.alarmIcon"
+                   android:text="-10s"
+                   android:textColor="@color/button.color.off"
+                   android:visibility="gone"
+                   app:srcCompat="@drawable/baseline_pause_circle_outline_24" />
+               <Button
+                   android:id="@+id/timer_plus10"
+                   style="@style/imageButtonStyle"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@+id/timer_long"
+                   android:layout_marginLeft="5dp"
+                   android:layout_marginTop="5dp"
+                   android:layout_toRightOf="@+id/timer_minus10"
+                   android:background="@drawable/memory"
+                   android:clickable="false"
+                   android:tag="@string/setting.key.alarmIcon"
                    android:text="+10s"
+                   android:textColor="@color/button.color.off"
+                   android:visibility="gone"
+                   app:srcCompat="@drawable/baseline_pause_circle_outline_24" />
+               <Button
+                   android:id="@+id/timer_minus1m"
+                   style="@style/imageButtonStyle"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@+id/timer_long"
+                   android:layout_marginLeft="5dp"
+                   android:layout_marginTop="5dp"
+                   android:layout_toRightOf="@+id/timer_plus10"
+                   android:background="@drawable/memory"
+                   android:clickable="false"
+                   android:tag="@string/setting.key.alarmIcon"
+                   android:text="-1m"
+                   android:textColor="@color/button.color.off"
+                   android:visibility="gone"
+                   app:srcCompat="@drawable/baseline_pause_circle_outline_24" />
+               <Button
+                   android:id="@+id/timer_plus1m"
+                   style="@style/imageButtonStyle"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_below="@+id/timer_long"
+                   android:layout_marginLeft="5dp"
+                   android:layout_marginTop="5dp"
+                   android:layout_toRightOf="@+id/timer_minus1m"
+                   android:background="@drawable/memory"
+                   android:clickable="false"
+                   android:tag="@string/setting.key.alarmIcon"
+                   android:text="+1ms"
                    android:textColor="@color/button.color.off"
                    android:visibility="gone"
                    app:srcCompat="@drawable/baseline_pause_circle_outline_24" />
@@ -331,6 +397,18 @@
            </RelativeLayout>
            <!-- TIMERS END -->
 
+
+            <!--
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ============ LEFT SIDE END ================
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            -->
+
+           <!--
+            ========================================================
+            ============ RIGHT SIDE START ================
+            ========================================================
+            -->
            <ImageButton
                android:id="@+id/sleep"
                style="@style/imageButtonStyle"
@@ -366,7 +444,11 @@
                android:textColor="@color/button.color.off"
                app:srcCompat="@drawable/ic_night_24dp" />
 
-           <!-- VOLUME BAR -->
+           <!--
+           ============================
+           ===== VOLUME BAR START =====
+           ============================
+           -->
            <RelativeLayout
                android:id="@+id/volume_bar"
                android:layout_width="wrap_content"
@@ -394,56 +476,12 @@
                    android:progressTint="@color/color.clock"
                    android:thumb="@drawable/scrubber_control_focused_holo" />
            </RelativeLayout>
-           <!-- VOLUME BAR END -->
+           <!--
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+           ===== VOLUME BAR END =====
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+           -->
 
-           <!-- BRIGHTNESS BAR -->
-           <RelativeLayout
-               android:id="@+id/brightness_bar"
-               android:layout_width="300dp"
-               android:layout_height="wrap_content"
-               android:layout_below="@id/volume_bar"
-               android:layout_alignParentEnd="true"
-               android:layout_marginTop="5dp"
-               android:layout_marginEnd="5dp"
-               android:alpha="0.9"
-               android:background="@drawable/seekbar"
-               android:orientation="horizontal"
-               android:padding="7dp">
-
-               <ImageView
-                   android:id="@+id/image_brightness"
-                   android:layout_width="24dp"
-                   android:layout_height="wrap_content"
-                   android:layout_alignParentEnd="true"
-                   android:layout_centerVertical="true"
-                   android:src="@drawable/outline_brightness_6_24" />
-
-               <SeekBar
-                   android:id="@+id/seekbar_brightness"
-                   android:layout_width="220dp"
-                   android:layout_height="wrap_content"
-                   android:layout_toLeftOf="@+id/image_brightness"
-                   android:background="@drawable/memory"
-                   android:progressTint="@color/color.clock"
-                   android:thumb="@drawable/scrubber_control_focused_holo" />
-
-               <ImageButton
-                   android:id="@+id/brightness_auto"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_centerVertical="true"
-                   android:layout_marginRight="10dp"
-                   android:layout_toLeftOf="@+id/seekbar_brightness"
-                   android:background="@android:color/transparent"
-                   android:clickable="false"
-                   android:paddingLeft="15dp"
-                   android:paddingTop="10dp"
-                   android:paddingRight="15dp"
-                   android:paddingBottom="10dp"
-                   app:srcCompat="@drawable/outline_brightness_auto_24" />
-
-           </RelativeLayout>
-           <!-- END BRIGHTNESS BAR -->
 
            <TextView
                android:id="@+id/volume"
@@ -585,8 +623,102 @@
                    android:textStyle="bold"
                    app:srcCompat="@drawable/outline_color_lens_24" />
 
+           </RelativeLayout>
+
+           <ImageButton
+               android:id="@+id/volume_up_button"
+               style="?metaButtonBarButtonStyle"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginRight="5dp"
+               android:layout_toLeftOf="@+id/volume_bar"
+               android:layout_above="@id/brightness_bar"
+               android:background="@drawable/memory"
+               android:clickable="false"
+               android:textColor="@color/button.color.off"
+               app:srcCompat="@drawable/outline_volume_up_24" />
+
+           <ImageButton
+               android:id="@+id/volume_down_button"
+               style="?metaButtonBarButtonStyle"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginRight="5dp"
+               android:layout_toLeftOf="@+id/volume_up_button"
+               android:layout_above="@id/brightness_bar"
+               android:background="@drawable/memory"
+               android:clickable="false"
+               android:textColor="@color/button.color.off"
+               app:srcCompat="@drawable/outline_volume_down_24" />
+
+           <!--
+            ============================
+            ===== BRIGHTNESS BAR START =====
+            ============================
+            -->
+           <RelativeLayout
+               android:id="@+id/brightness_bar"
+               android:layout_width="300dp"
+               android:layout_height="wrap_content"
+               android:layout_below="@id/volume_bar"
+               android:layout_alignParentEnd="true"
+               android:layout_marginTop="5dp"
+               android:layout_marginEnd="5dp"
+               android:alpha="0.9"
+               android:background="@drawable/seekbar"
+               android:orientation="horizontal"
+               android:padding="7dp">
+
+               <ImageView
+                   android:id="@+id/image_brightness"
+                   android:layout_width="24dp"
+                   android:layout_height="wrap_content"
+                   android:layout_alignParentEnd="true"
+                   android:layout_centerVertical="true"
+                   android:src="@drawable/outline_brightness_6_24" />
+
+               <SeekBar
+                   android:id="@+id/seekbar_brightness"
+                   android:layout_width="220dp"
+                   android:layout_height="wrap_content"
+                   android:layout_toLeftOf="@+id/image_brightness"
+                   android:background="@drawable/memory"
+                   android:progressTint="@color/color.clock"
+                   android:thumb="@drawable/scrubber_control_focused_holo" />
+
+               <ImageButton
+                   android:id="@+id/brightness_auto"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_centerVertical="true"
+                   android:layout_marginRight="10dp"
+                   android:layout_toLeftOf="@+id/seekbar_brightness"
+                   android:background="@android:color/transparent"
+                   android:clickable="false"
+                   android:paddingLeft="15dp"
+                   android:paddingTop="10dp"
+                   android:paddingRight="15dp"
+                   android:paddingBottom="10dp"
+                   app:srcCompat="@drawable/outline_brightness_auto_24" />
 
            </RelativeLayout>
+           <!--
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ===== BRIGHTNESS BAR END =====
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            -->
+
+           <!--
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ============ RIGHT SIDE END ================
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            -->
+
+           <!--
+            ========================================================
+            ============ RADIO BUTTONS  START ======================
+            ========================================================
+            -->
 
            <LinearLayout
                android:id="@+id/fullscreen_content_controls"
@@ -693,7 +825,11 @@
                    android:text="@string/button.name.stream8"
                    android:textColor="@color/button.color.off" />
            </LinearLayout>
-
+           <!--
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            ============ RADIO BUTTONS END =========================
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            -->
 
        </RelativeLayout>
    </RelativeLayout>

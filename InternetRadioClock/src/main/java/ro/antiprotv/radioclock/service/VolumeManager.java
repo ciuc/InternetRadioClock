@@ -82,29 +82,29 @@ public class VolumeManager {
   /** increase volume */
   public void volumeUp() {
     int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-    audioManager.adjustVolume(
+    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
         AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-    Timber.d("vol up: current " + currentVolume);
+    Timber.d("vol up: current %s", currentVolume);
     if (currentVolume >= maxVolume) {
       // run on ui thread, b/c this is accessed by the progressive volume task
       ((ClockActivity) ctx)
           .runOnUiThread(() -> Toast.makeText(ctx, R.string.volume_max, Toast.LENGTH_SHORT).show());
     }
     // setVolumeText(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), maxVolume);
-    Timber.d("vol up: after change " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+    Timber.d("vol up: after change %s", audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
   }
 
   /** decrease volume */
-  protected void volumeDown() {
+  public void volumeDown() {
     int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-    Timber.d("vol dn: current " + currentVolume);
+    Timber.d("vol dn: current %s", currentVolume);
     if (currentVolume <= 0) {
       ((ClockActivity) ctx)
           .runOnUiThread(() -> Toast.makeText(ctx, R.string.muted, Toast.LENGTH_SHORT).show());
     }
-    audioManager.adjustVolume(
+    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,
         AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-    Timber.d("vol dn: after change " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+    Timber.d("vol dn: after change %s", audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
     // setVolumeText(audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), maxVolume);
   }
 

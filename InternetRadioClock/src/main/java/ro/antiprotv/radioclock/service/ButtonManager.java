@@ -36,7 +36,10 @@ public class ButtonManager {
   private Button mButtonClicked;
   private ImageButton onOffButton;
   private ImageButton timerPauseButton;
-  private Button timerAddTimeButton;
+  private Button timerPlus10sButton;
+  private Button timerMinus10sButton;
+  private Button timerPlus1mButton;
+  private Button timerMinus1mButton;
 
   public ButtonManager(Context ctx) {
     this(ctx, null, null, null, null);
@@ -101,7 +104,10 @@ public class ButtonManager {
     enableButtons();
     onOffButton = view.findViewById(R.id.on_off_button);
     timerPauseButton = view.findViewById(R.id.timer_pause);
-    timerAddTimeButton = view.findViewById(R.id.timer_plus10);
+    timerPlus10sButton = view.findViewById(R.id.timer_plus10);
+    timerMinus10sButton = view.findViewById(R.id.timer_minus10);
+    timerPlus1mButton = view.findViewById(R.id.timer_plus1m);
+    timerMinus1mButton = view.findViewById(R.id.timer_minus1m);
   }
 
   void hideUnhideButtons() {
@@ -242,7 +248,10 @@ public class ButtonManager {
 
   public void toggleTimerButtonsVisibility(int visibility) {
     timerPauseButton.setVisibility(visibility);
-    timerAddTimeButton.setVisibility(visibility);
+    timerPlus10sButton.setVisibility(visibility);
+    timerMinus10sButton.setVisibility(visibility);
+    timerPlus1mButton.setVisibility(visibility);
+    timerMinus1mButton.setVisibility(visibility);
   }
 
   public void toggleTimerPause(boolean isPaused) {
