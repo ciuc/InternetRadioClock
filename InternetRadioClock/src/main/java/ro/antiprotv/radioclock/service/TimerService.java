@@ -94,9 +94,9 @@ public class TimerService {
     originalCounter = seconds;
     if (abstractVisualTimer != null) {
       Timber.d(
-          "Setting visible; currently:  "
-              + (abstractVisualTimer.getVisibility() == VISIBLE ? "VISIBLE" : "INVISIBLE"));
+          "Setting visible; currently:  %s", (abstractVisualTimer.getVisibility() == VISIBLE ? "VISIBLE" : "INVISIBLE"));
       abstractVisualTimer.setVisibility(VISIBLE);
+      abstractVisualTimer.setAlpha(1f);
     }
     buttonManager.toggleTimerButtonsVisibility(VISIBLE);
   }

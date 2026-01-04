@@ -695,7 +695,7 @@
     <string name="category_title_timers">Timers</string>
     <string name="category_title_snooze_sleep">Snooze &amp; Sleep</string>
     <string name="category_summary_alarm">Set up some alarms settings</string>
-    <string name="category_summary_timers">Set up the two timers</string>
+    <string name="category_summary_timers">Set up the timers</string>
     <string name="category_summary_snooze_sleep">Set up snooze and sleep stuff</string>
     <string name="any">Any</string>
     <string name="dialog_radio_list_title">Radios List</string>
