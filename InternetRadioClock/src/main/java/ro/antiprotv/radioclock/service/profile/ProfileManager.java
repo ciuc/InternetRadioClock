@@ -310,6 +310,14 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   }
 
   public void applyBatteryProfile(int currentProfileColor) {
+    if (isAlwaysDisplayBattery()
+        || (isDisplayBatteryWhenNotPlugged() && !BatteryService.charging)) {
+      battery_icon.setVisibility(View.VISIBLE);
+      battery_pct.setVisibility(View.VISIBLE);
+    } else {
+      battery_icon.setVisibility(View.GONE);
+      battery_pct.setVisibility(View.GONE);
+    }
     int color = clockActivity.getResources().getColor(R.color.color_clock, null);
     boolean batteryInClockColor =
         prefs.getBoolean(
@@ -317,7 +325,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
             false);
     if (BatteryService.low && !BatteryService.charging) {
       color = clockActivity.getResources().getColor(R.color.color_clock_red, null);
-      if (BatteryService.status > 5) {
+      if (BatteryService.status > 10) {
         battery_icon.setImageResource(R.drawable.baseline_battery_1_bar_24);
         battery_pct.setTextSize(20);
       } else {
@@ -496,6 +504,17 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
 
   public Profile getCurrentProfile() {
     return currentProfile;
+  }
+
+  public boolean isAlwaysDisplayBattery() {
+    return prefs.getBoolean(
+        clockActivity.getResources().getString(R.string.setting_key_alwaysDisplayBattery), false);
+  }
+
+  public boolean isDisplayBatteryWhenNotPlugged() {
+    return prefs.getBoolean(
+        clockActivity.getResources().getString(R.string.setting_key_displayBatteryWhenDischarging),
+        false);
   }
 
   public class ColorPickerClickListner implements View.OnClickListener {

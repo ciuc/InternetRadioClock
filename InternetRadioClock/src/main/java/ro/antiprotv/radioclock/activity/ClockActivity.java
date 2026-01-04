@@ -436,7 +436,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     initializeSleepFunction();
     preferenceChangeListener =
         new SettingsManager(
-            this, buttonManager, sleepManager, batteryService, mediaPlayerService, timerService);
+            this, buttonManager, sleepManager, mediaPlayerService, timerService);
     alarmManager.setMediaPlayerService(mediaPlayerService);
     // Play at start?
     // button clicked is either last played, or the first; will also set
@@ -451,11 +451,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     onOffButton.setOnClickListener(
         new OnOnOffClickListener(mediaPlayerService, buttonManager, this));
 
-    if (((SettingsManager) preferenceChangeListener).isAlwaysDisplayBattery()) {
-      batteryService.registerBatteryLevelReceiver();
-    } else {
-      batteryService.unregisterBatteryLevelReceiver();
-    }
+    batteryService.registerBatteryLevelReceiver();
 
     findViewById(R.id.text_size_cycle_button_fwd)
         .setOnClickListener(
