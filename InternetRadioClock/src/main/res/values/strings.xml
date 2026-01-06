@@ -227,6 +227,7 @@
         <!--item>Om normal\'s Hidrant</item-->
     </string-array>
     <string-array name="timer_alarm_durations">
+        <item>2</item>
         <item>7</item>
         <item>10</item>
         <item>15</item>
@@ -235,6 +236,7 @@
         <item>75</item>
     </string-array>
     <string-array name="timer_alarm_durations_human_readable">
+        <item>XS (2s)</item>
         <item>Very Short (7s)</item>
         <item>Short (10s)</item>
         <item>Medium-Short (15s)</item>
