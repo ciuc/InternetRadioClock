@@ -20,7 +20,7 @@
     <string name="setting.name.stream6">Memoria 6</string>
     <string name="setting.name.stream7">Memoria 7</string>
     <string name="setting.name.stream8">Memoria 8</string>
-    <string name="setting.name.sleepMinutes">Time de închidere (minute)</string>
+    <string name="setting.name.sleepMinutes">Timp de închidere (minute)</string>
     <string name="setting.summary.sleepMinutes">Setează timpul pt. închidere</string>
     <string name="setting.name.snoozeMinutes">Timp de snooze (minute)</string>
     <string name="setting.summary.snoozeMinutes">Setează propirul timp de snooze.</string>
@@ -48,6 +48,7 @@
     <string name="text_alarm_set_for">Alarmă setată %1$s</string>
     <string name="menu_night_profile">Profile de noapte</string>
     <string name="title_night_profile">Profil de zi</string>
+    <string name="title_slideshow_settings">Setări pentru slideshow</string>
     <string name="appwidget_text">EXEMPLU</string>
     <string name="add_widget">Add widget</string>
     <string name="title_dialog_alarm_days">Alege zilele</string>
@@ -69,6 +70,7 @@
     <string name="error_retrieving_radios">"Something went wrong while retrieving list. Please try again later. (error %d) "</string>
     <string name="found_radios">Found %d radios...</string>
     <string name="volume_max">Volum MAX</string>
+    <string name="muted">Volum închis</string>
     <string name="setting.summary.alwaysDisplayBattery">Activați pentru a afișa nivelul bateriei(posibil să nu funcționeze pe toate telefoanele.)</string>
     <string name="setting.name.batteryInClockColor">Afișarea bateriei în culoarea ceasului.</string>
     <string name="setting.summary.batteryInClockColor">Dacă e dezactivat, nivelul bateriei va fi afișat cu verde. (Cînd nivelul este scăzut, acesta va fi afișat cu roșu.) Posibil să trebuiască restart.</string>
@@ -81,6 +83,7 @@
     <string name="setting.summary.reverseButtons">Butoanele radio jos, alarmele sus.</string>
     <string name="setting.name.clockSize">Mărimea ceasului</string>
     <string name="setting.name.clock24">Ceas 12h</string>
+    <string name="setting.summary.dsplayBatteryWhenNotPlugged">Activați pentru a afișa nivelul bateriei când telefonul nu se încarcă.</string>
     <string name="setting.summary.clock24">Ceas 24h sau am/pm.</string>
     <string name="setting.name.typeface">Schimbare cifre ceas</string>
     <string name="setting.name.clock24ampm">Afișare am/pm</string>
@@ -125,4 +128,18 @@
     <string name="add_edit_label">Add/edit label</string>
     <string name="intant_timer_explanation">When pressing ok, a timer will start with this value.</string>
     <string name="set_instant_timer">Set instant timer</string>
+    <string name="connecting_to">Se conectează la</string>
+    <string name="stopping_stream">Se oprește radioul</string>
+    <string name="playing">Redare</string>
+    <string name="error_playing_stream">Eroare la redare radio</string>
+    <string name="apply_night_profile_next_change">Se aplică profilul de noapte. Următoarea schimbare:</string>
+    <string name="apply_day_profile_next_change">Se aplică profilul de noapte. Următoarea schimbare:</string>
+    <string name="pick_a_color">Alege o culoare</string>
+    <string name="alarm_set_error">Nu se poate seta alarma: trebuie permisiune de alarmă exactă.</string>
+    <string name="alarm_set_for_s_at_02d_02d">Alarmă: %s at %02d:%02d</string>
+    <string name="cannot_set_the_alarm_permission">Nu se poate seta alarma: trebuie permisiune de alarmă exactă.</string>
+    <string name="about_the_streamfinder">Despre StreamFinder</string>
+    <string name="category_summary_lookfeel">Schimbă modul de afișare al ceasului</string>
+    <string name="category_title_alarm">Alarme</string>
+    <string name="category_title_timers">Cronometru</string>
 </resources>
