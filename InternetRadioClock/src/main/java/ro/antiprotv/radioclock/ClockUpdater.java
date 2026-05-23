@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import ro.antiprotv.radioclock.service.TimerService;
@@ -43,6 +44,7 @@ public class ClockUpdater extends Thread {
   private String clockText;
   private TimerService timerService;
   private boolean isBlinking = false;
+  private boolean blinkingDots = true;
 
   // We create this ui handler to update the clock
   // We need this in order to not block the UI
@@ -123,8 +125,14 @@ public class ClockUpdater extends Thread {
       return timerText;
     }
     stopBlinkingAnimation(clockView);
+    Calendar calendar = Calendar.getInstance();
     if (clockText == null) {
-      return sdf.format(new Date());
+       sdf.format(calendar.getTime());
+    if (blinkingDots && calendar.get(Calendar.SECOND) % 2 == 0) {
+      return sdf.format(calendar.getTime()).replace(":", " ");
+    } else {
+      return sdf.format(calendar.getTime());
+    }
     }
     return clockText;
   }

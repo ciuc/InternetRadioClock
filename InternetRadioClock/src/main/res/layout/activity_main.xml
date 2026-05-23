@@ -823,6 +823,7 @@
                    android:clickable="false"
                    android:tag="@string/setting.key.stream8"
                    android:text="@string/button.name.stream8"
+                   android:elevation="12dp"
                    android:textColor="@color/button.color.off" />
            </LinearLayout>
            <!--
