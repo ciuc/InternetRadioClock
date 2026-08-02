@@ -10,7 +10,6 @@ package ro.antiprotv.radioclock.activity;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.TimePickerDialog;
@@ -19,7 +18,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -47,8 +45,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
@@ -959,7 +955,6 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
         startActivity(night);
         return true;
       case R.id.slideshow:
-        requestStoragePermissionIfNeeded();
         Intent slideshow = new Intent();
         slideshow.setClassName(this, "ro.antiprotv.radioclock.activity.SlideshowSettingsActivity");
         startActivity(slideshow);
@@ -983,17 +978,6 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
         finish();
       default:
         return super.onOptionsItemSelected(item);
-    }
-  }
-
-  private void requestStoragePermissionIfNeeded() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      // Android 13+
-      if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
-          != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(
-            this, new String[] {Manifest.permission.READ_MEDIA_IMAGES}, 1001);
-      }
     }
   }
 
