@@ -172,7 +172,7 @@ public class SleepManager {
     public void run() {
       context.runOnUiThread(
           () -> {
-            Toast.makeText(context, "Time's up", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.times_up, Toast.LENGTH_SHORT).show();
             mediaPlayerService.stopPlaying();
             resetSleepTimer();
           });

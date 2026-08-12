@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Einfacher Radiowecker</string>
+    <string name="dialog.button.ok">ALLES KLAR!</string>
+    <string name="dialog.button.ok.amoled">ICH HABE VERSTANDEN UND FAHRE FORT!</string>
+    <string name="dialog.button.permission_OK">Dorthin gehen</string>
+    <string name="dialog.button.permission_CANCEL">Nicht erlauben</string>
+    <string name="dialog.button.permission_REMIND_LTR">Später erinnern</string>
+
+    <!-- Menü -->
+    <string name="settings.menu.buttons">Tasten konfigurieren</string>
+    <string name="settings.menu.settings">Einstellungen</string>
+    <string name="settings.menu.about">Über</string>
+    <string name="settings.menu.cheers">Prost!</string>
+    <string name="settings.menu.exit">Beenden</string>
+    <string name="settings.menu.streamFinder">Sendersuche</string>
+    <string name="settings.menu.language">Sprache</string>
+
+    <!-- Sprachauswahl -->
+    <string name="language.dialog.title">Sprache wählen</string>
+    <string name="language.system_default">Systemsprache</string>
+    <string name="language.restart_hint">Die App wird neu gestartet, um die neue Sprache zu übernehmen.</string>
+
+    <!-- Speicher und Tasten -->
+    <string name="setting.name.stream1">Speicher 1</string>
+    <string name="setting.name.stream2">Speicher 2</string>
+    <string name="setting.name.stream3">Speicher 3</string>
+    <string name="setting.name.stream4">Speicher 4</string>
+    <string name="setting.name.stream5">Speicher 5</string>
+    <string name="setting.name.stream6">Speicher 6</string>
+    <string name="setting.name.stream7">Speicher 7</string>
+    <string name="setting.name.stream8">Speicher 8</string>
+    <string name="setting.name.label1">Beschriftung Taste 1</string>
+    <string name="setting.name.label2">Beschriftung Taste 2</string>
+    <string name="setting.name.label3">Beschriftung Taste 3</string>
+    <string name="setting.name.label4">Beschriftung Taste 4</string>
+    <string name="setting.name.label5">Beschriftung Taste 5</string>
+    <string name="setting.name.label6">Beschriftung Taste 6</string>
+    <string name="setting.name.label7">Beschriftung Taste 7</string>
+    <string name="setting.name.label8">Beschriftung Taste 8</string>
+
+    <!-- Einstellungen -->
+    <string name="setting.name.sleepMinutes">Eigene Einschlafzeit (Minuten)</string>
+    <string name="setting.summary.sleepMinutes">Lege deine eigene Einschlafzeit fest, die zu den vordefinierten hinzugefügt wird.</string>
+    <string name="setting.name.snoozeMinutes">Eigene Schlummerzeit (Minuten)</string>
+    <string name="setting.summary.snoozeMinutes">Lege deine bevorzugte Schlummerzeit fest.</string>
+    <string name="setting.name.seconds">Sekunden anzeigen</string>
+    <string name="setting.summary.seconds">Deaktivieren, wenn die Uhr keine Sekunden anzeigen soll.\n(Neustart kann nötig sein!)</string>
+    <string name="setting.name.clockMove">Bewegung der Uhr auf dem Bildschirm aktivieren (wie ein Bildschirmschoner)</string>
+    <string name="setting.summary.clockMove">Wenn du ein AMOLED-Display hast, schalte diese Funktion NICHT aus!</string>
+    <string name="setting.name.night_profile.autostart">Nachtprofil automatisch starten</string>
+    <string name="setting.name.night_profile.autoend">Nachtprofil automatisch beenden</string>
+    <string name="setting.name.enable.night.schedule">Zeitplan für das Nachtprofil aktivieren</string>
+    <string name="setting.summary.night.schedule">Lege fest, wann das Nachtprofil automatisch startet und endet</string>
+    <string name="setting.name.alarmProgressiveSound">Ansteigende Weckerlautstärke</string>
+    <string name="setting.summary.alarmProgressiveSound">Aktiviert eine ansteigende Lautstärke für den Wecker. Das Radio startet leise und wird alle 20 Sekunden etwas lauter, bis die maximale Lautstärke deines Telefons erreicht ist.</string>
+    <string name="setting.name.playAtStart">Beim Öffnen abspielen</string>
+    <string name="setting.summary.playAtStart">Spielt beim Öffnen der App direkt den zuletzt gehörten Sender ab.</string>
+    <string name="setting.name.backgroundPlay">Im Hintergrund abspielen</string>
+    <string name="setting.summary.backgroundPlay">Das Radio läuft weiter, wenn du die App verlässt. Während der Wiedergabe wird eine Benachrichtigung angezeigt, über die du das Radio stoppen kannst. Das Schließen der App stoppt das Radio weiterhin.</string>
+    <string name="setting.name.lockOrientationLandscape">Querformat sperren</string>
+    <string name="setting.summary.lockOrientationLandscape">Wenn deaktiviert, folgt die Uhr der Ausrichtung des Telefons. Wenn aktiviert, bleibt sie im Querformat. (Neustart erforderlich!)</string>
+    <string name="setting.name.alwaysDisplayBattery">Akkustand anzeigen</string>
+    <string name="setting.summary.alwaysDisplayBattery">Aktiviere dies, um den Akkustand anzuzeigen. (Funktioniert möglicherweise nicht auf allen Geräten.)</string>
+    <string name="setting.name.displayBatteryWhenDischarging">Akkustand anzeigen, wenn nicht am Ladegerät</string>
+    <string name="setting.summary.dsplayBatteryWhenNotPlugged">Aktiviere dies, um den Akkustand anzuzeigen, wenn das Gerät nicht am Strom hängt.</string>
+    <string name="setting.name.batteryInClockColor">Akkustand in der Farbe der Uhr anzeigen</string>
+    <string name="setting.summary.batteryInClockColor">Wenn deaktiviert, wird der Akkustand immer grün angezeigt. (Ein niedriger Stand wird in jedem Fall rot angezeigt.) Neustart kann nötig sein.</string>
+    <string name="setting.name.clockBrightness">Helligkeit</string>
+    <string name="setting.name.clockColor">Farbe der Uhr</string>
+    <string name="setting.name.clockSize">Größe der Uhr</string>
+    <string name="setting.name.typeface">Schriftart der Uhr ändern</string>
+    <string name="setting.name.clock24">12-Stunden-Uhr verwenden</string>
+    <string name="setting.summary.clock24">am/pm oder 24-Stunden-Uhr verwenden.</string>
+    <string name="setting.name.clock24ampm">am/pm anzeigen</string>
+    <string name="setting.summary.clock24ampm">Bei der 12-Stunden-Uhr am oder pm anzeigen oder nicht.</string>
+    <string name="setting.name.clock_dots">Doppelpunkt zwischen h:m:s anzeigen</string>
+    <string name="setting.summary.clock_dots">Bei der 12-Stunden-Uhr den Doppelpunkt zwischen den Zahlen anzeigen oder ausblenden.</string>
+    <string name="setting.name.clock_vertical">Uhr senkrecht anzeigen</string>
+    <string name="setting.summary.clock_vertical">Im Hochformat Stunden, Minuten und Sekunden untereinander anzeigen.</string>
+    <string name="setting.name.reverseButtons">Sender-/Weckertasten vertauschen</string>
+    <string name="setting.summary.reverseButtons">Radiotasten nach oben und Weckertasten nach unten (Neustart erforderlich)</string>
+    <string name="setting.name.wake_up_station">Immer mit diesem Sender wecken</string>
+
+    <string name="text.sleep.timer">Ausschalten in %d Minuten</string>
+    <string name="text.sleep.timer.short">Aus: %d Min</string>
+    <string name="text.sleep.off">Ausschalten deaktiviert</string>
+
+    <!-- Diashow -->
+    <string name="setting.title.slideshow.settings">Diashow-Einstellungen</string>
+    <string name="setting.name.slideshow.effect">Effekt</string>
+    <string name="setting.name.slideshow.randomize">Zufällige Reihenfolge</string>
+    <string name="setting.summary.slideshow.randomize">Die Reihenfolge der Bilder zufällig anordnen</string>
+    <string name="setting.name.slideshow.image.stay.duration">Anzeigedauer pro Bild</string>
+    <string name="setting.summary.slideshow.image.stay.duration">Wie lange jedes Bild angezeigt wird</string>
+    <string name="setting.summary.slideshow.images">Wähle Bilder für den Hintergrund\nMit vielen Bildern funktioniert das möglicherweise nicht\n[%d Bilder ausgewählt]</string>
+    <string name="setting.name.slideshow.select_folder">Bilderordner auswählen</string>
+    <string name="setting.summary.slideshow.folder.none">Neue Bilder in diesem Ordner werden automatisch für die Diashow übernommen\n[kein Ordner ausgewählt]</string>
+    <string name="setting.summary.slideshow.folder">Neue Bilder in diesem Ordner werden automatisch für die Diashow übernommen\n[%1$s]</string>
+    <string name="setting.summary.slideshow.folder.count">Neue Bilder in diesem Ordner werden automatisch für die Diashow übernommen\n[%1$s — %2$d Bilder]</string>
+    <string name="slideshow_no_folder_picker">Auf diesem Gerät ist keine Ordnerauswahl verfügbar, daher kann kein Ordner ausgewählt werden.</string>
+    <string name="slideshow_folder_replaces_images">Der Ordner wird verwendet. Die einzeln ausgewählten Bilder wurden entfernt.</string>
+    <string name="slideshow_images_replace_folder">Die ausgewählten Bilder werden verwendet. Der Ordner wurde entfernt.</string>
+    <string name="slideshow_folder_empty_dialog_msg">Im ausgewählten Ordner wurden keine Bilder gefunden.</string>
+    <string name="setting.name.slideshow.select_images">Bilder auswählen</string>
+    <string name="slideshow_empty_dialog_msg">Keine Bilder ausgewählt. Verwende die Schaltfläche in der Symbolleiste, um Bilder auszuwählen.</string>
+    <string name="slideshow_no_picker">Auf diesem Gerät ist keine Dateiauswahl verfügbar, daher können keine Bilder ausgewählt werden.</string>
+    <string name="slideshow_unreadable_dialog_msg">Die ausgewählten Bilder können nicht mehr geöffnet werden. Möglicherweise wurden sie gelöscht oder verschoben, oder die App, die sie bereitgestellt hat, hat den Zugriff entzogen. Bitte wähle sie erneut aus.</string>
+    <string name="title_slideshow_settings">Diashow-Einstellungen</string>
+
+    <!-- Timer -->
+    <string name="setting.name.category.timers">Timer</string>
+    <string name="setting.name.timer_short">Kurzer Timer</string>
+    <string name="setting.name.timer_long">Mittlerer Timer</string>
+    <string name="setting.name.timer_longer">Langer Timer</string>
+    <string name="setting.name.alarm_duration">Dauer des Timer-Alarms</string>
+    <string name="setting.name.timer_visual_enabled">Visueller Timer</string>
+    <string name="setting.summary.timer_visual_enabled">Einen visuellen Effekt für Timer verwenden</string>
+    <string name="setting.name.timer_visual">Form</string>
+    <string name="setting.name.timer_animate">Am Ende blinken</string>
+    <string name="setting.summary.timer_animate">Blinkt, wenn der Timer 0 erreicht, damit du es sicher bemerkst (besonders beim Kreis)</string>
+    <string name="setting.title.timer_ringtone">Timer-Alarm auswählen</string>
+    <string name="intant_timer_explanation">Beim Drücken von OK startet ein Timer mit diesem Wert.</string>
+    <string name="set_instant_timer">Sofort-Timer stellen</string>
+
+    <!-- Einstellungskategorien -->
+    <string name="category_title_lookfeel">Aussehen &amp; Verhalten</string>
+    <string name="category_summary_lookfeel">Das Aussehen der Uhr ändern</string>
+    <string name="category_title_alarm">Wecker</string>
+    <string name="category_summary_alarm">Weckereinstellungen festlegen</string>
+    <string name="category_title_timers">Timer</string>
+    <string name="category_summary_timers">Die Timer einrichten</string>
+    <string name="category_title_snooze_sleep">Schlummern &amp; Einschlafen</string>
+    <string name="category_summary_snooze_sleep">Schlummern und Einschlafen einrichten</string>
+
+    <!-- allgemeine Schaltflächen -->
+    <string name="back">Zurück</string>
+    <string name="find">Los, suchen!</string>
+    <string name="assign_to">Auf Speicher legen:</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="yes">Ja</string>
+    <string name="ok">OK</string>
+    <string name="remove">Diese Taste entfernen!</string>
+    <string name="close">Schließen</string>
+    <string name="stop">Stopp</string>
+    <string name="are_you_sure">Bist du sicher?</string>
+    <string name="error">FEHLER</string>
+    <string name="times_up">Die Zeit ist um</string>
+
+    <string name="title.streams">Tasten konfigurieren</string>
+    <string name="title.settings">Einstellungen</string>
+    <string name="title.streamFinder">SimpleRadioClock: Sendersuche</string>
+    <string name="title_activity_stream_finder">StreamFinder</string>
+
+    <!-- Sendersuche -->
+    <string name="streamFinder.hint">Die Liste mit den Radiostreams wird aus dem Internet geladen. Sie wird von der Community gepflegt und ist möglicherweise nicht zu 100 % korrekt.\n
+\nEs gibt über 15.000 Radios, deshalb musst du mindestens ein Land als Suchkriterium angeben, sonst wäre die Liste riesig.\n
+\nDu kannst weitere Suchkriterien angeben, z. B. ein Genre oder den Namen des Radios.\n
+\nWenn du ein Radio auf eine Speichertaste legen möchtest, tippe auf die Schaltfläche des gewünschten Speichers.
+    </string>
+    <string name="streamFinder.prompt.country">Land auswählen</string>
+    <string name="streamFinder.prompt.language">Sprache auswählen</string>
+    <string name="streamFinder.prompt.genre">Genre auswählen</string>
+    <string name="streamFinder.label.country">"Land: "</string>
+    <string name="streamFinder.label.genre">"Genre: "</string>
+    <string name="streamFinder.label.language">"Sprache: "</string>
+    <string name="streamFinder.label.name">"Name: "</string>
+    <string name="streamFinder.click_to_help">"Zum Helfen tippen: "</string>
+    <string name="about_the_streamfinder">Über den StreamFinder</string>
+    <string name="dialog_radio_list_title">Radioliste</string>
+    <string name="no_radios_matching">Keine Radios entsprechen den Kriterien! Bitte versuche es erneut.</string>
+    <string name="error_retrieving_radios">"Beim Laden der Liste ist etwas schiefgelaufen. Bitte versuche es später erneut. (Fehler %d) "</string>
+    <string name="found_radios">%d Radios gefunden...</string>
+    <string name="toast_retrieving_radios">Radios werden geladen. Das kann eine Weile dauern...</string>
+    <string name="error_retrieving_station_list">Fehler beim Laden der Senderliste!</string>
+    <string name="assigned.to.memory">%s auf Speicher %d gelegt</string>
+    <string name="will_be_the_name_of_the_memory_instead_of_the_number">(wird anstelle der Nummer als Name des Speichers angezeigt)</string>
+    <string name="add_edit_label">Beschriftung hinzufügen/bearbeiten</string>
+    <string name="add_a_label_optional">Beschriftung hinzufügen\n(optional)</string>
+
+    <!-- Wiedergabe -->
+    <string name="lastPlayed">Zuletzt gehört</string>
+    <string name="connecting_to">"Verbinden mit "</string>
+    <string name="stopping_stream">Stream wird gestoppt</string>
+    <string name="playing">"Wiedergabe "</string>
+    <string name="error_playing_stream">Fehler bei der Wiedergabe des Streams</string>
+    <string name="volume_max">Lautstärke MAX</string>
+    <string name="muted">Stumm</string>
+
+    <!-- Wecker -->
+    <string name="snooze_toast_text">Schlummern für %1$d Minuten.</string>
+    <string name="text_alarm_canceled">Wecker abgebrochen!</string>
+    <string name="text_alarm_playing">Wecker! Speicher %1$d wird abgespielt...</string>
+    <string name="text_tomorrow">morgen</string>
+    <string name="today">heute</string>
+    <string name="text_alarm_set_for">Wecker gestellt für %1$s</string>
+    <string name="alarm_set_for_s_at_02d_02d">Wecker gestellt für %s um %02d:%02d</string>
+    <string name="alarm_set_error">Der Wecker kann nicht gestellt werden: Erteile der App die Berechtigung für exakte Alarme.</string>
+    <string name="cannot_set_the_alarm_permission">Der Wecker kann nicht gestellt werden: Erteile der App die Berechtigung für exakte Alarme.</string>
+    <string name="alarm_permission_message_info">Um die Weckerfunktion zu nutzen, musst du der App \nerlauben, Wecker und Erinnerungen zu stellen. \nDu kannst das jederzeit später tun oder die Berechtigung jederzeit widerrufen.</string>
+    <string name="use_alarms">Wecker verwenden?</string>
+    <string name="title_dialog_alarm_days">Tage auswählen</string>
+    <string name="cancel_snooze">Schlummern abbrechen</string>
+    <string name="snooze">Schlummern</string>
+
+    <!-- Profile -->
+    <string name="menu_night_profile">Nachtprofil</string>
+    <string name="title_night_profile">Nachtprofil</string>
+    <string name="apply_night_profile_next_change">"Nachtprofil anwenden. Nächste Änderung: "</string>
+    <string name="apply_day_profile_next_change">"Tagprofil anwenden. Nächste Änderung: "</string>
+
+    <!-- Dialoge -->
+    <string name="pick_a_color">Farbe auswählen</string>
+    <string name="auto.brightness.description">Auto (Helligkeit dem Sensor des Systems überlassen.)</string>
+    <string name="could_not_find_seekbar">"Schieberegler nicht gefunden "</string>
+    <string name="custom_time_instructions">Bitte gib die gewünschte Zeit im Format (24 h) ein: HH:mm (z. B. 23:30 oder 07:00)</string>
+    <string name="custom_time_format_error">Format nicht korrekt - verwende HH:mm im 24-Stunden-Format</string>
+    <string name="time_picker_old_device_warning">Auf manchen älteren Geräten kannst du die Zeitauswahl nicht verwenden.</string>
+    <string name="display_dialog_text_swipe_to_change">Sie können die App (in den Einstellungen) so konfigurieren, dass sie Radio im Hintergrund abspielt (während Sie etwas anderes auf Ihrem Telefon tun).\nUnd jetzt können Sie die Sprache auf eine unterstützte Sprache umschalten.\nTippe auf Hilfe für mehr.</string>
+    <string name="dialog_amoled_warning">Ein Bild lange auf dem Bildschirm stehen zu lassen, kann deinen AMOLED-Bildschirm beschädigen. Der Text bewegt sich standardmäßig alle 5 Minuten (wie ein Bildschirmschoner). Du kannst die Bewegung deaktivieren, aber bei einem AMOLED-Bildschirm ist das ausdrücklich nicht zu empfehlen.</string>
+    <string name="amoled_warning">AMOLED-WARNUNG</string>
+    <string name="new_stuff">Neuigkeiten!</string>
+    <string name="add_widget">Widget hinzufügen</string>
+    <string name="appwidget_text">BEISPIEL</string>
+
+    <!-- Anfangsbuchstaben der Wochentage für die Weckertage -->
+    <string name="day_initial_monday">Mo</string>
+    <string name="day_initial_tuesday">Di</string>
+    <string name="day_initial_wednesday">Mi</string>
+    <string name="day_initial_thursday">Do</string>
+    <string name="day_initial_friday">Fr</string>
+    <string name="day_initial_saturday">Sa</string>
+    <string name="day_initial_sunday">So</string>
+
+    <!-- Benachrichtigungen -->
+    <string name="notification.channel.playback.name">Radiowiedergabe</string>
+    <string name="notification.channel.playback.description">Wird angezeigt, während das Radio im Hintergrund weiterspielt</string>
+    <string name="notification.playback.title">Radio läuft</string>
+    <string name="notification.playback.stop">Stopp</string>
+
+    <!-- Tipps -->
+    <string name="next_tip">Nächster Tipp</string>
+    <string name="previous_tip">Vorheriger Tipp</string>
+    <string name="tips_tricks"><![CDATA[Tipps & Tricks]]></string>
+    <string name="tips.1">- du kannst bis zu zwei Wecker einrichten; sie können sich wiederholen, wenn du die Tage auswählst\n
+- nachdem der Wecker losgeht, stoppt ein Tippen auf den Bildschirm den Wecker, das Radio spielt aber in der aktuellen Lautstärke weiter; nutze die Lautstärketasten, um die gewünschte Lautstärke einzustellen\n
+- nachdem der Wecker losgeht - tippe auf die Abbrechen-Taste (x), um den Wecker abzubrechen und das Radio zu stoppen\n
+- du kannst den Wecker auch schlummern lassen; du kannst deine eigene Schlummerzeit festlegen (Standard sind 10 Minuten)\n
+- aktiviere die ansteigende Weckerlautstärke im Einstellungsmenü
+    </string>
+    <string-array name="tips">
+        <item>@string/tips.1</item>
+        <item>
+- es gibt zwei Profile -> ein Tag- und ein Nachtprofil\n
+- für jedes kannst du eine Start- und eine Endzeit festlegen\n
+- für jedes Profil kannst du ein anderes Aussehen festlegen\n
+        </item>
+        <item>
+- es gibt zwei Timer - du kannst sie im Einstellungsmenü einrichten\n
+- ein Tippen auf den Timer startet ihn sofort\n
+- mit einem langen Tippen auf eine der Timer-Tasten kannst du schnell einen Timer einrichten und starten, der nicht gespeichert wird\n
+        </item>
+        <item>
+- du kannst das Aussehen der Uhr über den Hauptbildschirm oder die Einstellungen ändern\n
+- du kannst zwischen mehreren Schriftarten, Farben und Größen für die Uhr wählen\n
+- Änderungen am Aussehen der Uhr werden für jedes Profil gespeichert
+        </item>
+        <item>
+- wische, um die Schriftart zu wechseln\n
+- ziehe zwei Finger auf, um die Textgröße zu erhöhen
+        </item>
+        <item>
+- du kannst die Helligkeit der Uhr für das Tag- oder das Nachtprofil festlegen\n
+- wenn du die Helligkeit auf AUTO lässt, übernimmt das dein Telefon für dich
+        </item>
+        <item>
+- Sie können das Radio so einstellen, dass es im Hintergrund abgespielt wird.
+- Diese Option finden Sie im Einstellungsmenü (standardmäßig ist sie deaktiviert).
+        </item>
+        <item>
+- wenn du Probleme findest oder Ideen hast, sag mir Bescheid: schreib mir an meine Gmail-Adresse cristi.ciuc\n
+- eine ausführlichere Hilfe findest du im Abschnitt \"Über\"
+        </item>
+    </string-array>
+
+    <!-- Auswahllisten (nur der angezeigte Text; die gespeicherten Werte stehen in values/strings.xml) -->
+    <string-array name="clock_colors">
+        <item>grün (Standard)</item>
+        <item>rot</item>
+        <item>blau</item>
+        <item>gelb</item>
+        <item>weiß</item>
+        <item>grau</item>
+        <item>lila</item>
+    </string-array>
+    <string-array name="clock_human_sizes">
+        <item>XS</item>
+        <item>S</item>
+        <item>M (Standard)</item>
+        <item>M-L</item>
+        <item>XL</item>
+        <item>XXL</item>
+        <item>XXXL</item>
+        <item>XXXXL</item>
+        <item>XXXXXL</item>
+    </string-array>
+    <string-array name="timer_alarm_durations_human_readable">
+        <item>XXS (2s)</item>
+        <item>XS (5s)</item>
+        <item>Sehr kurz (7s)</item>
+        <item>Kurz (10s)</item>
+        <item>Mittel-kurz (15s)</item>
+        <item>Mittel-lang (30s)</item>
+        <item>Lang (1m)</item>
+        <item>Länger (1m15s)</item>
+    </string-array>
+    <string-array name="timer_visual_human_readable">
+        <item>Kreis</item>
+        <item>Rechteck</item>
+    </string-array>
+    <string-array name="slideshow_effect_human_readable">
+        <item>Kein Effekt</item>
+        <item>Pan/Zoom (Ken-Burns-Effekt)</item>
+        <item>Herauszoomen</item>
+    </string-array>
+
+    <string name="cheers.text">"<![CDATA[ <p>Zuerst einmal danke, dass du die Internet Radio Clock heruntergeladen hast und benutzt.</p> <p>Ich habe diese App in meiner Freizeit entwickelt, einfach zum Spaß, aber auch mit dem Anspruch, eine gute Gesamtqualität zu halten und sie ständig zu verbessern.</p> <p>Diese App ist und bleibt immer <b>kostenlos</b> und <b>ohne Werbung</b>. Alle Funktionen sind immer enthalten, <b>ohne In-App-Käufe</b>.</p> <p>Wenn sie dir gefällt, trink ein Bier auf mich. Und wenn ich auch eins auf dich trinken soll, gib 5 Sterne :)</p>  <p>Prost!</p> </body> </html> ]]>     "</string>
+
+    <string name="about.text">"<![CDATA[     <html>     <body style="font-size:8px;">     <style>     p,li{font-weight:normal}     </style>     <h1>Simple Radio Clock<h1> <p>Diese einfache App zeigt die Uhr im Vollbildmodus an und hat 5 Tasten, die jeweils mit einem Radiostream belegt sind.</p> <p>Ab Werk ist sie mit Radio Guerrilla, Tananana und RockFM aus Rumänien, RadioBOB aus Deutschland und Zodiac aus Irland konfiguriert. Diese kannst du ändern und du kannst bis zu 8 Tasten haben.</p> <p> <b>Umkehren</b><br> Ändert die Bildschirmausrichtung. Je nach Lage der Lautstärketasten kann das praktisch sein.<br> <br> <b>Einstellungen</b><br> in diesem Bereich kannst du einige nützliche Dinge einstellen: <ul> <li>Schriftart der Uhr: du kannst aus vielen Schriftarten für die Anzeige der Uhr wählen.</li> <li>Farbe der Uhr</li> <li>Bildschirmhelligkeit (überschreibt die Einstellungen des Telefons)</li> <li>Größe der Uhr</li> <li>Anzeige der Sekunden aktivieren/deaktivieren</li> <li>12-Stunden-Uhr mit oder ohne Anzeige von am/pm aktivieren</li> <li>Bewegung der Uhr auf dem Bildschirm aktivieren/deaktivieren; standardmäßig wandert die Uhr durch die Bildschirmecken - wichtig, wenn du ein AMOLED-Display hast (ein Bild lange auf einem AMOLED-Bildschirm stehen zu lassen, kann den Bildschirm beschädigen)</li> <li>eigene Einschlafzeit: die App hat eine Sleep-Taste, die durch einige vordefinierte Einschlafzeiten blättert (15, 20, 30 Minuten); hier kannst du deine bevorzugte hinzufügen -> Die Einschlaffunktion aktivierst du über die Sleep-Taste auf dem Hauptbildschirm. </li> <li>eigene Schlummerzeit: du kannst deine eigene Schlummerzeit festlegen (standardmäßig 10 Minuten)</li> <li>Sender-/Weckertasten vertauschen: setzt die Radiotasten nach oben und die Weckertasten nach unten. Das kann bei bestimmten Telefonhalterungen hilfreich sein.</li> <li>das Querformat entsperren, sodass die Uhr der Ausrichtung des Telefons folgt; außerdem die Möglichkeit, die Uhr senkrecht darzustellen (mit Stunden, Minuten und/oder Sekunden untereinander).</li> <li>du kannst die Anzeige des Akkustands aktivieren; bitte beachte, dass diese Funktion noch im Beta-Stadium ist und möglicherweise nicht auf allen Geräten immer funktioniert.</li> </ul> <b>Tasten konfigurieren</b> <ul> <li>eine Speichertaste bearbeiten (die Stream-Adresse)</li> <li>einer Taste eine Beschriftung zuweisen (wird anstelle der Nummer angezeigt) - das geht auch mit einem langen Tippen auf eine Taste; mit einem langen Tippen kannst du eine Taste auch entfernen</li> <li>bis zu 8 Tasten aktivieren (füge einfach die Adresse deines Lieblingsradios hinzu)</li> </ul> <b>Sendersuche</b> <ul> <li>du kannst einen Radiostream über die Auswahllisten und das Namensfeld suchen (der Name muss nicht exakt sein) und das Radio einem Speicher zuweisen. Die App schlägt sogar eine Beschriftung vor ;)</li> <li>bitte bedenke, dass die Liste nicht vollständig und möglicherweise nicht zu 100 % korrekt ist; wenn du ein Radio hast, das ich in die Liste aufnehmen soll, schick mir eine E-Mail</li> <li>die App merkt sich jetzt das zuletzt verwendete Land und die zuletzt verwendete Sprache</li> </ul> <b>Nachtprofil</b> <ul> <li>du kannst einen anderen Satz von Einstellungen festlegen und ihn per Tastendruck aktivieren (zum Beispiel für die Nacht eine größere Uhr ohne Sekunden oder in Rot und mit 50 % Helligkeit, während sie tagsüber kleiner, grün, mit Sekunden und heller ist)</li> <li>du kannst auch eine Start- und eine Endzeit für das \"Nachtprofil\" festlegen. Dadurch werden die Nacht-Einstellungen automatisch zur angegebenen Zeit angewendet</li> </ul>  <b>Wecker</b> <p>Profi-Tipp: wenn der Wecker losgeht, tippe auf den Bildschirm (oder auf die Häkchen-Taste), um ihn abzubrechen, ohne das Radio zu stoppen;<br>wenn der Wecker spielt, drücke die Abbrechen-Taste (mit \"x\" markiert), um den Wecker zu stoppen, ohne das Radio abzuspielen; der nächste Wecker wird automatisch aktiviert.</p> <ul> <li>du kannst bis zu zwei Wecker einrichten, die das Radio zur festgelegten Zeit starten. Es spielt das zuletzt gehörte Radio oder ein Radio, das du in den Einstellungen wählst. Wenn keine Internetverbindung besteht, wird der Standard-Weckton abgespielt.</li> <li><b>du kannst wiederkehrende Wecker für verschiedene Wochentage einrichten (zum Beispiel einen für Werktage, einen fürs Wochenende)</b></li> <li>es gibt auch eine Schlummerfunktion mit 10 Minuten Schlummerzeit; du kannst auch deine eigene Schlummerzeit festlegen.</li> <li>du kannst den ansteigenden Ton aktivieren: das Radio startet leise und wird alle 10 Sekunden lauter. Beachte, dass dabei nicht die Gerätelautstärke erhöht wird (die, die über die Lautstärketasten gesteuert wird). <li>du kannst einen Sender festlegen, mit dem der Wecker immer startet</li> </ul> <p><span style=\"color:red\">Ab Android 14 musst du eine spezielle Berechtigung erteilen, um die Weckerfunktion nutzen zu können.</span></p> <p> <b>*** ACHTUNG: bitte benutze diese App nicht als deinen Haupt-Wecker. Verwende zum Aufwachen immer deinen gewohnten Wecker. ***</b> </p>  <p>Ich habe versucht, sie so einfach wie möglich zu halten, aber wenn du Ideen hast oder denkst, dass sie verbessert werden kann, schreib mir an meine Gmail-Adresse cristi.ciuc</p> <p>Der Code ist Open Source und auf GitHub zu finden: https://github.com/ciuc/InternetRadioClock</p> ]]>     "</string>
+</resources>

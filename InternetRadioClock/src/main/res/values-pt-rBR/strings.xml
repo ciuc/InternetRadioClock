@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Rádio Relógio Simples</string>
+    <string name="dialog.button.ok">ENTENDI!</string>
+    <string name="dialog.button.ok.amoled">ENTENDI E QUERO CONTINUAR!</string>
+    <string name="dialog.button.permission_OK">Ir para lá</string>
+    <string name="dialog.button.permission_CANCEL">Não permitir</string>
+    <string name="dialog.button.permission_REMIND_LTR">Lembrar mais tarde</string>
+
+    <!-- menu -->
+    <string name="settings.menu.buttons">Configurar botões</string>
+    <string name="settings.menu.settings">Configurações</string>
+    <string name="settings.menu.about">Sobre</string>
+    <string name="settings.menu.cheers">Saúde!</string>
+    <string name="settings.menu.exit">Sair</string>
+    <string name="settings.menu.streamFinder">Buscador de rádios</string>
+    <string name="settings.menu.language">Idioma</string>
+
+    <!-- seleção de idioma -->
+    <string name="language.dialog.title">Escolha o idioma</string>
+    <string name="language.system_default">Idioma do sistema</string>
+    <string name="language.restart_hint">O aplicativo será reiniciado para aplicar o novo idioma.</string>
+
+    <!-- memórias e botões -->
+    <string name="setting.name.stream1">Memória 1</string>
+    <string name="setting.name.stream2">Memória 2</string>
+    <string name="setting.name.stream3">Memória 3</string>
+    <string name="setting.name.stream4">Memória 4</string>
+    <string name="setting.name.stream5">Memória 5</string>
+    <string name="setting.name.stream6">Memória 6</string>
+    <string name="setting.name.stream7">Memória 7</string>
+    <string name="setting.name.stream8">Memória 8</string>
+    <string name="setting.name.label1">Rótulo do botão 1</string>
+    <string name="setting.name.label2">Rótulo do botão 2</string>
+    <string name="setting.name.label3">Rótulo do botão 3</string>
+    <string name="setting.name.label4">Rótulo do botão 4</string>
+    <string name="setting.name.label5">Rótulo do botão 5</string>
+    <string name="setting.name.label6">Rótulo do botão 6</string>
+    <string name="setting.name.label7">Rótulo do botão 7</string>
+    <string name="setting.name.label8">Rótulo do botão 8</string>
+
+    <!-- configurações -->
+    <string name="setting.name.sleepMinutes">Tempo para desligar personalizado (minutos)</string>
+    <string name="setting.summary.sleepMinutes">Defina seu próprio tempo para desligar, que será somado aos predefinidos.</string>
+    <string name="setting.name.snoozeMinutes">Tempo de soneca personalizado (minutos)</string>
+    <string name="setting.summary.snoozeMinutes">Defina o tempo de soneca de sua preferência.</string>
+    <string name="setting.name.seconds">Exibir segundos</string>
+    <string name="setting.summary.seconds">Desative se não quiser que o relógio exiba os segundos.\n(Pode exigir reinício!)</string>
+    <string name="setting.name.clockMove">Ativar o movimento do relógio na tela (como uma proteção de tela)</string>
+    <string name="setting.summary.clockMove">Se você tem uma tela AMOLED, NÃO DESATIVE esta função!</string>
+    <string name="setting.name.night_profile.autostart">Início automático do perfil noturno</string>
+    <string name="setting.name.night_profile.autoend">Fim automático do perfil noturno</string>
+    <string name="setting.name.enable.night.schedule">Ativar agendamento do perfil noturno</string>
+    <string name="setting.summary.night.schedule">Defina o horário para iniciar e encerrar o perfil noturno automaticamente</string>
+    <string name="setting.name.alarmProgressiveSound">Som progressivo do alarme</string>
+    <string name="setting.summary.alarmProgressiveSound">Ative o volume progressivo do alarme. O rádio começará a tocar baixinho e o volume aumentará um pouco a cada 20 segundos, até chegar ao volume máximo do celular.</string>
+    <string name="setting.name.playAtStart">Tocar ao abrir</string>
+    <string name="setting.summary.playAtStart">Começa a tocar o último rádio assim que o aplicativo é aberto.</string>
+    <string name="setting.name.backgroundPlay">Tocar em segundo plano</string>
+    <string name="setting.summary.backgroundPlay">Mantém o rádio tocando quando você sai do aplicativo. Durante a reprodução será exibida uma notificação, pela qual você pode parar o rádio. Fechar o aplicativo continua parando o rádio.</string>
+    <string name="setting.name.lockOrientationLandscape">Travar em paisagem</string>
+    <string name="setting.summary.lockOrientationLandscape">Se desativado, o relógio acompanha a orientação do celular. Se ativado, ele fica em paisagem. (Requer reinício!)</string>
+    <string name="setting.name.alwaysDisplayBattery">Exibir o nível da bateria</string>
+    <string name="setting.summary.alwaysDisplayBattery">Ative para exibir o nível da bateria. (Pode não funcionar em todos os aparelhos.)</string>
+    <string name="setting.name.displayBatteryWhenDischarging">Exibir o nível da bateria fora da tomada</string>
+    <string name="setting.summary.dsplayBatteryWhenNotPlugged">Ative para exibir o nível da bateria quando o aparelho não estiver ligado à tomada.</string>
+    <string name="setting.name.batteryInClockColor">Exibir o nível da bateria na cor do relógio</string>
+    <string name="setting.summary.batteryInClockColor">Se desativado, o nível da bateria será sempre exibido em verde. (De todo modo, o nível baixo será exibido em vermelho.) Pode exigir reinício.</string>
+    <string name="setting.name.clockBrightness">Brilho</string>
+    <string name="setting.name.clockColor">Cor do relógio</string>
+    <string name="setting.name.clockSize">Tamanho do relógio</string>
+    <string name="setting.name.typeface">Mudar a fonte do relógio</string>
+    <string name="setting.name.clock24">Usar relógio de 12h</string>
+    <string name="setting.summary.clock24">Usar am/pm ou relógio de 24h.</string>
+    <string name="setting.name.clock24ampm">Exibir am/pm</string>
+    <string name="setting.summary.clock24ampm">No relógio de 12h, exibir ou não am/pm.</string>
+    <string name="setting.name.clock_dots">Exibir os dois-pontos entre h:m:s</string>
+    <string name="setting.summary.clock_dots">No relógio de 12h, exibir ou ocultar os dois-pontos entre os números.</string>
+    <string name="setting.name.clock_vertical">Exibir o relógio na vertical</string>
+    <string name="setting.summary.clock_vertical">No modo retrato, exibir hora, minutos e segundos um abaixo do outro.</string>
+    <string name="setting.name.reverseButtons">Inverter botões de rádio/alarme</string>
+    <string name="setting.summary.reverseButtons">Coloca os botões de rádio em cima e os de alarme embaixo (requer reinício)</string>
+    <string name="setting.name.wake_up_station">Sempre despertar com esta estação</string>
+
+    <string name="text.sleep.timer">Desligar em %d minutos</string>
+    <string name="text.sleep.timer.short">Desligar: %d min</string>
+    <string name="text.sleep.off">Desligamento cancelado</string>
+
+    <!-- apresentação de imagens -->
+    <string name="setting.title.slideshow.settings">Configurações da apresentação</string>
+    <string name="setting.name.slideshow.effect">Efeito</string>
+    <string name="setting.name.slideshow.randomize">Ordem aleatória</string>
+    <string name="setting.summary.slideshow.randomize">Embaralhar a ordem das imagens</string>
+    <string name="setting.name.slideshow.image.stay.duration">Duração de cada imagem</string>
+    <string name="setting.summary.slideshow.image.stay.duration">Por quanto tempo cada imagem fica na tela</string>
+    <string name="setting.summary.slideshow.images">Escolha as imagens para exibir ao fundo\nIsso pode não funcionar com muitas imagens\n[%d imagens selecionadas]</string>
+    <string name="setting.name.slideshow.select_folder">Escolher pasta de imagens</string>
+    <string name="setting.summary.slideshow.folder.none">Novas imagens nesta pasta serão usadas automaticamente na apresentação\n[nenhuma pasta escolhida]</string>
+    <string name="setting.summary.slideshow.folder">Novas imagens nesta pasta serão usadas automaticamente na apresentação\n[%1$s]</string>
+    <string name="setting.summary.slideshow.folder.count">Novas imagens nesta pasta serão usadas automaticamente na apresentação\n[%1$s — %2$d imagens]</string>
+    <string name="slideshow_no_folder_picker">Não há um seletor de pastas disponível neste aparelho, então não é possível escolher uma pasta.</string>
+    <string name="slideshow_folder_replaces_images">Usando a pasta. As imagens escolhidas individualmente foram removidas.</string>
+    <string name="slideshow_images_replace_folder">Usando as imagens escolhidas. A pasta foi removida.</string>
+    <string name="slideshow_folder_empty_dialog_msg">Nenhuma imagem foi encontrada na pasta escolhida.</string>
+    <string name="setting.name.slideshow.select_images">Escolher imagens</string>
+    <string name="slideshow_empty_dialog_msg">Nenhuma imagem selecionada. Use o botão da barra de ferramentas para escolher imagens.</string>
+    <string name="slideshow_no_picker">Não há um seletor de arquivos disponível neste aparelho, então não é possível escolher imagens.</string>
+    <string name="slideshow_unreadable_dialog_msg">As imagens escolhidas não podem mais ser abertas. Elas podem ter sido excluídas ou movidas, ou o app que as forneceu retirou o acesso. Escolha as imagens novamente.</string>
+    <string name="title_slideshow_settings">Configurações da apresentação</string>
+
+    <!-- temporizadores -->
+    <string name="setting.name.category.timers">Temporizadores</string>
+    <string name="setting.name.timer_short">Temporizador curto</string>
+    <string name="setting.name.timer_long">Temporizador médio</string>
+    <string name="setting.name.timer_longer">Temporizador longo</string>
+    <string name="setting.name.alarm_duration">Duração do alarme do temporizador</string>
+    <string name="setting.name.timer_visual_enabled">Temporizador visual</string>
+    <string name="setting.summary.timer_visual_enabled">Usar um efeito visual para os temporizadores</string>
+    <string name="setting.name.timer_visual">Formato</string>
+    <string name="setting.name.timer_animate">Piscar ao terminar</string>
+    <string name="setting.summary.timer_animate">Pisca quando o temporizador chega a 0, para garantir que você perceba (principalmente o círculo)</string>
+    <string name="setting.title.timer_ringtone">Escolher o alarme do temporizador</string>
+    <string name="intant_timer_explanation">Ao tocar em OK, um temporizador começará com este valor.</string>
+    <string name="set_instant_timer">Iniciar temporizador rápido</string>
+
+    <!-- categorias de configurações -->
+    <string name="category_title_lookfeel">Aparência</string>
+    <string name="category_summary_lookfeel">Mude a aparência do relógio</string>
+    <string name="category_title_alarm">Alarmes</string>
+    <string name="category_summary_alarm">Ajuste as configurações dos alarmes</string>
+    <string name="category_title_timers">Temporizadores</string>
+    <string name="category_summary_timers">Configure os temporizadores</string>
+    <string name="category_title_snooze_sleep">Soneca &amp; desligamento</string>
+    <string name="category_summary_snooze_sleep">Configure a soneca e o desligamento automático</string>
+
+    <!-- botões gerais -->
+    <string name="back">Voltar</string>
+    <string name="find">Buscar!</string>
+    <string name="assign_to">Atribuir à memória:</string>
+    <string name="cancel">Cancelar</string>
+    <string name="yes">Sim</string>
+    <string name="ok">OK</string>
+    <string name="remove">Remover este botão!</string>
+    <string name="close">Fechar</string>
+    <string name="stop">Parar</string>
+    <string name="are_you_sure">Tem certeza?</string>
+    <string name="error">ERRO</string>
+    <string name="times_up">Acabou o tempo</string>
+
+    <string name="title.streams">Configurar botões</string>
+    <string name="title.settings">Configurações</string>
+    <string name="title.streamFinder">SimpleRadioClock: buscador de rádios</string>
+    <string name="title_activity_stream_finder">StreamFinder</string>
+
+    <!-- buscador de rádios -->
+    <string name="streamFinder.hint">A lista de rádios online é obtida da internet. Ela é mantida pela comunidade e pode não estar 100% correta.\n
+\nSão mais de 15.000 rádios, por isso é preciso informar pelo menos um país como critério de busca, senão a lista ficaria enorme.\n
+\nVocê pode acrescentar mais critérios, como um gênero ou o nome da rádio.\n
+\nSe quiser atribuir uma rádio a um botão de memória, toque no botão da memória desejada.
+    </string>
+    <string name="streamFinder.prompt.country">Escolha o país</string>
+    <string name="streamFinder.prompt.language">Escolha o idioma</string>
+    <string name="streamFinder.prompt.genre">Escolha o gênero</string>
+    <string name="streamFinder.label.country">"País: "</string>
+    <string name="streamFinder.label.genre">"Gênero: "</string>
+    <string name="streamFinder.label.language">"Idioma: "</string>
+    <string name="streamFinder.label.name">"Nome: "</string>
+    <string name="streamFinder.click_to_help">"Toque para ajudar: "</string>
+    <string name="about_the_streamfinder">Sobre o StreamFinder</string>
+    <string name="dialog_radio_list_title">Lista de rádios</string>
+    <string name="no_radios_matching">Nenhuma rádio corresponde aos critérios! Tente novamente.</string>
+    <string name="error_retrieving_radios">"Algo deu errado ao carregar a lista. Tente novamente mais tarde. (erro %d) "</string>
+    <string name="found_radios">%d rádios encontradas...</string>
+    <string name="toast_retrieving_radios">Carregando as rádios. Isso pode demorar um pouco...</string>
+    <string name="error_retrieving_station_list">Erro ao carregar a lista de estações!</string>
+    <string name="assigned.to.memory">%s atribuída à memória %d</string>
+    <string name="will_be_the_name_of_the_memory_instead_of_the_number">(será o nome da memória no lugar do número)</string>
+    <string name="add_edit_label">Adicionar/editar rótulo</string>
+    <string name="add_a_label_optional">Adicione um rótulo\n(opcional)</string>
+
+    <!-- reprodução -->
+    <string name="lastPlayed">Última tocada</string>
+    <string name="connecting_to">"Conectando a "</string>
+    <string name="stopping_stream">Parando a transmissão</string>
+    <string name="playing">"Tocando "</string>
+    <string name="error_playing_stream">Erro ao tocar a transmissão</string>
+    <string name="volume_max">Volume MÁX</string>
+    <string name="muted">Mudo</string>
+
+    <!-- alarmes -->
+    <string name="snooze_toast_text">Soneca de %1$d minutos.</string>
+    <string name="text_alarm_canceled">Alarme cancelado!</string>
+    <string name="text_alarm_playing">Alarme! tocando a memória %1$d...</string>
+    <string name="text_tomorrow">amanhã</string>
+    <string name="today">hoje</string>
+    <string name="text_alarm_set_for">Alarme definido para %1$s</string>
+    <string name="alarm_set_for_s_at_02d_02d">Alarme definido para %s às %02d:%02d</string>
+    <string name="alarm_set_error">Não é possível definir o alarme: conceda ao aplicativo a permissão de alarme exato.</string>
+    <string name="cannot_set_the_alarm_permission">Não é possível definir o alarme: conceda ao aplicativo a permissão de alarme exato.</string>
+    <string name="alarm_permission_message_info">Para usar a função de alarme, você precisa \npermitir que o aplicativo defina alarmes e lembretes. \nVocê pode fazer isso mais tarde ou revogar a permissão a qualquer momento.</string>
+    <string name="use_alarms">Usar alarmes?</string>
+    <string name="title_dialog_alarm_days">Escolha os dias</string>
+    <string name="cancel_snooze">Cancelar soneca</string>
+    <string name="snooze">Soneca</string>
+
+    <!-- perfis -->
+    <string name="menu_night_profile">Perfil noturno</string>
+    <string name="title_night_profile">Perfil noturno</string>
+    <string name="apply_night_profile_next_change">"Aplicar o perfil noturno. Próxima mudança: "</string>
+    <string name="apply_day_profile_next_change">"Aplicar o perfil diurno. Próxima mudança: "</string>
+
+    <!-- diálogos -->
+    <string name="pick_a_color">Escolha uma cor</string>
+    <string name="auto.brightness.description">Auto (deixa o brilho por conta do sensor do sistema.)</string>
+    <string name="could_not_find_seekbar">"Não foi possível encontrar o controle deslizante "</string>
+    <string name="custom_time_instructions">Digite o horário desejado no formato (24h): HH:mm (ex.: 23:30 ou 07:00)</string>
+    <string name="custom_time_format_error">Formato incorreto - use HH:mm no formato 24h</string>
+    <string name="time_picker_old_device_warning">Em alguns aparelhos antigos não é possível usar o seletor de horário.</string>
+    <string name="display_dialog_text_swipe_to_change">Você pode configurar (em Configurações) o aplicativo para reproduzir rádio em segundo plano (enquanto faz outra coisa no seu telefone).\nE agora você pode mudar o idioma para um idioma compatível.\nToque em ajuda para saber mais.</string>
+    <string name="dialog_amoled_warning">Deixar uma imagem parada na tela por muito tempo pode danificar sua tela AMOLED. Por padrão, o texto se move (como uma proteção de tela) a cada 5 minutos. Você pode desativar o movimento, mas se tiver uma tela AMOLED isso é fortemente desaconselhado.</string>
+    <string name="amoled_warning">AVISO AMOLED</string>
+    <string name="new_stuff">Novidades!</string>
+    <string name="add_widget">Adicionar widget</string>
+    <string name="appwidget_text">EXEMPLO</string>
+
+    <!-- abreviações dos dias para a escolha dos dias do alarme -->
+    <string name="day_initial_monday">2ª</string>
+    <string name="day_initial_tuesday">3ª</string>
+    <string name="day_initial_wednesday">4ª</string>
+    <string name="day_initial_thursday">5ª</string>
+    <string name="day_initial_friday">6ª</string>
+    <string name="day_initial_saturday">Sá</string>
+    <string name="day_initial_sunday">Do</string>
+
+    <!-- notificações -->
+    <string name="notification.channel.playback.name">Reprodução do rádio</string>
+    <string name="notification.channel.playback.description">Exibida enquanto o rádio continua tocando em segundo plano</string>
+    <string name="notification.playback.title">Rádio tocando</string>
+    <string name="notification.playback.stop">Parar</string>
+
+    <!-- dicas -->
+    <string name="next_tip">Próxima dica</string>
+    <string name="previous_tip">Dica anterior</string>
+    <string name="tips_tricks"><![CDATA[Dicas & truques]]></string>
+    <string name="tips.1">- você pode configurar até dois alarmes; eles podem se repetir se você escolher os dias\n
+- depois que o alarme dispara, tocar na tela para o alarme, mas o rádio continua tocando no volume atual; use os botões de volume para ajustar o volume\n
+- depois que o alarme dispara - toque no botão de cancelar (x) para cancelar o alarme e parar o rádio\n
+- você também pode adiar o alarme (soneca); pode definir seu próprio tempo de soneca (o padrão é 10 minutos)\n
+- ative o som progressivo do alarme no menu de configurações
+    </string>
+    <string-array name="tips">
+        <item>@string/tips.1</item>
+        <item>
+- existem dois perfis -> um diurno e um noturno\n
+- você pode definir um horário de início e de fim para cada um\n
+- você pode definir uma aparência diferente para cada perfil\n
+        </item>
+        <item>
+- existem dois temporizadores - você pode configurá-los no menu de configurações\n
+- tocar no temporizador o inicia na hora\n
+- com um toque longo em um dos botões de temporizador você configura e inicia rapidamente um temporizador, que não será salvo\n
+        </item>
+        <item>
+- você pode mudar a aparência do relógio pela tela principal ou pelas configurações\n
+- você pode escolher entre várias fontes, cores e tamanhos para o relógio\n
+- as mudanças de aparência do relógio são salvas para cada perfil
+        </item>
+        <item>
+- deslize para trocar de fonte\n
+- use o gesto de pinça para aumentar o tamanho do texto
+        </item>
+        <item>
+- você pode ajustar o brilho do relógio para o perfil diurno ou para o noturno\n
+- deixando o brilho em AUTO, o celular cuida disso para você
+        </item>
+        <item>
+- você pode configurar o rádio para tocar em segundo plano\n
+- você encontra essa opção no menu de configurações (por padrão, está desativada)\n
+        </item>
+        <item>
+- se encontrar problemas ou tiver ideias, me avise: escreva para o meu endereço de gmail cristi.ciuc\n
+- você encontra uma ajuda mais completa na seção \"Sobre\"
+        </item>
+    </string-array>
+
+    <!-- listas de opções (apenas o texto exibido; os valores salvos estão em values/strings.xml) -->
+    <string-array name="clock_colors">
+        <item>verde (padrão)</item>
+        <item>vermelho</item>
+        <item>azul</item>
+        <item>amarelo</item>
+        <item>branco</item>
+        <item>cinza</item>
+        <item>roxo</item>
+    </string-array>
+    <string-array name="clock_human_sizes">
+        <item>XS</item>
+        <item>S</item>
+        <item>M (padrão)</item>
+        <item>M-L</item>
+        <item>XL</item>
+        <item>XXL</item>
+        <item>XXXL</item>
+        <item>XXXXL</item>
+        <item>XXXXXL</item>
+    </string-array>
+    <string-array name="timer_alarm_durations_human_readable">
+        <item>XXS (2s)</item>
+        <item>XS (5s)</item>
+        <item>Muito curto (7s)</item>
+        <item>Curto (10s)</item>
+        <item>Médio-curto (15s)</item>
+        <item>Médio-longo (30s)</item>
+        <item>Longo (1m)</item>
+        <item>Mais longo (1m15s)</item>
+    </string-array>
+    <string-array name="timer_visual_human_readable">
+        <item>Círculo</item>
+        <item>Retângulo</item>
+    </string-array>
+    <string-array name="slideshow_effect_human_readable">
+        <item>Sem efeito</item>
+        <item>Pan/Zoom (efeito Ken Burns)</item>
+        <item>Afastar (zoom out)</item>
+    </string-array>
+
+    <string name="cheers.text">"<![CDATA[ <p>Antes de mais nada, obrigado por baixar e usar o Internet Radio Clock.</p> <p>Criei este aplicativo no meu tempo livre, só por diversão, mas também tentando manter uma boa qualidade geral e melhorá-lo constantemente.</p> <p>Este aplicativo é e sempre será <b>gratuito</b> e <b>sem anúncios</b>. Todos os seus recursos sempre estarão incluídos, <b>sem compras dentro do aplicativo</b>.</p> <p>Se você gostou, tome uma cerveja por mim. E se quiser que eu tome uma por você, dê 5 estrelas :)</p>  <p>Saúde!</p> </body> </html> ]]>     "</string>
+
+    <string name="about.text">"<![CDATA[     <html>     <body style="font-size:8px;">     <style>     p,li{font-weight:normal}     </style>     <h1>Simple Radio Clock<h1> <p>Este aplicativo simples apenas mostra o relógio em tela cheia e tem 5 botões, cada um associado a uma transmissão de rádio.</p> <p>De fábrica ele vem configurado com Radio Guerrilla, Tananana e RockFM da Romênia, RadioBOB da Alemanha e Zodiac da Irlanda. Isso pode ser alterado e você pode ter até 8 botões.</p> <p> <b>Inverter</b><br> Muda a orientação da tela. Dependendo de onde ficam os botões de volume, isso pode ser bem útil.<br> <br> <b>Configurações</b><br> nesta seção você pode ajustar várias coisas legais: <ul> <li>fonte do relógio: você pode escolher entre várias fontes para a exibição do relógio.</li> <li>cor do relógio</li> <li>brilho da tela (tem prioridade sobre as configurações do celular)</li> <li>tamanho do relógio</li> <li>ativar/desativar a exibição dos segundos</li> <li>ativar o relógio de 12 horas com ou sem a exibição de am/pm</li> <li>ativar/desativar o movimento do relógio na tela; por padrão o relógio passeia pelos cantos da tela - importante se você tem uma tela AMOLED (deixar uma imagem parada numa tela AMOLED por muito tempo pode danificar a tela)</li> <li>tempo para desligar personalizado: o aplicativo tem um botão de sleep que percorre alguns tempos predefinidos (15, 20, 30 minutos); aqui você pode acrescentar o seu preferido -> Você pode ativar o desligamento automático pelo botão de sleep na tela principal. </li> <li>tempo de soneca personalizado: você pode definir seu próprio tempo de soneca (por padrão são 10 minutos)</li> <li>inverter os botões de rádio/alarme: coloca os botões de rádio em cima e os de alarme embaixo. Isso pode ajudar com certos suportes de celular.</li> <li>destravar o modo paisagem, para que o relógio acompanhe a orientação do celular; também é possível desenhar o relógio na vertical (com horas, minutos e/ou segundos um abaixo do outro).</li> <li>você pode ativar a exibição do nível da bateria; lembre-se de que este recurso ainda está em fase beta e pode não funcionar em todos os aparelhos o tempo todo.</li> </ul> <b>Configurar botões</b> <ul> <li>editar um botão de memória (o endereço da transmissão)</li> <li>atribuir um rótulo a um botão (será exibido no lugar do número) - você também pode fazer isso com um toque longo no botão; com um toque longo você também pode remover um botão</li> <li>ativar até 8 botões (basta adicionar o endereço da sua rádio favorita)</li> </ul> <b>Buscador de rádios</b> <ul> <li>você pode procurar uma transmissão usando as listas suspensas e o campo de nome (o nome não precisa ser exato) e atribuir a rádio a uma memória. O aplicativo até sugere um rótulo ;)</li> <li>lembre-se de que a lista não é completa e pode não estar 100% correta; se você tem uma rádio que gostaria que eu incluísse na lista, me mande um e-mail</li> <li>agora o aplicativo memoriza o último país e o último idioma usados</li> </ul> <b>Perfil noturno</b> <ul> <li>você pode definir um conjunto diferente de configurações e ativá-lo com o toque de um botão (por exemplo, à noite um relógio maior e sem segundos, ou vermelho e com 50% de brilho, enquanto de dia ele fica menor, verde, com segundos e mais claro)</li> <li>você também pode definir um horário de início e de fim para o \"perfil noturno\". Assim, as configurações noturnas serão aplicadas automaticamente no horário indicado</li> </ul>  <b>Alarmes</b> <p>Dica: quando o alarme disparar, toque na tela (ou no botão de confirmação) para cancelá-lo sem parar o rádio;<br>quando o alarme estiver tocando, toque no botão de cancelar (marcado com \"x\") para parar o alarme sem tocar o rádio; o próximo alarme será ativado automaticamente.</p> <ul> <li>você pode configurar até dois alarmes, que ligam o rádio no horário definido. Vai tocar a última rádio ouvida ou uma rádio escolhida por você nas configurações. Se não houver conexão com a internet, tocará o som de alarme padrão.</li> <li><b>você pode definir alarmes que se repetem em vários dias da semana (por exemplo, um nos dias úteis e outro no fim de semana)</b></li> <li>também existe a função de soneca, com 10 minutos de duração; você também pode definir seu próprio tempo de soneca.</li> <li>você pode ativar o som progressivo: o rádio começa a tocar baixinho e o volume aumenta a cada 10 segundos. Observe que isso não aumenta o volume do aparelho (aquele controlado pelos botões de volume). <li>você pode definir uma estação com a qual o alarme sempre começa</li> </ul> <p><span style=\"color:red\">No Android 14 e superior, você precisará conceder uma permissão especial para poder usar a função de alarme.</span></p> <p> <b>*** ATENÇÃO: por favor, não use este aplicativo como seu despertador principal. Use sempre o seu despertador de costume para acordar. ***</b> </p>  <p>Tentei manter tudo o mais simples possível, mas se você tiver ideias ou achar que dá para melhorar, escreva para o meu endereço de gmail cristi.ciuc</p> <p>O código é open source e pode ser encontrado no github: https://github.com/ciuc/InternetRadioClock</p> ]]>     "</string>
+</resources>

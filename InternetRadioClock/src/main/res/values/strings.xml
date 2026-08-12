@@ -23,6 +23,26 @@
     <string name="settings.menu.cheers">Cheers!</string>
     <string name="settings.menu.exit">Exit</string>
     <string name="settings.menu.streamFinder">Stream Finder</string>
+    <string name="settings.menu.language">Language</string>
+
+    <!--language selection-->
+    <string name="language.dialog.title">Choose language</string>
+    <string name="language.system_default">System default</string>
+    <string name="language.restart_hint">The app will restart to apply the new language.</string>
+    <!--Language names are written in their own language, so they are not translated.
+        Keep language.names and language.tags in the same order and in sync with xml/locales_config.xml.-->
+    <string-array name="language.names" translatable="false">
+        <item>English</item>
+        <item>Deutsch</item>
+        <item>Português (Brasil)</item>
+        <item>Română</item>
+    </string-array>
+    <string-array name="language.tags" translatable="false">
+        <item>en</item>
+        <item>de</item>
+        <item>pt-BR</item>
+        <item>ro</item>
+    </string-array>
 
     <string name="setting.key.stream1" translatable="false">setting.key.stream1</string>
     <string name="setting.key.stream2" translatable="false">setting.key.stream2</string>
@@ -131,6 +151,7 @@
     <string name="setting.key.slideshow_enabled.day" translatable="false">setting.key.slideshow_enabled.day</string>
     <string name="setting.key.slideshow_enabled.night" translatable="false">setting.key.slideshow_enabled.night</string>
     <string name="setting.key.slideshow_images" translatable="false">setting.key.slideshowImages</string>
+    <string name="setting.key.slideshow_folder" translatable="false">setting.key.slideshowFolder</string>
     <string name="setting.key.slideshow.effect" translatable="false">setting.key.slideshow.effect</string>
     <string name="setting.name.slideshow.effect" >Effect</string>
     <string name="setting.title.slideshow.settings">Slideshow Settings</string>
@@ -140,7 +161,7 @@
     <string name="setting.key.slideshow.image.stay.duration" translatable="false">setting.key.slideshow.image.stay.duration</string>
     <string name="setting.name.slideshow.image.stay.duration">Image stay duration</string>
     <string name="setting.summary.slideshow.image.stay.duration">How long to stay on each image</string>
-    <string name="setting.summary.slideshow.images">Choose images to show in background\n[%d images selected]</string>
+    <string name="setting.summary.slideshow.images">Choose images to show in background\nThis might not work with a lot of images\n[%d images selected]</string>
 
 
     <string name="text.sleep.timer">Sleep in %d minutes</string>
@@ -156,7 +177,7 @@
         <item>grey</item>
         <item>purple</item>
     </string-array>
-    <string-array name="clock_color_codes">
+    <string-array name="clock_color_codes" translatable="false">
         <item>#00ff00</item>
         <item>#ff0000</item>
         <item>#0000ff</item>
@@ -174,7 +195,7 @@
     <string name="setting.name.reverseButtons">Reverse stream/alarm buttons</string>
     <string name="setting.summary.reverseButtons">Put radio buttons up and alarm buttons at the bottom (requires restart)</string>
 
-    <string-array name="clock_sizes">
+    <string-array name="clock_sizes" translatable="false">
         <item>20</item>
         <item>50</item>
         <item>100</item>
@@ -196,7 +217,7 @@
         <item>XXXXL</item>
         <item>XXXXXL</item>
     </string-array>
-    <string-array name="clock_typefaces">
+    <string-array name="clock_typefaces" translatable="false">
         <item>repet___.ttf</item>
         <item>ninepin.ttf</item>
         <item>Minisystem.otf</item>
@@ -213,7 +234,8 @@
         <item>linear-beam.0-5.ttf</item>
         <!--item>Hidrant-Frumos.otf</item-->
     </string-array>
-    <string-array name="clock_human_typefaces">
+    <!-- Font names - proper nouns, not translated. -->
+    <string-array name="clock_human_typefaces" translatable="false">
         <item>Dots 1 (Repet)</item>
         <item>Dots 2 (NinePin)</item>
         <item>Dots 3 (Minisystem)</item>
@@ -230,7 +252,7 @@
         <item>Linear Beam</item>
         <!--item>Om normal\'s Hidrant</item-->
     </string-array>
-    <string-array name="timer_alarm_durations">
+    <string-array name="timer_alarm_durations" translatable="false">
         <item>2</item>
         <item>5</item>
         <item>7</item>
@@ -250,7 +272,7 @@
         <item>Long (1m)</item>
         <item>Longer (1m15s)</item>
     </string-array>
-    <string-array name="timer_visual">
+    <string-array name="timer_visual" translatable="false">
         <item>CIRCLE</item>
         <item>RECTANGLE</item>
     </string-array>
@@ -258,7 +280,7 @@
         <item>Circle</item>
         <item>Rectangle</item>
     </string-array>
-    <string-array name="slideshow_effect">
+    <string-array name="slideshow_effect" translatable="false">
         <item>NONE</item>
         <item>PAN_ZOOM</item>
         <item>ZOOM_OUT</item>
@@ -383,6 +405,10 @@
 - leaving AUTO brightness, your phone will take care of it for you
         </item>
         <item>
+- you can set the radio to play in the background\n
+- you can find this in the settings menu (by default it is off)\n
+        </item>
+        <item>
 - if you find problems or have ideas, let me know: write me a message at mai gmail address cristi.ciuc\n
 - you can find a more extensive help in the "About" section
         </item>
@@ -396,7 +422,10 @@
     <string name="streamFinder.label.genre">Genre: </string>
     <string name="streamFinder.label.language">Language: </string>
     <string name="streamFinder.label.name">Name: </string>
-    <string-array name="countries">
+    <!-- StreamFinder search criteria: the selected item text is sent as-is to the
+         station API (see StreamFinderActivity/HttpRequestManager), so it must not be
+         translated - a translated value would return no results. -->
+    <string-array name="countries" translatable="false">
         <item>Romania</item>
         <item>Albania</item>
         <item>Algeria</item>
@@ -552,7 +581,7 @@
         <item>Wales</item>
         <item>Zambia</item>
     </string-array>
-    <string-array name="genres">
+    <string-array name="genres" translatable="false">
         <item>Any</item>
         <item>Rock</item>
         <item>Alternative</item>
@@ -581,7 +610,7 @@
         <item>Ska</item>
         <item>Space</item>
     </string-array>
-    <string-array name="languages">
+    <string-array name="languages" translatable="false">
         <item>Any</item>
         <item>Romanian</item>
         <item>Afrikaans</item>
@@ -670,10 +699,10 @@
     <string name="assigned.to.memory">%s assigned to memory %d</string>
     <string name="cancel_snooze">Cancel Snooze</string>
     <string name="snooze">Snooze</string>
-    <string name="could_not_find_seekbar">"Could not find seekbar {0}"</string>
+    <string name="could_not_find_seekbar">"Could not find seekbar "</string>
     <string name="alarm_permission_message_info">In order to use the alarm functionality, you need to \nallow the app to set alarms and reminders. \nYou can always do this later, or revoke the permission at any time.</string>
     <string name="use_alarms">Use alarms?</string>
-    <string name="display_dialog_text_swipe_to_change">Swipe to change fonts and pinch to change font size.\nThere are two alarms and both can be recurring.\nYou can setup the night profile to start automatically at a certain time.\nThere are two configurable timers.\nClick on help for more.</string>
+    <string name="display_dialog_text_swipe_to_change">You can setup (in Settings) the app to play the radio in background (while doing something else on your phone).\nAnd you now switch the language to a supported one.\nClick on help for more.</string>
     <string name="dialog_amoled_warning">Having an image on the screen for a long time might damage your AMOLED screen. The text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen you are highly discouraged to do so.</string>
     <string name="amoled_warning">AMOLED WARNING</string>
     <string name="new_stuff">New Stuff!</string>
@@ -709,7 +738,9 @@
     <string name="category_summary_alarm">Set up some alarms settings</string>
     <string name="category_summary_timers">Set up the timers</string>
     <string name="category_summary_snooze_sleep">Set up snooze and sleep stuff</string>
-    <string name="any">Any</string>
+    <!-- Compared against the genres/languages spinner text in HttpRequestManager to mean
+         "no filter"; must stay in sync with the untranslated arrays above. -->
+    <string name="any" translatable="false">Any</string>
     <string name="dialog_radio_list_title">Radios List</string>
     <string name="close">Close</string>
     <string name="will_be_the_name_of_the_memory_instead_of_the_number">(will be the name of the memory instead of the number)</string>
@@ -717,6 +748,36 @@
     <string name="intant_timer_explanation">When pressing ok, a timer will start with this value.</string>
     <string name="set_instant_timer">Set instant timer</string>
     <string name="slideshow_empty_dialog_msg">No images selected. Use the button on the toolbar to select some images.</string>
+    <string name="slideshow_no_picker">No file picker is available on this device, so images cannot be selected.</string>
+    <string name="slideshow_unreadable_dialog_msg">The selected images can no longer be opened. They may have been deleted or moved, or the app that provided them withdrew access. Please select them again.</string>
+
+    <string name="setting.name.slideshow.select_images">Select Images</string>
+    <string name="setting.name.slideshow.select_folder">Select Images Folder</string>
+    <string name="setting.summary.slideshow.folder.none">New images in this folder will be picked up automatically for the slideshow\n[no folder selected]</string>
+    <string name="setting.summary.slideshow.folder">New images in this folder will be picked up automatically for the slideshow\n[%1$s]</string>
+    <string name="setting.summary.slideshow.folder.count">New images in this folder will be picked up automatically for the slideshow\n[%1$s — %2$d images]</string>
+    <string name="slideshow_no_folder_picker">No folder picker is available on this device, so a folder cannot be selected.</string>
+    <string name="slideshow_folder_replaces_images">Using the folder. The individually selected images were cleared.</string>
+    <string name="slideshow_images_replace_folder">Using the selected images. The folder was cleared.</string>
+    <string name="slideshow_folder_empty_dialog_msg">No images were found in the selected folder.</string>
+    <string name="streamFinder.click_to_help">Click to help: </string>
+    <string name="custom_time_instructions">Please input the desired time using format (24h): HH:mm (i.e. 23:30 or 07:00)</string>
+    <string name="custom_time_format_error">Format not correct - use HH:mm in 24h format</string>
+    <string name="add_a_label_optional">Add a label\n(optional)</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="stop">Stop</string>
+    <string name="times_up">Time\'s up</string>
+    <string name="error">ERROR</string>
+    <string name="time_picker_old_device_warning">On some old devices you cannot use the time picker.</string>
+
+    <!-- One-letter day initials for the alarm day picker -->
+    <string name="day_initial_monday">M</string>
+    <string name="day_initial_tuesday">T</string>
+    <string name="day_initial_wednesday">W</string>
+    <string name="day_initial_thursday">T</string>
+    <string name="day_initial_friday">F</string>
+    <string name="day_initial_saturday">S</string>
+    <string name="day_initial_sunday">S</string>
 
     <string name="notification.channel.playback.name">Radio playback</string>
     <string name="notification.channel.playback.description">Shown while the radio keeps playing in the background</string>

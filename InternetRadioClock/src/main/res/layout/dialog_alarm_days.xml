@@ -13,42 +13,42 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:key="@string/setting.alarm.1.key.2"
-            android:text="M" />
+            android:text="@string/day_initial_monday" />
         <CheckBox
             android:id="@+id/setting.alarm.1.key.3"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:key="@string/setting.alarm.1.key.3"
-            android:text="T"/>
+            android:text="@string/day_initial_tuesday"/>
         <CheckBox
             android:id="@+id/setting.alarm.1.key.4"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:key="@string/setting.alarm.1.key.4"
-            android:text="W"/>
+            android:text="@string/day_initial_wednesday"/>
         <CheckBox
             android:id="@+id/setting.alarm.1.key.5"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:key="@string/setting.alarm.1.key.5"
-            android:text="T"/>
+            android:text="@string/day_initial_thursday"/>
         <CheckBox
             android:id="@+id/setting.alarm.1.key.6"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:key="@string/setting.alarm.1.key.6"
-            android:text="F"/>
+            android:text="@string/day_initial_friday"/>
         <CheckBox
             android:id="@+id/setting.alarm.1.key.7"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:key="@string/setting.alarm.1.key.7"
-            android:text="S"/>
+            android:text="@string/day_initial_saturday"/>
         <CheckBox
             android:id="@+id/setting.alarm.1.key.1"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:key="@string/setting.alarm.1.key.1"
-            android:text="S"/>
+            android:text="@string/day_initial_sunday"/>
 
 </LinearLayout>

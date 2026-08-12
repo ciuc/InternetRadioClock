@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Backup rules for Android 11 and below (fullBackupContent).
+  Everything is backed up except dialog_flags.xml, which holds the one-shot "new stuff" and AMOLED
+  flags: a restored install has to look like a first install to those dialogs.
+-->
+<full-backup-content>
+    <exclude
+        domain="sharedpref"
+        path="dialog_flags.xml" />
+</full-backup-content>

@@ -58,6 +58,7 @@ import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.SleepManager;
 import ro.antiprotv.radioclock.dialog.CustomTimePickerDialog;
 import ro.antiprotv.radioclock.dialog.DaysDialog;
+import ro.antiprotv.radioclock.dialog.LanguageDialog;
 import ro.antiprotv.radioclock.listener.HelpOnClickListener;
 import ro.antiprotv.radioclock.listener.InstantTimerOnLongClickListener;
 import ro.antiprotv.radioclock.listener.OnOnOffClickListener;
@@ -73,6 +74,7 @@ import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.RingtoneService;
 import ro.antiprotv.radioclock.service.SettingsManager;
 import ro.antiprotv.radioclock.service.SlideshowManager;
+import ro.antiprotv.radioclock.service.SlideshowUriPermissions;
 import ro.antiprotv.radioclock.service.TimerService;
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.Profile;
@@ -89,6 +91,30 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
   public static final String USER_ALARM_PERMISSION_NOT_ALLOWED_PREF = "USER_PERM_NOK";
   public static final int FADE_OUT_DURATION_MILLIS = 400;
   public static final int FADE_IN_DURATION_MILLIS = 200;
+
+  /**
+   * The one-shot dialog flags live in their own prefs file, excluded from backup by
+   * res/xml/backup_rules.xml and res/xml/data_extraction_rules.xml. Backup rules can only drop whole
+   * files, and the default prefs file has to keep being backed up - it holds the real settings. A
+   * restored or transferred install therefore starts with no flags and is treated as a first
+   * install by the dialogs, which is the point.
+   */
+  private static final String DIALOG_PREFS = "dialog_flags";
+
+  /** Holds the {@link #WHATS_NEW_VERSION} the user has already acknowledged. */
+  private static final String WHATS_NEW_SEEN_VERSION = "WHATS_NEW_SEEN_VERSION";
+
+  /**
+   * Bump this to the current versionCode whenever {@code display_dialog_text_swipe_to_change}
+   * changes: everybody who is below it gets the "new stuff" dialog once, so a fresh install (nothing
+   * stored) and an update from an older release both show it, and nobody sees it twice.
+   */
+  private static final int WHATS_NEW_VERSION = 510;
+
+  private static final String AMOLED_WARN_SEEN = "AMOLED_WARN";
+
+  /** Pre-5.10 key for the "new stuff" dialog, kept only so the migration can clear it. */
+  private static final String LEGACY_WHATS_NEW_SEEN = "TENTH_TIME";
 
   /**
    * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after user interaction before
@@ -327,6 +353,16 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
           .edit()
           .putString(getResources().getString(R.string.setting_key_typeface_night), "repet___.ttf")
           .apply();
+    }
+    // Hand back SAF grants for slideshow images the user has since replaced. Older builds never
+    // released them, so the first run after an update clears whatever piled up.
+    if (savedInstanceState == null) {
+      SlideshowUriPermissions.reconcileAsync(this, prefs);
+    }
+    // The one-shot dialog flags moved to DIALOG_PREFS. Drop the leftovers from the default prefs
+    // file, otherwise they keep riding along in every backup.
+    if (prefs.contains(LEGACY_WHATS_NEW_SEEN) || prefs.contains(AMOLED_WARN_SEEN)) {
+      prefs.edit().remove(LEGACY_WHATS_NEW_SEEN).remove(AMOLED_WARN_SEEN).apply();
     }
     // --end migration
     setOrientationLandscapeIfLocked();
@@ -875,33 +911,39 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
   }
 
   private void displayDialogsOnOpen() {
-    final String currentDialog = "TENTH_TIME";
-    if (prefs.getBoolean(currentDialog, true)) {
-      AlertDialog.Builder builder = new AlertDialog.Builder(this);
-      builder
+    SharedPreferences dialogPrefs = getSharedPreferences(DIALOG_PREFS, Context.MODE_PRIVATE);
+    // Chained, not shown side by side: two show() calls in a row stack the dialogs and the user only
+    // ever sees (and dismisses) the top one.
+    Runnable amoledWarning =
+        () -> {
+          if (!dialogPrefs.getBoolean(AMOLED_WARN_SEEN, true)) {
+            return;
+          }
+          new AlertDialog.Builder(this)
+              .setMessage(R.string.dialog_amoled_warning)
+              .setTitle(R.string.amoled_warning)
+              .setIcon(R.drawable.ic_warning_black_24dp)
+              .setCancelable(false)
+              .setPositiveButton(
+                  getString(R.string.dialog_button_ok_amoled),
+                  (dialog, id) -> dialogPrefs.edit().putBoolean(AMOLED_WARN_SEEN, false).apply())
+              .show();
+        };
+
+    if (dialogPrefs.getInt(WHATS_NEW_SEEN_VERSION, 0) < WHATS_NEW_VERSION) {
+      new AlertDialog.Builder(this)
           .setMessage(getString(R.string.display_dialog_text_swipe_to_change))
           .setTitle(R.string.new_stuff)
           .setIcon(R.drawable.baseline_info_24)
+          .setCancelable(false)
           .setPositiveButton(
               R.string.dialog_button_ok,
-              (dialog, id) -> prefs.edit().putBoolean(currentDialog, false).apply());
-      AlertDialog dialog = builder.create();
-
-      dialog.show();
-    }
-
-    if (prefs.getBoolean("AMOLED_WARN", true)) {
-      AlertDialog.Builder builder = new AlertDialog.Builder(this);
-      builder
-          .setMessage(R.string.dialog_amoled_warning)
-          .setTitle(R.string.amoled_warning)
-          .setIcon(R.drawable.ic_warning_black_24dp)
-          .setPositiveButton(
-              getString(R.string.dialog_button_ok_amoled),
-              (dialog, id) -> prefs.edit().putBoolean("AMOLED_WARN", false).apply());
-      AlertDialog dialog = builder.create();
-
-      dialog.show();
+              (dialog, id) ->
+                  dialogPrefs.edit().putInt(WHATS_NEW_SEEN_VERSION, WHATS_NEW_VERSION).apply())
+          .setOnDismissListener(dialog -> amoledWarning.run())
+          .show();
+    } else {
+      amoledWarning.run();
     }
   }
 
@@ -968,6 +1010,9 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
         Intent cheers = new Intent();
         cheers.setClassName(this, "ro.antiprotv.radioclock.activity.CheersActivity");
         startActivity(cheers);
+        return true;
+      case R.id.language:
+        LanguageDialog.show(this);
         return true;
       case R.id.streamFinder:
         Intent streamFinder = new Intent();

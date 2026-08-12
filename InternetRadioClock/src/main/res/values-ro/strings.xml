@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Ceas cu radio</string>
     <string name="dialog.button.ok">OK</string>
-    <string name="dialog.button.ok.amoled">Am înțeles și vreaus să continui</string>
+    <string name="dialog.button.ok.amoled">Am înțeles și vreau să continui</string>
     <string name="dialog.button.permission_OK">OK</string>
     <string name="dialog.button.permission_CANCEL">Nu permite</string>
     <string name="dialog.button.permission_REMIND_LTR">Mai târziu</string>
@@ -12,6 +12,12 @@
     <string name="settings.menu.cheers">Hai noroc!</string>
     <string name="settings.menu.exit">Ieșire</string>
     <string name="settings.menu.streamFinder">Căutare radiouri</string>
+    <string name="settings.menu.language">Limbă</string>
+
+    <!-- alegerea limbii -->
+    <string name="language.dialog.title">Alege limba</string>
+    <string name="language.system_default">Limba sistemului</string>
+    <string name="language.restart_hint">Aplicația va reporni pentru a aplica noua limbă.</string>
     <string name="setting.name.stream1">Memoria 1</string>
     <string name="setting.name.stream2">Memoria 2</string>
     <string name="setting.name.stream3">Memoria 3</string>
@@ -23,36 +29,36 @@
     <string name="setting.name.sleepMinutes">Timp de închidere (minute)</string>
     <string name="setting.summary.sleepMinutes">Setează timpul pt. închidere</string>
     <string name="setting.name.snoozeMinutes">Timp de snooze (minute)</string>
-    <string name="setting.summary.snoozeMinutes">Setează propirul timp de snooze.</string>
+    <string name="setting.summary.snoozeMinutes">Setează propriul timp de snooze.</string>
     <string name="setting.name.seconds">Afișează secundele</string>
     <string name="setting.summary.seconds">Dezactivat pt ca secundele să nu fie afișate</string>
     <string name="setting.name.clockMove">Mișcarea ceasului pe ecran (ca un screen-saver)</string>
     <string name="setting.summary.clockMove">Dacă ai ecran AMOLED, nu dezactiva</string>
     <string name="setting.name.night_profile.autostart">Profil de noapte: auto start</string>
-    <string name="setting.name.night_profile.autoend">Profile de noapte: auto stop</string>
+    <string name="setting.name.night_profile.autoend">Profil de noapte: auto stop</string>
     <string name="setting.name.enable.night.schedule">Activare profil de noapte automat</string>
-    <string name="setting.summary.night.schedule">Setează timpul de start si sfîrșit ale profilului de noapte</string>
+    <string name="setting.summary.night.schedule">Setează timpul de start și sfârșit ale profilului de noapte</string>
     <string name="setting.name.label1">Nume buton 1</string>
     <string name="setting.name.alarmProgressiveSound">Alarmă: sunet progresiv</string>
-    <string name="setting.summary.alarmProgressiveSound">Activează pentru ca alarma să aibș sunet progresiv.</string>
+    <string name="setting.summary.alarmProgressiveSound">Activează pentru ca alarma să aibă sunet progresiv.</string>
     <string name="setting.name.playAtStart">Pornește radio la deschidere</string>
-    <string name="setting.summary.playAtStart">Pornește radio la dechiderea aplicației</string>
+    <string name="setting.summary.playAtStart">Pornește radio la deschiderea aplicației</string>
     <string name="setting.name.backgroundPlay">Redare în fundal</string>
     <string name="setting.summary.backgroundPlay">Radio continuă să meargă după ce ieși din aplicație. Cât timp merge, va fi afișată o notificare din care poți opri radio. Închiderea aplicației va opri radioul.</string>
     <string name="setting.name.lockOrientationLandscape">Blocare pe landscape</string>
-    <string name="setting.summary.lockOrientationLandscape">Dacă e dezactvat, se urmărește poziția telefonului.</string>
+    <string name="setting.summary.lockOrientationLandscape">Dacă e dezactivat, se urmărește poziția telefonului.</string>
     <string name="setting.name.alwaysDisplayBattery">Afișează nivelul bateriei</string>
     <string name="lastPlayed">Ultimul radio pornit</string>
     <string name="text_alarm_canceled">Alarmă anulată</string>
-    <string name="text_alarm_playing">Alarmă! radio  %1$d...</string>
+    <string name="text_alarm_playing">Alarmă! radio %1$d...</string>
     <string name="text_tomorrow">mâine</string>
     <string name="today">azi</string>
     <string name="text_alarm_set_for">Alarmă setată %1$s</string>
-    <string name="menu_night_profile">Profile de noapte</string>
-    <string name="title_night_profile">Profil de zi</string>
+    <string name="menu_night_profile">Profil de noapte</string>
+    <string name="title_night_profile">Profil de noapte</string>
     <string name="title_slideshow_settings">Setări pentru slideshow</string>
     <string name="appwidget_text">EXEMPLU</string>
-    <string name="add_widget">Add widget</string>
+    <string name="add_widget">Adaugă widget</string>
     <string name="title_dialog_alarm_days">Alege zilele</string>
     <string name="next_tip">Următorul</string>
     <string name="previous_tip">Precedentul</string>
@@ -60,24 +66,23 @@
     <string name="assigned.to.memory">%s pus pe memoria %d</string>
     <string name="cancel_snooze">Anulare snooze</string>
     <string name="snooze">Snooze</string>
-    <string name="could_not_find_seekbar">Could not find seekbar {0}</string>
-    <string name="alarm_permission_message_info">Pentru a putea folosi alarmele, trebuie să permiteți aplicației să seteze alarme si mementouri. Puteți face asta și mai târziu, sau revoca permisiunea oricând.</string>
+    <string name="could_not_find_seekbar">"Nu s-a găsit seekbar "</string>
+    <string name="alarm_permission_message_info">Pentru a putea folosi alarmele, trebuie să permiteți aplicației să seteze alarme și mementouri. Puteți face asta și mai târziu, sau revoca permisiunea oricând.</string>
     <string name="use_alarms">Folosește alarmele?</string>
-    <string name="display_dialog_text_swipe_to_change">Swipe pentru a schimba dimensiunea cifrelor. Sunt două alarme, fiecare poate fi recurentă. Puteți folosi profilul de noapte să pornească automat la un momentdat.</string>
-    <string name="dialog_amoled_warning">Having an image on the screen for a long time might damage your AMOLED screen. The text moves by default (like a screen saver) every 5 minutes. You can disable the movement, but if you have an AMOLED screen you are highly discouraged to do so.</string>
-    <string name="amoled_warning">AMOLED WARNING</string>
-    <string name="new_stuff">New Stuff!</string>
-    <string name="any">Any</string>
-    <string name="no_radios_matching">No radios matching the criteria! Please try again.</string>
-    <string name="error_retrieving_radios">"Something went wrong while retrieving list. Please try again later. (error %d) "</string>
-    <string name="found_radios">Found %d radios...</string>
+    <string name="display_dialog_text_swipe_to_change">Puteți seta (din Setări) radioul sa meargă în fundal chiar și atunci când aplicația este minimizată.\nPuteți schimba limba din meniu.\n Click pe butonul ajutor pentru mai multe.\n </string>
+    <string name="dialog_amoled_warning">Dacă o imagine rămâne mult timp pe ecran, ecranul AMOLED se poate deteriora. Implicit, textul se mișcă (ca un screen saver) o dată la 5 minute. Poți dezactiva mișcarea, dar dacă ai ecran AMOLED este puternic descurajat să faci asta.</string>
+    <string name="amoled_warning">ATENȚIE AMOLED</string>
+    <string name="new_stuff">Noutăți!</string>
+    <string name="no_radios_matching">Niciun radio nu corespunde criteriilor! Încearcă din nou.</string>
+    <string name="error_retrieving_radios">"Ceva nu a mers bine la încărcarea listei. Încearcă mai târziu. (eroare %d) "</string>
+    <string name="found_radios">S-au găsit %d radiouri...</string>
     <string name="volume_max">Volum MAX</string>
     <string name="muted">Volum închis</string>
-    <string name="setting.summary.alwaysDisplayBattery">Activați pentru a afișa nivelul bateriei(posibil să nu funcționeze pe toate telefoanele.)</string>
+    <string name="setting.summary.alwaysDisplayBattery">Activați pentru a afișa nivelul bateriei (posibil să nu funcționeze pe toate telefoanele.)</string>
     <string name="setting.name.batteryInClockColor">Afișarea bateriei în culoarea ceasului.</string>
-    <string name="setting.summary.batteryInClockColor">Dacă e dezactivat, nivelul bateriei va fi afișat cu verde. (Cînd nivelul este scăzut, acesta va fi afișat cu roșu.) Posibil să trebuiască restart.</string>
+    <string name="setting.summary.batteryInClockColor">Dacă e dezactivat, nivelul bateriei va fi afișat cu verde. (Când nivelul este scăzut, acesta va fi afișat cu roșu.) Posibil să trebuiască restart.</string>
     <string name="setting.name.clockBrightness">Luminozitate</string>
-    <string name="text.sleep.timer">Înichdere în %d minute</string>
+    <string name="text.sleep.timer">Închidere în %d minute</string>
     <string name="text.sleep.timer.short">Închis: %d min</string>
     <string name="text.sleep.off">Închidere anulată</string>
     <string name="setting.name.clockColor">Culoarea ceasului</string>
@@ -89,22 +94,22 @@
     <string name="setting.summary.clock24">Ceas 24h sau am/pm.</string>
     <string name="setting.name.typeface">Schimbare cifre ceas</string>
     <string name="setting.name.clock24ampm">Afișare am/pm</string>
-    <string name="setting.summary.clock24ampm">Îa</string>
-    <string name="setting.summary.clock_dots">La ceasul 12h, afișează : între ora, min si sec</string>
-    <string name="setting.name.clock_vertical">Afișeasă ceasul vertical.</string>
+    <string name="setting.summary.clock24ampm">La ceasul de 12h, afișează sau nu am/pm.</string>
+    <string name="setting.summary.clock_dots">La ceasul 12h, afișează : între oră, min și sec</string>
+    <string name="setting.name.clock_vertical">Afișează ceasul vertical.</string>
     <string name="setting.summary.clock_vertical">În modul portret, afișează ora, min, sec, unele sub altele.</string>
-    <string name="setting.name.wake_up_station">Alarma pornește cu rdioul:</string>
+    <string name="setting.name.wake_up_station">Alarma pornește cu radioul:</string>
     <string name="setting.name.label2">Nume buton 2</string>
     <string name="setting.name.label3">Nume buton 3</string>
     <string name="setting.name.label4">Nume buton 4</string>
-    <string name="setting.name.label5">Nume buton5</string>
+    <string name="setting.name.label5">Nume buton 5</string>
     <string name="setting.name.label6">Nume buton 6</string>
     <string name="setting.name.label7">Nume buton 7</string>
     <string name="setting.name.label8">Nume buton 8</string>
     <string name="setting.name.clock_dots">Afișare : între oră, minut, secundă</string>
     <string name="back">Înapoi</string>
     <string name="find">Caută!</string>
-    <string name="assign_to">Assign to memory:</string>
+    <string name="assign_to">Pune pe memoria:</string>
     <string name="cancel">Anulare</string>
     <string name="yes">Da</string>
     <string name="ok">OK</string>
@@ -112,7 +117,7 @@
     <string name="title.streams">Configurează butoanele</string>
     <string name="title.settings">Setări</string>
     <string name="title.streamFinder">Listă de radiouri online</string>
-    <string name="streamFinder.hint">Lista cu radiouri este redată de pe internet. Este mentinută de o comunitate de entuziaști și e posibil să nu fie 100% corectă. Sunt peste 15000 de radiouri, deci din această cauză este necesar să căutați cel puțin pe baza țării. Dacă doriîi să salvați un radio pe unul din butoane, dați click pe butonul corespunzător.</string>
+    <string name="streamFinder.hint">Lista cu radiouri este redată de pe internet. Este menținută de o comunitate de entuziaști și e posibil să nu fie 100% corectă. Sunt peste 15000 de radiouri, deci din această cauză este necesar să căutați cel puțin pe baza țării. Dacă doriți să salvați un radio pe unul din butoane, dați click pe butonul corespunzător.</string>
     <string name="streamFinder.prompt.country">Alegeți țara</string>
     <string name="streamFinder.prompt.language">Alegeți limba</string>
     <string name="streamFinder.prompt.genre">Alegeți genul</string>
@@ -120,25 +125,25 @@
     <string name="streamFinder.label.genre">Genul:</string>
     <string name="streamFinder.label.language">Limba:</string>
     <string name="streamFinder.label.name">Nume:</string>
-    <string name="about.text">"<![CDATA[     <html>     <body style="font-size:8px;">     <style>     p,li{font-weight:normal}     </style>     <h1>Simple Radio Clock<h1> <p>This simple app just displays the clock in full screen mode and has 5 buttons associated each with a radio stream.</p> <p>Out of the box it comes configured with Radio Guerrilla, Tananana and RockFM from Romania, RadioBOB from Germany and Zodiac from Ireland. These can be changed and you can have up to 8 buttons.</p> <p> <b>Reverse</b><br> Change screen orientation. Depending on the placement of the volume buttons, this might come in handy.<br> <br> <b>Settings</b><br> in this section you can set some neat stuff: <ul> <li>clock font: you can choose from many fonts for the clock display.</li> <li>clock color</li> <li>screen brightness (overrides the phone\'s settings)</li> <li>clock size</li> <li>enable/disable the display of seconds</li> <li>enable 12 hour clock with or without the display of am/pm</li> <li>enable/disable the movement of the clock on the screen; by default the clock moves around the screen corners - important if you have an AMOLED display (leaving an image on an AMOLED screen for a prolonged period of time might damage the screen)</li> <li>custom sleep timer: the app features a sleep button that cycles through some predefined sleep timers (15, 20, 30 minutes); you can add your preferred one here -> You can activate the sleep timer from the sleep button on the main screen. </li> <li>custom snooze time: you can set your own snooze timer (by default it is set to 10 minutes)</li> <li>reverse stream/alarm buttons: put radio buttons at the top and the alarm buttons on the bottom. This might be helpful for certain phone holders.</li> <li>unlock landscape mode so the clock will follow phone orientation; also ability to draw the clock vertically (with hours, minutes and/or seconds one below the other).</li> <li>you can enable the display of battery level; please be advised that this feature is still in a beta state and might not work on all devices all the time.</li> </ul> <b>Configure buttons</b> <ul> <li>edit a memory button (the stream url)</li> <li>assign a label to a button (will be displayed instead of the number) - you can also do this by long clicking on a button; by long click you can also remove a button</li> <li>enable up to 8 buttons (simply add the url of your favourite radio stream)</li> </ul> <b>Stream Finder</b> <ul> <li>you can search a radio stream using the dropdown boxes and the name text (the name does not need to be exact) and you can assign the radio to a memory. The app will even suggest a label ;)</li> <li>please bear in mind that the list is not complete and might not be 100% accurate; if you have a radio that you want me to add in the list please send me an email</li> <li>now the app will remember the last used country and language</li> </ul> <b>Night Profile</b> <ul> <li>you can define a different set of settings and activate them at a touch of a button (for instance you might set a bigger clock without seconds, or red color and brightness at 50% for the night while during the day it will be smaller, green, with seconds and brighter)</li> <li>you can also define a start and end time for the \"night profile\". By doing so, the night settings will automatically be enforced at the specified time</li> </ul>  <b>Alarms</b> <p>Pro tip: when alarm starts, touch the screen (or the check button) to cancel it without stopping radio;<br>when alarm plays, press the cancel button (marked with "x") to stop the alarm but not play the radio; next alarm will automatically be enabled.</p> <ul> <li>you can set up to two alarms which will wake up the radio at the defined time. It will play the last played radio or a radio you choose from the settings. If the internet connection is down, it will play the default alarm sound.</li> <li><b>you can set the recurring alarms on various days of the week (for example one on weekdays, one in weekend)</b></li> <li>there is also a snooze function with 10 minutes snooze time; you can also set your own snooze time.</li> <li>you can enable progressive sound: the radio will start playing at a low volume which will increase every 10 seconds. Please note that it will not increase the device volume (the one controlled by the volume buttons). <li>you can set a station to always start the alarm with</li> </ul> <p><span style=\"color:red\">On Android 14 and above, you\'ll need to allow a special permission in order to use the alarm functionality.</span></p> <p> <b>*** WARNING: please do not use this app as your main alarm clock. Always use your usual alarm clock to wake you up. ***</b> </p>  <p>I tried to keep it as simple as possible, but if you have any ideas or you think it can be improved, write me at my gmail address cristi.ciuc</p> <p>The code is opensource and it can be found on github: https://github.com/ciuc/InternetRadioClock</p> ]]>     "</string>
-    <string name="cheers.text">"<![CDATA[ <p>First of all, thanks for downloading and using the Internet Radio Clock.</p> <p>I\'ve created this app in my spare time, just for fun, but also trying to keep a good overall quality, and constantly improving it.</p> <p>This app is and will always remain <b>free</b> and <b>with no ads</b>. All of its features will always be included with <b>no in-app purchases</b>.</p> <p>If you like it, drink a beer for me. If you\'d also like me to drink a beer for you, rate 5 stars :)</p>  <p>Cheers!</p> </body> </html> ]]>     "</string>
+    <string name="about.text">"<![CDATA[     <html>     <body style="font-size:8px;">     <style>     p,li{font-weight:normal}     </style>     <h1>Simple Radio Clock<h1> <p>Această aplicație simplă afișează ceasul pe tot ecranul și are 5 butoane, fiecare asociat cu un post de radio online.</p> <p>Din start vine configurată cu Radio Guerrilla, Tananana și RockFM din România, RadioBOB din Germania și Zodiac din Irlanda. Acestea pot fi schimbate și poți avea până la 8 butoane.</p> <p> <b>Inversare</b><br> Schimbă orientarea ecranului. În funcție de poziția butoanelor de volum, s-ar putea să îți fie de folos.<br> <br> <b>Setări</b><br> în această secțiune poți configura o grămadă de lucruri utile: <ul> <li>fontul ceasului: poți alege dintre mai multe fonturi pentru afișarea ceasului.</li> <li>culoarea ceasului</li> <li>luminozitatea ecranului (are prioritate față de setările telefonului)</li> <li>mărimea ceasului</li> <li>activarea/dezactivarea afișării secundelor</li> <li>ceas de 12 ore, cu sau fără afișarea am/pm</li> <li>activarea/dezactivarea mișcării ceasului pe ecran; implicit ceasul se plimbă prin colțurile ecranului - important dacă ai ecran AMOLED (o imagine lăsată mult timp pe un ecran AMOLED poate deteriora ecranul)</li> <li>timp de închidere personalizat: aplicația are un buton de sleep care trece prin câteva valori predefinite (15, 20, 30 de minute); aici poți adăuga valoarea ta preferată -> Poți activa închiderea automată din butonul de sleep de pe ecranul principal. </li> <li>timp de snooze personalizat: îți poți seta propriul timp de snooze (implicit este 10 minute)</li> <li>inversarea butoanelor de radio/alarmă: pune butoanele de radio sus și butoanele de alarmă jos. Poate fi util pentru anumite suporturi de telefon.</li> <li>deblocarea modului landscape, astfel încât ceasul să urmeze orientarea telefonului; de asemenea, posibilitatea de a desena ceasul vertical (cu orele, minutele și/sau secundele una sub alta).</li> <li>poți activa afișarea nivelului bateriei; te rugăm să ții cont că această funcție este încă în stadiu beta și s-ar putea să nu funcționeze pe toate dispozitivele tot timpul.</li> </ul> <b>Configurarea butoanelor</b> <ul> <li>modifică un buton de memorie (adresa stream-ului)</li> <li>atribuie o etichetă unui buton (va fi afișată în locul numărului) - poți face asta și printr-o apăsare lungă pe buton; tot printr-o apăsare lungă poți șterge un buton</li> <li>activează până la 8 butoane (adaugă pur și simplu adresa radioului tău preferat)</li> </ul> <b>Căutare radiouri</b> <ul> <li>poți căuta un post de radio folosind listele derulante și câmpul de nume (numele nu trebuie să fie exact) și poți atribui radioul unei memorii. Aplicația îți va sugera chiar și o etichetă ;)</li> <li>ține cont că lista nu este completă și s-ar putea să nu fie 100% corectă; dacă ai un radio pe care vrei să îl adaug în listă, trimite-mi un email</li> <li>aplicația reține acum ultima țară și ultima limbă folosite</li> </ul> <b>Profilul de noapte</b> <ul> <li>poți defini un set diferit de setări pe care să le activezi la apăsarea unui buton (de exemplu poți seta un ceas mai mare, fără secunde, sau de culoare roșie și cu luminozitatea la 50% pentru noapte, în timp ce ziua să fie mai mic, verde, cu secunde și mai luminos)</li> <li>poți defini și o oră de început și de sfârșit pentru \"profilul de noapte\". Astfel, setările de noapte vor fi aplicate automat la ora specificată</li> </ul>  <b>Alarme</b> <p>Pont: când pornește alarma, atinge ecranul (sau butonul de bifă) ca să o oprești fără să oprești radioul;<br>când alarma sună, apasă butonul de anulare (marcat cu "x") ca să oprești alarma fără să pornească radioul; alarma următoare va fi activată automat.</p> <ul> <li>poți seta până la două alarme care vor porni radioul la ora stabilită. Va porni ultimul radio ascultat sau un radio ales de tine din setări. Dacă nu există conexiune la internet, va suna sunetul implicit de alarmă.</li> <li><b>poți seta alarme recurente în diverse zile ale săptămânii (de exemplu una în zilele lucrătoare, una în weekend)</b></li> <li>există și o funcție de snooze cu un timp de 10 minute; îți poți seta și propriul timp de snooze.</li> <li>poți activa sunetul progresiv: radioul va porni la un volum mic, care va crește la fiecare 10 secunde. Reține că nu va crește volumul dispozitivului (cel controlat de butoanele de volum). <li>poți alege un post cu care să pornească întotdeauna alarma</li> </ul> <p><span style=\"color:red\">Pe Android 14 și mai nou, va trebui să acorzi o permisiune specială pentru a putea folosi alarmele.</span></p> <p> <b>*** ATENȚIE: te rugăm să nu folosești această aplicație drept ceas deșteptător principal. Folosește întotdeauna ceasul tău obișnuit ca să te trezești. ***</b> </p>  <p>Am încercat să o păstrez cât mai simplă, dar dacă ai idei sau crezi că poate fi îmbunătățită, scrie-mi la adresa mea de gmail cristi.ciuc</p> <p>Codul este open source și poate fi găsit pe github: https://github.com/ciuc/InternetRadioClock</p> ]]>     "</string>
+    <string name="cheers.text">"<![CDATA[ <p>În primul rând, mulțumesc că ai descărcat și folosești Internet Radio Clock.</p> <p>Am creat această aplicație în timpul liber, doar de plăcere, dar încercând totodată să păstrez o calitate bună și să o îmbunătățesc constant.</p> <p>Această aplicație este și va rămâne întotdeauna <b>gratuită</b> și <b>fără reclame</b>. Toate funcțiile ei vor fi mereu incluse, <b>fără cumpărături în aplicație</b>.</p> <p>Dacă îți place, bea o bere pentru mine. Iar dacă vrei să beau și eu una pentru tine, dă-i 5 stele :)</p>  <p>Noroc!</p> </body> </html> ]]>     "</string>
     <string name="title_activity_stream_finder">StreamFinder</string>
     <string name="snooze_toast_text">Snooze %1$d minute.</string>
-    <string name="dialog_radio_list_title">Radios List</string>
-    <string name="close">Close</string>
-    <string name="will_be_the_name_of_the_memory_instead_of_the_number">(will be the name of the memory instead of the number)</string>
-    <string name="add_edit_label">Add/edit label</string>
-    <string name="intant_timer_explanation">When pressing ok, a timer will start with this value.</string>
-    <string name="set_instant_timer">Set instant timer</string>
+    <string name="dialog_radio_list_title">Listă de radiouri</string>
+    <string name="close">Închide</string>
+    <string name="will_be_the_name_of_the_memory_instead_of_the_number">(va fi afișat în locul numărului memoriei)</string>
+    <string name="add_edit_label">Adaugă/modifică eticheta</string>
+    <string name="intant_timer_explanation">La apăsarea pe OK va porni un cronometru cu această valoare.</string>
+    <string name="set_instant_timer">Pornește un cronometru rapid</string>
     <string name="connecting_to">Se conectează la</string>
     <string name="stopping_stream">Se oprește radioul</string>
     <string name="playing">Redare</string>
     <string name="error_playing_stream">Eroare la redare radio</string>
     <string name="apply_night_profile_next_change">Se aplică profilul de noapte. Următoarea schimbare:</string>
-    <string name="apply_day_profile_next_change">Se aplică profilul de noapte. Următoarea schimbare:</string>
+    <string name="apply_day_profile_next_change">Se aplică profilul de zi. Următoarea schimbare:</string>
     <string name="pick_a_color">Alege o culoare</string>
     <string name="alarm_set_error">Nu se poate seta alarma: trebuie permisiune de alarmă exactă.</string>
-    <string name="alarm_set_for_s_at_02d_02d">Alarmă: %s at %02d:%02d</string>
+    <string name="alarm_set_for_s_at_02d_02d">Alarmă: %s la %02d:%02d</string>
     <string name="cannot_set_the_alarm_permission">Nu se poate seta alarma: trebuie permisiune de alarmă exactă.</string>
     <string name="about_the_streamfinder">Despre StreamFinder</string>
     <string name="category_summary_lookfeel">Schimbă modul de afișare al ceasului</string>
@@ -149,4 +154,156 @@
     <string name="notification.channel.playback.description">Se afișează cât timp radio merge în fundal</string>
     <string name="notification.playback.title">Radio pornit</string>
     <string name="notification.playback.stop">Oprește</string>
+    <string name="slideshow_no_picker">Nu există niciun selector de fișiere pe acest dispozitiv, deci imaginile nu pot fi alese.</string>
+
+    <!-- baterie -->
+    <string name="setting.name.displayBatteryWhenDischarging">Afișează nivelul bateriei când nu e la încărcare</string>
+
+    <!-- slideshow -->
+    <string name="setting.title.slideshow.settings">Setări slideshow</string>
+    <string name="setting.name.slideshow.select_images">Alege imaginile</string>
+    <string name="setting.name.slideshow.effect">Efect</string>
+    <string name="setting.name.slideshow.randomize">Ordine aleatorie</string>
+    <string name="setting.summary.slideshow.randomize">Amestecă ordinea imaginilor</string>
+    <string name="setting.name.slideshow.image.stay.duration">Durata de afișare a imaginii</string>
+    <string name="setting.summary.slideshow.image.stay.duration">Cât timp rămâne afișată fiecare imagine</string>
+    <string name="setting.summary.slideshow.images">Alege imaginile de afișat în fundal\nS-ar putea să nu funcționeze cu multe imagini\n[%d imagini selectate]</string>
+    <string name="setting.name.slideshow.select_folder">Alege folderul cu imagini</string>
+    <string name="setting.summary.slideshow.folder.none">Imaginile noi din acest folder vor fi preluate automat pentru slideshow\n[niciun folder ales]</string>
+    <string name="setting.summary.slideshow.folder">Imaginile noi din acest folder vor fi preluate automat pentru slideshow\n[%1$s]</string>
+    <string name="setting.summary.slideshow.folder.count">Imaginile noi din acest folder vor fi preluate automat pentru slideshow\n[%1$s — %2$d imagini]</string>
+    <string name="slideshow_no_folder_picker">Nu există niciun selector de foldere pe acest dispozitiv, deci nu poate fi ales un folder.</string>
+    <string name="slideshow_folder_replaces_images">Se folosește folderul. Imaginile alese individual au fost șterse.</string>
+    <string name="slideshow_images_replace_folder">Se folosesc imaginile alese. Folderul a fost șters.</string>
+    <string name="slideshow_folder_empty_dialog_msg">Nu s-a găsit nicio imagine în folderul ales.</string>
+    <string name="slideshow_empty_dialog_msg">Nicio imagine selectată. Folosește butonul din bara de sus pentru a alege imagini.</string>
+    <string name="slideshow_unreadable_dialog_msg">Imaginile alese nu mai pot fi deschise. Este posibil să fi fost șterse sau mutate, ori aplicația care le-a pus la dispoziție a retras accesul. Te rugăm să le alegi din nou.</string>
+
+    <!-- cronometre -->
+    <string name="setting.name.category.timers">Cronometre</string>
+    <string name="setting.name.timer_short">Cronometru scurt</string>
+    <string name="setting.name.timer_long">Cronometru mediu</string>
+    <string name="setting.name.timer_longer">Cronometru lung</string>
+    <string name="setting.name.alarm_duration">Durata alarmei cronometrului</string>
+    <string name="setting.name.timer_visual_enabled">Cronometru vizual</string>
+    <string name="setting.summary.timer_visual_enabled">Folosește un efect vizual pentru cronometre</string>
+    <string name="setting.name.timer_visual">Formă</string>
+    <string name="setting.name.timer_animate">Clipește la final</string>
+    <string name="setting.summary.timer_animate">Clipește când cronometrul ajunge la 0, ca să fii sigur că observi (mai ales cercul)</string>
+    <string name="setting.title.timer_ringtone">Alege sunetul cronometrului</string>
+
+    <!-- categorii de setări -->
+    <string name="category_title_lookfeel">Aspect</string>
+    <string name="category_title_snooze_sleep">Snooze și închidere</string>
+    <string name="category_summary_alarm">Configurează alarmele</string>
+    <string name="category_summary_timers">Configurează cronometrele</string>
+    <string name="category_summary_snooze_sleep">Configurează snooze-ul și închiderea automată</string>
+
+    <!-- căutare radiouri -->
+    <string name="toast_retrieving_radios">Se încarcă lista de radiouri. Poate dura puțin...</string>
+    <string name="error_retrieving_station_list">Eroare la încărcarea listei de radiouri!</string>
+    <string name="streamFinder.click_to_help">"Ajutor: "</string>
+
+    <!-- dialoguri -->
+    <string name="custom_time_instructions">Introdu ora dorită în format 24h: HH:mm (ex. 23:30 sau 07:00)</string>
+    <string name="custom_time_format_error">Format incorect - folosește HH:mm în format 24h</string>
+    <string name="time_picker_old_device_warning">Pe unele telefoane mai vechi nu poți folosi selectorul de oră.</string>
+    <string name="add_a_label_optional">Adaugă o etichetă\n(opțional)</string>
+    <string name="are_you_sure">Sigur?</string>
+    <string name="stop">Stop</string>
+    <string name="times_up">Timpul a expirat</string>
+    <string name="error">EROARE</string>
+
+    <!-- inițialele zilelor pentru alegerea zilelor de alarmă -->
+    <string name="day_initial_monday">L</string>
+    <string name="day_initial_tuesday">Ma</string>
+    <string name="day_initial_wednesday">Mi</string>
+    <string name="day_initial_thursday">J</string>
+    <string name="day_initial_friday">V</string>
+    <string name="day_initial_saturday">S</string>
+    <string name="day_initial_sunday">D</string>
+
+    <!-- sfaturi -->
+    <string name="tips_tricks"><![CDATA[Sfaturi & trucuri]]></string>
+    <string name="tips.1">- poți seta până la două alarme; pot fi recurente dacă alegi zilele\n
+- după ce pornește alarma, o atingere pe ecran oprește alarma, dar radioul continuă să meargă la volumul curent; folosește butoanele de volum ca să reglezi volumul\n
+- după ce pornește alarma - apasă butonul de anulare (x) ca să anulezi alarma și să oprești radioul\n
+- poți și amâna alarma (snooze); îți poți defini propriul timp de snooze (implicit 10 minute)\n
+- activează sunetul progresiv al alarmei din meniul de setări
+    </string>
+    <string-array name="tips">
+        <item>@string/tips.1</item>
+        <item>
+- există două profile -> unul de zi și unul de noapte\n
+- poți stabili pentru fiecare o oră de început și una de sfârșit\n
+- poți defini un aspect diferit pentru fiecare profil\n
+        </item>
+        <item>
+- există două cronometre - le poți configura din meniul de setări\n
+- o apăsare pe cronometru îl pornește imediat\n
+- printr-o apăsare lungă pe unul dintre butoanele de cronometru poți configura și porni rapid un cronometru, care nu va fi salvat\n
+        </item>
+        <item>
+- poți schimba aspectul ceasului din ecranul principal sau din setări\n
+- poți alege dintre mai multe fonturi, culori și mărimi pentru ceas\n
+- modificările de aspect sunt salvate separat pentru fiecare profil
+        </item>
+        <item>
+- swipe ca să schimbi fontul\n
+- pinch ca să mărești textul
+        </item>
+        <item>
+- poți seta luminozitatea ceasului pentru profilul de zi sau pentru cel de noapte\n
+- dacă lași luminozitatea pe AUTO, se ocupă telefonul de ea
+        </item>
+        <item>
+- poți seta radioul să meargă în fundal\n
+- aceasta se poate seta din meniul de setări (implicit este dezactivat)\n
+        </item>
+        <item>
+- dacă găsești probleme sau ai idei, scrie-mi la adresa mea de gmail cristi.ciuc\n
+- găsești un ajutor mai detaliat în secțiunea "Despre"
+        </item>
+    </string-array>
+
+    <!-- liste de opțiuni (doar text afișat; valorile salvate sunt în values/strings.xml) -->
+    <string-array name="clock_colors">
+        <item>verde (implicit)</item>
+        <item>roșu</item>
+        <item>albastru</item>
+        <item>galben</item>
+        <item>alb</item>
+        <item>gri</item>
+        <item>mov</item>
+    </string-array>
+    <string-array name="clock_human_sizes">
+        <item>XS</item>
+        <item>S</item>
+        <item>M (implicit)</item>
+        <item>M-L</item>
+        <item>XL</item>
+        <item>XXL</item>
+        <item>XXXL</item>
+        <item>XXXXL</item>
+        <item>XXXXXL</item>
+    </string-array>
+    <string-array name="timer_alarm_durations_human_readable">
+        <item>XXS (2s)</item>
+        <item>XS (5s)</item>
+        <item>Foarte scurt (7s)</item>
+        <item>Scurt (10s)</item>
+        <item>Mediu-scurt (15s)</item>
+        <item>Mediu-lung (30s)</item>
+        <item>Lung (1m)</item>
+        <item>Mai lung (1m15s)</item>
+    </string-array>
+    <string-array name="timer_visual_human_readable">
+        <item>Cerc</item>
+        <item>Dreptunghi</item>
+    </string-array>
+    <string-array name="slideshow_effect_human_readable">
+        <item>Fără efect</item>
+        <item>Pan/Zoom (efect Ken Burns)</item>
+        <item>Zoom out</item>
+    </string-array>
 </resources>

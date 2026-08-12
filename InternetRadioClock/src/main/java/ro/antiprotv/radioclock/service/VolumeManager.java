@@ -55,8 +55,10 @@ public class VolumeManager {
     seekBar = view.findViewById(R.id.volume_seekbar);
     if (seekBar == null) {
       AlertDialog dialog = new AlertDialog.Builder(ctx).create();
-      dialog.setTitle("ERROR");
-      dialog.setMessage("Could not find seekbar " + new Date(System.currentTimeMillis()));
+      dialog.setTitle(ctx.getString(R.string.error));
+      dialog.setMessage(
+          ctx.getString(R.string.could_not_find_seekbar)
+              + new Date(System.currentTimeMillis()));
       dialog.show();
       return;
     }

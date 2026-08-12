@@ -35,7 +35,7 @@ public class BrightnessManager {
         "BrightnessManager - saved in settings (currentProfile.Brightness): " + currentBrightness);
     if (seekBar == null) {
       AlertDialog dialog = new AlertDialog.Builder(context).create();
-      dialog.setTitle("ERROR");
+      dialog.setTitle(context.getString(R.string.error));
       dialog.setMessage(
           context.getString(R.string.could_not_find_seekbar)
               + new Date(System.currentTimeMillis()));

@@ -78,7 +78,7 @@ public class TimePreferenceDialogCompat extends PreferenceDialogFragmentCompat {
       super(context);
       View view = LayoutInflater.from(context).inflate(R.layout.dialog_custom_time_text, null);
       setView(view);
-      setTitle("On some old devices you cannot use the time picker.");
+      setTitle(context.getString(R.string.time_picker_old_device_warning));
       setIcon(R.drawable.baseline_calendar_month_24);
       Button ok = view.findViewById(R.id.dialog_custom_time_button_ok);
       Button cancel = view.findViewById(R.id.dialog_custom_time_button_cancel);

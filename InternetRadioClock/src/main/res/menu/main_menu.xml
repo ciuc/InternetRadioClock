@@ -28,6 +28,10 @@
         android:icon="@android:drawable/ic_menu_preferences"
         android:title="@string/settings.menu.buttons"
         app:showAsAction="never"/>
+    <item android:id="@+id/language"
+        android:icon="@drawable/ic_language_white_24dp"
+        android:title="@string/settings.menu.language"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/streamFinder"
         android:icon="@android:drawable/ic_menu_preferences"

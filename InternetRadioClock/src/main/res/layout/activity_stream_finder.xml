@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toLeftOf="@+id/streamFinder_help"
                     android:layout_centerVertical="true"
-                    android:text="Click to help: "/>
+                    android:text="@string/streamFinder.click_to_help"/>
                 <ImageButton
                     android:id="@+id/streamFinder_help"
                     android:layout_width="50dp"

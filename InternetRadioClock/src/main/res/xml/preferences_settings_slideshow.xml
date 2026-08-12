@@ -6,10 +6,13 @@
 
 
 
+        <!-- Summaries are set from code; they carry the saved image count and folder name. -->
         <Preference
             android:key="@string/setting.key.slideshow_images"
-            android:title="Select Images"
-            android:summary="Choose images to show in background\n[%s]" />
+            android:title="@string/setting.name.slideshow.select_images" />
+        <Preference
+            android:key="@string/setting.key.slideshow_folder"
+            android:title="@string/setting.name.slideshow.select_folder" />
     <PreferenceCategory>
         <ListPreference
             android:defaultValue="NONE"

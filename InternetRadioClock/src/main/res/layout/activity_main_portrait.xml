@@ -177,7 +177,7 @@
             android:alpha=".9"
             android:background="@drawable/snooze_tns"
             android:drawableTop="@drawable/baseline_cancel_48"
-            android:text="Stop"
+            android:text="@string/stop"
             android:textColor="#FFFFFF"
             android:visibility="gone" />
 
