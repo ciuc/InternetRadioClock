@@ -93,19 +93,25 @@
     <string name="setting.summary.slideshow.randomize">Die Reihenfolge der Bilder zufällig anordnen</string>
     <string name="setting.name.slideshow.image.stay.duration">Anzeigedauer pro Bild</string>
     <string name="setting.summary.slideshow.image.stay.duration">Wie lange jedes Bild angezeigt wird</string>
-    <string name="setting.summary.slideshow.images">Wähle Bilder für den Hintergrund\nMit vielen Bildern funktioniert das möglicherweise nicht\n[%d Bilder ausgewählt]</string>
-    <string name="setting.name.slideshow.select_folder">Bilderordner auswählen</string>
-    <string name="setting.summary.slideshow.folder.none">Neue Bilder in diesem Ordner werden automatisch für die Diashow übernommen\n[kein Ordner ausgewählt]</string>
-    <string name="setting.summary.slideshow.folder">Neue Bilder in diesem Ordner werden automatisch für die Diashow übernommen\n[%1$s]</string>
-    <string name="setting.summary.slideshow.folder.count">Neue Bilder in diesem Ordner werden automatisch für die Diashow übernommen\n[%1$s — %2$d Bilder]</string>
+    <string name="setting.summary.slideshow.media">Wähle Bilder und Videos für den Hintergrund\nMit vielen Dateien funktioniert das möglicherweise nicht\n[%1$d Bilder, %2$d Videos ausgewählt]</string>
+    <string name="setting.name.slideshow.select_folder">Medienordner auswählen</string>
+    <string name="setting.summary.slideshow.folder.none">Neue Bilder und Videos in diesem Ordner werden automatisch für die Diashow übernommen\n[kein Ordner ausgewählt]</string>
+    <string name="setting.summary.slideshow.folder">Neue Bilder und Videos in diesem Ordner werden automatisch für die Diashow übernommen\n[%1$s]</string>
+    <string name="setting.summary.slideshow.folder.count">Neue Bilder und Videos in diesem Ordner werden automatisch für die Diashow übernommen\n[%1$s — %2$d Bilder, %3$d Videos]</string>
     <string name="slideshow_no_folder_picker">Auf diesem Gerät ist keine Ordnerauswahl verfügbar, daher kann kein Ordner ausgewählt werden.</string>
-    <string name="slideshow_folder_replaces_images">Der Ordner wird verwendet. Die einzeln ausgewählten Bilder wurden entfernt.</string>
-    <string name="slideshow_images_replace_folder">Die ausgewählten Bilder werden verwendet. Der Ordner wurde entfernt.</string>
-    <string name="slideshow_folder_empty_dialog_msg">Im ausgewählten Ordner wurden keine Bilder gefunden.</string>
-    <string name="setting.name.slideshow.select_images">Bilder auswählen</string>
-    <string name="slideshow_empty_dialog_msg">Keine Bilder ausgewählt. Verwende die Schaltfläche in der Symbolleiste, um Bilder auszuwählen.</string>
-    <string name="slideshow_no_picker">Auf diesem Gerät ist keine Dateiauswahl verfügbar, daher können keine Bilder ausgewählt werden.</string>
-    <string name="slideshow_unreadable_dialog_msg">Die ausgewählten Bilder können nicht mehr geöffnet werden. Möglicherweise wurden sie gelöscht oder verschoben, oder die App, die sie bereitgestellt hat, hat den Zugriff entzogen. Bitte wähle sie erneut aus.</string>
+    <string name="slideshow_folder_replaces_images">Der Ordner wird verwendet. Die einzeln ausgewählten Dateien wurden entfernt.</string>
+    <string name="slideshow_images_replace_folder">Die ausgewählten Dateien werden verwendet. Der Ordner wurde entfernt.</string>
+    <string name="slideshow_folder_empty_dialog_msg">Im ausgewählten Ordner wurden keine Bilder oder Videos gefunden.</string>
+    <string name="setting.name.slideshow.select_images">Bilder und Videos auswählen</string>
+    <string name="slideshow_empty_dialog_msg">Nichts ausgewählt. Verwende die Schaltfläche in der Symbolleiste, um Bilder oder Videos auszuwählen.</string>
+    <string name="slideshow_no_picker">Auf diesem Gerät ist keine Dateiauswahl verfügbar, daher können keine Bilder und Videos ausgewählt werden.</string>
+    <string name="slideshow_unreadable_dialog_msg">Die ausgewählten Dateien können nicht mehr geöffnet werden. Möglicherweise wurden sie gelöscht oder verschoben, oder die App, die sie bereitgestellt hat, hat den Zugriff entzogen. Bitte wähle sie erneut aus.</string>
+    <string name="setting.category.slideshow.video">Videos</string>
+    <string name="setting.name.slideshow.video.length">Videolänge</string>
+    <string name="setting.name.slideshow.video.sound">Videoton</string>
+    <string name="setting.summary.slideshow.video.sound">Den Ton von Videos wiedergeben, wenn das Radio nicht läuft</string>
+    <string name="setting.name.slideshow.video.random.start">Zufälliger Startpunkt</string>
+    <string name="setting.summary.slideshow.video.random.start">Jedes Video an einer zufälligen Stelle statt am Anfang starten. Erfordert eine Videolänge, die kürzer als das Video ist</string>
     <string name="title_slideshow_settings">Diashow-Einstellungen</string>
 
     <!-- Timer -->
@@ -322,6 +328,14 @@
         <item>Kein Effekt</item>
         <item>Pan/Zoom (Ken-Burns-Effekt)</item>
         <item>Herauszoomen</item>
+    </string-array>
+    <string-array name="slideshow_video_length_human_readable">
+        <item>Vollständig abspielen</item>
+        <item>3 Sekunden</item>
+        <item>5 Sekunden</item>
+        <item>10 Sekunden</item>
+        <item>20 Sekunden</item>
+        <item>60 Sekunden</item>
     </string-array>
 
     <string name="cheers.text">"<![CDATA[ <p>Zuerst einmal danke, dass du die Internet Radio Clock heruntergeladen hast und benutzt.</p> <p>Ich habe diese App in meiner Freizeit entwickelt, einfach zum Spaß, aber auch mit dem Anspruch, eine gute Gesamtqualität zu halten und sie ständig zu verbessern.</p> <p>Diese App ist und bleibt immer <b>kostenlos</b> und <b>ohne Werbung</b>. Alle Funktionen sind immer enthalten, <b>ohne In-App-Käufe</b>.</p> <p>Wenn sie dir gefällt, trink ein Bier auf mich. Und wenn ich auch eins auf dich trinken soll, gib 5 Sterne :)</p>  <p>Prost!</p> </body> </html> ]]>     "</string>

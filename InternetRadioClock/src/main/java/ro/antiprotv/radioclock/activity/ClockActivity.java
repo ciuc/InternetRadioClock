@@ -49,6 +49,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import com.devbrackets.android.exomedia.ui.widget.VideoView;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.mrudultora.colorpicker.IPreviewCallback;
 import java.util.Date;
@@ -307,6 +308,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
   // --/////////////////////////////////////////////////////////////////////////
   private KenBurnsView kenBurnsView;
   private ImageView simpleSlideshowView;
+  private VideoView slideshowVideoView;
   private SlideshowManager slideshowManager;
 
   ///////////////////////////////////////////////////////////////////////////
@@ -419,10 +421,17 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     // slideshow, initialize, since applyProfile needs it
     kenBurnsView = findViewById(R.id.kenBurnsView);
     simpleSlideshowView = findViewById(R.id.slideshowSimpleImageView);
+    slideshowVideoView = findViewById(R.id.slideshowVideoView);
     ImageButton selectImagesButton = findViewById(R.id.button_slideshow_enable);
     slideshowManager =
         SlideshowManager.getInstance(
-            this, prefs, kenBurnsView, simpleSlideshowView, buttonManager, profileManager);
+            this,
+            prefs,
+            kenBurnsView,
+            simpleSlideshowView,
+            slideshowVideoView,
+            buttonManager,
+            profileManager);
 
     selectImagesButton.setOnClickListener(
         v -> {
@@ -651,6 +660,9 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     /*    if (slideshowManager.isSlideshowEnabled()) {
       slideshowManager.startSlideshow();
     }*/
+    if (slideshowManager != null) {
+      slideshowManager.resumeFromBackground();
+    }
   }
 
   @Override
@@ -659,6 +671,11 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     if (savedInstanceState != null) {
       Timber.d(savedInstanceState.toString());
       onSaveInstanceState(savedInstanceState);
+    }
+    // A slideshow video would otherwise carry on behind the settings screen, and keep sounding
+    // after the user has left the app entirely.
+    if (slideshowManager != null) {
+      slideshowManager.pauseForBackground();
     }
     super.onPause();
   }
@@ -1226,6 +1243,22 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
 
   public void setPlaying(boolean playing) {
     isPlaying = playing;
+    // Every radio start and stop comes through here, which is what lets a video already on screen
+    // mute or unmute the moment the stream does.
+    if (slideshowManager != null) {
+      slideshowManager.onRadioPlayingChanged(playing);
+    }
+  }
+
+  /**
+   * Whether a station is actually playing right now. Asks the player rather than reading {@link
+   * #isPlaying}, which is only a mirror of it.
+   *
+   * <p>The null check earns its keep: {@code applyProfile()} in {@code onCreate} can start the
+   * slideshow before the media player has been built.
+   */
+  public boolean isRadioPlaying() {
+    return mediaPlayerService != null && mediaPlayerService.isPlaying();
   }
 
   public void setDisallowSwipe(boolean disallowSwipe) {

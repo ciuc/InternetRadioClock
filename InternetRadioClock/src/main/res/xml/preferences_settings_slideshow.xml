@@ -35,6 +35,25 @@
             />
 
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/setting.category.slideshow.video">
+        <ListPreference
+            android:defaultValue="20000"
+            android:entries="@array/slideshow_video_length_human_readable"
+            android:entryValues="@array/slideshow_video_length"
+            android:key="@string/setting.key.slideshow.video.length"
+            android:summary="%s"
+            android:title="@string/setting.name.slideshow.video.length" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/setting.key.slideshow.video.random.start"
+            android:summary="@string/setting.summary.slideshow.video.random.start"
+            android:title="@string/setting.name.slideshow.video.random.start" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/setting.key.slideshow.video.sound"
+            android:summary="@string/setting.summary.slideshow.video.sound"
+            android:title="@string/setting.name.slideshow.video.sound" />
+    </PreferenceCategory>
 
 
 </PreferenceScreen>

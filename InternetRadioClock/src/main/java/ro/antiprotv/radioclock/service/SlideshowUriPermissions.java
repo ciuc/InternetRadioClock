@@ -6,22 +6,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.UriPermission;
 import android.net.Uri;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.json.JSONArray;
 import ro.antiprotv.radioclock.R;
 import timber.log.Timber;
 
 /**
- * Keeps the persisted SAF grants in step with the images actually stored in the slideshow
+ * Keeps the persisted SAF grants in step with the files actually stored in the slideshow
  * preference.
  *
  * <p>Android caps the number of persistable URI grants a package may hold and silently trims the
- * oldest ones once that cap is passed, so grants for images the user has since replaced have to be
+ * oldest ones once that cap is passed, so grants for files the user has since replaced have to be
  * handed back. Otherwise every re-pick leaks a whole set of grants and, eventually, the trimming
- * revokes access to images the slideshow is still using.
+ * revokes access to files the slideshow is still using.
  */
 public final class SlideshowUriPermissions {
   private static final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -48,10 +46,10 @@ public final class SlideshowUriPermissions {
   }
 
   /**
-   * Persists access to a picked image, taking exactly the modes the picker actually granted.
+   * Persists access to a picked file, taking exactly the modes the picker actually granted.
    *
    * @param result the picker's result intent, whose flags say what was granted
-   * @return whether access was persisted; the image should be dropped from the list if not
+   * @return whether access was persisted; the file should be dropped from the list if not
    */
   public static boolean takePersistable(Context context, Intent result, Uri uri) {
     int takeFlags =
@@ -113,7 +111,7 @@ public final class SlideshowUriPermissions {
   }
 
   /**
-   * The URIs the slideshow still needs access to: the saved images, plus the picked folder. The
+   * The URIs the slideshow still needs access to: the saved files, plus the picked folder. The
    * folder has to be in here, otherwise reconciling would hand back the one grant that the whole
    * folder mode rests on.
    *
@@ -121,21 +119,15 @@ public final class SlideshowUriPermissions {
    */
   private static Set<String> readSavedUris(Context context, SharedPreferences prefs) {
     String json = prefs.getString(context.getString(R.string.setting_key_slideshow_images), "[]");
-    try {
-      JSONArray array = new JSONArray(json);
-      Set<String> uris = new HashSet<>();
-      for (int i = 0; i < array.length(); i++) {
-        uris.add(array.getString(i));
-      }
-      String folder =
-          prefs.getString(context.getString(R.string.setting_key_slideshow_folder), "");
-      if (folder != null && !folder.isEmpty()) {
-        uris.add(folder);
-      }
-      return uris;
-    } catch (Exception e) {
-      Timber.e("Could not parse saved slideshow images; leaving grants untouched");
+    Set<String> uris = SlideshowItems.uriStrings(json);
+    if (uris == null) {
+      Timber.e("Could not parse the saved slideshow files; leaving grants untouched");
       return null;
     }
+    String folder = prefs.getString(context.getString(R.string.setting_key_slideshow_folder), "");
+    if (folder != null && !folder.isEmpty()) {
+      uris.add(folder);
+    }
+    return uris;
   }
 }

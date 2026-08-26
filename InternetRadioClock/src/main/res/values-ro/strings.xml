@@ -154,30 +154,36 @@
     <string name="notification.channel.playback.description">Se afișează cât timp radio merge în fundal</string>
     <string name="notification.playback.title">Radio pornit</string>
     <string name="notification.playback.stop">Oprește</string>
-    <string name="slideshow_no_picker">Nu există niciun selector de fișiere pe acest dispozitiv, deci imaginile nu pot fi alese.</string>
+    <string name="slideshow_no_picker">Nu există niciun selector de fișiere pe acest dispozitiv, deci imaginile și videoclipurile nu pot fi alese.</string>
 
     <!-- baterie -->
     <string name="setting.name.displayBatteryWhenDischarging">Afișează nivelul bateriei când nu e la încărcare</string>
 
     <!-- slideshow -->
     <string name="setting.title.slideshow.settings">Setări slideshow</string>
-    <string name="setting.name.slideshow.select_images">Alege imaginile</string>
+    <string name="setting.name.slideshow.select_images">Alege imagini și videoclipuri</string>
     <string name="setting.name.slideshow.effect">Efect</string>
     <string name="setting.name.slideshow.randomize">Ordine aleatorie</string>
     <string name="setting.summary.slideshow.randomize">Amestecă ordinea imaginilor</string>
     <string name="setting.name.slideshow.image.stay.duration">Durata de afișare a imaginii</string>
     <string name="setting.summary.slideshow.image.stay.duration">Cât timp rămâne afișată fiecare imagine</string>
-    <string name="setting.summary.slideshow.images">Alege imaginile de afișat în fundal\nS-ar putea să nu funcționeze cu multe imagini\n[%d imagini selectate]</string>
-    <string name="setting.name.slideshow.select_folder">Alege folderul cu imagini</string>
-    <string name="setting.summary.slideshow.folder.none">Imaginile noi din acest folder vor fi preluate automat pentru slideshow\n[niciun folder ales]</string>
-    <string name="setting.summary.slideshow.folder">Imaginile noi din acest folder vor fi preluate automat pentru slideshow\n[%1$s]</string>
-    <string name="setting.summary.slideshow.folder.count">Imaginile noi din acest folder vor fi preluate automat pentru slideshow\n[%1$s — %2$d imagini]</string>
+    <string name="setting.summary.slideshow.media">Alege imaginile și videoclipurile de afișat în fundal\nS-ar putea să nu funcționeze cu multe fișiere\n[%1$d imagini, %2$d videoclipuri selectate]</string>
+    <string name="setting.name.slideshow.select_folder">Alege folderul cu fișiere</string>
+    <string name="setting.summary.slideshow.folder.none">Imaginile și videoclipurile noi din acest folder vor fi preluate automat pentru slideshow\n[niciun folder ales]</string>
+    <string name="setting.summary.slideshow.folder">Imaginile și videoclipurile noi din acest folder vor fi preluate automat pentru slideshow\n[%1$s]</string>
+    <string name="setting.summary.slideshow.folder.count">Imaginile și videoclipurile noi din acest folder vor fi preluate automat pentru slideshow\n[%1$s — %2$d imagini, %3$d videoclipuri]</string>
     <string name="slideshow_no_folder_picker">Nu există niciun selector de foldere pe acest dispozitiv, deci nu poate fi ales un folder.</string>
-    <string name="slideshow_folder_replaces_images">Se folosește folderul. Imaginile alese individual au fost șterse.</string>
-    <string name="slideshow_images_replace_folder">Se folosesc imaginile alese. Folderul a fost șters.</string>
-    <string name="slideshow_folder_empty_dialog_msg">Nu s-a găsit nicio imagine în folderul ales.</string>
-    <string name="slideshow_empty_dialog_msg">Nicio imagine selectată. Folosește butonul din bara de sus pentru a alege imagini.</string>
-    <string name="slideshow_unreadable_dialog_msg">Imaginile alese nu mai pot fi deschise. Este posibil să fi fost șterse sau mutate, ori aplicația care le-a pus la dispoziție a retras accesul. Te rugăm să le alegi din nou.</string>
+    <string name="slideshow_folder_replaces_images">Se folosește folderul. Fișierele alese individual au fost șterse.</string>
+    <string name="slideshow_images_replace_folder">Se folosesc fișierele alese. Folderul a fost șters.</string>
+    <string name="slideshow_folder_empty_dialog_msg">Nu s-a găsit nicio imagine sau videoclip în folderul ales.</string>
+    <string name="slideshow_empty_dialog_msg">Nu ai selectat nimic. Folosește butonul din bara de sus pentru a alege imagini sau videoclipuri.</string>
+    <string name="slideshow_unreadable_dialog_msg">Fișierele alese nu mai pot fi deschise. Este posibil să fi fost șterse sau mutate, ori aplicația care le-a pus la dispoziție a retras accesul. Te rugăm să le alegi din nou.</string>
+    <string name="setting.category.slideshow.video">Videoclipuri</string>
+    <string name="setting.name.slideshow.video.length">Durata videoclipului</string>
+    <string name="setting.name.slideshow.video.sound">Sunetul videoclipurilor</string>
+    <string name="setting.summary.slideshow.video.sound">Redă sunetul videoclipurilor când radioul nu merge</string>
+    <string name="setting.name.slideshow.video.random.start">Pornire aleatorie</string>
+    <string name="setting.summary.slideshow.video.random.start">Pornește fiecare videoclip dintr-un punct aleatoriu, nu de la început. Necesită o durată mai scurtă decât videoclipul</string>
 
     <!-- cronometre -->
     <string name="setting.name.category.timers">Cronometre</string>
@@ -305,5 +311,13 @@
         <item>Fără efect</item>
         <item>Pan/Zoom (efect Ken Burns)</item>
         <item>Zoom out</item>
+    </string-array>
+    <string-array name="slideshow_video_length_human_readable">
+        <item>Redă integral</item>
+        <item>3 secunde</item>
+        <item>5 secunde</item>
+        <item>10 secunde</item>
+        <item>20 de secunde</item>
+        <item>60 de secunde</item>
     </string-array>
 </resources>

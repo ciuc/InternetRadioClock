@@ -16,25 +16,27 @@ import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.json.JSONArray;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.service.SlideshowFolder;
+import ro.antiprotv.radioclock.service.SlideshowItem;
+import ro.antiprotv.radioclock.service.SlideshowItems;
 import ro.antiprotv.radioclock.service.SlideshowManager;
 import ro.antiprotv.radioclock.service.SlideshowUriPermissions;
 import timber.log.Timber;
 
 /**
- * Lets the user choose slideshow images either one by one or as a whole folder.
+ * Lets the user choose slideshow pictures and videos either one by one or as a whole folder.
  *
- * <p>The two are deliberately exclusive. Picking images one by one costs one persisted URI grant
+ * <p>The two are deliberately exclusive. Picking files one by one costs one persisted URI grant
  * each and Android caps those per package (128 on API 24), so a large selection silently loses most
- * of itself; a folder costs a single grant however many images are behind it. Keeping both at once
- * would only make it harder to tell which images the slideshow is actually showing.
+ * of itself; a folder costs a single grant however many files are behind it. Keeping both at once
+ * would only make it harder to tell what the slideshow is actually showing.
  */
 public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
   ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -93,7 +95,7 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
     super.onResume();
     PreferenceManager.getDefaultSharedPreferences(requireContext())
         .registerOnSharedPreferenceChangeListener(imagesPrefListener);
-    refreshImageCountSummary();
+    refreshMediaCountSummary();
     refreshFolderSummary();
   }
 
@@ -114,23 +116,25 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
           return;
         }
         if (getString(R.string.setting_key_slideshow_images).equals(key)) {
-          refreshImageCountSummary();
+          refreshMediaCountSummary();
         } else if (getString(R.string.setting_key_slideshow_folder).equals(key)) {
           refreshFolderSummary();
         }
       };
 
-  private void refreshImageCountSummary() {
+  private void refreshMediaCountSummary() {
     Context context = requireContext();
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    updateImageCountSummary(
+    int[] counts = SlideshowManager.getSavedCounts(context, prefs);
+    updateMediaCountSummary(
         findPreference(context.getString(R.string.setting_key_slideshow_images)),
-        SlideshowManager.getSavedImageCount(context, prefs));
+        counts[0],
+        counts[1]);
   }
 
   /**
-   * Shows the folder name straight away and fills the image count in once it is known: counting
-   * means listing the folder, which is a provider query.
+   * Shows the folder name straight away and fills the counts in once they are known: counting means
+   * listing the folder, which is a provider query.
    */
   private void refreshFolderSummary() {
     Context context = requireContext();
@@ -150,7 +154,15 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
     Context appContext = context.getApplicationContext();
     executorService.execute(
         () -> {
-          int count = SlideshowFolder.listImages(appContext, treeUri).size();
+          List<SlideshowItem> media = SlideshowFolder.listMedia(appContext, treeUri);
+          int videos = 0;
+          for (SlideshowItem item : media) {
+            if (item.video) {
+              videos++;
+            }
+          }
+          final int images = media.size() - videos;
+          final int videoCount = videos;
           mainHandler.post(
               () -> {
                 if (!isAdded() || !folder.equals(savedFolder(requireContext()))) {
@@ -158,7 +170,11 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
                 }
                 pref.setSummary(
                     requireContext()
-                        .getString(R.string.setting_summary_slideshow_folder_count, name, count));
+                        .getString(
+                            R.string.setting_summary_slideshow_folder_count,
+                            name,
+                            images,
+                            videoCount));
               });
         });
   }
@@ -172,7 +188,10 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
 
   private void openImagePicker() {
     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-    intent.setType("image/*");
+    // Two kinds at once means a wildcard type plus the list of what we actually take. Some older
+    // providers ignore the list, which is the other reason each pick is checked below.
+    intent.setType("*/*");
+    intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[] {"image/*", "video/*"});
     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
     intent.addCategory(Intent.CATEGORY_OPENABLE);
     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -201,18 +220,18 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
     int failed = 0;
     int duplicates = 0;
     Set<String> seen = new HashSet<>();
-    JSONArray jsonArray = new JSONArray();
+    List<SlideshowItem> picked = new ArrayList<>();
     if (data.getClipData() != null) {
       int count = data.getClipData().getItemCount();
       Timber.d("count: " + count + " selected");
       for (int i = 0; i < count; i++) {
         Uri uri = data.getClipData().getItemAt(i).getUri();
         if (!seen.add(uri.toString())) {
-          // Pickers can hand back the same image twice; saving it twice would show it twice and
+          // Pickers can hand back the same file twice; saving it twice would show it twice and
           // overstate the count in the settings summary.
           duplicates++;
         } else if (SlideshowUriPermissions.takePersistable(context, data, uri)) {
-          jsonArray.put(uri.toString());
+          picked.add(new SlideshowItem(uri, isVideo(context, uri)));
         } else {
           failed++;
         }
@@ -220,19 +239,21 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
     } else if (data.getData() != null) {
       Uri uri = data.getData();
       if (SlideshowUriPermissions.takePersistable(context, data, uri)) {
-        jsonArray.put(uri.toString());
+        picked.add(new SlideshowItem(uri, isVideo(context, uri)));
       } else {
         failed++;
       }
     }
 
-    Timber.d("persisted: " + jsonArray.length() + " failed: " + failed + " dupes: " + duplicates);
+    Timber.d("persisted: " + picked.size() + " failed: " + failed + " dupes: " + duplicates);
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
     boolean hadFolder = !savedFolder(context).isEmpty();
     prefs
         .edit()
-        .putString(context.getString(R.string.setting_key_slideshow_images), jsonArray.toString())
-        // Only one source of images at a time; see the note on this class.
+        .putString(
+            context.getString(R.string.setting_key_slideshow_images),
+            SlideshowItems.toJson(picked))
+        // Only one source of files at a time; see the note on this class.
         .putString(context.getString(R.string.setting_key_slideshow_folder), "")
         .commit();
 
@@ -244,20 +265,33 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
     SlideshowUriPermissions.reconcile(context, prefs);
   }
 
+  /**
+   * Whether a picked file is a video. Asked of the provider here, while we are already off the main
+   * thread and already looping, rather than at display time - the slideshow would otherwise have to
+   * make one of these calls per file every time it starts.
+   */
+  private static boolean isVideo(Context context, Uri uri) {
+    String mime = context.getContentResolver().getType(uri);
+    if (SlideshowItem.isVagueMime(mime)) {
+      return SlideshowItem.looksLikeVideoName(uri.getLastPathSegment());
+    }
+    return SlideshowItem.isVideoMime(mime);
+  }
+
   private void handleFolderSelection(Context context, Uri treeUri) {
     if (!SlideshowUriPermissions.takePersistableTree(context, treeUri)) {
       toastOnMainThread(R.string.slideshow_no_folder_picker);
       return;
     }
-    List<Uri> images = SlideshowFolder.listImages(context, treeUri);
-    Timber.d("folder %s selected, %s images", treeUri, images.size());
+    List<SlideshowItem> media = SlideshowFolder.listMedia(context, treeUri);
+    Timber.d("folder %s selected, %s files", treeUri, media.size());
 
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
     boolean hadImages = SlideshowManager.getSavedImageCount(context, prefs) > 0;
     prefs
         .edit()
         .putString(context.getString(R.string.setting_key_slideshow_folder), treeUri.toString())
-        // Only one source of images at a time; see the note on this class.
+        // Only one source of files at a time; see the note on this class.
         .putString(context.getString(R.string.setting_key_slideshow_images), "[]")
         .commit();
 
@@ -277,11 +311,11 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
         });
   }
 
-  private void updateImageCountSummary(Preference selectImagesPref, int count) {
+  private void updateMediaCountSummary(Preference selectImagesPref, int images, int videos) {
     if (selectImagesPref == null) {
       return;
     }
     selectImagesPref.setSummary(
-        requireContext().getString(R.string.setting_summary_slideshow_images, count));
+        requireContext().getString(R.string.setting_summary_slideshow_media, images, videos));
   }
 }

@@ -11,29 +11,30 @@ import java.util.List;
 import timber.log.Timber;
 
 /**
- * Reads the images out of a folder the user granted through {@code ACTION_OPEN_DOCUMENT_TREE}.
+ * Reads the pictures and videos out of a folder the user granted through {@code
+ * ACTION_OPEN_DOCUMENT_TREE}.
  *
  * <p>A tree grant is a single persisted URI permission however many files sit behind it, which is
  * the point of it: Android caps the persisted grants one package may hold (128 on API 24), so
- * picking images one by one silently loses most of a large selection. Listing the children at
- * display time also means images dropped into the folder later turn up on their own.
+ * picking files one by one silently loses most of a large selection. Listing the children at
+ * display time also means files dropped into the folder later turn up on their own.
  */
 public final class SlideshowFolder {
   private SlideshowFolder() {}
 
   /**
-   * The images sitting directly in the granted folder, ordered by name so the slideshow keeps a
-   * stable order. Sub-folders are not descended into. Queries a content provider, so call it off
-   * the main thread.
+   * The pictures and videos sitting directly in the granted folder, ordered by name so the
+   * slideshow keeps a stable order. One sort over both kinds is what interleaves them. Sub-folders
+   * are not descended into. Queries a content provider, so call it off the main thread.
    */
-  public static List<Uri> listImages(Context context, Uri treeUri) {
-    List<Uri> images = new ArrayList<>();
+  public static List<SlideshowItem> listMedia(Context context, Uri treeUri) {
+    List<SlideshowItem> media = new ArrayList<>();
     String treeDocId;
     try {
       treeDocId = DocumentsContract.getTreeDocumentId(treeUri);
     } catch (Exception e) {
       Timber.e("Not a usable slideshow folder uri: %s (%s)", treeUri, e.getMessage());
-      return images;
+      return media;
     }
 
     Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, treeDocId);
@@ -43,48 +44,78 @@ public final class SlideshowFolder {
       DocumentsContract.Document.COLUMN_DISPLAY_NAME
     };
     // Sorted here rather than by the query: not every provider honours a sort order.
-    List<String[]> found = new ArrayList<>();
+    List<Child> found = new ArrayList<>();
     try (Cursor cursor =
         context.getContentResolver().query(childrenUri, projection, null, null, null)) {
       if (cursor == null) {
         Timber.e("Could not list the slideshow folder %s", treeUri);
-        return images;
+        return media;
       }
       while (cursor.moveToNext()) {
-        String mime = cursor.getString(1);
-        if (mime == null || !mime.startsWith("image/")) {
-          continue;
-        }
         String docId = cursor.getString(0);
         if (docId == null) {
           continue;
         }
+        String mime = cursor.getString(1);
+        // Read before the filter, because the fallback below judges by file name.
         String name = cursor.getString(2);
-        found.add(new String[] {name != null ? name : docId, docId});
+        boolean video = SlideshowItem.isVideoMime(mime);
+        if (!video && (mime == null || !mime.startsWith("image/"))) {
+          // Some providers report nothing useful for the less common video containers. A folder
+          // entry that is merely vague gets a second look; anything else is not ours (sub-folders
+          // land here too, and never look like a video).
+          if (!SlideshowItem.isVagueMime(mime)
+              || !SlideshowItem.looksLikeVideoName(name != null ? name : docId)) {
+            continue;
+          }
+          video = true;
+        }
+        found.add(new Child(name != null ? name : docId, docId, video));
       }
     } catch (SecurityException e) {
       // The grant is gone: the folder was deleted, or access was revoked from system settings.
       Timber.e("No access to the slideshow folder %s: %s", treeUri, e.getMessage());
-      return images;
+      return media;
     } catch (Exception e) {
       Timber.e("Could not read the slideshow folder %s: %s", treeUri, e.getMessage());
-      return images;
+      return media;
     }
 
     // Not Comparator.comparing: that is API 24 and this app still runs on 23.
     Collections.sort(
         found,
-        new Comparator<String[]>() {
+        new Comparator<Child>() {
           @Override
-          public int compare(String[] a, String[] b) {
-            return String.CASE_INSENSITIVE_ORDER.compare(a[0], b[0]);
+          public int compare(Child a, Child b) {
+            return String.CASE_INSENSITIVE_ORDER.compare(a.name, b.name);
           }
         });
-    for (String[] entry : found) {
-      images.add(DocumentsContract.buildDocumentUriUsingTree(treeUri, entry[1]));
+    int videos = 0;
+    for (Child child : found) {
+      media.add(
+          new SlideshowItem(
+              DocumentsContract.buildDocumentUriUsingTree(treeUri, child.docId), child.video));
+      if (child.video) {
+        videos++;
+      }
     }
-    Timber.d("Slideshow folder %s holds %s images", treeUri, images.size());
-    return images;
+    Timber.d(
+        "Slideshow folder %s holds %s images and %s videos",
+        treeUri, media.size() - videos, videos);
+    return media;
+  }
+
+  /** A folder entry, held until the whole listing can be sorted by name. */
+  private static final class Child {
+    final String name;
+    final String docId;
+    final boolean video;
+
+    Child(String name, String docId, boolean video) {
+      this.name = name;
+      this.docId = docId;
+      this.video = video;
+    }
   }
 
   /** A short name for the folder, for the settings summary. Cheap: no provider query. */

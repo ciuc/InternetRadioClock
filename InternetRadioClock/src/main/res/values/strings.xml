@@ -161,7 +161,17 @@
     <string name="setting.key.slideshow.image.stay.duration" translatable="false">setting.key.slideshow.image.stay.duration</string>
     <string name="setting.name.slideshow.image.stay.duration">Image stay duration</string>
     <string name="setting.summary.slideshow.image.stay.duration">How long to stay on each image</string>
-    <string name="setting.summary.slideshow.images">Choose images to show in background\nThis might not work with a lot of images\n[%d images selected]</string>
+    <string name="setting.summary.slideshow.media">Choose images and videos to show in background\nThis might not work with a lot of files\n[%1$d images, %2$d videos selected]</string>
+
+    <string name="setting.key.slideshow.video.length" translatable="false">setting.key.slideshow.video.length</string>
+    <string name="setting.key.slideshow.video.sound" translatable="false">setting.key.slideshow.video.sound</string>
+    <string name="setting.key.slideshow.video.random.start" translatable="false">setting.key.slideshow.video.random.start</string>
+    <string name="setting.category.slideshow.video">Videos</string>
+    <string name="setting.name.slideshow.video.length">Video length</string>
+    <string name="setting.name.slideshow.video.sound">Video sound</string>
+    <string name="setting.summary.slideshow.video.sound">Play the sound of videos when the radio is not playing</string>
+    <string name="setting.name.slideshow.video.random.start">Random start</string>
+    <string name="setting.summary.slideshow.video.random.start">Start each video at a random point instead of the beginning. Needs a video length shorter than the video</string>
 
 
     <string name="text.sleep.timer">Sleep in %d minutes</string>
@@ -289,6 +299,23 @@
         <item>No effect</item>
         <item>Pan/Zoom (Ken Burns effect)</item>
         <item>Zoom out</item>
+    </string-array>
+    <!-- Milliseconds to stay on a video; 0 means play it to the end. -->
+    <string-array name="slideshow_video_length" translatable="false">
+        <item>0</item>
+        <item>3000</item>
+        <item>5000</item>
+        <item>10000</item>
+        <item>20000</item>
+        <item>60000</item>
+    </string-array>
+    <string-array name="slideshow_video_length_human_readable">
+        <item>Play in full</item>
+        <item>3 seconds</item>
+        <item>5 seconds</item>
+        <item>10 seconds</item>
+        <item>20 seconds</item>
+        <item>60 seconds</item>
     </string-array>
     <string name="setting.key.clockSize" translatable="false">setting.key.clockSize</string>
     <string name="setting.name.clockSize">Clock Size</string>
@@ -747,19 +774,19 @@
     <string name="add_edit_label">Add/edit label</string>
     <string name="intant_timer_explanation">When pressing ok, a timer will start with this value.</string>
     <string name="set_instant_timer">Set instant timer</string>
-    <string name="slideshow_empty_dialog_msg">No images selected. Use the button on the toolbar to select some images.</string>
-    <string name="slideshow_no_picker">No file picker is available on this device, so images cannot be selected.</string>
-    <string name="slideshow_unreadable_dialog_msg">The selected images can no longer be opened. They may have been deleted or moved, or the app that provided them withdrew access. Please select them again.</string>
+    <string name="slideshow_empty_dialog_msg">Nothing selected. Use the button on the toolbar to select some images or videos.</string>
+    <string name="slideshow_no_picker">No file picker is available on this device, so images and videos cannot be selected.</string>
+    <string name="slideshow_unreadable_dialog_msg">The selected files can no longer be opened. They may have been deleted or moved, or the app that provided them withdrew access. Please select them again.</string>
 
-    <string name="setting.name.slideshow.select_images">Select Images</string>
-    <string name="setting.name.slideshow.select_folder">Select Images Folder</string>
-    <string name="setting.summary.slideshow.folder.none">New images in this folder will be picked up automatically for the slideshow\n[no folder selected]</string>
-    <string name="setting.summary.slideshow.folder">New images in this folder will be picked up automatically for the slideshow\n[%1$s]</string>
-    <string name="setting.summary.slideshow.folder.count">New images in this folder will be picked up automatically for the slideshow\n[%1$s — %2$d images]</string>
+    <string name="setting.name.slideshow.select_images">Select Images and Videos</string>
+    <string name="setting.name.slideshow.select_folder">Select Media Folder</string>
+    <string name="setting.summary.slideshow.folder.none">New images and videos in this folder will be picked up automatically for the slideshow\n[no folder selected]</string>
+    <string name="setting.summary.slideshow.folder">New images and videos in this folder will be picked up automatically for the slideshow\n[%1$s]</string>
+    <string name="setting.summary.slideshow.folder.count">New images and videos in this folder will be picked up automatically for the slideshow\n[%1$s — %2$d images, %3$d videos]</string>
     <string name="slideshow_no_folder_picker">No folder picker is available on this device, so a folder cannot be selected.</string>
-    <string name="slideshow_folder_replaces_images">Using the folder. The individually selected images were cleared.</string>
-    <string name="slideshow_images_replace_folder">Using the selected images. The folder was cleared.</string>
-    <string name="slideshow_folder_empty_dialog_msg">No images were found in the selected folder.</string>
+    <string name="slideshow_folder_replaces_images">Using the folder. The individually selected files were cleared.</string>
+    <string name="slideshow_images_replace_folder">Using the selected files. The folder was cleared.</string>
+    <string name="slideshow_folder_empty_dialog_msg">No images or videos were found in the selected folder.</string>
     <string name="streamFinder.click_to_help">Click to help: </string>
     <string name="custom_time_instructions">Please input the desired time using format (24h): HH:mm (i.e. 23:30 or 07:00)</string>
     <string name="custom_time_format_error">Format not correct - use HH:mm in 24h format</string>

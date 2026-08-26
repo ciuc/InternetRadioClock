@@ -93,19 +93,25 @@
     <string name="setting.summary.slideshow.randomize">Embaralhar a ordem das imagens</string>
     <string name="setting.name.slideshow.image.stay.duration">Duração de cada imagem</string>
     <string name="setting.summary.slideshow.image.stay.duration">Por quanto tempo cada imagem fica na tela</string>
-    <string name="setting.summary.slideshow.images">Escolha as imagens para exibir ao fundo\nIsso pode não funcionar com muitas imagens\n[%d imagens selecionadas]</string>
-    <string name="setting.name.slideshow.select_folder">Escolher pasta de imagens</string>
-    <string name="setting.summary.slideshow.folder.none">Novas imagens nesta pasta serão usadas automaticamente na apresentação\n[nenhuma pasta escolhida]</string>
-    <string name="setting.summary.slideshow.folder">Novas imagens nesta pasta serão usadas automaticamente na apresentação\n[%1$s]</string>
-    <string name="setting.summary.slideshow.folder.count">Novas imagens nesta pasta serão usadas automaticamente na apresentação\n[%1$s — %2$d imagens]</string>
+    <string name="setting.summary.slideshow.media">Escolha as imagens e os vídeos para exibir ao fundo\nIsso pode não funcionar com muitos arquivos\n[%1$d imagens, %2$d vídeos selecionados]</string>
+    <string name="setting.name.slideshow.select_folder">Escolher pasta de mídia</string>
+    <string name="setting.summary.slideshow.folder.none">Novas imagens e vídeos nesta pasta serão usados automaticamente na apresentação\n[nenhuma pasta escolhida]</string>
+    <string name="setting.summary.slideshow.folder">Novas imagens e vídeos nesta pasta serão usados automaticamente na apresentação\n[%1$s]</string>
+    <string name="setting.summary.slideshow.folder.count">Novas imagens e vídeos nesta pasta serão usados automaticamente na apresentação\n[%1$s — %2$d imagens, %3$d vídeos]</string>
     <string name="slideshow_no_folder_picker">Não há um seletor de pastas disponível neste aparelho, então não é possível escolher uma pasta.</string>
-    <string name="slideshow_folder_replaces_images">Usando a pasta. As imagens escolhidas individualmente foram removidas.</string>
-    <string name="slideshow_images_replace_folder">Usando as imagens escolhidas. A pasta foi removida.</string>
-    <string name="slideshow_folder_empty_dialog_msg">Nenhuma imagem foi encontrada na pasta escolhida.</string>
-    <string name="setting.name.slideshow.select_images">Escolher imagens</string>
-    <string name="slideshow_empty_dialog_msg">Nenhuma imagem selecionada. Use o botão da barra de ferramentas para escolher imagens.</string>
-    <string name="slideshow_no_picker">Não há um seletor de arquivos disponível neste aparelho, então não é possível escolher imagens.</string>
-    <string name="slideshow_unreadable_dialog_msg">As imagens escolhidas não podem mais ser abertas. Elas podem ter sido excluídas ou movidas, ou o app que as forneceu retirou o acesso. Escolha as imagens novamente.</string>
+    <string name="slideshow_folder_replaces_images">Usando a pasta. Os arquivos escolhidos individualmente foram removidos.</string>
+    <string name="slideshow_images_replace_folder">Usando os arquivos escolhidos. A pasta foi removida.</string>
+    <string name="slideshow_folder_empty_dialog_msg">Nenhuma imagem ou vídeo foi encontrado na pasta escolhida.</string>
+    <string name="setting.name.slideshow.select_images">Escolher imagens e vídeos</string>
+    <string name="slideshow_empty_dialog_msg">Nada selecionado. Use o botão da barra de ferramentas para escolher imagens ou vídeos.</string>
+    <string name="slideshow_no_picker">Não há um seletor de arquivos disponível neste aparelho, então não é possível escolher imagens e vídeos.</string>
+    <string name="slideshow_unreadable_dialog_msg">Os arquivos escolhidos não podem mais ser abertos. Eles podem ter sido excluídos ou movidos, ou o app que os forneceu retirou o acesso. Escolha os arquivos novamente.</string>
+    <string name="setting.category.slideshow.video">Vídeos</string>
+    <string name="setting.name.slideshow.video.length">Duração do vídeo</string>
+    <string name="setting.name.slideshow.video.sound">Som dos vídeos</string>
+    <string name="setting.summary.slideshow.video.sound">Reproduzir o som dos vídeos quando o rádio não estiver tocando</string>
+    <string name="setting.name.slideshow.video.random.start">Início aleatório</string>
+    <string name="setting.summary.slideshow.video.random.start">Iniciar cada vídeo em um ponto aleatório, e não no começo. Requer uma duração menor que a do vídeo</string>
     <string name="title_slideshow_settings">Configurações da apresentação</string>
 
     <!-- temporizadores -->
@@ -322,6 +328,14 @@
         <item>Sem efeito</item>
         <item>Pan/Zoom (efeito Ken Burns)</item>
         <item>Afastar (zoom out)</item>
+    </string-array>
+    <string-array name="slideshow_video_length_human_readable">
+        <item>Reproduzir por inteiro</item>
+        <item>3 segundos</item>
+        <item>5 segundos</item>
+        <item>10 segundos</item>
+        <item>20 segundos</item>
+        <item>60 segundos</item>
     </string-array>
 
     <string name="cheers.text">"<![CDATA[ <p>Antes de mais nada, obrigado por baixar e usar o Internet Radio Clock.</p> <p>Criei este aplicativo no meu tempo livre, só por diversão, mas também tentando manter uma boa qualidade geral e melhorá-lo constantemente.</p> <p>Este aplicativo é e sempre será <b>gratuito</b> e <b>sem anúncios</b>. Todos os seus recursos sempre estarão incluídos, <b>sem compras dentro do aplicativo</b>.</p> <p>Se você gostou, tome uma cerveja por mim. E se quiser que eu tome uma por você, dê 5 estrelas :)</p>  <p>Saúde!</p> </body> </html> ]]>     "</string>

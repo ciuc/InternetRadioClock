@@ -27,6 +27,18 @@
         android:layout_height="match_parent"
         android:contentDescription="TODO"
         android:scaleType="centerCrop" />
+    <!-- Not clickable, so taps still reach the overlay and toggle the controls. Texture-backed
+         because the slideshow shows and hides this constantly, and a surface would be torn down
+         and rebuilt every time. -->
+    <com.devbrackets.android.exomedia.ui.widget.VideoView
+        android:id="@+id/slideshowVideoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false"
+        android:visibility="gone"
+        app:useTextureViewBacking="true"
+        app:videoScale="centerCrop" />
 
     <RelativeLayout
         android:id="@+id/overlay"
