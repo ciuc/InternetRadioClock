@@ -92,7 +92,7 @@
     <string name="setting.name.slideshow.randomize">Ordem aleatória</string>
     <string name="setting.summary.slideshow.randomize">Embaralhar a ordem das imagens</string>
     <string name="setting.name.slideshow.image.stay.duration">Duração de cada imagem</string>
-    <string name="setting.summary.slideshow.image.stay.duration">Por quanto tempo cada imagem fica na tela</string>
+    <string name="setting.summary.slideshow.image.stay.duration">Por quanto tempo cada imagem fica na tela (segundos)</string>
     <string name="setting.summary.slideshow.media">Escolha as imagens e os vídeos para exibir ao fundo\nIsso pode não funcionar com muitos arquivos\n[%1$d imagens, %2$d vídeos selecionados]</string>
     <string name="setting.name.slideshow.select_folder">Escolher pasta de mídia</string>
     <string name="setting.summary.slideshow.folder.none">Novas imagens e vídeos nesta pasta serão usados automaticamente na apresentação\n[nenhuma pasta escolhida]</string>
@@ -335,7 +335,10 @@
         <item>5 segundos</item>
         <item>10 segundos</item>
         <item>20 segundos</item>
+        <item>30 segundos</item>
+        <item>40 segundos</item>
         <item>60 segundos</item>
+        <item>120 segundos</item>
     </string-array>
 
     <string name="cheers.text">"<![CDATA[ <p>Antes de mais nada, obrigado por baixar e usar o Internet Radio Clock.</p> <p>Criei este aplicativo no meu tempo livre, só por diversão, mas também tentando manter uma boa qualidade geral e melhorá-lo constantemente.</p> <p>Este aplicativo é e sempre será <b>gratuito</b> e <b>sem anúncios</b>. Todos os seus recursos sempre estarão incluídos, <b>sem compras dentro do aplicativo</b>.</p> <p>Se você gostou, tome uma cerveja por mim. E se quiser que eu tome uma por você, dê 5 estrelas :)</p>  <p>Saúde!</p> </body> </html> ]]>     "</string>

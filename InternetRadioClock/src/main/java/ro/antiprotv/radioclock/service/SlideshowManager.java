@@ -66,6 +66,11 @@ public class SlideshowManager {
   private final ButtonManager buttonManager;
   private final ProfileManager profileManager;
   private ImageView slideshowView;
+  // Must match android:min/android:max/android:defaultValue on the slider in
+  // res/xml/preferences_settings_slideshow.xml.
+  private static final int MIN_IMAGE_DURATION_SECONDS = 10;
+  private static final int MAX_IMAGE_DURATION_SECONDS = 120;
+  private static final int DEFAULT_IMAGE_DURATION_SECONDS = 20;
   private int imageDuration;
   /** Listing a folder hits a content provider, which is too slow for the main thread. */
   private final ExecutorService folderLoader = Executors.newSingleThreadExecutor();
@@ -165,7 +170,7 @@ public class SlideshowManager {
     this.videoView = videoView;
     this.buttonManager = buttonManager;
     this.profileManager = profileManager;
-    imageDuration = 15000;
+    imageDuration = DEFAULT_IMAGE_DURATION_SECONDS * 1000;
     // Which of the two image views gets used is settled when the slideshow starts, but never leave
     // it unset: a resume can reach showTurn() before any start has run.
     this.slideshowView = slideshowSimpleView;
@@ -198,7 +203,15 @@ public class SlideshowManager {
             resolveVideoStart();
           }
         });
-    videoView.setOnCompletionListener(() -> advance(videoOwnerTurn));
+    videoView.setOnCompletionListener(
+        () -> {
+          // The player tears itself down straight after this callback returns, and that teardown
+          // stops whatever is loaded - including the next file, if we started it from in here. The
+          // video that ended would then stay frozen on its last frame until its turn timed out.
+          // Going round the handler lets the teardown happen first.
+          final int endedTurn = videoOwnerTurn;
+          slideShowhandler.post(() -> advance(endedTurn));
+        });
     videoView.setOnErrorListener(
         e -> {
           onItemUnreadable(videoOwnerTurn, currentUri(), e);
@@ -242,8 +255,29 @@ public class SlideshowManager {
     if (fromTurn != turn || items.isEmpty()) {
       return;
     }
-    currentSlideshowIndex = (currentSlideshowIndex + 1) % items.size();
+    if (++currentSlideshowIndex >= items.size()) {
+      currentSlideshowIndex = 0;
+      reshuffleForNextPass();
+    }
     showTurn();
+  }
+
+  /**
+   * Gives the next pass through the files a fresh order. The list is shuffled once when it is
+   * loaded and then walked in order, so without this every pass after the first would replay the
+   * order the slideshow opened with.
+   */
+  private void reshuffleForNextPass() {
+    if (items.size() < 2 || !isRandomizeEnabled()) {
+      return;
+    }
+    SlideshowItem closedThePass = items.get(items.size() - 1);
+    Collections.shuffle(items);
+    // The file that ended the last pass must not also open this one. A reshuffle is not much use
+    // if the seam between passes is where the same picture shows up twice in a row.
+    if (items.get(0) == closedThePass) {
+      Collections.swap(items, 0, 1 + random.nextInt(items.size() - 1));
+    }
   }
 
   private void showImage(final int myTurn, Uri uri) {
@@ -561,10 +595,14 @@ public class SlideshowManager {
   }
 
   private void maybeShuffle() {
-    if (prefs.getBoolean(
-        clockActivity.getString(R.string.setting_key_slideshow_randomize), false)) {
+    if (isRandomizeEnabled()) {
       Collections.shuffle(items);
     }
+  }
+
+  private boolean isRandomizeEnabled() {
+    return prefs.getBoolean(
+        clockActivity.getString(R.string.setting_key_slideshow_randomize), false);
   }
 
   /** How many files the running slideshow has loaded; 0 until {@link #startSlideshow()} runs. */
@@ -636,11 +674,7 @@ public class SlideshowManager {
       slideshowView = kenBurnsView;
       kenBurnsView.setTransitionGenerator(new ZoomOnlyTransitionGenerator(10000));
     }
-    imageDuration =
-        Integer.parseInt(
-            prefs.getString(
-                clockActivity.getString(R.string.setting_key_slideshow_image_stay_duration),
-                "15000"));
+    imageDuration = readImageDuration(clockActivity, prefs);
     videoLength = readVideoLength();
     videoSoundEnabled =
         prefs.getBoolean(
@@ -662,6 +696,44 @@ public class SlideshowManager {
             String.format("Slideshow {%s}, {%s}, {%s}", effect, items.size(), imageDuration),
             Toast.LENGTH_SHORT)
         .show();
+  }
+
+  /**
+   * Image duration in milliseconds. The setting is a slider in seconds; {@link
+   * #migrateImageDuration} has already brought any older millisecond value across.
+   */
+  private static int readImageDuration(Context context, SharedPreferences prefs) {
+    migrateImageDuration(context, prefs);
+    return prefs.getInt(
+            context.getString(R.string.setting_key_slideshow_image_stay_duration_seconds),
+            DEFAULT_IMAGE_DURATION_SECONDS)
+        * 1000;
+  }
+
+  /**
+   * Carries the old free-text millisecond setting over to the seconds slider, once. Without this an
+   * upgrading user silently drops back to the default, and the two keys hold different types, so
+   * the old one cannot simply be reused.
+   */
+  public static void migrateImageDuration(Context context, SharedPreferences prefs) {
+    String secondsKey =
+        context.getString(R.string.setting_key_slideshow_image_stay_duration_seconds);
+    if (prefs.contains(secondsKey)) {
+      return;
+    }
+    String millisKey = context.getString(R.string.setting_key_slideshow_image_stay_duration);
+    int seconds = DEFAULT_IMAGE_DURATION_SECONDS;
+    try {
+      String millis = prefs.getString(millisKey, null);
+      if (millis != null) {
+        seconds = Math.round(Integer.parseInt(millis.trim()) / 1000f);
+      }
+    } catch (Exception e) {
+      // Free text: it could be anything. The default is a better answer than a crash.
+      Timber.e("Unusable image duration setting: %s", e.getMessage());
+    }
+    seconds = Math.max(MIN_IMAGE_DURATION_SECONDS, Math.min(MAX_IMAGE_DURATION_SECONDS, seconds));
+    prefs.edit().putInt(secondsKey, seconds).remove(millisKey).apply();
   }
 
   private long readVideoLength() {

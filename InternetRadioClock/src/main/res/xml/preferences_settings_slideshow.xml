@@ -27,12 +27,15 @@
             android:summary="@string/setting.summary.slideshow.randomize"
             android:defaultValue="false"
             />
-        <EditTextPreference
-            android:key="@string/setting.key.slideshow.image.stay.duration"
+        <SeekBarPreference
+            android:key="@string/setting.key.slideshow.image.stay.duration.seconds"
             android:title="@string/setting.name.slideshow.image.stay.duration"
             android:summary="@string/setting.summary.slideshow.image.stay.duration"
-            android:defaultValue="5000"
-            />
+            android:defaultValue="20"
+            android:min="10"
+            android:max="120"
+            app:seekBarIncrement="5"
+            app:showSeekBarValue="true" />
 
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/setting.category.slideshow.video">

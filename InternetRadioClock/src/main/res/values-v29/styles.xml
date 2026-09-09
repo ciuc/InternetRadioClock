@@ -1,0 +1,9 @@
+<resources>
+
+    <!-- API 29+ opt-out of force dark: the app ships a deliberate light theme and
+         its own night profile, so the system must not auto-invert it. -->
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
+
+</resources>

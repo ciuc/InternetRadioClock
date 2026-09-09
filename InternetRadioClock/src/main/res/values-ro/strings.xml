@@ -166,7 +166,7 @@
     <string name="setting.name.slideshow.randomize">Ordine aleatorie</string>
     <string name="setting.summary.slideshow.randomize">Amestecă ordinea imaginilor</string>
     <string name="setting.name.slideshow.image.stay.duration">Durata de afișare a imaginii</string>
-    <string name="setting.summary.slideshow.image.stay.duration">Cât timp rămâne afișată fiecare imagine</string>
+    <string name="setting.summary.slideshow.image.stay.duration">Cât timp rămâne afișată fiecare imagine (secunde)</string>
     <string name="setting.summary.slideshow.media">Alege imaginile și videoclipurile de afișat în fundal\nS-ar putea să nu funcționeze cu multe fișiere\n[%1$d imagini, %2$d videoclipuri selectate]</string>
     <string name="setting.name.slideshow.select_folder">Alege folderul cu fișiere</string>
     <string name="setting.summary.slideshow.folder.none">Imaginile și videoclipurile noi din acest folder vor fi preluate automat pentru slideshow\n[niciun folder ales]</string>
@@ -318,6 +318,9 @@
         <item>5 secunde</item>
         <item>10 secunde</item>
         <item>20 de secunde</item>
+        <item>30 de secunde</item>
+        <item>40 de secunde</item>
         <item>60 de secunde</item>
+        <item>120 de secunde</item>
     </string-array>
 </resources>

@@ -46,6 +46,10 @@ public class SettingsSlideshowFragment extends PreferenceFragmentCompat {
 
   @Override
   public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+    // Before the screen is inflated: the slider reads its value as an int, and an upgrading user
+    // still has the old duration stored as a millisecond string under a different key.
+    SlideshowManager.migrateImageDuration(
+        requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()));
     setPreferencesFromResource(R.xml.preferences_settings_slideshow, rootKey);
     Preference selectImagesPref = findPreference(getString(R.string.setting_key_slideshow_images));
     Preference selectFolderPref = findPreference(getString(R.string.setting_key_slideshow_folder));
