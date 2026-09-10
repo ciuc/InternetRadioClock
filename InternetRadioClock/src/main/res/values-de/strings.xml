@@ -94,6 +94,8 @@
     <string name="setting.name.slideshow.image.stay.duration">Anzeigedauer pro Bild</string>
     <string name="setting.summary.slideshow.image.stay.duration">Wie lange jedes Bild angezeigt wird (Sekunden)</string>
     <string name="setting.summary.slideshow.media">Wähle Bilder und Videos für den Hintergrund\nMit vielen Dateien funktioniert das möglicherweise nicht\n[%1$d Bilder, %2$d Videos ausgewählt]</string>
+    <string name="setting.name.slideshow.face.detection">Gesichtserkennung</string>
+    <string name="setting.summary.slideshow.face.detection">Bei Fotos, die nicht zur Bildschirmausrichtung passen, die Gesichter im Bild behalten, statt die Mitte des Fotos zuzuschneiden</string>
     <string name="setting.name.slideshow.select_folder">Medienordner auswählen</string>
     <string name="setting.summary.slideshow.folder.none">Neue Bilder und Videos in diesem Ordner werden automatisch für die Diashow übernommen\n[kein Ordner ausgewählt]</string>
     <string name="setting.summary.slideshow.folder">Neue Bilder und Videos in diesem Ordner werden automatisch für die Diashow übernommen\n[%1$s]</string>

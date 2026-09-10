@@ -164,6 +164,9 @@
     <string name="setting.name.slideshow.image.stay.duration">Image stay duration</string>
     <string name="setting.summary.slideshow.image.stay.duration">How long to stay on each image (seconds)</string>
     <string name="setting.summary.slideshow.media">Choose images and videos to show in background\nThis might not work with a lot of files\n[%1$d images, %2$d videos selected]</string>
+    <string name="setting.key.slideshow.face.detection" translatable="false">setting.key.slideshow.face.detection</string>
+    <string name="setting.name.slideshow.face.detection">Enable face detection</string>
+    <string name="setting.summary.slideshow.face.detection">On photos that do not match the screen orientation, keep the faces in view instead of cropping to the middle of the photo</string>
 
     <string name="setting.key.slideshow.video.length" translatable="false">setting.key.slideshow.video.length</string>
     <string name="setting.key.slideshow.video.sound" translatable="false">setting.key.slideshow.video.sound</string>

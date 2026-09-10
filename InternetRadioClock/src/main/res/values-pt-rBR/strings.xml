@@ -94,6 +94,8 @@
     <string name="setting.name.slideshow.image.stay.duration">Duração de cada imagem</string>
     <string name="setting.summary.slideshow.image.stay.duration">Por quanto tempo cada imagem fica na tela (segundos)</string>
     <string name="setting.summary.slideshow.media">Escolha as imagens e os vídeos para exibir ao fundo\nIsso pode não funcionar com muitos arquivos\n[%1$d imagens, %2$d vídeos selecionados]</string>
+    <string name="setting.name.slideshow.face.detection">Detecção de rostos</string>
+    <string name="setting.summary.slideshow.face.detection">Nas fotos que não correspondem à orientação da tela, manter os rostos visíveis em vez de recortar o meio da foto</string>
     <string name="setting.name.slideshow.select_folder">Escolher pasta de mídia</string>
     <string name="setting.summary.slideshow.folder.none">Novas imagens e vídeos nesta pasta serão usados automaticamente na apresentação\n[nenhuma pasta escolhida]</string>
     <string name="setting.summary.slideshow.folder">Novas imagens e vídeos nesta pasta serão usados automaticamente na apresentação\n[%1$s]</string>

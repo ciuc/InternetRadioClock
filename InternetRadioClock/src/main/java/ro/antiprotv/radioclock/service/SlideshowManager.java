@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
@@ -25,6 +27,7 @@ import com.bumptech.glide.request.target.Target;
 import com.devbrackets.android.exomedia.core.video.scale.ScaleType;
 import com.devbrackets.android.exomedia.ui.widget.VideoView;
 import com.flaviofaria.kenburnsview.KenBurnsView;
+import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
 import com.flaviofaria.kenburnsview.Transition;
 import com.flaviofaria.kenburnsview.TransitionGenerator;
 import java.util.ArrayList;
@@ -112,6 +115,19 @@ public class SlideshowManager {
   /** Set while the app is in the background, so a video does not keep playing (or sounding). */
   private boolean backgrounded;
 
+  /** How long one Ken Burns move lasts. */
+  private static final long KEN_BURNS_DURATION = 10000;
+
+  private EFFECT effect = EFFECT.NONE;
+
+  /** The movement the chosen effect makes on its own, for pictures with no faces to follow. */
+  private TransitionGenerator defaultTransitionGenerator;
+
+  private boolean faceDetectionEnabled;
+
+  /** Works out where the faces are; see {@link SlideshowFaceFinder} for why that is worth doing. */
+  private final SlideshowFaceFinder faceFinder;
+
   private enum EFFECT {
     NONE,
     PAN_ZOOM,
@@ -170,6 +186,7 @@ public class SlideshowManager {
     this.videoView = videoView;
     this.buttonManager = buttonManager;
     this.profileManager = profileManager;
+    this.faceFinder = new SlideshowFaceFinder(activity);
     imageDuration = DEFAULT_IMAGE_DURATION_SECONDS * 1000;
     // Which of the two image views gets used is settled when the slideshow starts, but never leave
     // it unset: a resume can reach showTurn() before any start has run.
@@ -287,11 +304,81 @@ public class SlideshowManager {
     // Posted before the load, not after: Glide can report a failure from inside into(), and that
     // failure starts the next file. Anything done here afterwards would belong to the wrong turn.
     slideShowhandler.postDelayed(timeout(myTurn), imageDuration);
-    Glide.with(clockActivity)
-        .load(uri)
-        .transition(DrawableTransitionOptions.withCrossFade(1500))
-        .listener(imageLoadListener)
-        .into(slideshowView);
+    if (!faceDetectionEnabled) {
+      loadImage(uri, null);
+      return;
+    }
+    // Where the faces are decides which part of the picture is shown, so it has to be known before
+    // the picture goes up. Only the first showing of a file waits; the answer is kept after that.
+    faceFinder.find(
+        uri,
+        viewportRatio(),
+        region -> {
+          if (myTurn == turn) {
+            loadImage(uri, region);
+          }
+        });
+  }
+
+  /**
+   * @param region where the faces are, or null when this picture is shown the plain way - because
+   *     the setting is off, it already fits the screen, or nobody is in it
+   */
+  private void loadImage(Uri uri, @Nullable SlideshowFaceFinder.FaceRegion region) {
+    applyTransitionGenerator(region);
+    RequestBuilder<Drawable> request =
+        Glide.with(clockActivity)
+            .load(uri)
+            .transition(DrawableTransitionOptions.withCrossFade(1500))
+            .listener(imageLoadListener);
+    if (region != null) {
+      // Replaces the centre crop the view's scale type would otherwise get: same frame, moved off
+      // the middle of the picture and onto the faces.
+      request = request.transform(new SlideshowFaceCrop(region.focusX(), region.focusY()));
+    }
+    request.into(slideshowView);
+  }
+
+  /**
+   * Points the Ken Burns movement at the faces, or puts the effect's own movement back for a
+   * picture that has none.
+   *
+   * <p>Set before the picture is handed over rather than after: the drawable arriving is what
+   * starts a transition, and it has to be the new generator that provides it.
+   */
+  private void applyTransitionGenerator(@Nullable SlideshowFaceFinder.FaceRegion region) {
+    // Left alone entirely while the setting is off, so nothing about the effects changes for
+    // everyone who does not use this.
+    if (!faceDetectionEnabled || slideshowView != kenBurnsView) {
+      return;
+    }
+    if (region == null) {
+      if (defaultTransitionGenerator != null) {
+        kenBurnsView.setTransitionGenerator(defaultTransitionGenerator);
+      }
+    } else if (effect == EFFECT.ZOOM_OUT) {
+      kenBurnsView.setTransitionGenerator(
+          new SlideshowFaceTransitions.ZoomOut(region.faceWithinCrop(), KEN_BURNS_DURATION));
+    } else {
+      kenBurnsView.setTransitionGenerator(
+          new SlideshowFaceTransitions.PanZoom(region.faceWithinCrop(), KEN_BURNS_DURATION));
+    }
+  }
+
+  /**
+   * The shape of the area a picture is shown in, as width over height. The view has usually been
+   * laid out by the time this is asked for, but a slideshow that starts with the activity has not
+   * had one yet, and the screen it fills is the same answer.
+   */
+  private float viewportRatio() {
+    int width = slideshowView.getWidth();
+    int height = slideshowView.getHeight();
+    if (width <= 0 || height <= 0) {
+      DisplayMetrics metrics = clockActivity.getResources().getDisplayMetrics();
+      width = metrics.widthPixels;
+      height = metrics.heightPixels;
+    }
+    return height > 0 ? (float) width / height : 1f;
   }
 
   private void showVideo(final int myTurn, Uri uri) {
@@ -664,16 +751,25 @@ public class SlideshowManager {
     ++turn;
     slideShowhandler.removeCallbacksAndMessages(null);
     slideshowView = slideshowSimpleView;
-    EFFECT effect =
+    effect =
         EFFECT.fromValue(
             prefs.getString(
                 clockActivity.getString(R.string.setting_key_slideshow_effect), "NONE"));
+    defaultTransitionGenerator = null;
     if (effect == EFFECT.PAN_ZOOM) {
       slideshowView = kenBurnsView;
+      defaultTransitionGenerator = new RandomTransitionGenerator();
+      // Set rather than left to the view's own: a previous run under another effect, or one that
+      // was following faces, has already put a generator of its own on this view.
+      kenBurnsView.setTransitionGenerator(defaultTransitionGenerator);
     } else if (effect == EFFECT.ZOOM_OUT) {
       slideshowView = kenBurnsView;
-      kenBurnsView.setTransitionGenerator(new ZoomOnlyTransitionGenerator(10000));
+      defaultTransitionGenerator = new ZoomOnlyTransitionGenerator(KEN_BURNS_DURATION);
+      kenBurnsView.setTransitionGenerator(defaultTransitionGenerator);
     }
+    faceDetectionEnabled =
+        prefs.getBoolean(
+            clockActivity.getString(R.string.setting_key_slideshow_face_detection), false);
     imageDuration = readImageDuration(clockActivity, prefs);
     videoLength = readVideoLength();
     videoSoundEnabled =
@@ -841,6 +937,7 @@ public class SlideshowManager {
     }
     folderLoader.shutdownNow();
     videoProbe.shutdownNow();
+    faceFinder.shutdown();
     INSTANCE = null;
   }
 }

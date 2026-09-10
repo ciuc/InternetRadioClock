@@ -168,6 +168,8 @@
     <string name="setting.name.slideshow.image.stay.duration">Durata de afișare a imaginii</string>
     <string name="setting.summary.slideshow.image.stay.duration">Cât timp rămâne afișată fiecare imagine (secunde)</string>
     <string name="setting.summary.slideshow.media">Alege imaginile și videoclipurile de afișat în fundal\nS-ar putea să nu funcționeze cu multe fișiere\n[%1$d imagini, %2$d videoclipuri selectate]</string>
+    <string name="setting.name.slideshow.face.detection">Detectare fețe</string>
+    <string name="setting.summary.slideshow.face.detection">La fotografiile care nu se potrivesc cu orientarea ecranului, păstrează fețele în cadru în loc să decupeze mijlocul fotografiei</string>
     <string name="setting.name.slideshow.select_folder">Alege folderul cu fișiere</string>
     <string name="setting.summary.slideshow.folder.none">Imaginile și videoclipurile noi din acest folder vor fi preluate automat pentru slideshow\n[niciun folder ales]</string>
     <string name="setting.summary.slideshow.folder">Imaginile și videoclipurile noi din acest folder vor fi preluate automat pentru slideshow\n[%1$s]</string>
