@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The fireworks and confetti that greet every slideshow file while the anniversary effect is on.
+
+  Fills the screen and sits over the clock, which is deliberate: for the three seconds it runs the
+  celebration is meant to be the whole picture. Not clickable, so every tap falls straight through
+  to the clock underneath and nothing about the normal controls changes while it is up.
+-->
+<ro.antiprotv.radioclock.view.AnniversaryOverlayView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/anniversary_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="false"
+    android:focusable="false"
+    android:visibility="gone" />

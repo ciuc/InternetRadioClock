@@ -340,6 +340,25 @@
                 app:srcCompat="@drawable/baseline_slideshow_24"
                 tools:visibility="visible"
                 android:layout_below="@+id/timer_long"/>
+            <!--
+              Opens the hand controls: everything the app draws goes away, the clock included, and
+              the slideshow is stepped through by hand until the user taps back out of it.
+            -->
+            <ImageButton
+                android:id="@+id/button_slideshow_controls"
+                style="@style/imageButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:contentDescription="@string/slideshow.controls.open"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/baseline_touch_app_24"
+                tools:visibility="visible"
+                android:layout_toRightOf="@+id/button_slideshow_enable"
+                android:layout_below="@+id/timer_long"/>
             <Button
                 android:id="@+id/timer_minus1m"
                 style="@style/imageButtonStyle"
@@ -747,5 +766,13 @@
 
 
     </RelativeLayout>
+
+
+    <!-- Over the clock, under the hand controls: the celebration hides the clock for its
+         three seconds, but never the buttons the user is stepping through files with. -->
+    <include layout="@layout/anniversary_overlay" />
+
+    <!-- Last, so that it covers everything else when the slideshow is driven by hand. -->
+    <include layout="@layout/slideshow_controls" />
 
 </RelativeLayout>

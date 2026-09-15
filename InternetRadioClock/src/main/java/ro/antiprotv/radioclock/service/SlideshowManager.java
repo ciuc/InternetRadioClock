@@ -41,6 +41,7 @@ import java.util.concurrent.Executors;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.activity.ClockActivity;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
+import ro.antiprotv.radioclock.view.AnniversaryOverlayView;
 import timber.log.Timber;
 
 public class SlideshowManager {
@@ -61,6 +62,7 @@ public class SlideshowManager {
   private final KenBurnsView kenBurnsView;
   private final ImageView slideshowSimpleView;
   private final VideoView videoView;
+  private final AnniversaryOverlayView anniversaryOverlay;
   private final List<SlideshowItem> items = new ArrayList<>();
   private int currentSlideshowIndex = 0;
   /** Consecutive files that could not be opened; reset by the first one that does. */
@@ -115,6 +117,12 @@ public class SlideshowManager {
   /** Set while the app is in the background, so a video does not keep playing (or sounding). */
   private boolean backgrounded;
 
+  /**
+   * Set while the user is holding the slideshow on one file from the hand controls. Nothing but
+   * those controls moves it on again: no turn is timed, and a video stays where it was stopped.
+   */
+  private boolean paused;
+
   /** How long one Ken Burns move lasts. */
   private static final long KEN_BURNS_DURATION = 10000;
 
@@ -124,6 +132,20 @@ public class SlideshowManager {
   private TransitionGenerator defaultTransitionGenerator;
 
   private boolean faceDetectionEnabled;
+
+  /** Whether every file that comes up is greeted with fireworks and confetti. */
+  private boolean anniversaryEnabled;
+
+  /** How long that greeting lasts, in milliseconds. */
+  private long anniversaryDuration;
+
+  /** How much of a celebration to make of it. */
+  private AnniversaryOverlayView.Density anniversaryDensity =
+      AnniversaryOverlayView.Density.LIGHT;
+
+  // Must match android:defaultValue on the slider in res/xml/preferences_settings_slideshow.xml.
+  // The bounds are the overlay's own; see AnniversaryOverlayView.
+  private static final int DEFAULT_ANNIVERSARY_SECONDS = 3;
 
   /** Works out where the faces are; see {@link SlideshowFaceFinder} for why that is worth doing. */
   private final SlideshowFaceFinder faceFinder;
@@ -148,6 +170,7 @@ public class SlideshowManager {
       KenBurnsView kenBurnsView,
       ImageView slideshowSimpleView,
       VideoView videoView,
+      AnniversaryOverlayView anniversaryOverlay,
       ButtonManager buttonManager,
       ProfileManager profileManager) {
     if (INSTANCE == null) {
@@ -158,6 +181,7 @@ public class SlideshowManager {
               kenBurnsView,
               slideshowSimpleView,
               videoView,
+              anniversaryOverlay,
               buttonManager,
               profileManager);
     }
@@ -177,6 +201,7 @@ public class SlideshowManager {
       KenBurnsView kenBurnsView,
       ImageView slideshowSimpleView,
       VideoView videoView,
+      AnniversaryOverlayView anniversaryOverlay,
       ButtonManager buttonManager,
       ProfileManager profileManager) {
     this.prefs = prefs;
@@ -184,6 +209,7 @@ public class SlideshowManager {
     this.kenBurnsView = kenBurnsView;
     this.slideshowSimpleView = slideshowSimpleView;
     this.videoView = videoView;
+    this.anniversaryOverlay = anniversaryOverlay;
     this.buttonManager = buttonManager;
     this.profileManager = profileManager;
     this.faceFinder = new SlideshowFaceFinder(activity);
@@ -213,6 +239,11 @@ public class SlideshowManager {
           videoPrepared = true;
           unreadableStreak = 0;
           applyVideoVolume();
+          // Stepped onto while the slideshow is held: the file had to be started to get a picture
+          // out of it, so stop it now that there is one.
+          if (paused) {
+            pauseVideo();
+          }
           // The player's own figure is the authority, and it is free now that the file is open.
           // Files whose length could not be read up front get positioned properly from here on.
           rememberLength(currentUri(), videoView.getDuration());
@@ -255,6 +286,12 @@ public class SlideshowManager {
     final int myTurn = ++turn;
     slideShowhandler.removeCallbacksAndMessages(null);
 
+    // Started here rather than in showImage(), so that the file being a video, or one that turns
+    // out not to open at all, still gets its welcome.
+    if (anniversaryEnabled) {
+      anniversaryOverlay.start(anniversaryDuration, anniversaryDensity);
+    }
+
     SlideshowItem item = items.get(currentSlideshowIndex);
     if (item.video) {
       showVideo(myTurn, item.uri);
@@ -277,6 +314,104 @@ public class SlideshowManager {
       reshuffleForNextPass();
     }
     showTurn();
+  }
+
+  /**
+   * Steps on to the next file by hand, from the slideshow controls.
+   *
+   * <p>Unlike {@link #advance(int)} this takes no turn to check against: a tap on the button is the
+   * user asking for the next file whatever happens to be on screen at the time.
+   */
+  public void showNext() {
+    step(1);
+  }
+
+  /** Steps back to the file before this one, from the slideshow controls. */
+  public void showPrevious() {
+    step(-1);
+  }
+
+  /**
+   * @param direction 1 to go on, -1 to go back; either way the list wraps round
+   */
+  private void step(int direction) {
+    if (items.isEmpty()) {
+      return;
+    }
+    currentSlideshowIndex += direction;
+    if (currentSlideshowIndex >= items.size()) {
+      currentSlideshowIndex = 0;
+      reshuffleForNextPass();
+    } else if (currentSlideshowIndex < 0) {
+      currentSlideshowIndex = items.size() - 1;
+    }
+    // showTurn() takes a fresh turn of its own, which is what makes everything left over from the
+    // file being stepped away from - a pending tick, a video still opening - harmless.
+    showTurn();
+  }
+
+  /**
+   * Holds the slideshow on the file it is showing, or lets it go again.
+   *
+   * @return true if the slideshow is now held
+   */
+  public boolean togglePause() {
+    if (paused) {
+      letGo();
+    } else {
+      hold();
+    }
+    return paused;
+  }
+
+  public boolean isPaused() {
+    return paused;
+  }
+
+  /** Keeps the current file up: no tick to end its turn, and a video stops where it is. */
+  private void hold() {
+    paused = true;
+    slideShowhandler.removeCallbacksAndMessages(null);
+    if (videoView.getVisibility() == VISIBLE) {
+      pauseVideo();
+    } else if (slideshowView == kenBurnsView) {
+      kenBurnsView.pause();
+    }
+  }
+
+  /**
+   * Lets the slideshow run again. The file it was held on gets a whole turn from here rather than
+   * whatever was left of its own: what the user sees is a full look at the picture they stopped on,
+   * not a moment of it before the slideshow jumps ahead.
+   */
+  private void letGo() {
+    paused = false;
+    if (items.isEmpty()) {
+      return;
+    }
+    if (videoView.getVisibility() == VISIBLE) {
+      try {
+        videoView.start();
+      } catch (Exception e) {
+        Timber.e("Could not restart the slideshow video: %s", e.getMessage());
+      }
+      if (videoLength != VIDEO_FULL_LENGTH) {
+        scheduleTurnEnd(turn, videoLength);
+      }
+    } else {
+      if (slideshowView == kenBurnsView) {
+        kenBurnsView.resume();
+      }
+      scheduleTurnEnd(turn, imageDuration);
+    }
+  }
+
+  private void pauseVideo() {
+    try {
+      videoView.pause();
+    } catch (Exception e) {
+      Timber.e("Could not hold the slideshow video: %s", e.getMessage());
+    }
   }
 
   /**
@@ -303,7 +438,7 @@ public class SlideshowManager {
     slideshowView.setVisibility(VISIBLE);
     // Posted before the load, not after: Glide can report a failure from inside into(), and that
     // failure starts the next file. Anything done here afterwards would belong to the wrong turn.
-    slideShowhandler.postDelayed(timeout(myTurn), imageDuration);
+    scheduleTurnEnd(myTurn, imageDuration);
     if (!faceDetectionEnabled) {
       loadImage(uri, null);
       return;
@@ -337,6 +472,11 @@ public class SlideshowManager {
       request = request.transform(new SlideshowFaceCrop(region.focusX(), region.focusY()));
     }
     request.into(slideshowView);
+    // Stepped onto while the slideshow is held: the arriving picture starts a Ken Burns move of its
+    // own, and a held slideshow should not be moving.
+    if (paused && slideshowView == kenBurnsView) {
+      kenBurnsView.pause();
+    }
   }
 
   /**
@@ -388,7 +528,7 @@ public class SlideshowManager {
     videoPrepared = false;
 
     if (videoLength != VIDEO_FULL_LENGTH) {
-      slideShowhandler.postDelayed(timeout(myTurn), videoLength);
+      scheduleTurnEnd(myTurn, videoLength);
     }
     // A video that never opens would otherwise hold the slideshow for as long as it is playing -
     // forever, when it is set to play in full.
@@ -502,6 +642,17 @@ public class SlideshowManager {
     return () -> advance(myTurn);
   }
 
+  /**
+   * Arms the tick that ends a file's turn. Does nothing while the slideshow is held: a file the
+   * user has stopped on stays up until they move on from it themselves.
+   */
+  private void scheduleTurnEnd(final int myTurn, long delay) {
+    if (paused) {
+      return;
+    }
+    slideShowhandler.postDelayed(timeout(myTurn), delay);
+  }
+
   private Uri currentUri() {
     return items.isEmpty() ? null : items.get(currentSlideshowIndex).uri;
   }
@@ -601,7 +752,10 @@ public class SlideshowManager {
       stopSlideshow();
       showDialogUnreadableSlideshowImages();
     } else {
-      advance(fromTurn);
+      // Round the handler rather than straight on: Glide refuses to have a load started from
+      // inside one of its own callbacks, and a picture that fails reports it from in there.
+      final int failedTurn = fromTurn;
+      slideShowhandler.post(() -> advance(failedTurn));
     }
   }
 
@@ -770,6 +924,23 @@ public class SlideshowManager {
     faceDetectionEnabled =
         prefs.getBoolean(
             clockActivity.getString(R.string.setting_key_slideshow_face_detection), false);
+    anniversaryEnabled =
+        prefs.getBoolean(
+            clockActivity.getString(R.string.setting_key_slideshow_anniversary), false);
+    anniversaryDuration =
+        prefs.getInt(
+                clockActivity.getString(R.string.setting_key_slideshow_anniversary_seconds),
+                DEFAULT_ANNIVERSARY_SECONDS)
+            * 1000L;
+    anniversaryDensity =
+        AnniversaryOverlayView.Density.fromValue(
+            prefs.getString(
+                clockActivity.getString(R.string.setting_key_slideshow_anniversary_density),
+                "LIGHT"));
+    if (!anniversaryEnabled) {
+      // The setting can have been turned off while a run was going; nothing should be left over.
+      anniversaryOverlay.stop();
+    }
     imageDuration = readImageDuration(clockActivity, prefs);
     videoLength = readVideoLength();
     videoSoundEnabled =
@@ -780,6 +951,7 @@ public class SlideshowManager {
             clockActivity.getString(R.string.setting_key_slideshow_video_random_start), false);
     currentSlideshowIndex = 0;
     unreadableStreak = 0;
+    paused = false;
     // backgrounded is deliberately not cleared here. A folder listing started before the app went
     // away can land after it, and starting a video then would play it - sound and all - behind
     // whatever the user is now looking at. onResume is what picks the slideshow back up.
@@ -844,12 +1016,14 @@ public class SlideshowManager {
   }
 
   public void stopSlideshow() {
+    paused = false;
     ++turn;
     slideShowhandler.removeCallbacksAndMessages(null);
     stopVideoPlayback();
     videoView.setVisibility(GONE);
     kenBurnsView.setVisibility(GONE);
     slideshowSimpleView.setVisibility(GONE);
+    anniversaryOverlay.stop();
     buttonManager.unlightButton(R.id.button_slideshow_enable);
   }
 
@@ -870,6 +1044,8 @@ public class SlideshowManager {
     backgrounded = true;
     ++turn;
     slideShowhandler.removeCallbacksAndMessages(null);
+    // Nothing should be drawing frame after frame behind whatever the user has moved on to.
+    anniversaryOverlay.stop();
     videoView.setVolume(0f);
     try {
       videoView.pause();
@@ -926,6 +1102,7 @@ public class SlideshowManager {
   public void destroy() {
     ++turn;
     slideShowhandler.removeCallbacksAndMessages(null);
+    anniversaryOverlay.stop();
     videoView.setOnPreparedListener(null);
     videoView.setOnCompletionListener(null);
     videoView.setOnErrorListener(null);

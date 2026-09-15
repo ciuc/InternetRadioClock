@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -40,6 +41,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -53,6 +56,8 @@ import com.devbrackets.android.exomedia.ui.widget.VideoView;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.mrudultora.colorpicker.IPreviewCallback;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import ro.antiprotv.radioclock.BuildConfig;
 import ro.antiprotv.radioclock.ClockUpdater;
 import ro.antiprotv.radioclock.R;
@@ -311,6 +316,22 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
   private VideoView slideshowVideoView;
   private SlideshowManager slideshowManager;
 
+  /** The transparent layer of back / pause / forward buttons that replaces the UI. */
+  private View slideshowControls;
+
+  private ImageButton slideshowPauseButton;
+  private boolean slideshowControlsShowing;
+
+  /** Enabled only while the controls are up, so that Back leaves them rather than the app. */
+  private OnBackPressedCallback slideshowControlsBackCallback;
+
+  /**
+   * What every view the slideshow controls took off the screen was set to beforehand, so that the
+   * way out puts each one back as it was rather than making them all visible. Some of them - the
+   * timer's fill, the second alarm - are only there some of the time.
+   */
+  private final Map<View, Integer> visibilityBeforeSlideshowControls = new LinkedHashMap<>();
+
   ///////////////////////////////////////////////////////////////////////////
   // State methods
   ///////////////////////////////////////////////////////////////////////////
@@ -430,6 +451,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
             kenBurnsView,
             simpleSlideshowView,
             slideshowVideoView,
+            findViewById(R.id.anniversary_overlay),
             buttonManager,
             profileManager);
 
@@ -441,6 +463,8 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
             slideshowManager.enableSlideshow();
           }
         });
+
+    setUpSlideshowControls();
 
     profileManager.applyProfile();
     BrightnessManager brightnessManager =
@@ -1048,7 +1072,9 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
 
     // Timber.d("Motion disallowed: " + disallowSwipe);
     timerService.stopAlarm();
-    if (disallowSwipe) {
+    // While the slideshow is being driven by hand there is no clock on screen to swipe the font of
+    // or pinch the size of, so the gestures would only change it out of sight.
+    if (disallowSwipe || slideshowControlsShowing) {
       return super.dispatchTouchEvent(event);
     }
     // Pass the touch event to the scale gesture detector first
@@ -1117,6 +1143,99 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     // Schedule a runnable to display UI elements after a delay
     mHideHandler.removeCallbacks(mHidePart2Runnable);
     mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+  // SLIDESHOW HAND CONTROLS
+  ///////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Wires up the layer of back / pause / forward buttons that the user steps through the slideshow
+   * with, and the button that brings it up.
+   */
+  private void setUpSlideshowControls() {
+    slideshowControls = findViewById(R.id.slideshow_controls);
+    slideshowPauseButton = findViewById(R.id.button_slideshow_pause);
+    findViewById(R.id.button_slideshow_controls).setOnClickListener(v -> showSlideshowControls());
+    findViewById(R.id.button_slideshow_previous)
+        .setOnClickListener(v -> slideshowManager.showPrevious());
+    findViewById(R.id.button_slideshow_next).setOnClickListener(v -> slideshowManager.showNext());
+    slideshowPauseButton.setOnClickListener(
+        v -> {
+          slideshowManager.togglePause();
+          updateSlideshowPauseButton();
+        });
+    // A tap anywhere the three buttons are not is the way back to the normal UI. The layer is
+    // clickable in its own right, so that tap lands here rather than on the overlay underneath.
+    slideshowControls.setOnClickListener(v -> hideSlideshowControls());
+    slideshowControlsBackCallback =
+        new OnBackPressedCallback(false) {
+          @Override
+          public void handleOnBackPressed() {
+            hideSlideshowControls();
+          }
+        };
+    getOnBackPressedDispatcher().addCallback(this, slideshowControlsBackCallback);
+  }
+
+  /**
+   * Clears the screen of everything but the slideshow and puts the three controls over it.
+   *
+   * <p>The clock goes too, which is what {@link #hide()} on its own does not do: that takes away
+   * the controls and leaves the clock, and here the picture is meant to be all there is.
+   */
+  private void showSlideshowControls() {
+    if (slideshowControlsShowing) {
+      return;
+    }
+    if (!slideshowManager.isSlideshowEnabled()) {
+      Toast.makeText(this, R.string.slideshow_controls_not_running, Toast.LENGTH_SHORT).show();
+      return;
+    }
+    slideshowControlsShowing = true;
+    // Takes the toolbar and the button panel away, and puts the system bars into hiding with them.
+    hide();
+    ViewGroup overlay = findViewById(R.id.overlay);
+    visibilityBeforeSlideshowControls.clear();
+    for (int i = 0; i < overlay.getChildCount(); i++) {
+      View child = overlay.getChildAt(i);
+      // What the slideshow itself draws with stays, and so does the panel hide() already owns.
+      if (child == kenBurnsView
+          || child == simpleSlideshowView
+          || child == slideshowVideoView
+          || child == mControlsView) {
+        continue;
+      }
+      visibilityBeforeSlideshowControls.put(child, child.getVisibility());
+      child.setVisibility(GONE);
+    }
+    updateSlideshowPauseButton();
+    slideshowControls.setVisibility(VISIBLE);
+    slideshowControlsBackCallback.setEnabled(true);
+  }
+
+  /** Puts the clock and the controls back, exactly as they were before the buttons went up. */
+  private void hideSlideshowControls() {
+    if (!slideshowControlsShowing) {
+      return;
+    }
+    slideshowControlsShowing = false;
+    slideshowControlsBackCallback.setEnabled(false);
+    slideshowControls.setVisibility(GONE);
+    for (Map.Entry<View, Integer> entry : visibilityBeforeSlideshowControls.entrySet()) {
+      entry.getKey().setVisibility(entry.getValue());
+    }
+    visibilityBeforeSlideshowControls.clear();
+    show();
+  }
+
+  private void updateSlideshowPauseButton() {
+    boolean held = slideshowManager.isPaused();
+    slideshowPauseButton.setImageResource(
+        held ? R.drawable.baseline_play_arrow_48 : R.drawable.baseline_pause_48);
+    slideshowPauseButton.setContentDescription(
+        getString(
+            held ? R.string.slideshow_controls_resume : R.string.slideshow_controls_pause));
   }
 
   /**

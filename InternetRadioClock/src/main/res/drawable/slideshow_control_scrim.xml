@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A barely-there disc behind each slideshow control. The buttons are meant to stay out of the way
+  of the picture, but a white icon on its own disappears entirely over a bright photo; this is just
+  enough to find them by on anything.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#59000000" />
+</shape>

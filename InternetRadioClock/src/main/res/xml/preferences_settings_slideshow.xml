@@ -33,6 +33,31 @@
             android:summary="@string/setting.summary.slideshow.face.detection"
             android:defaultValue="false"
             />
+        <SwitchPreference
+            android:key="@string/setting.key.slideshow.anniversary"
+            android:title="@string/setting.name.slideshow.anniversary"
+            android:summary="@string/setting.summary.slideshow.anniversary"
+            android:defaultValue="false"
+            />
+        <ListPreference
+            android:defaultValue="LIGHT"
+            android:dependency="@string/setting.key.slideshow.anniversary"
+            android:entries="@array/slideshow_anniversary_density_human_readable"
+            android:entryValues="@array/slideshow_anniversary_density"
+            android:key="@string/setting.key.slideshow.anniversary.density"
+            android:summary="%s"
+            android:title="@string/setting.name.slideshow.anniversary.density" />
+        <!-- The bounds are AnniversaryOverlayView's own; it holds anything else to them. -->
+        <SeekBarPreference
+            android:dependency="@string/setting.key.slideshow.anniversary"
+            android:key="@string/setting.key.slideshow.anniversary.seconds"
+            android:title="@string/setting.name.slideshow.anniversary.duration"
+            android:summary="@string/setting.summary.slideshow.anniversary.duration"
+            android:defaultValue="3"
+            android:min="2"
+            android:max="10"
+            app:seekBarIncrement="1"
+            app:showSeekBarValue="true" />
         <SeekBarPreference
             android:key="@string/setting.key.slideshow.image.stay.duration.seconds"
             android:title="@string/setting.name.slideshow.image.stay.duration"

@@ -167,6 +167,14 @@
     <string name="setting.key.slideshow.face.detection" translatable="false">setting.key.slideshow.face.detection</string>
     <string name="setting.name.slideshow.face.detection">Enable face detection</string>
     <string name="setting.summary.slideshow.face.detection">On photos that do not match the screen orientation, keep the faces in view instead of cropping to the middle of the photo</string>
+    <string name="setting.key.slideshow.anniversary" translatable="false">setting.key.slideshow.anniversary</string>
+    <string name="setting.name.slideshow.anniversary">Anniversary effect</string>
+    <string name="setting.summary.slideshow.anniversary">Welcome every picture with fireworks and confetti. The celebration covers the clock while it lasts</string>
+    <string name="setting.key.slideshow.anniversary.seconds" translatable="false">setting.key.slideshow.anniversary.seconds</string>
+    <string name="setting.name.slideshow.anniversary.duration">Celebration length</string>
+    <string name="setting.summary.slideshow.anniversary.duration">How long the fireworks and confetti last on each picture (seconds)</string>
+    <string name="setting.key.slideshow.anniversary.density" translatable="false">setting.key.slideshow.anniversary.density</string>
+    <string name="setting.name.slideshow.anniversary.density">Celebration size</string>
 
     <string name="setting.key.slideshow.video.length" translatable="false">setting.key.slideshow.video.length</string>
     <string name="setting.key.slideshow.video.sound" translatable="false">setting.key.slideshow.video.sound</string>
@@ -304,6 +312,17 @@
         <item>No effect</item>
         <item>Pan/Zoom (Ken Burns effect)</item>
         <item>Zoom out</item>
+    </string-array>
+    <!-- Must match AnniversaryOverlayView.Density. -->
+    <string-array name="slideshow_anniversary_density" translatable="false">
+        <item>LIGHT</item>
+        <item>MEDIUM</item>
+        <item>FULL</item>
+    </string-array>
+    <string-array name="slideshow_anniversary_density_human_readable">
+        <item>Light</item>
+        <item>Medium (twice as much)</item>
+        <item>Full (three times as much)</item>
     </string-array>
     <!-- Milliseconds to stay on a video; 0 means play it to the end. -->
     <string-array name="slideshow_video_length" translatable="false">
@@ -788,6 +807,12 @@
     <string name="slideshow_empty_dialog_msg">Nothing selected. Use the button on the toolbar to select some images or videos.</string>
     <string name="slideshow_no_picker">No file picker is available on this device, so images and videos cannot be selected.</string>
     <string name="slideshow_unreadable_dialog_msg">The selected files can no longer be opened. They may have been deleted or moved, or the app that provided them withdrew access. Please select them again.</string>
+    <string name="slideshow.controls.open">Slideshow controls</string>
+    <string name="slideshow.controls.previous">Previous file</string>
+    <string name="slideshow.controls.next">Next file</string>
+    <string name="slideshow.controls.pause">Pause the slideshow</string>
+    <string name="slideshow.controls.resume">Resume the slideshow</string>
+    <string name="slideshow.controls.not_running">Start the slideshow first.</string>
 
     <string name="setting.name.slideshow.select_images">Select Images and Videos</string>
     <string name="setting.name.slideshow.select_folder">Select Media Folder</string>

@@ -25,6 +25,20 @@
         <item name="android:minHeight">48dp</item>
     </style>
 
+    <!--
+      The hand controls that sit over the slideshow. Kept faint, because the picture behind them is
+      the point - but not invisible, which is what a white icon on nothing becomes over a bright
+      photo. Generous padding: they are aimed at from across a room, not a hand's length away.
+    -->
+    <style name="slideshowControlButtonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:alpha">0.85</item>
+        <item name="android:background">@drawable/slideshow_control_scrim</item>
+        <item name="android:padding">24dp</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
     </style>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The hand controls for the slideshow. Fills the screen and sits over everything, so that while it
+  is up the picture is all there is to see: the clock and the rest of the controls are taken away
+  by ClockActivity, and the three buttons here are what is left.
+
+  Clickable in its own right, because a tap that misses the three buttons is how the user gets the
+  normal UI back - it must land here rather than fall through to the overlay underneath.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/slideshow_controls"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="gone">
+
+    <ImageButton
+        android:id="@+id/button_slideshow_previous"
+        style="@style/slideshowControlButtonStyle"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="24dp"
+        android:contentDescription="@string/slideshow.controls.previous"
+        app:srcCompat="@drawable/baseline_skip_previous_48" />
+
+    <ImageButton
+        android:id="@+id/button_slideshow_pause"
+        style="@style/slideshowControlButtonStyle"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/slideshow.controls.pause"
+        app:srcCompat="@drawable/baseline_pause_48" />
+
+    <ImageButton
+        android:id="@+id/button_slideshow_next"
+        style="@style/slideshowControlButtonStyle"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/slideshow.controls.next"
+        app:srcCompat="@drawable/baseline_skip_next_48" />
+
+</RelativeLayout>
