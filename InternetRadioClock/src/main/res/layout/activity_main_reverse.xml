@@ -71,6 +71,17 @@
             android:textSize="50sp"
             android:layout_marginTop="0dp"
             />
+        <!-- Three-day forecast. WeatherManager re-anchors it every time the clock moves. -->
+        <include
+            android:id="@+id/weather_bar"
+            layout="@layout/weather_bar"
+            android:layout_marginTop="@dimen/weather_bar_clock_gap"
+            android:layout_marginBottom="@dimen/weather_bar_clock_gap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/fullscreen_content"
+            android:layout_centerHorizontal="true" />
+
         <ImageView
             android:id="@+id/battery_icon"
             android:layout_width="wrap_content"
@@ -509,6 +520,23 @@
             android:textColor="@color/button.color.off"
             app:srcCompat="@drawable/outline_volume_up_24" />
 
+        <!-- Cycles the forecast off -> small -> big, the way the date button cycles its own. -->
+        <ImageButton
+            android:id="@+id/weather_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/volume_up_button"
+            android:layout_alignRight="@+id/volume_up_button"
+            android:layout_below="@+id/volume_up_button"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/memory"
+            android:clickable="true"
+            android:contentDescription="@string/weather.button.description"
+            android:scaleType="center"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/ic_weather_partly_cloudy" />
+
         <ImageButton
             android:id="@+id/volume_down_button"
             style="?metaButtonBarButtonStyle"
@@ -792,5 +820,8 @@
 
     <!-- Last, so that it covers everything else when the slideshow is driven by hand. -->
     <include layout="@layout/slideshow_controls" />
+
+    <!-- The hour-by-hour forecast, over everything, for as long as a day in the bar is tapped. -->
+    <include layout="@layout/weather_hourly" />
 
 </RelativeLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ro.antiprotv.radioclock.preference.WeatherLocationPreference
+        android:key="@string/setting.key.weather.location"
+        android:persistent="false"
+        android:title="@string/setting.name.weather.location" />
+
+    <ListPreference
+        android:defaultValue="celsius"
+        android:entries="@array/weather_unit_names"
+        android:entryValues="@array/weather_unit_values"
+        android:key="@string/setting.key.weather.units"
+        android:summary="%s"
+        android:title="@string/setting.name.weather.units" />
+
+    <Preference
+        android:persistent="false"
+        android:selectable="false"
+        android:summary="@string/setting.summary.weather.where" />
+
+    <Preference
+        android:persistent="false"
+        android:selectable="false"
+        android:summary="@string/setting.summary.weather.attribution" />
+</PreferenceScreen>

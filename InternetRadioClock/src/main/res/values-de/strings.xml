@@ -346,4 +346,54 @@
     <string name="cheers.text">"<![CDATA[ <p>Zuerst einmal danke, dass du die Internet Radio Clock heruntergeladen hast und benutzt.</p> <p>Ich habe diese App in meiner Freizeit entwickelt, einfach zum Spaß, aber auch mit dem Anspruch, eine gute Gesamtqualität zu halten und sie ständig zu verbessern.</p> <p>Diese App ist und bleibt immer <b>kostenlos</b> und <b>ohne Werbung</b>. Alle Funktionen sind immer enthalten, <b>ohne In-App-Käufe</b>.</p> <p>Wenn sie dir gefällt, trink ein Bier auf mich. Und wenn ich auch eins auf dich trinken soll, gib 5 Sterne :)</p>  <p>Prost!</p> </body> </html> ]]>     "</string>
 
     <string name="about.text">"<![CDATA[     <html>     <body style="font-size:8px;">     <style>     p,li{font-weight:normal}     </style>     <h1>Simple Radio Clock<h1> <p>Diese einfache App zeigt die Uhr im Vollbildmodus an und hat 5 Tasten, die jeweils mit einem Radiostream belegt sind.</p> <p>Ab Werk ist sie mit Radio Guerrilla, Tananana und RockFM aus Rumänien, RadioBOB aus Deutschland und Zodiac aus Irland konfiguriert. Diese kannst du ändern und du kannst bis zu 8 Tasten haben.</p> <p> <b>Umkehren</b><br> Ändert die Bildschirmausrichtung. Je nach Lage der Lautstärketasten kann das praktisch sein.<br> <br> <b>Einstellungen</b><br> in diesem Bereich kannst du einige nützliche Dinge einstellen: <ul> <li>Schriftart der Uhr: du kannst aus vielen Schriftarten für die Anzeige der Uhr wählen.</li> <li>Farbe der Uhr</li> <li>Bildschirmhelligkeit (überschreibt die Einstellungen des Telefons)</li> <li>Größe der Uhr</li> <li>Anzeige der Sekunden aktivieren/deaktivieren</li> <li>12-Stunden-Uhr mit oder ohne Anzeige von am/pm aktivieren</li> <li>Bewegung der Uhr auf dem Bildschirm aktivieren/deaktivieren; standardmäßig wandert die Uhr durch die Bildschirmecken - wichtig, wenn du ein AMOLED-Display hast (ein Bild lange auf einem AMOLED-Bildschirm stehen zu lassen, kann den Bildschirm beschädigen)</li> <li>eigene Einschlafzeit: die App hat eine Sleep-Taste, die durch einige vordefinierte Einschlafzeiten blättert (15, 20, 30 Minuten); hier kannst du deine bevorzugte hinzufügen -> Die Einschlaffunktion aktivierst du über die Sleep-Taste auf dem Hauptbildschirm. </li> <li>eigene Schlummerzeit: du kannst deine eigene Schlummerzeit festlegen (standardmäßig 10 Minuten)</li> <li>Sender-/Weckertasten vertauschen: setzt die Radiotasten nach oben und die Weckertasten nach unten. Das kann bei bestimmten Telefonhalterungen hilfreich sein.</li> <li>das Querformat entsperren, sodass die Uhr der Ausrichtung des Telefons folgt; außerdem die Möglichkeit, die Uhr senkrecht darzustellen (mit Stunden, Minuten und/oder Sekunden untereinander).</li> <li>du kannst die Anzeige des Akkustands aktivieren; bitte beachte, dass diese Funktion noch im Beta-Stadium ist und möglicherweise nicht auf allen Geräten immer funktioniert.</li> </ul> <b>Tasten konfigurieren</b> <ul> <li>eine Speichertaste bearbeiten (die Stream-Adresse)</li> <li>einer Taste eine Beschriftung zuweisen (wird anstelle der Nummer angezeigt) - das geht auch mit einem langen Tippen auf eine Taste; mit einem langen Tippen kannst du eine Taste auch entfernen</li> <li>bis zu 8 Tasten aktivieren (füge einfach die Adresse deines Lieblingsradios hinzu)</li> </ul> <b>Sendersuche</b> <ul> <li>du kannst einen Radiostream über die Auswahllisten und das Namensfeld suchen (der Name muss nicht exakt sein) und das Radio einem Speicher zuweisen. Die App schlägt sogar eine Beschriftung vor ;)</li> <li>bitte bedenke, dass die Liste nicht vollständig und möglicherweise nicht zu 100 % korrekt ist; wenn du ein Radio hast, das ich in die Liste aufnehmen soll, schick mir eine E-Mail</li> <li>die App merkt sich jetzt das zuletzt verwendete Land und die zuletzt verwendete Sprache</li> </ul> <b>Nachtprofil</b> <ul> <li>du kannst einen anderen Satz von Einstellungen festlegen und ihn per Tastendruck aktivieren (zum Beispiel für die Nacht eine größere Uhr ohne Sekunden oder in Rot und mit 50 % Helligkeit, während sie tagsüber kleiner, grün, mit Sekunden und heller ist)</li> <li>du kannst auch eine Start- und eine Endzeit für das \"Nachtprofil\" festlegen. Dadurch werden die Nacht-Einstellungen automatisch zur angegebenen Zeit angewendet</li> </ul>  <b>Wecker</b> <p>Profi-Tipp: wenn der Wecker losgeht, tippe auf den Bildschirm (oder auf die Häkchen-Taste), um ihn abzubrechen, ohne das Radio zu stoppen;<br>wenn der Wecker spielt, drücke die Abbrechen-Taste (mit \"x\" markiert), um den Wecker zu stoppen, ohne das Radio abzuspielen; der nächste Wecker wird automatisch aktiviert.</p> <ul> <li>du kannst bis zu zwei Wecker einrichten, die das Radio zur festgelegten Zeit starten. Es spielt das zuletzt gehörte Radio oder ein Radio, das du in den Einstellungen wählst. Wenn keine Internetverbindung besteht, wird der Standard-Weckton abgespielt.</li> <li><b>du kannst wiederkehrende Wecker für verschiedene Wochentage einrichten (zum Beispiel einen für Werktage, einen fürs Wochenende)</b></li> <li>es gibt auch eine Schlummerfunktion mit 10 Minuten Schlummerzeit; du kannst auch deine eigene Schlummerzeit festlegen.</li> <li>du kannst den ansteigenden Ton aktivieren: das Radio startet leise und wird alle 10 Sekunden lauter. Beachte, dass dabei nicht die Gerätelautstärke erhöht wird (die, die über die Lautstärketasten gesteuert wird). <li>du kannst einen Sender festlegen, mit dem der Wecker immer startet</li> </ul> <p><span style=\"color:red\">Ab Android 14 musst du eine spezielle Berechtigung erteilen, um die Weckerfunktion nutzen zu können.</span></p> <p> <b>*** ACHTUNG: bitte benutze diese App nicht als deinen Haupt-Wecker. Verwende zum Aufwachen immer deinen gewohnten Wecker. ***</b> </p>  <p>Ich habe versucht, sie so einfach wie möglich zu halten, aber wenn du Ideen hast oder denkst, dass sie verbessert werden kann, schreib mir an meine Gmail-Adresse cristi.ciuc</p> <p>Der Code ist Open Source und auf GitHub zu finden: https://github.com/ciuc/InternetRadioClock</p> ]]>     "</string>
+    <!-- Wetter -->
+    <string name="category_title_weather">Wetter</string>
+    <string name="category_summary_weather">Die Dreitagesvorhersage neben der Uhr anzeigen</string>
+    <string name="setting.name.weather.enabled">Wetter anzeigen</string>
+    <string name="setting.summary.weather.enabled">Heute und die nächsten zwei Tage, neben der Uhr</string>
+    <string name="setting.name.weather.location">Ort</string>
+    <string name="setting.summary.weather.location.none">Nicht festgelegt - zum Suchen deiner Stadt tippen</string>
+    <string name="setting.name.weather.units">Temperatureinheit</string>
+    <string name="setting.summary.weather.where">Das Wetter wird je Profil ein- und ausgeschaltet, bei den übrigen Uhr-Einstellungen: Aussehen &amp; Verhalten für das Tagprofil und der Bildschirm Nachtprofil für das Nachtprofil.</string>
+    <string name="setting.summary.weather.attribution">Vorhersagen von Open-Meteo (open-meteo.com), kostenlos und ohne Konto.</string>
+    <string name="weather.unit.celsius">Celsius (°C)</string>
+    <string name="weather.unit.fahrenheit">Fahrenheit (°F)</string>
+    <string name="weather.location.hint">Stadt oder Ort</string>
+    <string name="weather.location.search">Suchen</string>
+    <string name="weather.location.prompt">Gib eine Stadt ein und suche danach.</string>
+    <string name="weather.location.searching">Suche läuft…</string>
+    <string name="weather.location.pick">Wähle deine Stadt:</string>
+    <string name="weather.location.no_results">Nichts gefunden für „%1$s“.</string>
+    <string name="weather.location.search_failed">Der Wetterdienst ist nicht erreichbar. Prüfe deine Verbindung und versuche es erneut.</string>
+    <string name="weather.button.description">Wetter ein- oder ausblenden</string>
+    <string name="weather.no.location.yet">Wähle zuerst eine Stadt: Einstellungen → Wetter → Ort.</string>
+    <string name="weather.today">Heute</string>
+    <string name="weather.rain.description">%1$d%% Regenwahrscheinlichkeit</string>
+    <string name="weather.hourly.dismiss">Zum Zurückgehen irgendwo tippen</string>
+    <string name="weather.hourly.unavailable">Noch keine stündliche Vorhersage - sie kommt mit der nächsten Aktualisierung.</string>
+    <string name="weather.condition.clear">Klar</string>
+    <string name="weather.condition.partly_cloudy">Teils bewölkt</string>
+    <string name="weather.condition.cloudy">Bewölkt</string>
+    <string name="weather.condition.fog">Nebel</string>
+    <string name="weather.condition.drizzle">Nieselregen</string>
+    <string name="weather.condition.rain">Regen</string>
+    <string name="weather.condition.snow">Schnee</string>
+    <string name="weather.condition.thunderstorm">Gewitter</string>
+    <!-- Jubiläumseffekt und Diashow-Steuerung -->
+    <string name="setting.name.slideshow.anniversary">Jubiläumseffekt</string>
+    <string name="setting.summary.slideshow.anniversary">Jedes Bild mit Feuerwerk und Konfetti begrüßen. Solange die Feier läuft, verdeckt sie die Uhr</string>
+    <string name="setting.name.slideshow.anniversary.density">Größe der Feier</string>
+    <string name="setting.name.slideshow.anniversary.duration">Dauer der Feier</string>
+    <string name="setting.summary.slideshow.anniversary.duration">Wie lange Feuerwerk und Konfetti bei jedem Bild dauern (Sekunden)</string>
+    <string name="slideshow.controls.open">Diashow-Steuerung</string>
+    <string name="slideshow.controls.previous">Vorherige Datei</string>
+    <string name="slideshow.controls.next">Nächste Datei</string>
+    <string name="slideshow.controls.pause">Diashow anhalten</string>
+    <string name="slideshow.controls.resume">Diashow fortsetzen</string>
+    <string name="slideshow.controls.not_running">Starte zuerst die Diashow.</string>
+    <string-array name="slideshow_anniversary_density_human_readable">
+        <item>Wenig</item>
+        <item>Mittel (doppelt so viel)</item>
+        <item>Voll (dreimal so viel)</item>
+    </string-array>
 </resources>

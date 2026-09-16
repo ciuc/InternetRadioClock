@@ -23,6 +23,19 @@ import ro.antiprotv.radioclock.service.TimerService;
 
 /** Thread to manage the clock (update the clock and move it) */
 public class ClockUpdater extends Thread {
+
+  /**
+   * Told whenever the clock hops to a new corner, so that anything anchored to the clock - the
+   * weather bar - can follow it instead of ending up underneath it.
+   */
+  public interface ClockPositionListener {
+    /**
+     * @param clockAtTop the clock has just been pinned against the top edge of the screen
+     * @param dateAboveClock the date line now sits above the clock rather than below it
+     */
+    void onClockPositionChanged(boolean clockAtTop, boolean dateAboveClock);
+  }
+
   private static final int DO_NOT_MOVE_TEXT = 1;
   private static final int MOVE_TEXT = 2;
   private static final List<int[]> LAYOUT_ALIGNS =
@@ -80,6 +93,13 @@ public class ClockUpdater extends Thread {
               paramsDate.addRule(RelativeLayout.BELOW, clockView.getId());
             }
             clockView.setLayoutParams(params);
+            if (positionListener != null) {
+              // Indexes 1 and 4 are the two ALIGN_PARENT_TOP entries; 0 and 3 the two along the
+              // bottom, which are also the ones that put the date above the clock.
+              positionListener.onClockPositionChanged(
+                  layoutListIndex == 1 || layoutListIndex == 4,
+                  layoutListIndex == 0 || layoutListIndex == 3);
+            }
             layoutListIndex++;
             if (layoutListIndex == LAYOUT_ALIGNS.size()) {
               layoutListIndex = 0;
@@ -89,6 +109,7 @@ public class ClockUpdater extends Thread {
       };
 
   private boolean moveText = true;
+  private ClockPositionListener positionListener;
 
   public ClockUpdater(TextView clock, TextView dateView) {
     this.clockView = clock;
@@ -153,6 +174,10 @@ public class ClockUpdater extends Thread {
 
   public void setMoveText(boolean moveText) {
     this.moveText = moveText;
+  }
+
+  public void setPositionListener(ClockPositionListener positionListener) {
+    this.positionListener = positionListener;
   }
 
   private static class MyHandler extends Handler {

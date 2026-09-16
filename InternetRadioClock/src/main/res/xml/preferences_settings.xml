@@ -22,6 +22,11 @@
         app:key="category_snooze_sleep"
         app:summary="@string/category_summary_snooze_sleep"
         app:title="@string/category_title_snooze_sleep" />
+    <Preference
+        app:fragment="ro.antiprotv.radioclock.fragment.SettingsWeatherFragment"
+        app:key="category_weather"
+        app:summary="@string/category_summary_weather"
+        app:title="@string/category_title_weather" />
 
 
     <PreferenceCategory

@@ -33,9 +33,12 @@ import com.flaviofaria.kenburnsview.TransitionGenerator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import ro.antiprotv.radioclock.R;
@@ -65,6 +68,18 @@ public class SlideshowManager {
   private final AnniversaryOverlayView anniversaryOverlay;
   private final List<SlideshowItem> items = new ArrayList<>();
   private int currentSlideshowIndex = 0;
+
+  /**
+   * Whether a run is going. What tells reapplying a profile - which happens for reasons that have
+   * nothing to do with the slideshow - apart from starting one.
+   */
+  private boolean running;
+
+  /**
+   * The randomize setting the order in {@link #items} was built under. A change to it has to
+   * rebuild the order, which is otherwise kept for as long as the files behind it are the same.
+   */
+  private boolean orderRandomized;
   /** Consecutive files that could not be opened; reset by the first one that does. */
   private int unreadableStreak = 0;
   private final Handler slideShowhandler = new Handler();
@@ -114,6 +129,13 @@ public class SlideshowManager {
   private final ExecutorService videoProbe = Executors.newSingleThreadExecutor();
 
   private final Random random = new Random();
+
+  /**
+   * Records what the slideshow does, for working out why files come round as often as they do. Null
+   * in a release build; see {@link SlideshowDebugLog}.
+   */
+  @Nullable private final SlideshowDebugLog debugLog;
+
   /** Set while the app is in the background, so a video does not keep playing (or sounding). */
   private boolean backgrounded;
 
@@ -213,6 +235,7 @@ public class SlideshowManager {
     this.buttonManager = buttonManager;
     this.profileManager = profileManager;
     this.faceFinder = new SlideshowFaceFinder(activity);
+    this.debugLog = SlideshowDebugLog.create(activity);
     imageDuration = DEFAULT_IMAGE_DURATION_SECONDS * 1000;
     // Which of the two image views gets used is settled when the slideshow starts, but never leave
     // it unset: a resume can reach showTurn() before any start has run.
@@ -293,6 +316,9 @@ public class SlideshowManager {
     }
 
     SlideshowItem item = items.get(currentSlideshowIndex);
+    if (debugLog != null) {
+      debugLog.show(currentSlideshowIndex, items.size(), item.uri, item.video, myTurn);
+    }
     if (item.video) {
       showVideo(myTurn, item.uri);
     } else {
@@ -311,7 +337,7 @@ public class SlideshowManager {
     }
     if (++currentSlideshowIndex >= items.size()) {
       currentSlideshowIndex = 0;
-      reshuffleForNextPass();
+      startNextPass("wrapped");
     }
     showTurn();
   }
@@ -338,10 +364,13 @@ public class SlideshowManager {
     if (items.isEmpty()) {
       return;
     }
+    if (debugLog != null) {
+      debugLog.event("MANUAL", "direction=" + direction);
+    }
     currentSlideshowIndex += direction;
     if (currentSlideshowIndex >= items.size()) {
       currentSlideshowIndex = 0;
-      reshuffleForNextPass();
+      startNextPass("stepped-past-end");
     } else if (currentSlideshowIndex < 0) {
       currentSlideshowIndex = items.size() - 1;
     }
@@ -370,6 +399,9 @@ public class SlideshowManager {
 
   /** Keeps the current file up: no tick to end its turn, and a video stops where it is. */
   private void hold() {
+    if (debugLog != null) {
+      debugLog.event("HOLD", "index=" + currentSlideshowIndex);
+    }
     paused = true;
     slideShowhandler.removeCallbacksAndMessages(null);
     if (videoView.getVisibility() == VISIBLE) {
@@ -385,6 +417,9 @@ public class SlideshowManager {
    * not a moment of it before the slideshow jumps ahead.
    */
   private void letGo() {
+    if (debugLog != null) {
+      debugLog.event("LET_GO", "index=" + currentSlideshowIndex);
+    }
     paused = false;
     if (items.isEmpty()) {
       return;
@@ -411,6 +446,22 @@ public class SlideshowManager {
       videoView.pause();
     } catch (Exception e) {
       Timber.e("Could not hold the slideshow video: %s", e.getMessage());
+    }
+  }
+
+  /**
+   * Ends the pass just finished and opens the next one, which means giving the files a fresh order.
+   *
+   * @param reason what brought the pass to an end, for the debug log
+   */
+  private void startNextPass(String reason) {
+    if (debugLog != null) {
+      debugLog.event("PASS_END", "reason=" + reason);
+      debugLog.passEnded();
+    }
+    reshuffleForNextPass();
+    if (debugLog != null) {
+      debugLog.order(isRandomizeEnabled() ? "reshuffled" : "unchanged", items);
     }
   }
 
@@ -747,6 +798,9 @@ public class SlideshowManager {
       return;
     }
     Timber.e("Slideshow file could not be shown: %s (%s)", model, cause);
+    if (debugLog != null) {
+      debugLog.event("UNREADABLE", "streak=" + (unreadableStreak + 1) + "\tfile=" + model);
+    }
     unreadableStreak++;
     if (unreadableStreak >= items.size()) {
       stopSlideshow();
@@ -791,16 +845,32 @@ public class SlideshowManager {
     return folder != null ? folder : "";
   }
 
+  /** What {@link #loadItems} reports back once the files are in. */
+  private interface OnItemsLoaded {
+    /**
+     * @param keptOrder whether the files that came back were the ones already loaded, so that the
+     *     order being walked and the place reached in it are still there
+     */
+    void ready(boolean keptOrder);
+  }
+
   /**
    * Fills {@link #items}, then runs {@code onReady} on the main thread. Reading a folder means
    * querying a provider for every file in it, so that path goes through a background thread; the
    * saved-list path is only a JSON parse and stays inline.
    */
-  private void loadItems(Runnable onReady) {
+  private void loadItems(OnItemsLoaded onReady) {
     String folder = savedFolder();
+    if (debugLog != null) {
+      debugLog.event(
+          "LOAD",
+          "source="
+              + (folder.isEmpty() ? "picked-files" : "folder")
+              + "\tby="
+              + SlideshowDebugLog.callers(8));
+    }
     if (folder.isEmpty()) {
-      loadSavedItems();
-      onReady.run();
+      onReady.ready(loadSavedItems());
       return;
     }
     final int generation = ++loadGeneration;
@@ -815,30 +885,71 @@ public class SlideshowManager {
                 if (generation != loadGeneration
                     || clockActivity.isDestroyed()
                     || clockActivity.isFinishing()) {
+                  if (debugLog != null) {
+                    debugLog.event(
+                        "LOAD_DROPPED",
+                        "generation="
+                            + generation
+                            + "\tcurrent="
+                            + loadGeneration
+                            + "\tfound="
+                            + found.size());
+                  }
                   return;
                 }
-                items.clear();
-                items.addAll(found);
-                maybeShuffle();
-                onReady.run();
+                onReady.ready(adopt(found));
               });
         });
   }
 
-  private void loadSavedItems() {
-    ++loadGeneration;
+  /**
+   * Takes on a freshly read list of files - unless it holds the very files already loaded, under
+   * the randomize setting the current order was built under. Then the order and the place reached
+   * in it are kept, because they are worth more than a fresh shuffle: they are what stops a file
+   * coming round again before the rest of the folder has had its turn.
+   *
+   * @return true if the list already loaded was kept
+   */
+  private boolean adopt(List<SlideshowItem> found) {
+    boolean randomize = isRandomizeEnabled();
+    if (!items.isEmpty() && randomize == orderRandomized && sameFiles(found)) {
+      return true;
+    }
     items.clear();
-    items.addAll(
-        SlideshowItems.parse(
-            prefs.getString(clockActivity.getString(R.string.setting_key_slideshow_images), "[]")));
-    Timber.d("Loaded %s saved slideshow files", items.size());
-    maybeShuffle();
-  }
-
-  private void maybeShuffle() {
-    if (isRandomizeEnabled()) {
+    items.addAll(found);
+    orderRandomized = randomize;
+    if (randomize) {
       Collections.shuffle(items);
     }
+    currentSlideshowIndex = 0;
+    return false;
+  }
+
+  /** Whether a freshly read list holds exactly the files already loaded, in any order. */
+  private boolean sameFiles(List<SlideshowItem> found) {
+    if (found.size() != items.size()) {
+      return false;
+    }
+    Set<String> loaded = new HashSet<>();
+    for (SlideshowItem item : items) {
+      loaded.add(item.uri.toString());
+    }
+    for (SlideshowItem item : found) {
+      // A file the loaded list does not have, or one it has fewer copies of: not the same list.
+      if (!loaded.remove(item.uri.toString())) {
+        return false;
+      }
+    }
+    return loaded.isEmpty();
+  }
+
+  private boolean loadSavedItems() {
+    ++loadGeneration;
+    List<SlideshowItem> found =
+        SlideshowItems.parse(
+            prefs.getString(clockActivity.getString(R.string.setting_key_slideshow_images), "[]"));
+    Timber.d("Loaded %s saved slideshow files", found.size());
+    return adopt(found);
   }
 
   private boolean isRandomizeEnabled() {
@@ -877,13 +988,13 @@ public class SlideshowManager {
     // an empty slideshow. Leave the profile alone when there really is nothing to show, otherwise
     // the next tap on the button would be read as "disable".
     loadItems(
-        () -> {
+        keptOrder -> {
           if (items.isEmpty()) {
             showDialogEmptySlideshowImages();
             return;
           }
           profileManager.enableSlideshow();
-          startLoadedSlideshow();
+          startLoadedSlideshow(keptOrder);
         });
   }
 
@@ -896,14 +1007,76 @@ public class SlideshowManager {
     loadItems(this::startLoadedSlideshow);
   }
 
-  /** The part of starting that needs {@link #items} to be filled already. */
-  private void startLoadedSlideshow() {
+  /**
+   * The part of starting that needs {@link #items} to be filled already.
+   *
+   * <p>Reapplying a profile comes through here for reasons that have nothing to do with the
+   * slideshow: a colour picked, the weather bar turned on, a timer finishing, the night profile
+   * coming round. A run already going is therefore left where it is - the settings are read again,
+   * and the file on screen keeps its turn - rather than being started afresh. Starting afresh would
+   * throw away the pass: the order is shuffled again and walked from the top, which brings files
+   * back long before the rest of the folder has had its turn.
+   *
+   * @param keptOrder whether the load left the running order and the place in it alone
+   */
+  private void startLoadedSlideshow(boolean keptOrder) {
     if (items.isEmpty()) {
       showDialogEmptySlideshowImages();
       return;
     }
+    applySettings();
+    if (keptOrder && running) {
+      // Nothing is touched here on purpose: not the turn, so the tick that ends the file on screen
+      // still stands; not paused, so a slideshow being held by hand stays held. The settings just
+      // read take hold from the next file on.
+      if (debugLog != null) {
+        debugLog.event(
+            "CONTINUE",
+            "index="
+                + currentSlideshowIndex
+                + "\tcount="
+                + items.size()
+                + "\tby="
+                + SlideshowDebugLog.callers(8));
+      }
+      return;
+    }
     ++turn;
     slideShowhandler.removeCallbacksAndMessages(null);
+    unreadableStreak = 0;
+    paused = false;
+    running = true;
+    if (debugLog != null) {
+      debugLog.start(
+          SlideshowDebugLog.callers(8),
+          String.format(
+              Locale.US,
+              "count=%d\trandomize=%b\teffect=%s\timageSeconds=%d\tvideoSeconds=%d\tsource=%s\tindex=%d",
+              items.size(),
+              isRandomizeEnabled(),
+              effect,
+              imageDuration / 1000,
+              videoLength / 1000,
+              savedFolder().isEmpty() ? "picked-files" : "folder",
+              currentSlideshowIndex));
+      debugLog.order("start", items);
+    }
+    // backgrounded is deliberately not cleared here. A folder listing started before the app went
+    // away can land after it, and starting a video then would play it - sound and all - behind
+    // whatever the user is now looking at. onResume is what picks the slideshow back up.
+    // No blanket setVisibility(VISIBLE) here: each file decides which view it needs, and showing
+    // the image view up front would flash the last picture when the slideshow opens on a video.
+    slideShowhandler.post(this::showTurn);
+    buttonManager.lightButton(R.id.button_slideshow_enable);
+    Toast.makeText(
+            clockActivity,
+            String.format("Slideshow {%s}, {%s}, {%s}", effect, items.size(), imageDuration),
+            Toast.LENGTH_SHORT)
+        .show();
+  }
+
+  /** Reads everything the run is steered by. Safe to call again on a slideshow already going. */
+  private void applySettings() {
     slideshowView = slideshowSimpleView;
     effect =
         EFFECT.fromValue(
@@ -949,21 +1122,6 @@ public class SlideshowManager {
     videoRandomStart =
         prefs.getBoolean(
             clockActivity.getString(R.string.setting_key_slideshow_video_random_start), false);
-    currentSlideshowIndex = 0;
-    unreadableStreak = 0;
-    paused = false;
-    // backgrounded is deliberately not cleared here. A folder listing started before the app went
-    // away can land after it, and starting a video then would play it - sound and all - behind
-    // whatever the user is now looking at. onResume is what picks the slideshow back up.
-    // No blanket setVisibility(VISIBLE) here: each file decides which view it needs, and showing
-    // the image view up front would flash the last picture when the slideshow opens on a video.
-    slideShowhandler.post(this::showTurn);
-    buttonManager.lightButton(R.id.button_slideshow_enable);
-    Toast.makeText(
-            clockActivity,
-            String.format("Slideshow {%s}, {%s}, {%s}", effect, items.size(), imageDuration),
-            Toast.LENGTH_SHORT)
-        .show();
   }
 
   /**
@@ -1016,7 +1174,11 @@ public class SlideshowManager {
   }
 
   public void stopSlideshow() {
+    if (debugLog != null) {
+      debugLog.event("STOP", "by=" + SlideshowDebugLog.callers(8));
+    }
     paused = false;
+    running = false;
     ++turn;
     slideShowhandler.removeCallbacksAndMessages(null);
     stopVideoPlayback();
@@ -1041,6 +1203,9 @@ public class SlideshowManager {
    * the settings screen, or keep sounding after the user has left the app altogether.
    */
   public void pauseForBackground() {
+    if (debugLog != null) {
+      debugLog.event("BACKGROUND", "index=" + currentSlideshowIndex);
+    }
     backgrounded = true;
     ++turn;
     slideShowhandler.removeCallbacksAndMessages(null);
@@ -1060,6 +1225,9 @@ public class SlideshowManager {
       return;
     }
     backgrounded = false;
+    if (debugLog != null) {
+      debugLog.event("FOREGROUND", "index=" + currentSlideshowIndex + "\tcount=" + items.size());
+    }
     if (items.isEmpty() || !isSlideshowEnabled()) {
       return;
     }

@@ -8,6 +8,13 @@ import java.text.SimpleDateFormat;
 import ro.antiprotv.radioclock.R;
 
 public abstract class Profile {
+
+  /** Weather bar at full size - what the bar drew at before it could be resized. */
+  public static final int WEATHER_SIZE_BIG = 2;
+
+  /** Weather bar a notch smaller; the first stop of the on-screen button's cycle. */
+  public static final int WEATHER_SIZE_SMALL = 3;
+
   protected int clockColor;
   protected boolean moveText;
   protected boolean showSeconds;
@@ -20,6 +27,8 @@ public abstract class Profile {
   protected String font;
   protected boolean showDate;
   protected int dateSize;
+  protected boolean showWeather;
+  protected int weatherSize;
   protected SharedPreferences prefs;
   protected boolean slideShowEnabled;
 
@@ -34,7 +43,9 @@ public abstract class Profile {
       String font,
       boolean showDate,
       int dateSize,
-      boolean slideShowEnabled) {
+      boolean slideShowEnabled,
+      boolean showWeather,
+      int weatherSize) {
     this.clockColor = clockColor;
     this.clockSize = clockSize;
     this.brightness = brightness;
@@ -45,6 +56,8 @@ public abstract class Profile {
     this.font = font;
     this.showDate = showDate;
     this.dateSize = dateSize;
+    this.showWeather = showWeather;
+    this.weatherSize = weatherSize;
 
     this.clock24h =
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_clock24), false);
@@ -128,6 +141,23 @@ public abstract class Profile {
 
   public void saveShowDate(boolean showDate) {
     this.showDate = showDate;
+  }
+
+  public boolean isShowWeather() {
+    return showWeather;
+  }
+
+  public void saveShowWeather(boolean showWeather) {
+    this.showWeather = showWeather;
+  }
+
+  /** One of {@link #WEATHER_SIZE_BIG} or {@link #WEATHER_SIZE_SMALL}. */
+  public int getWeatherSize() {
+    return weatherSize;
+  }
+
+  public void saveWeatherSize(int weatherSize) {
+    this.weatherSize = weatherSize;
   }
 
   public void saveSlideshowEnabled(boolean slideShowEnabled) {

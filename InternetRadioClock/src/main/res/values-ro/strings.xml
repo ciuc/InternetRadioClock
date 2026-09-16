@@ -325,4 +325,54 @@
         <item>60 de secunde</item>
         <item>120 de secunde</item>
     </string-array>
+    <!-- vremea -->
+    <string name="category_title_weather">Vremea</string>
+    <string name="category_summary_weather">Arată prognoza pe trei zile lângă ceas</string>
+    <string name="setting.name.weather.enabled">Arată vremea</string>
+    <string name="setting.summary.weather.enabled">Astăzi și următoarele două zile, lângă ceas</string>
+    <string name="setting.name.weather.location">Localitate</string>
+    <string name="setting.summary.weather.location.none">Nestabilită - atinge pentru a-ți căuta orașul</string>
+    <string name="setting.name.weather.units">Unități de temperatură</string>
+    <string name="setting.summary.weather.where">Vremea se pornește și se oprește pentru fiecare profil, lângă celelalte setări ale ceasului: Aspect pentru profilul de zi, iar ecranul Profil de noapte pentru cel de noapte.</string>
+    <string name="setting.summary.weather.attribution">Prognoze de la Open-Meteo (open-meteo.com), gratuite și fără cont.</string>
+    <string name="weather.unit.celsius">Celsius (°C)</string>
+    <string name="weather.unit.fahrenheit">Fahrenheit (°F)</string>
+    <string name="weather.location.hint">Oraș sau localitate</string>
+    <string name="weather.location.search">Caută</string>
+    <string name="weather.location.prompt">Scrie un oraș și caută-l.</string>
+    <string name="weather.location.searching">Se caută…</string>
+    <string name="weather.location.pick">Alege-ți orașul:</string>
+    <string name="weather.location.no_results">Nu s-a găsit nimic pentru „%1$s”.</string>
+    <string name="weather.location.search_failed">Serviciul meteo nu a putut fi contactat. Verifică-ți conexiunea și încearcă din nou.</string>
+    <string name="weather.button.description">Arată sau ascunde vremea</string>
+    <string name="weather.no.location.yet">Alege întâi un oraș: Setări → Vremea → Localitate.</string>
+    <string name="weather.today">Astăzi</string>
+    <string name="weather.rain.description">%1$d%% șanse de ploaie</string>
+    <string name="weather.hourly.dismiss">Atinge oriunde pentru a reveni</string>
+    <string name="weather.hourly.unavailable">Încă nu există o prognoză oră de oră - apare la următoarea actualizare.</string>
+    <string name="weather.condition.clear">Senin</string>
+    <string name="weather.condition.partly_cloudy">Parțial noros</string>
+    <string name="weather.condition.cloudy">Înnorat</string>
+    <string name="weather.condition.fog">Ceață</string>
+    <string name="weather.condition.drizzle">Burniță</string>
+    <string name="weather.condition.rain">Ploaie</string>
+    <string name="weather.condition.snow">Ninsoare</string>
+    <string name="weather.condition.thunderstorm">Furtună</string>
+    <!-- efect aniversar și comenzile slideshow -->
+    <string name="setting.name.slideshow.anniversary">Efect aniversar</string>
+    <string name="setting.summary.slideshow.anniversary">Întâmpină fiecare imagine cu artificii și confetti. Cât ține sărbătoarea, aceasta acoperă ceasul</string>
+    <string name="setting.name.slideshow.anniversary.density">Amploarea sărbătorii</string>
+    <string name="setting.name.slideshow.anniversary.duration">Durata sărbătorii</string>
+    <string name="setting.summary.slideshow.anniversary.duration">Cât timp țin artificiile și confetti pe fiecare imagine (secunde)</string>
+    <string name="slideshow.controls.open">Comenzi slideshow</string>
+    <string name="slideshow.controls.previous">Fișierul anterior</string>
+    <string name="slideshow.controls.next">Fișierul următor</string>
+    <string name="slideshow.controls.pause">Pune slideshow-ul pe pauză</string>
+    <string name="slideshow.controls.resume">Reia slideshow-ul</string>
+    <string name="slideshow.controls.not_running">Pornește întâi slideshow-ul.</string>
+    <string-array name="slideshow_anniversary_density_human_readable">
+        <item>Ușor</item>
+        <item>Mediu (de două ori mai mult)</item>
+        <item>Complet (de trei ori mai mult)</item>
+    </string-array>
 </resources>

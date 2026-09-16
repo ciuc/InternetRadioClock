@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  One hour of the hour-by-hour panel. Inflated 24 times into weather_hourly's row rather than
+  written out 24 times here; WeatherHourlyPanel fills it in and colours it like the clock.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:minWidth="54dp"
+    android:orientation="vertical"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp">
+
+    <TextView
+        android:id="@+id/weather_hour_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:textSize="13sp"
+        tools:text="14" />
+
+    <ImageView
+        android:id="@+id/weather_hour_icon"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="5dp"
+        android:contentDescription="@null"
+        app:srcCompat="@drawable/ic_weather_clear" />
+
+    <TextView
+        android:id="@+id/weather_hour_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:includeFontPadding="false"
+        android:textSize="15sp"
+        tools:text="24°" />
+
+    <LinearLayout
+        android:id="@+id/weather_hour_rain_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/weather_hour_rain_icon"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginRight="2dp"
+            android:contentDescription="@null"
+            app:srcCompat="@drawable/ic_weather_rain_chance" />
+
+        <TextView
+            android:id="@+id/weather_hour_rain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:textSize="12sp"
+            tools:text="30%" />
+    </LinearLayout>
+</LinearLayout>

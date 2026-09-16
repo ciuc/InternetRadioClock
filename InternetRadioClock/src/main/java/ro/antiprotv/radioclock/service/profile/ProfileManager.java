@@ -103,6 +103,9 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
         || key.equals(clockActivity.getResources().getString(R.string.setting_key_seconds_night))
         || key.equals(clockActivity.getResources().getString(R.string.setting_key_typeface_night))
         || key.equals(clockActivity.getResources().getString(R.string.setting_key_clockMove_night))
+        || key.equals(clockActivity.getResources().getString(R.string.setting_key_weather_enabled))
+        || key.equals(
+            clockActivity.getResources().getString(R.string.setting_key_weather_enabled_night))
         || key.equals(
             clockActivity.getResources().getString(R.string.setting_key_batteryInClockColor))) {
 
@@ -479,6 +482,30 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
 
   public int dateSize() {
     return currentProfile.dateSize;
+  }
+
+  public boolean isWeatherEnabled() {
+    return currentProfile.showWeather;
+  }
+
+  /**
+   * The flag is set because, unlike the date, this setting also has a switch on the Look and Feel
+   * screen and so is watched by {@link #onSharedPreferenceChanged} - without it every press would
+   * rebuild the profile and reschedule the night tasks.
+   */
+  public void setWeatherEnabled(boolean showWeather) {
+    disableProfileChangeOnSettingChange = true;
+    currentProfile.saveShowWeather(showWeather);
+    clockActivity.applyProfile(currentProfile);
+  }
+
+  public int weatherSize() {
+    return currentProfile.weatherSize;
+  }
+
+  public void setWeatherSize(int weatherSize) {
+    currentProfile.saveWeatherSize(weatherSize);
+    clockActivity.applyProfile(currentProfile);
   }
 
   public void setDateSize(int dateSize) {

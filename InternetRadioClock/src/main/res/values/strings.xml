@@ -846,4 +846,70 @@
     <string name="notification.channel.playback.description">Shown while the radio keeps playing in the background</string>
     <string name="notification.playback.title">Radio playing</string>
     <string name="notification.playback.stop">Stop</string>
+
+    <!-- Weather -->
+    <string name="setting.key.weather.enabled" translatable="false">setting.key.weather.enabled</string>
+    <string name="setting.key.weather.location" translatable="false">setting.key.weather.location</string>
+    <string name="setting.key.weather.location.name" translatable="false">setting.key.weather.location.name</string>
+    <string name="setting.key.weather.latitude" translatable="false">setting.key.weather.latitude</string>
+    <string name="setting.key.weather.longitude" translatable="false">setting.key.weather.longitude</string>
+    <string name="setting.key.weather.units" translatable="false">setting.key.weather.units</string>
+    <string name="setting.key.weather.enabled.night" translatable="false">setting.key.weather.enabled.night</string>
+    <string name="setting.key.weather.size" translatable="false">setting.key.weather.size</string>
+    <string name="setting.key.weather.size.night" translatable="false">setting.key.weather.size.night</string>
+
+    <string name="category_title_weather">Weather</string>
+    <string name="category_summary_weather">Show a three-day forecast next to the clock</string>
+    <string name="setting.name.weather.enabled">Show the weather</string>
+    <string name="setting.summary.weather.enabled">Today and the next two days, next to the clock</string>
+    <string name="setting.name.weather.location">Location</string>
+    <string name="setting.summary.weather.location.none">Not set - tap to search for your town</string>
+    <string name="setting.name.weather.units">Temperature units</string>
+    <string name="setting.summary.weather.where">The weather is switched on and off per profile, next to the other clock settings: Look &amp; Feel for the day profile, and the night profile screen for the night one.</string>
+    <string name="setting.summary.weather.attribution">Forecasts by Open-Meteo (open-meteo.com), free and without an account.</string>
+
+    <string-array name="weather_unit_names">
+        <item>@string/weather.unit.celsius</item>
+        <item>@string/weather.unit.fahrenheit</item>
+    </string-array>
+    <string-array name="weather_unit_values" translatable="false">
+        <item>celsius</item>
+        <item>fahrenheit</item>
+    </string-array>
+    <string name="weather.unit.celsius">Celsius (°C)</string>
+    <string name="weather.unit.fahrenheit">Fahrenheit (°F)</string>
+
+    <string name="weather.location.hint">Town or city</string>
+    <string name="weather.location.search">Search</string>
+    <string name="weather.location.prompt">Type a town and search for it.</string>
+    <string name="weather.location.searching">Searching…</string>
+    <string name="weather.location.pick">Pick your town:</string>
+    <string name="weather.location.no_results">Nothing found for “%1$s”.</string>
+    <string name="weather.location.search_failed">Could not reach the weather service. Check your connection and try again.</string>
+
+    <string name="weather.button.description">Show or hide the weather</string>
+    <string name="weather.no.location.yet">Pick a town first: Settings \u2192 Weather \u2192 Location.</string>
+
+    <string name="weather.today">Today</string>
+    <!-- Highest and lowest temperature for one day, as shown under the weather icon -->
+    <string name="weather.temperature.format" translatable="false">%1$d° / %2$d°</string>
+    <string name="weather.rain.format" translatable="false">%1$d%%</string>
+    <string name="weather.rain.description">%1$d%% chance of rain</string>
+
+    <!-- The hour by hour panel, reached by tapping one of the three days -->
+    <!-- The day, then the town it is for: "Today · Bucharest" -->
+    <string name="weather.hourly.title" translatable="false">%1$s · %2$s</string>
+    <string name="weather.hourly.dismiss">Tap anywhere to go back</string>
+    <string name="weather.hourly.unavailable">No hour by hour forecast yet - it arrives with the next refresh.</string>
+    <!-- Temperature for a single hour, as shown under its icon -->
+    <string name="weather.hour.temperature.format" translatable="false">%1$d°</string>
+
+    <string name="weather.condition.clear">Clear</string>
+    <string name="weather.condition.partly_cloudy">Partly cloudy</string>
+    <string name="weather.condition.cloudy">Cloudy</string>
+    <string name="weather.condition.fog">Fog</string>
+    <string name="weather.condition.drizzle">Drizzle</string>
+    <string name="weather.condition.rain">Rain</string>
+    <string name="weather.condition.snow">Snow</string>
+    <string name="weather.condition.thunderstorm">Thunderstorm</string>
 </resources>

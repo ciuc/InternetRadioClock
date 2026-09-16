@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The hour-by-hour forecast for one of the three days in the bar, reached by tapping that day.
+
+  Fills the screen and sits over everything: while it is up, ClockActivity takes the clock and the
+  controls away, the same way it does for the slideshow hand controls, so the hours are all there
+  is to read. Clickable in its own right, because a tap anywhere off the hours is the way back.
+
+  Black rather than transparent: a slideshow picture underneath keeps running, and even at a tenth
+  of its brightness it put shapes behind the numbers. The text is coloured in code, to match
+  whatever the clock is set to.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/weather_hourly"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/weather_hourly_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:textSize="18sp"
+            tools:text="Today · Bucharest" />
+
+        <!--
+          The hours do not fit on any phone at a readable size, so they scroll. The scrollbar is
+          off because the panel is dark and momentary, and WeatherHourlyPanel scrolls the current
+          hour into view when it opens, which says more about the direction than a bar would.
+        -->
+        <HorizontalScrollView
+            android:id="@+id/weather_hourly_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/weather_hourly_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/weather_hourly_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:alpha="0.6"
+            android:gravity="center_horizontal"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/weather.hourly.dismiss"
+            android:textSize="12sp" />
+    </LinearLayout>
+</RelativeLayout>

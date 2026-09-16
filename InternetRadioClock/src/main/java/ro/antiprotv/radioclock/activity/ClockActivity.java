@@ -57,6 +57,7 @@ import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.mrudultora.colorpicker.IPreviewCallback;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import ro.antiprotv.radioclock.BuildConfig;
 import ro.antiprotv.radioclock.ClockUpdater;
@@ -85,6 +86,11 @@ import ro.antiprotv.radioclock.service.TimerService;
 import ro.antiprotv.radioclock.service.VolumeManager;
 import ro.antiprotv.radioclock.service.profile.Profile;
 import ro.antiprotv.radioclock.service.profile.ProfileManager;
+import ro.antiprotv.radioclock.service.weather.WeatherDay;
+import ro.antiprotv.radioclock.service.weather.WeatherHour;
+import ro.antiprotv.radioclock.service.weather.WeatherHourlyPanel;
+import ro.antiprotv.radioclock.service.weather.WeatherManager;
+import ro.antiprotv.radioclock.service.weather.WeatherSettings;
 import timber.log.Timber;
 
 /** Main Activity. Just displays the clock and buttons */
@@ -167,6 +173,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
   private RadioAlarmManager alarmManager;
   private BatteryService batteryService;
   private ProfileManager profileManager;
+  private WeatherManager weatherManager;
   // LISTENERS
   private final Button.OnClickListener nightModeOnClickListener =
       new View.OnClickListener() {
@@ -185,21 +192,10 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
   private TextView dateTextView;
   private final Runnable mHidePart2Runnable =
       new Runnable() {
-        @SuppressLint("InlinedApi")
         @Override
         public void run() {
           // Delayed removal of status and navigation bar
-
-          // Note that some of these constants are new as of API 16 (Jelly Bean)
-          // and API 19 (KitKat). It is safe to use them, as they are inlined
-          // at compile-time and do nothing on earlier devices.
-          clockTextView.setSystemUiVisibility(
-              View.SYSTEM_UI_FLAG_LOW_PROFILE
-                  | View.SYSTEM_UI_FLAG_FULLSCREEN
-                  | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                  | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                  | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                  | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+          hideSystemBars(clockTextView);
         }
       };
   private View mControlsView;
@@ -326,11 +322,28 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
   private OnBackPressedCallback slideshowControlsBackCallback;
 
   /**
-   * What every view the slideshow controls took off the screen was set to beforehand, so that the
-   * way out puts each one back as it was rather than making them all visible. Some of them - the
+   * What every view a full-screen layer took off the screen was set to beforehand, so that the way
+   * out puts each one back as it was rather than making them all visible. Some of them - the
    * timer's fill, the second alarm - are only there some of the time.
+   *
+   * <p>One map for all such layers, because only one of them can be up at a time.
    */
-  private final Map<View, Integer> visibilityBeforeSlideshowControls = new LinkedHashMap<>();
+  private final Map<View, Integer> visibilityBeforeOverlayLayer = new LinkedHashMap<>();
+
+  // --/////////////////////////////////////////////////////////////////////////
+  // --- HOUR BY HOUR FORECAST ---
+  // --/////////////////////////////////////////////////////////////////////////
+
+  /** How long the hour-by-hour panel stays up untouched before giving the clock back. */
+  private static final long WEATHER_HOURLY_TIMEOUT_MILLIS = 45 * 1000L;
+
+  private WeatherHourlyPanel weatherHourlyPanel;
+  private boolean weatherHourlyShowing;
+
+  /** Enabled only while the hours are up, so that Back leaves them rather than the app. */
+  private OnBackPressedCallback weatherHourlyBackCallback;
+
+  private final Runnable weatherHourlyCloseRunnable = this::hideWeatherHourly;
 
   ///////////////////////////////////////////////////////////////////////////
   // State methods
@@ -437,6 +450,11 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
 
     this.batteryService = new BatteryService(this, profileManager);
 
+    // Built before the first applyProfile() below, which styles it, and hooked to the clock
+    // thread so the forecast moves out of the way whenever the clock does.
+    weatherManager = new WeatherManager(this, prefs);
+    clockUpdater.setPositionListener(weatherManager);
+
     profileManager.clearTask();
 
     // slideshow, initialize, since applyProfile needs it
@@ -465,6 +483,8 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
         });
 
     setUpSlideshowControls();
+    // Before the first applyProfile() below, which hands it the clock's colour.
+    setUpWeatherHourly();
 
     profileManager.applyProfile();
     BrightnessManager brightnessManager =
@@ -544,26 +564,32 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
           }
         });
 
-    dateEnableButton.setOnTouchListener(
-        new View.OnTouchListener() {
+    addPressFeedback(dateEnableButton);
+
+    ImageButton weatherButton = findViewById(R.id.weather_button);
+    weatherButton.setOnClickListener(
+        new View.OnClickListener() {
           @Override
-          public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-              // Apply stroke when pressed
-              GradientDrawable buttonShape = (GradientDrawable) dateEnableButton.getBackground();
-              buttonShape.mutate();
-              buttonShape.setStroke(1, getResources().getColor(R.color.color_clock));
-            } else if (event.getAction() == MotionEvent.ACTION_UP
-                || event.getAction() == MotionEvent.ACTION_CANCEL) {
-              // Remove stroke when released
-              GradientDrawable buttonShape = (GradientDrawable) dateEnableButton.getBackground();
-              buttonShape.mutate();
-              buttonShape.setStroke(1, getResources().getColor(R.color.button_color));
-              v.performClick();
+          public void onClick(View v) {
+            // Off -> small -> big -> off, the same three phases as the date button, and the size
+            // is put back to small on the way out so the next cycle starts where this one did.
+            if (!profileManager.isWeatherEnabled()) {
+              profileManager.setWeatherEnabled(true);
+              if (!weatherManager.hasLocation()) {
+                // Nothing would appear, and there is no way to tell that from a slow network.
+                Toast.makeText(
+                        ClockActivity.this, R.string.weather_no_location_yet, Toast.LENGTH_LONG)
+                    .show();
+              }
+            } else if (profileManager.weatherSize() == Profile.WEATHER_SIZE_SMALL) {
+              profileManager.setWeatherSize(Profile.WEATHER_SIZE_BIG);
+            } else {
+              profileManager.setWeatherSize(Profile.WEATHER_SIZE_SMALL);
+              profileManager.setWeatherEnabled(false);
             }
-            return false;
           }
         });
+    addPressFeedback(weatherButton);
 
     Button showSecondsButton = findViewById(R.id.seconds_button);
     showSecondsButton.setOnClickListener(
@@ -669,6 +695,8 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     }
     prefs.registerOnSharedPreferenceChangeListener(preferenceChangeListener);
     prefs.registerOnSharedPreferenceChangeListener(profileManager);
+    prefs.registerOnSharedPreferenceChangeListener(weatherManager);
+    weatherManager.start();
   }
 
   @Override
@@ -710,6 +738,9 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     super.onStop();
     clockUpdater.setSemaphore(false);
     clockUpdater.getThreadHandler().removeMessages(0);
+    weatherManager.stop();
+    // Coming back to a clock hidden behind a forecast from hours ago would be a poor welcome.
+    closeWeatherHourly(false);
   }
 
   @Override
@@ -745,6 +776,8 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     }
     prefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
     prefs.unregisterOnSharedPreferenceChangeListener(profileManager);
+    prefs.unregisterOnSharedPreferenceChangeListener(weatherManager);
+    weatherManager.destroy();
     slideshowManager.stopSlideshow();
     slideshowManager.destroy();
     super.onDestroy();
@@ -771,6 +804,13 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     dateTextView.setTextSize((float) profile.getSize() / profile.getDateSize());
     dateTextView.setTypeface(ProfileManager.fonts.get(profile.getFont()));
     dateTextView.setTextColor(profile.getColor());
+    // Defensive: every current caller runs after onCreate has built it.
+    if (weatherManager != null) {
+      weatherManager.applyProfile(profile);
+    }
+    if (weatherHourlyPanel != null) {
+      weatherHourlyPanel.setColor(profile.getColor());
+    }
     if (profile.isSlideshowEnabled()) {
       slideshowManager.startSlideshow();
     } else {
@@ -780,6 +820,32 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
 
   public void applyProfile() {
     applyProfile(profileManager.getCurrentProfile());
+  }
+
+  /**
+   * Outlines a control-panel button in the clock colour while it is held down.
+   *
+   * <p>Draws only, and returns false so the touch carries on to the button itself. It must not call
+   * {@code performClick()}: returning false already leaves the click to {@code View.onTouchEvent},
+   * so firing one here as well would run the listener twice per tap - which is what used to make
+   * the date button skip a step of its off/small/big cycle.
+   */
+  private void addPressFeedback(final View button) {
+    button.setOnTouchListener(
+        new View.OnTouchListener() {
+          @Override
+          public boolean onTouch(View v, MotionEvent event) {
+            GradientDrawable buttonShape = (GradientDrawable) button.getBackground();
+            buttonShape.mutate();
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+              buttonShape.setStroke(1, getResources().getColor(R.color.color_clock));
+            } else if (event.getAction() == MotionEvent.ACTION_UP
+                || event.getAction() == MotionEvent.ACTION_CANCEL) {
+              buttonShape.setStroke(1, getResources().getColor(R.color.button_color));
+            }
+            return false;
+          }
+        });
   }
 
   public void preview(int color) {
@@ -1072,9 +1138,14 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
 
     // Timber.d("Motion disallowed: " + disallowSwipe);
     timerService.stopAlarm();
-    // While the slideshow is being driven by hand there is no clock on screen to swipe the font of
-    // or pinch the size of, so the gestures would only change it out of sight.
-    if (disallowSwipe || slideshowControlsShowing) {
+    if (weatherHourlyShowing) {
+      // Any touch means someone is reading the hours, so the panel is in no hurry to close.
+      delayWeatherHourlyClose();
+    }
+    // While the slideshow is being driven by hand, or the hours are up, there is no clock on
+    // screen to swipe the font of or pinch the size of, so the gestures would only change it out
+    // of sight.
+    if (disallowSwipe || slideshowControlsShowing || weatherHourlyShowing) {
       return super.dispatchTouchEvent(event);
     }
     // Pass the touch event to the scale gesture detector first
@@ -1106,6 +1177,28 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     } else {
       show();
     }
+  }
+
+  /**
+   * Asks for the status and navigation bars to go away.
+   *
+   * <p>The request has to be made through a view that is on screen: one that has been taken away
+   * is not asked about when the system works out what the window wants, so the bars slide back in.
+   * That is why the caller passes the view rather than this always reaching for the clock - while
+   * a full-screen layer is up, the clock is exactly the view that has been taken away.
+   *
+   * <p>Some of these constants are new as of API 16 (Jelly Bean) and API 19 (KitKat). It is safe
+   * to use them, as they are inlined at compile-time and do nothing on earlier devices.
+   */
+  @SuppressLint("InlinedApi")
+  private void hideSystemBars(View from) {
+    from.setSystemUiVisibility(
+        View.SYSTEM_UI_FLAG_LOW_PROFILE
+            | View.SYSTEM_UI_FLAG_FULLSCREEN
+            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
   }
 
   public void hide() {
@@ -1195,20 +1288,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     slideshowControlsShowing = true;
     // Takes the toolbar and the button panel away, and puts the system bars into hiding with them.
     hide();
-    ViewGroup overlay = findViewById(R.id.overlay);
-    visibilityBeforeSlideshowControls.clear();
-    for (int i = 0; i < overlay.getChildCount(); i++) {
-      View child = overlay.getChildAt(i);
-      // What the slideshow itself draws with stays, and so does the panel hide() already owns.
-      if (child == kenBurnsView
-          || child == simpleSlideshowView
-          || child == slideshowVideoView
-          || child == mControlsView) {
-        continue;
-      }
-      visibilityBeforeSlideshowControls.put(child, child.getVisibility());
-      child.setVisibility(GONE);
-    }
+    clearOverlayForLayer();
     updateSlideshowPauseButton();
     slideshowControls.setVisibility(VISIBLE);
     slideshowControlsBackCallback.setEnabled(true);
@@ -1222,11 +1302,134 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     slideshowControlsShowing = false;
     slideshowControlsBackCallback.setEnabled(false);
     slideshowControls.setVisibility(GONE);
-    for (Map.Entry<View, Integer> entry : visibilityBeforeSlideshowControls.entrySet()) {
+    restoreOverlayAfterLayer();
+    show();
+  }
+
+  /**
+   * Clears the overlay for a layer that is meant to be the only thing on screen - the slideshow
+   * hand controls, the hour-by-hour forecast - remembering what was visible so {@link
+   * #restoreOverlayAfterLayer()} can put it back exactly as it was.
+   *
+   * <p>What the slideshow draws with stays, so a picture already running keeps running underneath;
+   * so does the button panel, which {@link #hide()} owns and would otherwise be restored twice.
+   */
+  private void clearOverlayForLayer() {
+    ViewGroup overlay = findViewById(R.id.overlay);
+    visibilityBeforeOverlayLayer.clear();
+    for (int i = 0; i < overlay.getChildCount(); i++) {
+      View child = overlay.getChildAt(i);
+      if (child == kenBurnsView
+          || child == simpleSlideshowView
+          || child == slideshowVideoView
+          || child == mControlsView) {
+        continue;
+      }
+      visibilityBeforeOverlayLayer.put(child, child.getVisibility());
+      child.setVisibility(GONE);
+    }
+  }
+
+  private void restoreOverlayAfterLayer() {
+    for (Map.Entry<View, Integer> entry : visibilityBeforeOverlayLayer.entrySet()) {
       entry.getKey().setVisibility(entry.getValue());
     }
-    visibilityBeforeSlideshowControls.clear();
-    show();
+    visibilityBeforeOverlayLayer.clear();
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+  // HOUR BY HOUR FORECAST
+  ///////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Wires the three days in the weather bar to the panel that breaks one of them down by hour.
+   *
+   * <p>Back leaves the panel rather than the app, exactly as it does for the slideshow controls.
+   */
+  private void setUpWeatherHourly() {
+    weatherHourlyPanel = new WeatherHourlyPanel(this);
+    weatherManager.setDayClickListener(this::showWeatherHourly);
+    // A tap anywhere is the way back; the layer is clickable in its own right so the tap lands
+    // here rather than falling through to the overlay and toggling the controls.
+    findViewById(R.id.weather_hourly).setOnClickListener(v -> hideWeatherHourly());
+    weatherHourlyBackCallback =
+        new OnBackPressedCallback(false) {
+          @Override
+          public void handleOnBackPressed() {
+            hideWeatherHourly();
+          }
+        };
+    getOnBackPressedDispatcher().addCallback(this, weatherHourlyBackCallback);
+  }
+
+  /** Clears the screen of everything but the hours of the day that was tapped. */
+  private void showWeatherHourly(int dayIndex) {
+    if (weatherHourlyShowing || slideshowControlsShowing) {
+      return;
+    }
+    WeatherDay day = weatherManager.getDay(dayIndex);
+    List<WeatherHour> hours = weatherManager.getHoursFor(dayIndex);
+    if (day == null || hours.isEmpty()) {
+      // A forecast cached by a build from before the hourly block was asked for, most likely; the
+      // next refresh brings one. Nothing is broken, so say so and leave the clock alone.
+      Toast.makeText(this, R.string.weather_hourly_unavailable, Toast.LENGTH_SHORT).show();
+      return;
+    }
+    weatherHourlyShowing = true;
+    hide();
+    clearOverlayForLayer();
+    // The colour is already the clock's: applyProfile() hands it over on every profile change,
+    // and ran once before the first tap could happen.
+    weatherHourlyPanel.show(
+        WeatherHourlyPanel.heading(this, dayIndex, day.date),
+        WeatherSettings.getLocationName(this, prefs),
+        hours,
+        weatherManager.nowHour());
+    // hide() asked through the clock, which has just been taken away, so ask again through the
+    // one view that is certainly on screen.
+    hideSystemBars(findViewById(R.id.weather_hourly));
+    weatherHourlyBackCallback.setEnabled(true);
+    delayWeatherHourlyClose();
+  }
+
+  /** Puts the clock and the controls back, exactly as they were before the hours went up. */
+  private void hideWeatherHourly() {
+    closeWeatherHourly(true);
+  }
+
+  /**
+   * @param withControls whether to bring the control panel back up with the clock. False on the
+   *     way out of the app: the screen it comes back to should be the clock on its own, not a
+   *     screenful of buttons left over from a forecast the user has since walked away from.
+   */
+  private void closeWeatherHourly(boolean withControls) {
+    if (!weatherHourlyShowing) {
+      return;
+    }
+    weatherHourlyShowing = false;
+    mHideHandler.removeCallbacks(weatherHourlyCloseRunnable);
+    weatherHourlyBackCallback.setEnabled(false);
+    weatherHourlyPanel.hide();
+    restoreOverlayAfterLayer();
+    if (withControls) {
+      show();
+    } else {
+      // The clock is back and hide() has already taken the controls; the bars have to be asked
+      // again now that the view that asks for them is on screen once more.
+      hideSystemBars(clockTextView);
+    }
+  }
+
+  /**
+   * Restarts the countdown to closing the panel on its own.
+   *
+   * <p>The clock is what this app is for, and the panel is covering it. Left open by someone who
+   * wandered off - which on a bedside clock is the likeliest way it ends - it would hide the time
+   * until morning, so it steps aside by itself. Every touch pushes that back.
+   */
+  private void delayWeatherHourlyClose() {
+    mHideHandler.removeCallbacks(weatherHourlyCloseRunnable);
+    mHideHandler.postDelayed(weatherHourlyCloseRunnable, WEATHER_HOURLY_TIMEOUT_MILLIS);
   }
 
   private void updateSlideshowPauseButton() {

@@ -100,6 +100,17 @@
            android:shadowRadius="8.6"
            />
 
+       <!-- Three-day forecast. WeatherManager re-anchors it every time the clock moves. -->
+       <include
+           android:id="@+id/weather_bar"
+           layout="@layout/weather_bar"
+           android:layout_marginTop="@dimen/weather_bar_clock_gap"
+           android:layout_marginBottom="@dimen/weather_bar_clock_gap"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_above="@id/fullscreen_content"
+           android:layout_centerHorizontal="true" />
+
        <ro.antiprotv.radioclock.view.FillRectangleView
            android:id="@+id/fill_rectangle"
            android:layout_height="20dp"
@@ -641,20 +652,38 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_below="@+id/text_size_cycle_button_fwd"
-                   android:layout_marginTop="5dp"
+                   android:layout_marginTop="4dp"
                    android:layout_marginEnd="5dp"
+                   android:layout_marginRight="5dp"
                    android:layout_toLeftOf="@id/color_picker_button"
                    android:background="@drawable/memory"
                    android:clickable="true"
                    android:tag="@string/setting.key.alarmIcon"
                    android:text="12.01.25"
-                   android:textColor="@color/button.color.off"
 
+                   android:textColor="@color/button.color.off"
                    android:textSize="6pt"
                    android:textStyle="bold"
                    app:srcCompat="@drawable/outline_color_lens_24" />
 
            </RelativeLayout>
+
+           <!-- Cycles the forecast off -> small -> big, the way the date button cycles its own. -->
+           <ImageButton
+               android:id="@+id/weather_button"
+               style="?metaButtonBarButtonStyle"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignLeft="@+id/volume_up_button"
+               android:layout_alignRight="@+id/volume_up_button"
+               android:layout_above="@+id/volume_up_button"
+               android:layout_marginBottom="5dp"
+               android:background="@drawable/memory"
+               android:clickable="true"
+               android:contentDescription="@string/weather.button.description"
+               android:scaleType="center"
+               android:textColor="@color/button.color.off"
+               app:srcCompat="@drawable/ic_weather_partly_cloudy" />
 
            <ImageButton
                android:id="@+id/volume_up_button"
@@ -875,5 +904,8 @@
 
     <!-- Last, so that it covers everything else when the slideshow is driven by hand. -->
     <include layout="@layout/slideshow_controls" />
+
+    <!-- The hour-by-hour forecast, over everything, for as long as a day in the bar is tapped. -->
+    <include layout="@layout/weather_hourly" />
 
 </RelativeLayout>

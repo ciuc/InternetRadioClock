@@ -5,4 +5,7 @@
     <dimen name="assign_to_mem_button_margin_left">4dp</dimen>
     <dimen name="assign_to_mem_button_margin_top">4dp</dimen>
     <dimen name="margin_top">50dp</dimen>
+    <!-- Breathing room between the forecast bar and the clock. Set on both sides of the bar
+         because it sits above the clock or below it, depending on where the clock has wandered. -->
+    <dimen name="weather_bar_clock_gap">10dp</dimen>
 </resources>

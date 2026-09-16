@@ -27,7 +27,10 @@ public class DayProfile extends Profile {
             context.getResources().getString(R.string.setting_key_typeface), "repet___.ttf"),
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_showdate), false),
         prefs.getInt(context.getResources().getString(R.string.setting_key_datesize), 3),
-        prefs.getBoolean(context.getString(R.string.setting_key_slideshow_enabled_day), false));
+        prefs.getBoolean(context.getString(R.string.setting_key_slideshow_enabled_day), false),
+        prefs.getBoolean(context.getString(R.string.setting_key_weather_enabled), false),
+        prefs.getInt(
+            context.getString(R.string.setting_key_weather_size), WEATHER_SIZE_SMALL));
   }
 
   @Override
@@ -90,6 +93,24 @@ public class DayProfile extends Profile {
         .putBoolean(context.getString(R.string.setting_key_slideshow_enabled_day), slideShowEnabled)
         .apply();
     super.saveSlideshowEnabled(slideShowEnabled);
+  }
+
+  @Override
+  public void saveWeatherSize(int weatherSize) {
+    prefs
+        .edit()
+        .putInt(context.getString(R.string.setting_key_weather_size), weatherSize)
+        .apply();
+    super.saveWeatherSize(weatherSize);
+  }
+
+  @Override
+  public void saveShowWeather(boolean showWeather) {
+    prefs
+        .edit()
+        .putBoolean(context.getString(R.string.setting_key_weather_enabled), showWeather)
+        .apply();
+    super.saveShowWeather(showWeather);
   }
 
   @Override
