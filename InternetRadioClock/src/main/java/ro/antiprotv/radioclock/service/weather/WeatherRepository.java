@@ -82,12 +82,21 @@ public class WeatherRepository {
             // cache, and the panel then draws the moment it is tapped instead of after a round
             // trip that may not come back at all.
             .appendQueryParameter(
-                "hourly", "weather_code,temperature_2m,precipitation_probability")
+                "hourly", "weather_code,temperature_2m,precipitation_probability,is_day")
+            // What the "Now" column draws, plus the four readings behind it. The detail panel
+            // never fetches anything of its own, so these ride along here too.
+            .appendQueryParameter(
+                "current",
+                "weather_code,temperature_2m,relative_humidity_2m,pressure_msl,"
+                    + "wind_speed_10m,wind_direction_10m,uv_index,is_day")
             // Without this the days come back in UTC, and "today" would turn over at the wrong
             // hour for most of the world.
             .appendQueryParameter("timezone", "auto")
             .appendQueryParameter("forecast_days", String.valueOf(FORECAST_DAYS))
             .appendQueryParameter("temperature_unit", unit)
+            // Nobody who reads temperatures in Fahrenheit wants their wind in km/h, and there is
+            // no separate setting for it: one choice of units covers both.
+            .appendQueryParameter("wind_speed_unit", "fahrenheit".equals(unit) ? "mph" : "kmh")
             .build()
             .toString();
 
@@ -197,6 +206,7 @@ public class WeatherRepository {
     JSONArray code = hourly.optJSONArray("weather_code");
     JSONArray temp = hourly.optJSONArray("temperature_2m");
     JSONArray rain = hourly.optJSONArray("precipitation_probability");
+    JSONArray day = hourly.optJSONArray("is_day");
     if (time == null || temp == null) {
       return hours;
     }
@@ -211,12 +221,38 @@ public class WeatherRepository {
                 time.getString(i),
                 code == null || code.isNull(i) ? -1 : code.getInt(i),
                 temp.getDouble(i),
-                rain == null || rain.isNull(i) ? -1 : rain.getInt(i)));
+                rain == null || rain.isNull(i) ? -1 : rain.getInt(i),
+                // A forecast cached before this was asked for has no such array; daylight is the
+                // safer assumption, being what every icon looked like until now anyway.
+                day == null || day.isNull(i) || day.optInt(i, 1) == 1));
       } catch (JSONException e) {
         Timber.d("Skipping malformed forecast hour %d: %s", i, e.getMessage());
       }
     }
     return hours;
+  }
+
+  /**
+   * Turns the {@code current} block - one reading per field rather than an array - into a {@link
+   * WeatherNow}, or returns null when the response has no such block.
+   *
+   * <p>Null is what a forecast cached by a build from before the "Now" column existed comes back
+   * as, which is why the caller drops such a cache and refetches instead of drawing around it.
+   */
+  public static WeatherNow parseCurrent(JSONObject response) {
+    JSONObject current = response.optJSONObject("current");
+    if (current == null || !current.has("temperature_2m") || current.isNull("temperature_2m")) {
+      return null;
+    }
+    return new WeatherNow(
+        current.optInt("weather_code", -1),
+        current.optDouble("temperature_2m"),
+        current.isNull("relative_humidity_2m") ? -1 : current.optInt("relative_humidity_2m", -1),
+        current.optDouble("pressure_msl", Double.NaN),
+        current.optDouble("wind_speed_10m", Double.NaN),
+        current.isNull("wind_direction_10m") ? -1 : current.optInt("wind_direction_10m", -1),
+        current.optDouble("uv_index", Double.NaN),
+        current.optInt("is_day", 1) == 1);
   }
 
   /**

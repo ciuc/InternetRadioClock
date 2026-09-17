@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  What the "Now" column opens: the readings that do not fit in a column an inch wide - wind,
+  humidity, pressure and the UV index - under a large version of the icon and temperature already
+  on the bar.
+
+  Built like weather_hourly and behaving like it: fills the screen, sits over everything, and while
+  it is up ClockActivity takes the clock and the controls away. Black rather than transparent for
+  the same reason - a slideshow picture underneath keeps running - and coloured in code to match
+  whatever the clock is set to.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/weather_now_panel"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:id="@+id/weather_now_panel_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="18sp"
+            tools:text="Now · Bucharest" />
+
+        <!-- Icon and temperature together, so the panel opens on the same thing that was tapped. -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="14dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/weather_now_panel_icon"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:contentDescription="@null"
+                app:srcCompat="@drawable/ic_weather_clear" />
+
+            <TextView
+                android:id="@+id/weather_now_panel_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:includeFontPadding="false"
+                android:textSize="34sp"
+                tools:text="21°" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/weather_now_panel_condition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center_horizontal"
+            android:textSize="15sp"
+            tools:text="Clear" />
+
+        <!--
+          The four readings, one weather_detail_row each. Filled in code rather than written out
+          here because a reading the service left out is a row that should not be drawn at all,
+          and that is easier to say once in a loop than four times in XML.
+        -->
+        <LinearLayout
+            android:id="@+id/weather_now_panel_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="18dp"
+            android:orientation="vertical" />
+
+        <!--
+          Asks for the readings again rather than waiting out the hour between refreshes. Its own
+          clickable view, so that tapping it does not also count as the tap anywhere that closes
+          the panel.
+        -->
+        <ImageButton
+            android:id="@+id/weather_now_panel_refresh"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/weather.refresh"
+            android:padding="12dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_weather_refresh" />
+
+        <TextView
+            android:id="@+id/weather_now_panel_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:alpha="0.6"
+            android:gravity="center_horizontal"
+            android:text="@string/weather.hourly.dismiss"
+            android:textSize="12sp" />
+    </LinearLayout>
+</RelativeLayout>

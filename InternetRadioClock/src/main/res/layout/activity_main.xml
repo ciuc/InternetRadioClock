@@ -100,7 +100,7 @@
            android:shadowRadius="8.6"
            />
 
-       <!-- Three-day forecast. WeatherManager re-anchors it every time the clock moves. -->
+       <!-- Now plus the three-day forecast. WeatherManager re-anchors it every time the clock moves. -->
        <include
            android:id="@+id/weather_bar"
            layout="@layout/weather_bar"
@@ -907,5 +907,7 @@
 
     <!-- The hour-by-hour forecast, over everything, for as long as a day in the bar is tapped. -->
     <include layout="@layout/weather_hourly" />
+
+    <include layout="@layout/weather_now_panel" />
 
 </RelativeLayout>

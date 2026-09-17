@@ -10,19 +10,35 @@ import ro.antiprotv.radioclock.R;
  *
  * <p>The codes are grouped rather than mapped one to one: at the size the bar draws them, "slight
  * rain" and "heavy rain" are the same picture, and the temperatures underneath carry the detail.
+ *
+ * <p>Two of the nine come in a night version as well. Only those two ever drew the sun, and a sun
+ * over a clock at three in the morning is simply wrong; the other seven look the same whatever the
+ * hour, so there is nothing to swap.
  */
 public final class WeatherCodes {
 
   private WeatherCodes() {}
 
+  /** The daytime icon. For anything tied to a particular hour, prefer {@link #icon(int, boolean)}. */
   @DrawableRes
   public static int icon(int code) {
+    return icon(code, true);
+  }
+
+  /**
+   * @param isDay whether the sun is up at the moment being drawn, as the service reports it; the
+   *     three-day bar passes true, because a whole day is a daytime thing however late it is read
+   */
+  @DrawableRes
+  public static int icon(int code, boolean isDay) {
     switch (code) {
       case 0: // clear sky
       case 1: // mainly clear
-        return R.drawable.ic_weather_clear;
+        return isDay ? R.drawable.ic_weather_clear : R.drawable.ic_weather_clear_night;
       case 2: // partly cloudy
-        return R.drawable.ic_weather_partly_cloudy;
+        return isDay
+            ? R.drawable.ic_weather_partly_cloudy
+            : R.drawable.ic_weather_partly_cloudy_night;
       case 3: // overcast
         return R.drawable.ic_weather_cloudy;
       case 45: // fog
@@ -61,10 +77,13 @@ public final class WeatherCodes {
     }
   }
 
-  /** Spoken description of the same nine groups, for the icon's content description. */
+  /**
+   * Spoken description of the same nine groups, for the icon's content description. The night
+   * icons share the description of their daytime twin: it is still clear, or still partly cloudy.
+   */
   @StringRes
   public static int description(int code) {
-    int icon = icon(code);
+    int icon = icon(code, true);
     if (icon == R.drawable.ic_weather_clear) {
       return R.string.weather_condition_clear;
     }

@@ -19,11 +19,20 @@ public class WeatherHour {
   /** Chance of precipitation in percent, or -1 when the service did not supply one. */
   public final int precipitationChance;
 
-  public WeatherHour(String time, int weatherCode, double temperature, int precipitationChance) {
+  /**
+   * Whether the sun is up at this hour where the forecast is for, which picks the day or the night
+   * icon. Taken from the service rather than worked out from the hour, so that a summer night
+   * well north of here is still drawn as one.
+   */
+  public final boolean isDay;
+
+  public WeatherHour(
+      String time, int weatherCode, double temperature, int precipitationChance, boolean isDay) {
     this.time = time;
     this.weatherCode = weatherCode;
     this.temperature = temperature;
     this.precipitationChance = precipitationChance;
+    this.isDay = isDay;
   }
 
   /** The {@code yyyy-MM-dd} this hour falls on, to match against a {@link WeatherDay#date}. */

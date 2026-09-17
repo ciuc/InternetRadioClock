@@ -90,6 +90,8 @@ import ro.antiprotv.radioclock.service.weather.WeatherDay;
 import ro.antiprotv.radioclock.service.weather.WeatherHour;
 import ro.antiprotv.radioclock.service.weather.WeatherHourlyPanel;
 import ro.antiprotv.radioclock.service.weather.WeatherManager;
+import ro.antiprotv.radioclock.service.weather.WeatherNow;
+import ro.antiprotv.radioclock.service.weather.WeatherNowPanel;
 import ro.antiprotv.radioclock.service.weather.WeatherSettings;
 import timber.log.Timber;
 
@@ -331,19 +333,25 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
   private final Map<View, Integer> visibilityBeforeOverlayLayer = new LinkedHashMap<>();
 
   // --/////////////////////////////////////////////////////////////////////////
-  // --- HOUR BY HOUR FORECAST ---
+  // --- WEATHER DETAIL PANELS ---
   // --/////////////////////////////////////////////////////////////////////////
 
-  /** How long the hour-by-hour panel stays up untouched before giving the clock back. */
-  private static final long WEATHER_HOURLY_TIMEOUT_MILLIS = 45 * 1000L;
+  /** How long a weather panel stays up untouched before giving the clock back. */
+  private static final long WEATHER_PANEL_TIMEOUT_MILLIS = 45 * 1000L;
 
+  /** What a tap on one of the three day columns opens. */
   private WeatherHourlyPanel weatherHourlyPanel;
-  private boolean weatherHourlyShowing;
 
-  /** Enabled only while the hours are up, so that Back leaves them rather than the app. */
-  private OnBackPressedCallback weatherHourlyBackCallback;
+  /** What a tap on the "Now" column opens. */
+  private WeatherNowPanel weatherNowPanel;
 
-  private final Runnable weatherHourlyCloseRunnable = this::hideWeatherHourly;
+  /** True while either of them is up; only ever one at a time. */
+  private boolean weatherPanelShowing;
+
+  /** Enabled only while a panel is up, so that Back leaves it rather than the app. */
+  private OnBackPressedCallback weatherPanelBackCallback;
+
+  private final Runnable weatherPanelCloseRunnable = this::hideWeatherPanel;
 
   ///////////////////////////////////////////////////////////////////////////
   // State methods
@@ -483,8 +491,8 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
         });
 
     setUpSlideshowControls();
-    // Before the first applyProfile() below, which hands it the clock's colour.
-    setUpWeatherHourly();
+    // Before the first applyProfile() below, which hands them the clock's colour.
+    setUpWeatherPanels();
 
     profileManager.applyProfile();
     BrightnessManager brightnessManager =
@@ -740,7 +748,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     clockUpdater.getThreadHandler().removeMessages(0);
     weatherManager.stop();
     // Coming back to a clock hidden behind a forecast from hours ago would be a poor welcome.
-    closeWeatherHourly(false);
+    closeWeatherPanel(false);
   }
 
   @Override
@@ -810,6 +818,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     }
     if (weatherHourlyPanel != null) {
       weatherHourlyPanel.setColor(profile.getColor());
+      weatherNowPanel.setColor(profile.getColor());
     }
     if (profile.isSlideshowEnabled()) {
       slideshowManager.startSlideshow();
@@ -1138,14 +1147,14 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
 
     // Timber.d("Motion disallowed: " + disallowSwipe);
     timerService.stopAlarm();
-    if (weatherHourlyShowing) {
-      // Any touch means someone is reading the hours, so the panel is in no hurry to close.
-      delayWeatherHourlyClose();
+    if (weatherPanelShowing) {
+      // Any touch means someone is reading it, so the panel is in no hurry to close.
+      delayWeatherPanelClose();
     }
-    // While the slideshow is being driven by hand, or the hours are up, there is no clock on
+    // While the slideshow is being driven by hand, or a weather panel is up, there is no clock on
     // screen to swipe the font of or pinch the size of, so the gestures would only change it out
     // of sight.
-    if (disallowSwipe || slideshowControlsShowing || weatherHourlyShowing) {
+    if (disallowSwipe || slideshowControlsShowing || weatherPanelShowing) {
       return super.dispatchTouchEvent(event);
     }
     // Pass the touch event to the scale gesture detector first
@@ -1338,33 +1347,49 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
   }
 
   ///////////////////////////////////////////////////////////////////////////
-  // HOUR BY HOUR FORECAST
+  // WEATHER DETAIL PANELS
   ///////////////////////////////////////////////////////////////////////////
 
   /**
-   * Wires the three days in the weather bar to the panel that breaks one of them down by hour.
+   * Wires the columns of the weather bar to the panels behind them: the three days each to their
+   * own hours, and "Now" to the readings that do not fit in the bar.
    *
-   * <p>Back leaves the panel rather than the app, exactly as it does for the slideshow controls.
+   * <p>Back leaves whichever panel is up rather than the app, exactly as it does for the slideshow
+   * controls.
    */
-  private void setUpWeatherHourly() {
+  private void setUpWeatherPanels() {
     weatherHourlyPanel = new WeatherHourlyPanel(this);
-    weatherManager.setDayClickListener(this::showWeatherHourly);
-    // A tap anywhere is the way back; the layer is clickable in its own right so the tap lands
-    // here rather than falling through to the overlay and toggling the controls.
-    findViewById(R.id.weather_hourly).setOnClickListener(v -> hideWeatherHourly());
-    weatherHourlyBackCallback =
+    weatherNowPanel = new WeatherNowPanel(this);
+    weatherManager.setDayClickListener(
+        new WeatherManager.DayClickListener() {
+          @Override
+          public void onWeatherDayClicked(int dayIndex) {
+            showWeatherHourly(dayIndex);
+          }
+
+          @Override
+          public void onWeatherNowClicked() {
+            showWeatherNow();
+          }
+        });
+    // A tap anywhere is the way back; the layers are clickable in their own right so the tap
+    // lands here rather than falling through to the overlay and toggling the controls.
+    findViewById(R.id.weather_hourly).setOnClickListener(v -> hideWeatherPanel());
+    findViewById(R.id.weather_now_panel).setOnClickListener(v -> hideWeatherPanel());
+    weatherNowPanel.setRefreshListener(v -> refreshWeatherNow());
+    weatherPanelBackCallback =
         new OnBackPressedCallback(false) {
           @Override
           public void handleOnBackPressed() {
-            hideWeatherHourly();
+            hideWeatherPanel();
           }
         };
-    getOnBackPressedDispatcher().addCallback(this, weatherHourlyBackCallback);
+    getOnBackPressedDispatcher().addCallback(this, weatherPanelBackCallback);
   }
 
   /** Clears the screen of everything but the hours of the day that was tapped. */
   private void showWeatherHourly(int dayIndex) {
-    if (weatherHourlyShowing || slideshowControlsShowing) {
+    if (weatherPanelShowing || slideshowControlsShowing) {
       return;
     }
     WeatherDay day = weatherManager.getDay(dayIndex);
@@ -1375,9 +1400,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
       Toast.makeText(this, R.string.weather_hourly_unavailable, Toast.LENGTH_SHORT).show();
       return;
     }
-    weatherHourlyShowing = true;
-    hide();
-    clearOverlayForLayer();
+    openWeatherPanel();
     // The colour is already the clock's: applyProfile() hands it over on every profile change,
     // and ran once before the first tap could happen.
     weatherHourlyPanel.show(
@@ -1385,16 +1408,83 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
         WeatherSettings.getLocationName(this, prefs),
         hours,
         weatherManager.nowHour());
-    // hide() asked through the clock, which has just been taken away, so ask again through the
-    // one view that is certainly on screen.
-    hideSystemBars(findViewById(R.id.weather_hourly));
-    weatherHourlyBackCallback.setEnabled(true);
-    delayWeatherHourlyClose();
+    finishOpeningWeatherPanel(R.id.weather_hourly);
   }
 
-  /** Puts the clock and the controls back, exactly as they were before the hours went up. */
-  private void hideWeatherHourly() {
-    closeWeatherHourly(true);
+  /** The same, for the readings behind the "Now" column. */
+  private void showWeatherNow() {
+    if (weatherPanelShowing || slideshowControlsShowing) {
+      return;
+    }
+    WeatherNow now = weatherManager.getCurrentNow();
+    if (now == null) {
+      // The column is taken away when there is nothing to draw in it, so this is only reachable
+      // by a tap that raced a refresh. Say nothing and leave the clock alone.
+      return;
+    }
+    openWeatherPanel();
+    weatherNowPanel.show(
+        WeatherSettings.getLocationName(this, prefs),
+        now,
+        WeatherSettings.getWindUnitLabel(this, prefs));
+    finishOpeningWeatherPanel(R.id.weather_now_panel);
+  }
+
+  /** The half of opening a panel that comes before it is filled in: clears the screen for it. */
+  /**
+   * Fetches the current conditions again on request, rather than leaving the panel showing a
+   * reading that may be most of an hour old.
+   *
+   * <p>The whole forecast comes back, not only the current block - it is one request either way -
+   * so the bar behind the panel is brought up to date by the same tap.
+   */
+  private void refreshWeatherNow() {
+    if (!weatherNowPanel.isShowing()) {
+      return;
+    }
+    weatherNowPanel.setRefreshing(true);
+    weatherManager.refreshNow(
+        success -> {
+          weatherNowPanel.setRefreshing(false);
+          if (!weatherNowPanel.isShowing()) {
+            // Closed while the request was out. Whatever came back is already in the bar, and
+            // there is nobody in front of the panel to tell about it.
+            return;
+          }
+          WeatherNow now = weatherManager.getCurrentNow();
+          if (!success || now == null) {
+            // Unlike the hourly refresh this was asked for, so silence would read as a dead
+            // button. The reading already on screen stays where it is.
+            Toast.makeText(this, R.string.weather_refresh_failed, Toast.LENGTH_SHORT).show();
+            return;
+          }
+          weatherNowPanel.show(
+              WeatherSettings.getLocationName(this, prefs),
+              now,
+              WeatherSettings.getWindUnitLabel(this, prefs));
+          // Reading the fresh numbers counts as being there, so the panel is in no hurry to go.
+          delayWeatherPanelClose();
+        });
+  }
+
+  private void openWeatherPanel() {
+    weatherPanelShowing = true;
+    hide();
+    clearOverlayForLayer();
+  }
+
+  /** And the half that comes after, once the panel it names has something in it. */
+  private void finishOpeningWeatherPanel(int panelId) {
+    // hide() asked through the clock, which has just been taken away, so ask again through the
+    // one view that is certainly on screen.
+    hideSystemBars(findViewById(panelId));
+    weatherPanelBackCallback.setEnabled(true);
+    delayWeatherPanelClose();
+  }
+
+  /** Puts the clock and the controls back, exactly as they were before the panel went up. */
+  private void hideWeatherPanel() {
+    closeWeatherPanel(true);
   }
 
   /**
@@ -1402,14 +1492,16 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
    *     way out of the app: the screen it comes back to should be the clock on its own, not a
    *     screenful of buttons left over from a forecast the user has since walked away from.
    */
-  private void closeWeatherHourly(boolean withControls) {
-    if (!weatherHourlyShowing) {
+  private void closeWeatherPanel(boolean withControls) {
+    if (!weatherPanelShowing) {
       return;
     }
-    weatherHourlyShowing = false;
-    mHideHandler.removeCallbacks(weatherHourlyCloseRunnable);
-    weatherHourlyBackCallback.setEnabled(false);
+    weatherPanelShowing = false;
+    mHideHandler.removeCallbacks(weatherPanelCloseRunnable);
+    weatherPanelBackCallback.setEnabled(false);
+    // Only one was up, and hiding the other is a no-op, so there is nothing to remember here.
     weatherHourlyPanel.hide();
+    weatherNowPanel.hide();
     restoreOverlayAfterLayer();
     if (withControls) {
       show();
@@ -1427,9 +1519,9 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
    * wandered off - which on a bedside clock is the likeliest way it ends - it would hide the time
    * until morning, so it steps aside by itself. Every touch pushes that back.
    */
-  private void delayWeatherHourlyClose() {
-    mHideHandler.removeCallbacks(weatherHourlyCloseRunnable);
-    mHideHandler.postDelayed(weatherHourlyCloseRunnable, WEATHER_HOURLY_TIMEOUT_MILLIS);
+  private void delayWeatherPanelClose() {
+    mHideHandler.removeCallbacks(weatherPanelCloseRunnable);
+    mHideHandler.postDelayed(weatherPanelCloseRunnable, WEATHER_PANEL_TIMEOUT_MILLIS);
   }
 
   private void updateSlideshowPauseButton() {

@@ -348,9 +348,9 @@
     <string name="about.text">"<![CDATA[     <html>     <body style="font-size:8px;">     <style>     p,li{font-weight:normal}     </style>     <h1>Simple Radio Clock<h1> <p>Este aplicativo simples apenas mostra o relógio em tela cheia e tem 5 botões, cada um associado a uma transmissão de rádio.</p> <p>De fábrica ele vem configurado com Radio Guerrilla, Tananana e RockFM da Romênia, RadioBOB da Alemanha e Zodiac da Irlanda. Isso pode ser alterado e você pode ter até 8 botões.</p> <p> <b>Inverter</b><br> Muda a orientação da tela. Dependendo de onde ficam os botões de volume, isso pode ser bem útil.<br> <br> <b>Configurações</b><br> nesta seção você pode ajustar várias coisas legais: <ul> <li>fonte do relógio: você pode escolher entre várias fontes para a exibição do relógio.</li> <li>cor do relógio</li> <li>brilho da tela (tem prioridade sobre as configurações do celular)</li> <li>tamanho do relógio</li> <li>ativar/desativar a exibição dos segundos</li> <li>ativar o relógio de 12 horas com ou sem a exibição de am/pm</li> <li>ativar/desativar o movimento do relógio na tela; por padrão o relógio passeia pelos cantos da tela - importante se você tem uma tela AMOLED (deixar uma imagem parada numa tela AMOLED por muito tempo pode danificar a tela)</li> <li>tempo para desligar personalizado: o aplicativo tem um botão de sleep que percorre alguns tempos predefinidos (15, 20, 30 minutos); aqui você pode acrescentar o seu preferido -> Você pode ativar o desligamento automático pelo botão de sleep na tela principal. </li> <li>tempo de soneca personalizado: você pode definir seu próprio tempo de soneca (por padrão são 10 minutos)</li> <li>inverter os botões de rádio/alarme: coloca os botões de rádio em cima e os de alarme embaixo. Isso pode ajudar com certos suportes de celular.</li> <li>destravar o modo paisagem, para que o relógio acompanhe a orientação do celular; também é possível desenhar o relógio na vertical (com horas, minutos e/ou segundos um abaixo do outro).</li> <li>você pode ativar a exibição do nível da bateria; lembre-se de que este recurso ainda está em fase beta e pode não funcionar em todos os aparelhos o tempo todo.</li> </ul> <b>Configurar botões</b> <ul> <li>editar um botão de memória (o endereço da transmissão)</li> <li>atribuir um rótulo a um botão (será exibido no lugar do número) - você também pode fazer isso com um toque longo no botão; com um toque longo você também pode remover um botão</li> <li>ativar até 8 botões (basta adicionar o endereço da sua rádio favorita)</li> </ul> <b>Buscador de rádios</b> <ul> <li>você pode procurar uma transmissão usando as listas suspensas e o campo de nome (o nome não precisa ser exato) e atribuir a rádio a uma memória. O aplicativo até sugere um rótulo ;)</li> <li>lembre-se de que a lista não é completa e pode não estar 100% correta; se você tem uma rádio que gostaria que eu incluísse na lista, me mande um e-mail</li> <li>agora o aplicativo memoriza o último país e o último idioma usados</li> </ul> <b>Perfil noturno</b> <ul> <li>você pode definir um conjunto diferente de configurações e ativá-lo com o toque de um botão (por exemplo, à noite um relógio maior e sem segundos, ou vermelho e com 50% de brilho, enquanto de dia ele fica menor, verde, com segundos e mais claro)</li> <li>você também pode definir um horário de início e de fim para o \"perfil noturno\". Assim, as configurações noturnas serão aplicadas automaticamente no horário indicado</li> </ul>  <b>Alarmes</b> <p>Dica: quando o alarme disparar, toque na tela (ou no botão de confirmação) para cancelá-lo sem parar o rádio;<br>quando o alarme estiver tocando, toque no botão de cancelar (marcado com \"x\") para parar o alarme sem tocar o rádio; o próximo alarme será ativado automaticamente.</p> <ul> <li>você pode configurar até dois alarmes, que ligam o rádio no horário definido. Vai tocar a última rádio ouvida ou uma rádio escolhida por você nas configurações. Se não houver conexão com a internet, tocará o som de alarme padrão.</li> <li><b>você pode definir alarmes que se repetem em vários dias da semana (por exemplo, um nos dias úteis e outro no fim de semana)</b></li> <li>também existe a função de soneca, com 10 minutos de duração; você também pode definir seu próprio tempo de soneca.</li> <li>você pode ativar o som progressivo: o rádio começa a tocar baixinho e o volume aumenta a cada 10 segundos. Observe que isso não aumenta o volume do aparelho (aquele controlado pelos botões de volume). <li>você pode definir uma estação com a qual o alarme sempre começa</li> </ul> <p><span style=\"color:red\">No Android 14 e superior, você precisará conceder uma permissão especial para poder usar a função de alarme.</span></p> <p> <b>*** ATENÇÃO: por favor, não use este aplicativo como seu despertador principal. Use sempre o seu despertador de costume para acordar. ***</b> </p>  <p>Tentei manter tudo o mais simples possível, mas se você tiver ideias ou achar que dá para melhorar, escreva para o meu endereço de gmail cristi.ciuc</p> <p>O código é open source e pode ser encontrado no github: https://github.com/ciuc/InternetRadioClock</p> ]]>     "</string>
     <!-- clima -->
     <string name="category_title_weather">Clima</string>
-    <string name="category_summary_weather">Mostrar a previsão de três dias ao lado do relógio</string>
+    <string name="category_summary_weather">Mostrar o tempo agora e nos próximos três dias, ao lado do relógio</string>
     <string name="setting.name.weather.enabled">Mostrar o clima</string>
-    <string name="setting.summary.weather.enabled">Hoje e os dois dias seguintes, ao lado do relógio</string>
+    <string name="setting.summary.weather.enabled">Agora, hoje e os dois dias seguintes, ao lado do relógio</string>
     <string name="setting.name.weather.location">Local</string>
     <string name="setting.summary.weather.location.none">Não definido - toque para procurar sua cidade</string>
     <string name="setting.name.weather.units">Unidades de temperatura</string>
@@ -368,6 +368,9 @@
     <string name="weather.button.description">Mostrar ou ocultar o clima</string>
     <string name="weather.no.location.yet">Escolha uma cidade primeiro: Configurações → Clima → Local.</string>
     <string name="weather.today">Hoje</string>
+    <string name="weather.now">Agora</string>
+    <string name="weather.refresh">Atualizar</string>
+    <string name="weather.refresh.failed">Serviço de meteorologia indisponível - estes são os últimos valores.</string>
     <string name="weather.rain.description">%1$d%% de chance de chuva</string>
     <string name="weather.hourly.dismiss">Toque em qualquer lugar para voltar</string>
     <string name="weather.hourly.unavailable">Ainda não há previsão hora a hora - ela chega na próxima atualização.</string>
@@ -379,6 +382,26 @@
     <string name="weather.condition.rain">Chuva</string>
     <string name="weather.condition.snow">Neve</string>
     <string name="weather.condition.thunderstorm">Tempestade</string>
+
+    <string name="weather.detail.wind">Vento</string>
+    <string name="weather.detail.humidity">Umidade</string>
+    <string name="weather.detail.pressure">Pressão</string>
+    <string name="weather.detail.uv">Índice UV</string>
+
+    <string name="weather.wind.n">N</string>
+    <string name="weather.wind.ne">NE</string>
+    <string name="weather.wind.e">L</string>
+    <string name="weather.wind.se">SE</string>
+    <string name="weather.wind.s">S</string>
+    <string name="weather.wind.sw">SO</string>
+    <string name="weather.wind.w">O</string>
+    <string name="weather.wind.nw">NO</string>
+
+    <string name="weather.uv.low">Baixo</string>
+    <string name="weather.uv.moderate">Moderado</string>
+    <string name="weather.uv.high">Alto</string>
+    <string name="weather.uv.very_high">Muito alto</string>
+    <string name="weather.uv.extreme">Extremo</string>
     <!-- efeito de aniversário e controles da apresentação -->
     <string name="setting.name.slideshow.anniversary">Efeito de aniversário</string>
     <string name="setting.summary.slideshow.anniversary">Receba cada imagem com fogos de artifício e confete. Enquanto dura, a comemoração cobre o relógio</string>

@@ -1,6 +1,8 @@
 package ro.antiprotv.radioclock.service.weather;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -93,7 +95,8 @@ public class WeatherRepositoryTest {
           + "\"time\":[\"2026-09-15T00:00\",\"2026-09-15T01:00\",\"2026-09-16T00:00\"],"
           + "\"weather_code\":[3,45,2],"
           + "\"temperature_2m\":[15.3,14.9,16.1],"
-          + "\"precipitation_probability\":[0,7,40]}}";
+          + "\"precipitation_probability\":[0,7,40],"
+          + "\"is_day\":[0,0,1]}}";
 
   @Test
   public void parsesEveryHour() throws Exception {
@@ -104,6 +107,28 @@ public class WeatherRepositoryTest {
     assertEquals(45, hours.get(1).weatherCode);
     assertEquals(14.9, hours.get(1).temperature, 0.001);
     assertEquals(7, hours.get(1).precipitationChance);
+  }
+
+  /** Which icon an hour gets - the sun one or the moon one - comes from the service, not the hour. */
+  @Test
+  public void parsesWhetherEachHourIsDaylight() throws Exception {
+    List<WeatherHour> hours = WeatherRepository.parseHourly(new JSONObject(HOURLY_RESPONSE));
+
+    assertFalse(hours.get(0).isDay);
+    assertFalse(hours.get(1).isDay);
+    assertTrue(hours.get(2).isDay);
+  }
+
+  /** A forecast cached before daylight was asked for draws as it always did, in daytime icons. */
+  @Test
+  public void hoursWithoutDaylightAreTreatedAsDay() throws Exception {
+    String body =
+        "{\"hourly\":{\"time\":[\"2026-09-15T02:00\"],\"weather_code\":[0],"
+            + "\"temperature_2m\":[10.0]}}";
+
+    List<WeatherHour> hours = WeatherRepository.parseHourly(new JSONObject(body));
+
+    assertTrue(hours.get(0).isDay);
   }
 
   /** The panel groups the hours by day and heads each column with the hour alone. */
@@ -152,6 +177,60 @@ public class WeatherRepositoryTest {
   public void bodyWithoutHourlyYieldsNothing() throws Exception {
     assertTrue(WeatherRepository.parseHourly(new JSONObject(RESPONSE)).isEmpty());
     assertTrue(WeatherRepository.parseHourly(new JSONObject("{\"hourly\":{}}")).isEmpty());
+  }
+
+  // -----------------------------------------------------------------------------------------
+  // The current block, which the "Now" column and its detail panel draw from
+  // -----------------------------------------------------------------------------------------
+
+  /** The current block as Open-Meteo returns it, trimmed to the fields the app asks for. */
+  private static final String CURRENT_RESPONSE =
+      "{\"current\":{\"time\":\"2026-09-17T20:30\",\"weather_code\":1,"
+          + "\"temperature_2m\":21.8,\"relative_humidity_2m\":48,\"pressure_msl\":1014.4,"
+          + "\"wind_speed_10m\":4.7,\"wind_direction_10m\":148,\"uv_index\":0.0,"
+          + "\"is_day\":0}}";
+
+  @Test
+  public void parsesTheCurrentReading() throws Exception {
+    WeatherNow now = WeatherRepository.parseCurrent(new JSONObject(CURRENT_RESPONSE));
+
+    assertEquals(1, now.weatherCode);
+    assertEquals(21.8, now.temperature, 0.001);
+    assertEquals(48, now.humidity);
+    assertEquals(1014.4, now.pressure, 0.001);
+    assertEquals(4.7, now.windSpeed, 0.001);
+    assertEquals(148, now.windDirection);
+    // Nought all night, and a real reading rather than a missing one.
+    assertEquals(0.0, now.uvIndex, 0.001);
+    assertFalse(now.isDay);
+  }
+
+  /** A reading the service left out is a row the panel should leave out, not one that reads zero. */
+  @Test
+  public void absentReadingsAreNotZero() throws Exception {
+    String body = "{\"current\":{\"weather_code\":0,\"temperature_2m\":5.0,\"is_day\":1}}";
+
+    WeatherNow now = WeatherRepository.parseCurrent(new JSONObject(body));
+
+    assertEquals(-1, now.humidity);
+    assertTrue(Double.isNaN(now.pressure));
+    assertTrue(Double.isNaN(now.windSpeed));
+    assertEquals(-1, now.windDirection);
+    assertTrue(Double.isNaN(now.uvIndex));
+    assertTrue(now.isDay);
+  }
+
+  /**
+   * A forecast cached by a build from before the "Now" column existed has no such block. The
+   * manager takes null as its cue to drop that cache and fetch a fresh one.
+   */
+  @Test
+  public void bodyWithoutCurrentYieldsNull() throws Exception {
+    assertNull(WeatherRepository.parseCurrent(new JSONObject(RESPONSE)));
+    assertNull(WeatherRepository.parseCurrent(new JSONObject("{\"current\":{}}")));
+    assertNull(
+        WeatherRepository.parseCurrent(
+            new JSONObject("{\"current\":{\"temperature_2m\":null}}")));
   }
 
   /** Which hour is "now" is worked out from the forecast's own offset, not the device's. */

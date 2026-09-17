@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  One reading of the current conditions - a name and a value. Inflated once per reading into
+  weather_now_panel's column by WeatherNowPanel, which also colours it like the clock.
+
+  The name is given a minimum width so the values line up down the panel without a table around
+  them; a long translation simply pushes its own row wider, which at one row per line costs
+  nothing.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
+
+    <TextView
+        android:id="@+id/weather_detail_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.7"
+        android:includeFontPadding="false"
+        android:minWidth="130dp"
+        android:textSize="15sp"
+        tools:text="Humidity" />
+
+    <TextView
+        android:id="@+id/weather_detail_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:includeFontPadding="false"
+        android:textSize="15sp"
+        tools:text="48%" />
+</LinearLayout>

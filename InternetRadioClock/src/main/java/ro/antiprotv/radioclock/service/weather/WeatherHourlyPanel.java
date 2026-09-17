@@ -108,7 +108,8 @@ public class WeatherHourlyPanel {
     time.setTextColor(color);
 
     ImageView icon = cell.findViewById(R.id.weather_hour_icon);
-    icon.setImageResource(WeatherCodes.icon(hour.weatherCode));
+    // Per hour rather than per day: the small hours of the panel should not be drawn in sun.
+    icon.setImageResource(WeatherCodes.icon(hour.weatherCode, hour.isDay));
     icon.setColorFilter(color);
     icon.setContentDescription(activity.getString(WeatherCodes.description(hour.weatherCode)));
 

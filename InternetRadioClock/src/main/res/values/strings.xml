@@ -859,9 +859,9 @@
     <string name="setting.key.weather.size.night" translatable="false">setting.key.weather.size.night</string>
 
     <string name="category_title_weather">Weather</string>
-    <string name="category_summary_weather">Show a three-day forecast next to the clock</string>
+    <string name="category_summary_weather">Show the weather now and for the next three days, next to the clock</string>
     <string name="setting.name.weather.enabled">Show the weather</string>
-    <string name="setting.summary.weather.enabled">Today and the next two days, next to the clock</string>
+    <string name="setting.summary.weather.enabled">Right now, today and the next two days, next to the clock</string>
     <string name="setting.name.weather.location">Location</string>
     <string name="setting.summary.weather.location.none">Not set - tap to search for your town</string>
     <string name="setting.name.weather.units">Temperature units</string>
@@ -891,6 +891,10 @@
     <string name="weather.no.location.yet">Pick a town first: Settings \u2192 Weather \u2192 Location.</string>
 
     <string name="weather.today">Today</string>
+    <string name="weather.now">Now</string>
+    <!-- The refresh button on the current-conditions panel, and what it says when it cannot -->
+    <string name="weather.refresh">Refresh</string>
+    <string name="weather.refresh.failed">Could not reach the weather service - this is still the last reading.</string>
     <!-- Highest and lowest temperature for one day, as shown under the weather icon -->
     <string name="weather.temperature.format" translatable="false">%1$d° / %2$d°</string>
     <string name="weather.rain.format" translatable="false">%1$d%%</string>
@@ -912,4 +916,35 @@
     <string name="weather.condition.rain">Rain</string>
     <string name="weather.condition.snow">Snow</string>
     <string name="weather.condition.thunderstorm">Thunderstorm</string>
+
+    <!-- The readings behind the Now column, shown one per line when it is tapped -->
+    <string name="weather.detail.wind">Wind</string>
+    <string name="weather.detail.humidity">Humidity</string>
+    <string name="weather.detail.pressure">Pressure</string>
+    <string name="weather.detail.uv">UV index</string>
+    <!-- A wind speed and its unit, e.g. "12 km/h" -->
+    <string name="weather.detail.wind.format" translatable="false">%1$d %2$s</string>
+    <!-- A wind speed followed by where it blows from, e.g. "12 km/h NW" -->
+    <string name="weather.detail.wind.direction.format" translatable="false">%1$s %2$s</string>
+    <string name="weather.detail.pressure.format" translatable="false">%1$d hPa</string>
+    <!-- A UV index and the band it falls in, e.g. "3 · Moderate" -->
+    <string name="weather.detail.uv.format" translatable="false">%1$d · %2$s</string>
+    <string name="weather.unit.kmh" translatable="false">km/h</string>
+    <string name="weather.unit.mph" translatable="false">mph</string>
+
+    <!-- Compass points, as short as they can be written: these sit next to a wind speed -->
+    <string name="weather.wind.n">N</string>
+    <string name="weather.wind.ne">NE</string>
+    <string name="weather.wind.e">E</string>
+    <string name="weather.wind.se">SE</string>
+    <string name="weather.wind.s">S</string>
+    <string name="weather.wind.sw">SW</string>
+    <string name="weather.wind.w">W</string>
+    <string name="weather.wind.nw">NW</string>
+
+    <string name="weather.uv.low">Low</string>
+    <string name="weather.uv.moderate">Moderate</string>
+    <string name="weather.uv.high">High</string>
+    <string name="weather.uv.very_high">Very high</string>
+    <string name="weather.uv.extreme">Extreme</string>
 </resources>

@@ -327,9 +327,9 @@
     </string-array>
     <!-- vremea -->
     <string name="category_title_weather">Vremea</string>
-    <string name="category_summary_weather">Arată prognoza pe trei zile lângă ceas</string>
+    <string name="category_summary_weather">Arată vremea de acum și pe următoarele trei zile, lângă ceas</string>
     <string name="setting.name.weather.enabled">Arată vremea</string>
-    <string name="setting.summary.weather.enabled">Astăzi și următoarele două zile, lângă ceas</string>
+    <string name="setting.summary.weather.enabled">Acum, astăzi și următoarele două zile, lângă ceas</string>
     <string name="setting.name.weather.location">Localitate</string>
     <string name="setting.summary.weather.location.none">Nestabilită - atinge pentru a-ți căuta orașul</string>
     <string name="setting.name.weather.units">Unități de temperatură</string>
@@ -347,6 +347,9 @@
     <string name="weather.button.description">Arată sau ascunde vremea</string>
     <string name="weather.no.location.yet">Alege întâi un oraș: Setări → Vremea → Localitate.</string>
     <string name="weather.today">Astăzi</string>
+    <string name="weather.now">Acum</string>
+    <string name="weather.refresh">Reîmprospătează</string>
+    <string name="weather.refresh.failed">Serviciul meteo nu poate fi contactat - valorile sunt cele anterioare.</string>
     <string name="weather.rain.description">%1$d%% șanse de ploaie</string>
     <string name="weather.hourly.dismiss">Atinge oriunde pentru a reveni</string>
     <string name="weather.hourly.unavailable">Încă nu există o prognoză oră de oră - apare la următoarea actualizare.</string>
@@ -358,6 +361,26 @@
     <string name="weather.condition.rain">Ploaie</string>
     <string name="weather.condition.snow">Ninsoare</string>
     <string name="weather.condition.thunderstorm">Furtună</string>
+
+    <string name="weather.detail.wind">Vânt</string>
+    <string name="weather.detail.humidity">Umiditate</string>
+    <string name="weather.detail.pressure">Presiune</string>
+    <string name="weather.detail.uv">Indice UV</string>
+
+    <string name="weather.wind.n">N</string>
+    <string name="weather.wind.ne">NE</string>
+    <string name="weather.wind.e">E</string>
+    <string name="weather.wind.se">SE</string>
+    <string name="weather.wind.s">S</string>
+    <string name="weather.wind.sw">SV</string>
+    <string name="weather.wind.w">V</string>
+    <string name="weather.wind.nw">NV</string>
+
+    <string name="weather.uv.low">Scăzut</string>
+    <string name="weather.uv.moderate">Moderat</string>
+    <string name="weather.uv.high">Ridicat</string>
+    <string name="weather.uv.very_high">Foarte ridicat</string>
+    <string name="weather.uv.extreme">Extrem</string>
     <!-- efect aniversar și comenzile slideshow -->
     <string name="setting.name.slideshow.anniversary">Efect aniversar</string>
     <string name="setting.summary.slideshow.anniversary">Întâmpină fiecare imagine cu artificii și confetti. Cât ține sărbătoarea, aceasta acoperă ceasul</string>

@@ -54,6 +54,18 @@ public final class WeatherSettings {
     return "fahrenheit".equals(getUnit(context, prefs)) ? "\u00b0F" : "\u00b0C";
   }
 
+  /**
+   * What wind speeds come back in, spelled the way the detail panel prints it. There is no
+   * separate setting for it: the request asks for mph alongside Fahrenheit and km/h alongside
+   * Celsius, and this has to say the same thing.
+   */
+  public static String getWindUnitLabel(Context context, SharedPreferences prefs) {
+    return context.getString(
+        "fahrenheit".equals(getUnit(context, prefs))
+            ? R.string.weather_unit_mph
+            : R.string.weather_unit_kmh);
+  }
+
   public static void saveLocation(
       Context context, SharedPreferences prefs, WeatherLocation location) {
     prefs

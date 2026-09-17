@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  The three-day forecast shown next to the clock. It is anchored to the clock rather than to the
-  screen, because the clock wanders around to spare AMOLED panels: see WeatherManager.
+  The forecast shown next to the clock: the weather at this moment, then today and the two days
+  after it. It is anchored to the clock rather than to the screen, because the clock wanders
+  around to spare AMOLED panels: see WeatherManager.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -12,6 +13,91 @@
     android:orientation="horizontal"
     android:gravity="bottom"
     android:visibility="gone">
+
+        <!--
+          The weather right now. Built like the three day columns beside it so the row reads as
+          one thing, but with a single temperature where they carry a high and a low - there is
+          only one reading at one moment - and its own detail panel behind the tap.
+        -->
+        <LinearLayout
+            android:id="@+id/weather_now"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:id="@+id/weather_now_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:shadowColor="#000000"
+                android:shadowDx="4"
+                android:shadowDy="4"
+                android:shadowRadius="6"
+                android:text="@string/weather.now"
+                android:textColor="@color/color.clock"
+                android:textSize="12sp"
+                tools:text="Now" />
+
+            <ImageView
+                android:id="@+id/weather_now_icon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginTop="2dp"
+                android:contentDescription="@null"
+                app:srcCompat="@drawable/ic_weather_clear"
+                app:tint="@color/color.clock" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/weather_now_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:shadowColor="#000000"
+                    android:shadowDx="4"
+                    android:shadowDy="4"
+                    android:shadowRadius="6"
+                    android:textColor="@color/color.clock"
+                    android:textSize="14sp"
+                    tools:text="21°" />
+
+                <ImageView
+                    android:id="@+id/weather_now_rain_icon"
+                    android:layout_width="11dp"
+                    android:layout_height="11dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="2dp"
+                    android:contentDescription="@null"
+                    app:srcCompat="@drawable/ic_weather_rain_chance"
+                    app:tint="@color/color.clock" />
+
+                <TextView
+                    android:id="@+id/weather_now_rain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:includeFontPadding="false"
+                    android:shadowColor="#000000"
+                    android:shadowDx="4"
+                    android:shadowDy="4"
+                    android:shadowRadius="6"
+                    android:textColor="@color/color.clock"
+                    android:textSize="12sp"
+                    tools:text="30%" />
+            </LinearLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/weather_day_0"
