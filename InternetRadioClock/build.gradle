@@ -53,7 +53,7 @@ dependencies {
     implementation 'com.devbrackets.android:exomedia:5.2.0'
     testImplementation 'junit:junit:4.13.2'
     // Optional -- Mockito framework
-    testImplementation "org.mockito:mockito-core:5.20.0"
+    testImplementation "org.mockito:mockito-core:5.23.0"
     // A real org.json on the unit-test classpath; the stubbed android.jar only has no-op methods,
     // so the forecast parser could not be tested against it.
     testImplementation 'org.json:json:20240303'
