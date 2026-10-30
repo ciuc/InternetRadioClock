@@ -76,6 +76,10 @@ public class RadioAlarmManager extends BroadcastReceiver {
     this.buttonManager = buttonManager;
     alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     Intent intent = new Intent("alarmReceiver");
+    // The receiver is registered RECEIVER_NOT_EXPORTED, and on recent targetSdks the system no
+    // longer delivers an implicit (package-less) broadcast to it - so the alarm silently never
+    // fired. Naming our own package makes the broadcast explicit.
+    intent.setPackage(context.getPackageName());
     alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
     clockActivity = context;
     alarmButton1 = clockActivity.findViewById(R.id.alarm_icon);
