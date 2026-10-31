@@ -22,6 +22,7 @@ public class CheersActivity extends AppCompatActivity {
     setContentView(R.layout.activity_cheers);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+    SystemBarInsets.apply(this);
     Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
     TextView foo = findViewById(R.id.cheersText);

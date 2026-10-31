@@ -21,6 +21,7 @@ public class AboutActivity extends AppCompatActivity {
     setContentView(R.layout.activity_about);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+    SystemBarInsets.apply(this);
     Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
     WebView foo = findViewById(R.id.aboutText);
     foo.loadDataWithBaseURL(

@@ -21,6 +21,7 @@ public class ConfigureButtonsActivity extends AppCompatActivity {
     setContentView(R.layout.activity_configure_buttons);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+    SystemBarInsets.apply(this);
     Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
     getFragmentManager()

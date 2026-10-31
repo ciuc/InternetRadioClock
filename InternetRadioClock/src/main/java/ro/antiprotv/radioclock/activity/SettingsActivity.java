@@ -6,16 +6,10 @@ package ro.antiprotv.radioclock.activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.OnApplyWindowInsetsListener;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -34,6 +28,7 @@ public class SettingsActivity extends AppCompatActivity
     setContentView(R.layout.activity_settings);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+    SystemBarInsets.apply(this);
     setTitle(R.string.title_settings);
     Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
@@ -41,16 +36,6 @@ public class SettingsActivity extends AppCompatActivity
         .beginTransaction()
         .replace(R.id.settings_content, new SettingsFragment())
         .commit();
-    View rootLayout = findViewById(R.id.layout_root_activity_settings);
-    ViewCompat.setOnApplyWindowInsetsListener(rootLayout, new OnApplyWindowInsetsListener() {
-      @NonNull
-      @Override
-      public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-        Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-        v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-        return insets;
-      }
-    });
   }
 
   @Override

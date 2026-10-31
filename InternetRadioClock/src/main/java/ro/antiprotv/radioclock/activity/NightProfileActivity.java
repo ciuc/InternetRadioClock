@@ -6,15 +6,9 @@ package ro.antiprotv.radioclock.activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.OnApplyWindowInsetsListener;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import java.util.Objects;
 import ro.antiprotv.radioclock.R;
@@ -29,22 +23,13 @@ public class NightProfileActivity extends AppCompatActivity {
     setContentView(R.layout.activity_night_profile);
     Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+    SystemBarInsets.apply(this);
     Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
     getSupportFragmentManager()
         .beginTransaction()
         .replace(R.id.night_profile_content, new NightProfileFragment())
         .commit();
-    View rootLayout = findViewById(R.id.layout_root_activity_settings);
-    ViewCompat.setOnApplyWindowInsetsListener(rootLayout, new OnApplyWindowInsetsListener() {
-      @NonNull
-      @Override
-      public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-        Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-        v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-        return insets;
-      }
-    });
   }
 
   @Override
