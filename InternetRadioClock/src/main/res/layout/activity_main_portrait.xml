@@ -112,18 +112,8 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/margin_top">
+        >
 
-        <ImageButton
-            android:id="@+id/on_off_button"
-            style="@style/imageButtonStyle"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_centerHorizontal="true"
-            android:background="@android:color/transparent"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/ic_baseline_on_off_white_24" />
 
         <!-- ALARMS -->
         <ImageButton
@@ -133,6 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:clickable="false"
             app:srcCompat="@drawable/ic_alarm_add_black_24dp"
             android:background="@drawable/memory"
@@ -146,6 +137,7 @@
             android:layout_alignParentEnd="false"
             android:layout_gravity="fill"
             android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:layout_toLeftOf="@+id/alarm_icon"
             android:text="Alarm set for   10am"
             android:textColor="@color/button.color.off"
@@ -158,6 +150,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:layout_toLeftOf="@+id/alarm_time"
             android:background="@drawable/memory"
             android:clickable="false"
@@ -226,7 +219,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="fill"
-            android:layout_toRightOf="@+id/alarm_icon2"
+            android:layout_toLeftOf="@+id/alarm_icon2"
+            android:layout_below="@id/alarm_icon"
             android:textColor="@color/button.color.off"
             android:textSize="10sp" />
 
@@ -235,7 +229,8 @@
             style="@style/imageButtonStyle"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:layout_toRightOf="@+id/alarm_time2"
+            android:layout_toLeftOf="@+id/alarm_time2"
+            android:layout_below="@+id/alarm_icon"
             android:background="@drawable/memory"
             android:clickable="false"
             android:textColor="@color/button.color.off"
@@ -255,6 +250,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
+                android:layout_below="@+id/button_slideshow_enable"
                 android:background="@drawable/memory"
                 android:clickable="false"
                 android:tag="@string/setting.key.alarmIcon"
@@ -266,9 +262,9 @@
                 style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/timer_short"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
+                android:layout_below="@+id/timer_short"
                 android:background="@drawable/memory"
                 android:clickable="false"
                 android:tag="@string/setting.key.alarmIcon"
@@ -282,7 +278,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/timer_long"
+                android:layout_below="@+id/timer_long"
                 android:background="@drawable/memory"
                 android:clickable="false"
                 android:tag="@string/setting.key.alarmIcon"
@@ -349,8 +345,7 @@
                 android:tag="@string/setting.key.alarmIcon"
                 android:textColor="@color/button.color.off"
                 app:srcCompat="@drawable/baseline_slideshow_24"
-                tools:visibility="visible"
-                android:layout_below="@+id/timer_long"/>
+                tools:visibility="visible"/>
             <!--
               Opens the hand controls: everything the app draws goes away, the clock included, and
               the slideshow is stepped through by hand until the user taps back out of it.
@@ -368,8 +363,7 @@
                 android:textColor="@color/button.color.off"
                 app:srcCompat="@drawable/baseline_touch_app_24"
                 tools:visibility="visible"
-                android:layout_toRightOf="@+id/button_slideshow_enable"
-                android:layout_below="@+id/timer_long"/>
+                android:layout_toRightOf="@+id/button_slideshow_enable"/>
             <Button
                 android:id="@+id/timer_minus1m"
                 style="@style/imageButtonStyle"
@@ -444,91 +438,6 @@
             android:layout_alignParentEnd="true"
             android:textColor="@color/button.color.off" />
 
-        <!-- Cycles the forecast off -> small -> big, the way the date button cycles its own. -->
-        <ImageButton
-            android:id="@+id/weather_button"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/volume_up_button"
-            android:layout_alignRight="@+id/volume_up_button"
-            android:layout_above="@+id/volume_up_button"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/memory"
-            android:clickable="true"
-            android:contentDescription="@string/weather.button.description"
-            android:scaleType="center"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/ic_weather_partly_cloudy" />
-
-        <ImageButton
-            android:id="@+id/volume_up_button"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/volume_bar"
-            android:layout_below="@id/sleep"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/outline_volume_up_24" />
-
-        <ImageButton
-            android:id="@+id/volume_down_button"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/volume_up_button"
-            android:layout_below="@id/sleep"
-            android:background="@drawable/memory"
-            android:clickable="false"
-            android:textColor="@color/button.color.off"
-            app:srcCompat="@drawable/outline_volume_down_24" />
-
-        <!-- VOLUME BAR -->
-        <RelativeLayout
-            android:id="@+id/volume_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_marginEnd="5dp"
-            android:layout_toLeftOf="@+id/night_mode_button"
-            android:alpha="0.9"
-            android:background="@drawable/seekbar"
-            android:orientation="horizontal"
-            android:padding="7dp">
-
-            <ImageView
-                android:id="@+id/image_note"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_volume_dialog_24dp"/>
-
-            <ro.antiprotv.radioclock.service.VerticalSeekBar
-                android:id="@+id/volume_seekbar"
-                android:layout_width="wrap_content"
-                android:layout_height="180dp"
-                android:layout_below="@id/image_note"
-                android:background="@drawable/memory"
-                android:progressTint="@color/color.clock"
-                android:thumb="@drawable/scrubber_control_focused_holo" />
-        </RelativeLayout>
-        <!-- VOLUME BAR END -->
-
-        <TextView
-            android:id="@+id/volume"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill"
-            android:textColor="@color/button.color.off"
-            android:textSize="15sp"
-            android:text="100%"
-            android:layout_marginBottom="5dp"
-            android:layout_toLeftOf="@+id/volume_bar"/>
-
         <ImageButton
             android:id="@+id/main_help_button"
             style="@style/imageButtonStyle"
@@ -541,17 +450,88 @@
             android:layout_below="@id/night_mode_button"
             android:layout_width="45dp"
             android:layout_height="45dp"/>
+        <ImageButton
+            android:id="@+id/on_off_button"
+            style="@style/imageButtonStyle"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_below="@id/main_help_button"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"
+            android:clickable="false"
+            android:textColor="@color/button.color.off"
+            app:srcCompat="@drawable/ic_baseline_on_off_white_24" />
         <RelativeLayout
             android:id="@+id/ui_settings_panel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/main_help_button">
+            android:layout_alignParentBottom="true">
+
+            <!-- Weather on top of volume up, volume down beside volume up; the volume bar fills
+                 the column to their left, from the weather row down to the date row. -->
+            <!-- Cycles the forecast off -> small -> big, the way the date button cycles its own. -->
+            <ImageButton
+                android:id="@+id/weather_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignLeft="@+id/volume_up_button"
+                android:layout_alignRight="@+id/volume_up_button"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/memory"
+                android:clickable="true"
+                android:contentDescription="@string/weather.button.description"
+                android:scaleType="center"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/ic_weather_partly_cloudy" />
+
+            <ImageButton
+                android:id="@+id/volume_up_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/weather_button"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/outline_volume_up_24" />
+
+            <ImageButton
+                android:id="@+id/volume_down_button"
+                style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/volume_up_button"
+                android:layout_alignTop="@+id/volume_up_button"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/memory"
+                android:clickable="false"
+                android:textColor="@color/button.color.off"
+                app:srcCompat="@drawable/outline_volume_down_24" />
+
+            <TextView
+                android:id="@+id/volume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/volume_down_button"
+                android:layout_alignRight="@+id/volume_down_button"
+                android:layout_alignTop="@+id/weather_button"
+                android:layout_alignBottom="@+id/weather_button"
+                android:gravity="center"
+                android:textColor="@color/button.color.off"
+                android:textSize="15sp"
+                android:text="100%" />
 
             <Button
                 android:id="@+id/seconds_button"
                 style="@style/imageButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/volume_up_button"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
@@ -568,6 +548,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
+                android:layout_below="@+id/volume_up_button"
                 android:layout_toStartOf="@id/seconds_button"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/memory"
@@ -641,6 +622,40 @@
             android:tag="@string/setting.key.alarmIcon"
             android:textColor="@color/button.color.off"
             app:srcCompat="@drawable/outline_color_lens_24" />
+
+            <!-- VOLUME BAR: left of the volume down / date column, stretched from the top of the
+                 weather button down to the bottom of the date button, right above the brightness bar. -->
+            <RelativeLayout
+                android:id="@+id/volume_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_toStartOf="@+id/volume_down_button"
+                android:layout_alignTop="@+id/weather_button"
+                android:layout_alignBottom="@+id/date_button"
+                android:alpha="0.9"
+                android:background="@drawable/seekbar"
+                android:orientation="horizontal"
+                android:padding="7dp">
+
+                <ImageView
+                    android:id="@+id/image_note"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_volume_dialog_24dp"/>
+
+                <ro.antiprotv.radioclock.service.VerticalSeekBar
+                    android:id="@+id/volume_seekbar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/image_note"
+                    android:background="@drawable/memory"
+                    android:progressTint="@color/color.clock"
+                    android:thumb="@drawable/scrubber_control_focused_holo" />
+            </RelativeLayout>
+            <!-- VOLUME BAR END -->
 
             <!-- BRIGHTNESS BAR -->
             <RelativeLayout

@@ -15,8 +15,13 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
@@ -61,6 +66,17 @@ public class StreamFinderActivity extends AppCompatActivity {
 
     final ImageButton hideKeyboard = findViewById(R.id.streamFinder_hidek);
     hideKeyboard.setOnClickListener(new KeyboardHideOnClickListener(this));
+
+    View rootLayout = findViewById(R.id.layout_root_activity_stream_finder);
+    ViewCompat.setOnApplyWindowInsetsListener(rootLayout, new OnApplyWindowInsetsListener() {
+      @NonNull
+      @Override
+      public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
+        Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+        v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+        return insets;
+      }
+    });
   }
 
   private void getStreams(View view) {

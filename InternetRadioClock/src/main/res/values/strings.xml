@@ -424,7 +424,7 @@
     <string name="title.streams">Configure Buttons</string>
     <string name="title.settings">Settings</string>
 
-    <string name="title.streamFinder">SimpleRadioClock: Stream Finder</string>
+    <string name="title.streamFinder">Stream Finder</string>
     <string name="streamFinder.hint">The list with radio streams is retrieved from the internet. It is maintained by community efforts and might not be 100% accurate.\n
 \nThere are aver 15.000 radios so this is why you need to provide at least a country as search criteria, otherwise the list would be huge.\n
 \nYou can add more search criteria like a category or the name of the radio.\n

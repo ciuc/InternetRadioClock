@@ -157,7 +157,7 @@
 
     <string name="title.streams">Configurar botões</string>
     <string name="title.settings">Configurações</string>
-    <string name="title.streamFinder">SimpleRadioClock: buscador de rádios</string>
+    <string name="title.streamFinder">Buscador de rádios</string>
     <string name="title_activity_stream_finder">StreamFinder</string>
 
     <!-- buscador de rádios -->

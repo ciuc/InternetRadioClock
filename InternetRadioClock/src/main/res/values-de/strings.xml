@@ -157,7 +157,7 @@
 
     <string name="title.streams">Tasten konfigurieren</string>
     <string name="title.settings">Einstellungen</string>
-    <string name="title.streamFinder">SimpleRadioClock: Sendersuche</string>
+    <string name="title.streamFinder">Sendersuche</string>
     <string name="title_activity_stream_finder">StreamFinder</string>
 
     <!-- Sendersuche -->
