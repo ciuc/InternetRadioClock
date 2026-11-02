@@ -111,6 +111,31 @@
            android:layout_above="@id/fullscreen_content"
            android:layout_centerHorizontal="true" />
 
+       <!-- The song the station says it plays. Hidden while the radio is off; NowPlayingManager moves
+            it to the top whenever the clock wanders down to the bottom edge. Default font on purpose. -->
+       <TextView
+           android:id="@+id/now_playing_text"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_alignParentBottom="true"
+           android:layout_marginStart="@dimen/now_playing_side_gap"
+           android:layout_marginEnd="@dimen/now_playing_side_gap"
+           android:layout_marginTop="@dimen/now_playing_top_gap"
+           android:layout_marginBottom="@dimen/now_playing_bottom_gap"
+           android:ellipsize="marquee"
+           android:gravity="center"
+           android:marqueeRepeatLimit="marquee_forever"
+           android:singleLine="true"
+           android:textColor="@color/color.clock"
+           android:textSize="20sp"
+           android:shadowColor="#000000"
+           android:shadowDx="3"
+           android:shadowDy="3"
+           android:shadowRadius="4"
+           android:visibility="gone"
+           tools:text="Artist - Title"
+           tools:visibility="visible" />
+
        <ro.antiprotv.radioclock.view.FillRectangleView
            android:id="@+id/fill_rectangle"
            android:layout_height="20dp"
@@ -684,6 +709,24 @@
                android:scaleType="center"
                android:textColor="@color/button.color.off"
                app:srcCompat="@drawable/ic_weather_partly_cloudy" />
+
+           <!-- Shows or hides the song playing, for the current profile. -->
+           <ImageButton
+               android:id="@+id/now_playing_button"
+               style="?metaButtonBarButtonStyle"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignLeft="@+id/weather_button"
+               android:layout_alignRight="@+id/weather_button"
+               android:layout_above="@+id/weather_button"
+               android:layout_marginBottom="5dp"
+               android:background="@drawable/memory"
+               android:clickable="true"
+               android:contentDescription="@string/nowplaying.button.description"
+               android:scaleType="center"
+               android:textColor="@color/button.color.off"
+               app:srcCompat="@drawable/ic_now_playing" />
+
 
            <ImageButton
                android:id="@+id/volume_up_button"

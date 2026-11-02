@@ -890,6 +890,13 @@
     <string name="weather.button.description">Show or hide the weather</string>
     <string name="weather.no.location.yet">Pick a town first: Settings \u2192 Weather \u2192 Location.</string>
 
+    <!-- Now playing: the song the station says it plays, shown under (or over) the clock -->
+    <string name="setting.key.nowplaying.enabled" translatable="false">setting.key.nowplaying.enabled</string>
+    <string name="setting.key.nowplaying.enabled.night" translatable="false">setting.key.nowplaying.enabled.night</string>
+    <string name="setting.name.nowplaying.enabled">Show the song playing</string>
+    <string name="setting.summary.nowplaying.enabled">Artist and title, when the station sends them, at the edge of the screen away from the clock</string>
+    <string name="nowplaying.button.description">Show or hide the song playing</string>
+
     <string name="weather.today">Today</string>
     <string name="weather.now">Now</string>
     <!-- The refresh button on the current-conditions panel, and what it says when it cannot -->

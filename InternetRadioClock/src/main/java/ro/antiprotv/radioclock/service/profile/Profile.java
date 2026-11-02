@@ -29,6 +29,7 @@ public abstract class Profile {
   protected int dateSize;
   protected boolean showWeather;
   protected int weatherSize;
+  protected boolean showNowPlaying;
   protected SharedPreferences prefs;
   protected boolean slideShowEnabled;
 
@@ -45,7 +46,8 @@ public abstract class Profile {
       int dateSize,
       boolean slideShowEnabled,
       boolean showWeather,
-      int weatherSize) {
+      int weatherSize,
+      boolean showNowPlaying) {
     this.clockColor = clockColor;
     this.clockSize = clockSize;
     this.brightness = brightness;
@@ -58,6 +60,7 @@ public abstract class Profile {
     this.dateSize = dateSize;
     this.showWeather = showWeather;
     this.weatherSize = weatherSize;
+    this.showNowPlaying = showNowPlaying;
 
     this.clock24h =
         prefs.getBoolean(context.getResources().getString(R.string.setting_key_clock24), false);
@@ -158,6 +161,15 @@ public abstract class Profile {
 
   public void saveWeatherSize(int weatherSize) {
     this.weatherSize = weatherSize;
+  }
+
+  /** Whether the song the station says it plays is shown at the edge of the screen. */
+  public boolean isShowNowPlaying() {
+    return showNowPlaying;
+  }
+
+  public void saveShowNowPlaying(boolean showNowPlaying) {
+    this.showNowPlaying = showNowPlaying;
   }
 
   public void saveSlideshowEnabled(boolean slideShowEnabled) {

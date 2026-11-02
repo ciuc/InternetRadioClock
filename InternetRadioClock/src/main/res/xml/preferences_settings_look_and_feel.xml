@@ -65,6 +65,12 @@
         android:summary="@string/setting.summary.weather.enabled"
         android:title="@string/setting.name.weather.enabled" />
     <SwitchPreference
+        android:id="@+id/switch_show_nowplaying"
+        android:defaultValue="true"
+        android:key="@string/setting.key.nowplaying.enabled"
+        android:summary="@string/setting.summary.nowplaying.enabled"
+        android:title="@string/setting.name.nowplaying.enabled" />
+    <SwitchPreference
         android:id="@+id/switch_clock_vertical"
         android:defaultValue="true"
         android:key="@string/setting.key.clock_vertical"

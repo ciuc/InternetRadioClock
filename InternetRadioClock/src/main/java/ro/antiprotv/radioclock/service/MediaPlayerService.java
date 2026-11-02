@@ -5,6 +5,10 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.Button;
 import android.widget.Toast;
+import androidx.annotation.OptIn;
+import androidx.media3.common.Metadata;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.extractor.metadata.icy.IcyInfo;
 import com.devbrackets.android.exomedia.AudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnErrorListener;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
@@ -51,6 +55,7 @@ public class MediaPlayerService {
       mMediaPlayer = new AudioPlayer(appContext);
       mMediaPlayer.setOnPreparedListener(new MediaPlayerService.CustomOnPreparedListener());
       mMediaPlayer.setOnErrorListener(new MediaPlayerService.CustomOnErrorListener());
+      mMediaPlayer.setMetadataListener(this::onMetadata);
     }
   }
 
@@ -79,6 +84,8 @@ public class MediaPlayerService {
     }
     // we might have a default alarm playing, so need to shut it off
     alarmManager.shutDownDefaultAlarm();
+    // the car display may be playing a station already
+    CarRadioService.stopIfPlaying();
     boolean isProgressiveSound =
         prefs.getBoolean(
             clockActivity.getResources().getString(R.string.setting_key_alarmProgressiveSound),
@@ -92,6 +99,8 @@ public class MediaPlayerService {
     }
     String url = buttonManager.getUrl(buttonId);
     buttonManager.resetButtons();
+    // the song of the station we are leaving is not the one coming up
+    clockActivity.setStreamTitle(null);
     Toast.makeText(
             clockActivity,
             clockActivity.getString(R.string.connecting_to) + url,
@@ -152,6 +161,23 @@ public class MediaPlayerService {
     clockActivity.setmPlayingStreamTag(null);
     clockActivity.setPlaying(false);
     volumeManager.cancelProgressiveVolumeTask();
+  }
+
+  /**
+   * Most stations send the song in the stream itself (ICY metadata, "StreamTitle='Artist -
+   * Title'"); the player picks it up for us whenever the song changes.
+   */
+  @OptIn(markerClass = UnstableApi.class)
+  private void onMetadata(Metadata metadata) {
+    for (int i = 0; i < metadata.length(); i++) {
+      Metadata.Entry entry = metadata.get(i);
+      if (entry instanceof IcyInfo) {
+        String title = ((IcyInfo) entry).title;
+        if (title != null && !title.trim().isEmpty()) {
+          clockActivity.setStreamTitle(title);
+        }
+      }
+    }
   }
 
   public boolean isPlaying() {

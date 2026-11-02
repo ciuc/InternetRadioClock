@@ -41,6 +41,12 @@
         android:summary="@string/setting.summary.weather.enabled"
         android:defaultValue="false" />
     <SwitchPreference
+        android:id="@+id/switch_show_nowplaying.night"
+        android:key="@string/setting.key.nowplaying.enabled.night"
+        android:title="@string/setting.name.nowplaying.enabled"
+        android:summary="@string/setting.summary.nowplaying.enabled"
+        android:defaultValue="true" />
+    <SwitchPreference
         android:id="@+id/switch_enable_clock_move.night"
         android:key="@string/setting.key.clockMove.night"
         android:title="@string/setting.name.clockMove"

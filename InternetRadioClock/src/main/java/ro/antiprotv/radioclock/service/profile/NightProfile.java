@@ -34,7 +34,8 @@ public class NightProfile extends Profile {
         prefs.getBoolean(context.getString(R.string.setting_key_slideshow_enabled_night), false),
         prefs.getBoolean(context.getString(R.string.setting_key_weather_enabled_night), false),
         prefs.getInt(
-            context.getString(R.string.setting_key_weather_size_night), WEATHER_SIZE_SMALL));
+            context.getString(R.string.setting_key_weather_size_night), WEATHER_SIZE_SMALL),
+        prefs.getBoolean(context.getString(R.string.setting_key_nowplaying_enabled_night), true));
   }
 
   @Override
@@ -117,6 +118,15 @@ public class NightProfile extends Profile {
         .putBoolean(context.getString(R.string.setting_key_weather_enabled_night), showWeather)
         .apply();
     super.saveShowWeather(showWeather);
+  }
+
+  @Override
+  public void saveShowNowPlaying(boolean showNowPlaying) {
+    prefs
+        .edit()
+        .putBoolean(context.getString(R.string.setting_key_nowplaying_enabled_night), showNowPlaying)
+        .apply();
+    super.saveShowNowPlaying(showNowPlaying);
   }
 
   @Override

@@ -366,6 +366,9 @@
     <string name="weather.location.no_results">Nada encontrado para “%1$s”.</string>
     <string name="weather.location.search_failed">Não foi possível acessar o serviço de clima. Verifique sua conexão e tente novamente.</string>
     <string name="weather.button.description">Mostrar ou ocultar o clima</string>
+    <string name="setting.name.nowplaying.enabled">Mostrar a música tocando</string>
+    <string name="setting.summary.nowplaying.enabled">Artista e título, quando a rádio os envia, na borda da tela oposta ao relógio</string>
+    <string name="nowplaying.button.description">Mostrar ou ocultar a música tocando</string>
     <string name="weather.no.location.yet">Escolha uma cidade primeiro: Configurações → Clima → Local.</string>
     <string name="weather.today">Hoje</string>
     <string name="weather.now">Agora</string>

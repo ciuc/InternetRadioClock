@@ -345,6 +345,9 @@
     <string name="weather.location.no_results">Nu s-a găsit nimic pentru „%1$s”.</string>
     <string name="weather.location.search_failed">Serviciul meteo nu a putut fi contactat. Verifică-ți conexiunea și încearcă din nou.</string>
     <string name="weather.button.description">Arată sau ascunde vremea</string>
+    <string name="setting.name.nowplaying.enabled">Arată melodia care se aude</string>
+    <string name="setting.summary.nowplaying.enabled">Artistul și titlul, când postul le trimite, la marginea ecranului opusă ceasului</string>
+    <string name="nowplaying.button.description">Arată sau ascunde melodia care se aude</string>
     <string name="weather.no.location.yet">Alege întâi un oraș: Setări → Vremea → Localitate.</string>
     <string name="weather.today">Astăzi</string>
     <string name="weather.now">Acum</string>

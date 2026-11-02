@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,7 @@ public class ClockUpdater extends Thread {
 
   /**
    * Told whenever the clock hops to a new corner, so that anything anchored to the clock - the
-   * weather bar - can follow it instead of ending up underneath it.
+   * weather bar, the song playing - can follow it instead of ending up underneath it.
    */
   public interface ClockPositionListener {
     /**
@@ -93,7 +94,7 @@ public class ClockUpdater extends Thread {
               paramsDate.addRule(RelativeLayout.BELOW, clockView.getId());
             }
             clockView.setLayoutParams(params);
-            if (positionListener != null) {
+            for (ClockPositionListener positionListener : positionListeners) {
               // Indexes 1 and 4 are the two ALIGN_PARENT_TOP entries; 0 and 3 the two along the
               // bottom, which are also the ones that put the date above the clock.
               positionListener.onClockPositionChanged(
@@ -109,7 +110,7 @@ public class ClockUpdater extends Thread {
       };
 
   private boolean moveText = true;
-  private ClockPositionListener positionListener;
+  private final List<ClockPositionListener> positionListeners = new ArrayList<>();
 
   public ClockUpdater(TextView clock, TextView dateView) {
     this.clockView = clock;
@@ -176,8 +177,8 @@ public class ClockUpdater extends Thread {
     this.moveText = moveText;
   }
 
-  public void setPositionListener(ClockPositionListener positionListener) {
-    this.positionListener = positionListener;
+  public void addPositionListener(ClockPositionListener positionListener) {
+    positionListeners.add(positionListener);
   }
 
   private static class MyHandler extends Handler {

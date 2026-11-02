@@ -366,6 +366,9 @@
     <string name="weather.location.no_results">Nichts gefunden für „%1$s“.</string>
     <string name="weather.location.search_failed">Der Wetterdienst ist nicht erreichbar. Prüfe deine Verbindung und versuche es erneut.</string>
     <string name="weather.button.description">Wetter ein- oder ausblenden</string>
+    <string name="setting.name.nowplaying.enabled">Gespielten Titel anzeigen</string>
+    <string name="setting.summary.nowplaying.enabled">Interpret und Titel, wenn der Sender sie mitschickt, am Bildschirmrand gegenüber der Uhr</string>
+    <string name="nowplaying.button.description">Gespielten Titel ein- oder ausblenden</string>
     <string name="weather.no.location.yet">Wähle zuerst eine Stadt: Einstellungen → Wetter → Ort.</string>
     <string name="weather.today">Heute</string>
     <string name="weather.now">Jetzt</string>

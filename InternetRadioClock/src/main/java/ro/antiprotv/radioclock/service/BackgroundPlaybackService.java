@@ -49,6 +49,13 @@ public class BackgroundPlaybackService extends Service {
     stopListener = listener;
   }
 
+  /** Stops the clock's radio, if it is playing; used when the car starts its own. */
+  public static void requestClockStop() {
+    if (stopListener != null) {
+      stopListener.onStopRequested();
+    }
+  }
+
   /** Starts (or updates) the ongoing notification for the given station. */
   public static void start(Context context, String station) {
     Intent intent =
@@ -115,9 +122,7 @@ public class BackgroundPlaybackService extends Service {
   }
 
   private void requestStop() {
-    if (stopListener != null) {
-      stopListener.onStopRequested();
-    }
+    requestClockStop();
   }
 
   private void createNotificationChannel() {

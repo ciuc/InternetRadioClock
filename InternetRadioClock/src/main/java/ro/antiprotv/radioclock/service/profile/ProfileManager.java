@@ -107,6 +107,10 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
         || key.equals(
             clockActivity.getResources().getString(R.string.setting_key_weather_enabled_night))
         || key.equals(
+            clockActivity.getResources().getString(R.string.setting_key_nowplaying_enabled))
+        || key.equals(
+            clockActivity.getResources().getString(R.string.setting_key_nowplaying_enabled_night))
+        || key.equals(
             clockActivity.getResources().getString(R.string.setting_key_batteryInClockColor))) {
 
       Timber.d("Pref changed: " + key);
@@ -496,6 +500,17 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   public void setWeatherEnabled(boolean showWeather) {
     disableProfileChangeOnSettingChange = true;
     currentProfile.saveShowWeather(showWeather);
+    clockActivity.applyProfile(currentProfile);
+  }
+
+  public boolean isNowPlayingEnabled() {
+    return currentProfile.showNowPlaying;
+  }
+
+  /** Flagged for the same reason as {@link #setWeatherEnabled}: it has a switch in the settings. */
+  public void setNowPlayingEnabled(boolean showNowPlaying) {
+    disableProfileChangeOnSettingChange = true;
+    currentProfile.saveShowNowPlaying(showNowPlaying);
     clockActivity.applyProfile(currentProfile);
   }
 

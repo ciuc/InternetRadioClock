@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- tells Android Auto that we provide a media (radio) source for the car display -->
+<automotiveApp>
+    <uses name="media" />
+</automotiveApp>

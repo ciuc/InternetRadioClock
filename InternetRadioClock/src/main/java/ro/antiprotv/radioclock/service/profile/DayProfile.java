@@ -30,7 +30,8 @@ public class DayProfile extends Profile {
         prefs.getBoolean(context.getString(R.string.setting_key_slideshow_enabled_day), false),
         prefs.getBoolean(context.getString(R.string.setting_key_weather_enabled), false),
         prefs.getInt(
-            context.getString(R.string.setting_key_weather_size), WEATHER_SIZE_SMALL));
+            context.getString(R.string.setting_key_weather_size), WEATHER_SIZE_SMALL),
+        prefs.getBoolean(context.getString(R.string.setting_key_nowplaying_enabled), true));
   }
 
   @Override
@@ -111,6 +112,15 @@ public class DayProfile extends Profile {
         .putBoolean(context.getString(R.string.setting_key_weather_enabled), showWeather)
         .apply();
     super.saveShowWeather(showWeather);
+  }
+
+  @Override
+  public void saveShowNowPlaying(boolean showNowPlaying) {
+    prefs
+        .edit()
+        .putBoolean(context.getString(R.string.setting_key_nowplaying_enabled), showNowPlaying)
+        .apply();
+    super.saveShowNowPlaying(showNowPlaying);
   }
 
   @Override

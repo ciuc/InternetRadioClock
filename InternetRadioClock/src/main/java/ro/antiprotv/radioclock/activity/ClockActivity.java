@@ -77,6 +77,7 @@ import ro.antiprotv.radioclock.service.BatteryService;
 import ro.antiprotv.radioclock.service.BrightnessManager;
 import ro.antiprotv.radioclock.service.ButtonManager;
 import ro.antiprotv.radioclock.service.MediaPlayerService;
+import ro.antiprotv.radioclock.service.NowPlayingManager;
 import ro.antiprotv.radioclock.service.RadioAlarmManager;
 import ro.antiprotv.radioclock.service.RingtoneService;
 import ro.antiprotv.radioclock.service.SettingsManager;
@@ -176,6 +177,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
   private BatteryService batteryService;
   private ProfileManager profileManager;
   private WeatherManager weatherManager;
+  private NowPlayingManager nowPlayingManager;
   // LISTENERS
   private final Button.OnClickListener nightModeOnClickListener =
       new View.OnClickListener() {
@@ -461,7 +463,10 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     // Built before the first applyProfile() below, which styles it, and hooked to the clock
     // thread so the forecast moves out of the way whenever the clock does.
     weatherManager = new WeatherManager(this, prefs);
-    clockUpdater.setPositionListener(weatherManager);
+    clockUpdater.addPositionListener(weatherManager);
+    // Same for the song playing, which keeps to the edge of the screen the clock is not on.
+    nowPlayingManager = new NowPlayingManager(findViewById(R.id.now_playing_text));
+    clockUpdater.addPositionListener(nowPlayingManager);
 
     profileManager.clearTask();
 
@@ -598,6 +603,11 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
           }
         });
     addPressFeedback(weatherButton);
+
+    ImageButton nowPlayingButton = findViewById(R.id.now_playing_button);
+    nowPlayingButton.setOnClickListener(
+        v -> profileManager.setNowPlayingEnabled(!profileManager.isNowPlayingEnabled()));
+    addPressFeedback(nowPlayingButton);
 
     Button showSecondsButton = findViewById(R.id.seconds_button);
     showSecondsButton.setOnClickListener(
@@ -815,6 +825,9 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     // Defensive: every current caller runs after onCreate has built it.
     if (weatherManager != null) {
       weatherManager.applyProfile(profile);
+    }
+    if (nowPlayingManager != null) {
+      nowPlayingManager.applyProfile(profile);
     }
     if (weatherHourlyPanel != null) {
       weatherHourlyPanel.setColor(profile.getColor());
@@ -1661,6 +1674,16 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     // mute or unmute the moment the stream does.
     if (slideshowManager != null) {
       slideshowManager.onRadioPlayingChanged(playing);
+    }
+    if (nowPlayingManager != null) {
+      nowPlayingManager.setPlaying(playing);
+    }
+  }
+
+  /** The song the station says it plays, whenever it changes; null when it is not known. */
+  public void setStreamTitle(String streamTitle) {
+    if (nowPlayingManager != null) {
+      nowPlayingManager.setStreamTitle(streamTitle);
     }
   }
 

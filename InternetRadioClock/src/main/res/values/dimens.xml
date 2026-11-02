@@ -8,4 +8,8 @@
     <!-- Breathing room between the forecast bar and the clock. Set on both sides of the bar
          because it sits above the clock or below it, depending on where the clock has wandered. -->
     <dimen name="weather_bar_clock_gap">10dp</dimen>
+    <!-- Song playing: clear of the battery row when at the top, and of the screen edges -->
+    <dimen name="now_playing_side_gap">16dp</dimen>
+    <dimen name="now_playing_top_gap">28dp</dimen>
+    <dimen name="now_playing_bottom_gap">12dp</dimen>
 </resources>
