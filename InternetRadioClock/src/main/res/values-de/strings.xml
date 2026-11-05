@@ -192,6 +192,10 @@
     <string name="stopping_stream">Stream wird gestoppt</string>
     <string name="playing">"Wiedergabe "</string>
     <string name="error_playing_stream">Fehler bei der Wiedergabe des Streams</string>
+    <string name="preview_stream">Stream anhören (5 Sekunden)</string>
+    <string name="preview_checking">prüfe…</string>
+    <string name="preview_ok">Stream OK</string>
+    <string name="preview_error">Fehler</string>
     <string name="volume_max">Lautstärke MAX</string>
     <string name="muted">Stumm</string>
 

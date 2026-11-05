@@ -192,6 +192,10 @@
     <string name="stopping_stream">Parando a transmissão</string>
     <string name="playing">"Tocando "</string>
     <string name="error_playing_stream">Erro ao tocar a transmissão</string>
+    <string name="preview_stream">Ouvir a transmissão (5 segundos)</string>
+    <string name="preview_checking">verificando…</string>
+    <string name="preview_ok">transmissão OK</string>
+    <string name="preview_error">erro</string>
     <string name="volume_max">Volume MÁX</string>
     <string name="muted">Mudo</string>
 

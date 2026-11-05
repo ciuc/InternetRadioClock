@@ -139,6 +139,10 @@
     <string name="stopping_stream">Se oprește radioul</string>
     <string name="playing">Redare</string>
     <string name="error_playing_stream">Eroare la redare radio</string>
+    <string name="preview_stream">Ascultă radioul (5 secunde)</string>
+    <string name="preview_checking">se verifică…</string>
+    <string name="preview_ok">radio OK</string>
+    <string name="preview_error">eroare</string>
     <string name="apply_night_profile_next_change">Se aplică profilul de noapte. Următoarea schimbare:</string>
     <string name="apply_day_profile_next_change">Se aplică profilul de zi. Următoarea schimbare:</string>
     <string name="pick_a_color">Alege o culoare</string>

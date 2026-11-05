@@ -79,6 +79,7 @@ public class StreamFinderActivity extends AppCompatActivity {
             .setView(dialogView)
             .setPositiveButton(R.string.close, null)
             .create();
+    dialog.setOnDismissListener(d -> adapter.stopPreview());
 
     HttpRequestManager requestManager = new HttpRequestManager(this);
     Toast.makeText(this, R.string.toast_retrieving_radios, Toast.LENGTH_SHORT).show();
@@ -110,6 +111,7 @@ public class StreamFinderActivity extends AppCompatActivity {
   @SuppressLint("NotifyDataSetChanged")
   public void fillInStreams(JSONArray jsonStations) {
     if (jsonStations != null) {
+      adapter.clearPreviewState();
       streams.clear();
       for (int i = 0; i < jsonStations.length(); i++) {
         try {
@@ -131,6 +133,18 @@ public class StreamFinderActivity extends AppCompatActivity {
     } else {
       Toast.makeText(this, R.string.error_retrieving_station_list, Toast.LENGTH_SHORT).show();
     }
+  }
+
+  @Override
+  protected void onStop() {
+    super.onStop();
+    adapter.stopPreview();
+  }
+
+  @Override
+  protected void onDestroy() {
+    adapter.releasePreview();
+    super.onDestroy();
   }
 
   @Override

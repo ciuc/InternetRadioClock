@@ -9,6 +9,7 @@ import androidx.annotation.OptIn;
 import androidx.media3.common.Metadata;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.extractor.metadata.icy.IcyInfo;
+import java.lang.ref.WeakReference;
 import com.devbrackets.android.exomedia.AudioPlayer;
 import com.devbrackets.android.exomedia.listener.OnErrorListener;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
@@ -17,6 +18,12 @@ import ro.antiprotv.radioclock.activity.ClockActivity;
 import timber.log.Timber;
 
 public class MediaPlayerService {
+  /**
+   * The clock's radio, so the stream finder can pause it while previewing a station. Weak: it must
+   * not keep a destroyed clock alive.
+   */
+  private static WeakReference<MediaPlayerService> instance = new WeakReference<>(null);
+
   private final ClockActivity clockActivity;
   private final RadioAlarmManager alarmManager;
   private final ButtonManager buttonManager;
@@ -26,6 +33,8 @@ public class MediaPlayerService {
   private AudioPlayer mMediaPlayer;
   /** Label of the station currently playing; shown in the background play notification. */
   private String playingStationLabel;
+  /** Set while the radio is paused to let a stream finder preview be heard. */
+  private boolean pausedForPreview;
 
   public MediaPlayerService(
       ClockActivity clockActivity,
@@ -43,6 +52,33 @@ public class MediaPlayerService {
       initMediaPlayer();
     }
     BackgroundPlaybackService.setStopListener(this::stopPlaying);
+    instance = new WeakReference<>(this);
+  }
+
+  /**
+   * Pauses the clock's radio, if it is playing, so a stream preview can be heard on its own.
+   * Undo with {@link #resumeAfterPreview()}.
+   */
+  public static void pauseForPreview() {
+    MediaPlayerService service = instance.get();
+    if (service != null && service.isPlaying()) {
+      service.mMediaPlayer.pause();
+      service.pausedForPreview = true;
+    }
+  }
+
+  /**
+   * Picks the radio up again after {@link #pauseForPreview()}. Does nothing if it was not paused
+   * for a preview, or was stopped (or switched to another station) in the meantime.
+   */
+  public static void resumeAfterPreview() {
+    MediaPlayerService service = instance.get();
+    if (service != null && service.pausedForPreview) {
+      service.pausedForPreview = false;
+      if (service.mMediaPlayer != null) {
+        service.mMediaPlayer.start();
+      }
+    }
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,6 +110,7 @@ public class MediaPlayerService {
   }
 
   public void play(int buttonId) {
+    pausedForPreview = false;
     if (mMediaPlayer == null) {
       initMediaPlayer();
     }
@@ -142,6 +179,7 @@ public class MediaPlayerService {
   }
 
   public void stopPlaying() {
+    pausedForPreview = false;
     stopBackgroundPlayback();
     playingStationLabel = null;
     if (mMediaPlayer != null) {

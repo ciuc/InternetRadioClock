@@ -10,13 +10,44 @@
     android:background="@drawable/stream"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="match_parent"
+    <!-- wrap_content row + weighted title: the play button sits right after the title, and a
+         long title shrinks (instead of pushing the button off screen) -->
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:text="RockFM"
-        android:textColor="@color/colorPrimaryDark" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="0dp"
+            android:text="RockFM"
+            android:textColor="@color/colorPrimaryDark" />
+
+        <ImageButton
+            android:id="@+id/sf_preview_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/preview_stream"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/baseline_play_circle_outline_24"
+            android:tint="@color/colorPrimaryDark" />
+
+        <TextView
+            android:id="@+id/sf_preview_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="@string/preview_checking"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/radio_info"
         android:layout_width="match_parent"
@@ -30,15 +61,17 @@
         android:text="[FROM: Romania | IN: Romanian | PLAYING: Rock,Pop, indie rock, indie pop, alternative, contemproary]"
         android:textColor="#000000"/>
     </LinearLayout>
+    <!-- the label gets a line of its own: next to eight buttons it overflows narrow screens -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/assign_to"
+        android:textColor="#000000"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-     <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/assign_to"
-            android:textColor="#000000"/>
     <Button
         android:id="@+id/sf_assign_button_stream1"
         style="@style/imageButtonStyle"

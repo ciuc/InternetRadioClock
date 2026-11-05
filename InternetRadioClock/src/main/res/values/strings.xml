@@ -770,6 +770,10 @@
     <string name="stopping_stream">Stopping stream</string>
     <string name="playing">"Playing "</string>
     <string name="error_playing_stream">Error playing stream</string>
+    <string name="preview_stream">Preview stream (5 seconds)</string>
+    <string name="preview_checking">checking…</string>
+    <string name="preview_ok">stream OK</string>
+    <string name="preview_error">error</string>
     <string name="apply_night_profile_next_change">"Apply night profile. Next change: "</string>
     <string name="apply_day_profile_next_change">"Apply day profile. Next change: "</string>
     <string name="pick_a_color">Pick a Color</string>
