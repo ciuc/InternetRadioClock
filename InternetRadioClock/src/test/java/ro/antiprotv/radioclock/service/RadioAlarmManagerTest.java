@@ -36,8 +36,9 @@ public class RadioAlarmManagerTest {
     public void setUp() throws Exception {
         reset(prefs, clockActivity);
         when(clockActivity.findViewById(R.id.alarm_icon_turn_off)).thenReturn(mock(ImageButton.class));
-        when(clockActivity.findViewById(R.id.alarm_icon_cancel)).thenReturn(mock(ImageButton.class));
-        when(clockActivity.findViewById(R.id.alarm_icon_snooze)).thenReturn(mock(ImageButton.class));
+        when(clockActivity.findViewById(R.id.alarm_icon_cancel)).thenReturn(mock(Button.class));
+        when(clockActivity.findViewById(R.id.alarm_icon_snooze)).thenReturn(mock(Button.class));
+        when(clockActivity.findViewById(R.id.alarm_icon_snooze_cancel)).thenReturn(mock(Button.class));
         //when(clockActivity.findViewById(R.id.alarm_icon_close)).thenReturn(mock(Button.class));
         when(clockActivity.findViewById(R.id.alarm_time)).thenReturn(mock(TextView.class));
         when(clockActivity.findViewById(R.id.alarm_icon)).thenReturn(mock(ImageButton.class));
@@ -64,7 +65,7 @@ public class RadioAlarmManagerTest {
         method.setAccessible(true);
         RadioAlarmManager.Alarm alarm = (RadioAlarmManager.Alarm) method.invoke(radioAlarmManager, 1);
 
-        Assert.assertEquals(new RadioAlarmManager.Alarm(7, 11, 11, 1), alarm);
+        Assert.assertEquals(new RadioAlarmManager.Alarm(nextDay(11, 11, 2, 5, 7), 11, 11, 1), alarm);
     }
 
     @Test
@@ -74,14 +75,15 @@ public class RadioAlarmManagerTest {
         when(prefs.getBoolean("setting.alarm.1.key.7", false)).thenReturn(false);
 
         Calendar now = Calendar.getInstance();
-        when(prefs.getInt("setting.alarm.1.hh", -1)).thenReturn(now.get(Calendar.HOUR_OF_DAY) - 1);
+        int hh = (now.get(Calendar.HOUR_OF_DAY) + 23) % 24;
+        when(prefs.getInt("setting.alarm.1.hh", -1)).thenReturn(hh);
         when(prefs.getInt("setting.alarm.1.mm", -1)).thenReturn(11);
 
         Method method = RadioAlarmManager.class.getDeclaredMethod("getNextAlarm", Integer.TYPE);
         method.setAccessible(true);
         RadioAlarmManager.Alarm alarm = (RadioAlarmManager.Alarm) method.invoke(radioAlarmManager, 1);
 
-        Assert.assertEquals(new RadioAlarmManager.Alarm(1, now.get(Calendar.HOUR_OF_DAY) - 1, 11, 1), alarm);
+        Assert.assertEquals(new RadioAlarmManager.Alarm(nextDay(hh, 11, 2), hh, 11, 1), alarm);
     }
 
     @Test
@@ -91,14 +93,15 @@ public class RadioAlarmManagerTest {
         when(prefs.getBoolean("setting.alarm.1.key.7", false)).thenReturn(false);
 
         Calendar now = Calendar.getInstance();
-        when(prefs.getInt("setting.alarm.1.hh", -1)).thenReturn(now.get(Calendar.HOUR_OF_DAY) + 1);
+        int hh = (now.get(Calendar.HOUR_OF_DAY) + 1) % 24;
+        when(prefs.getInt("setting.alarm.1.hh", -1)).thenReturn(hh);
         when(prefs.getInt("setting.alarm.1.mm", -1)).thenReturn(11);
 
         Method method = RadioAlarmManager.class.getDeclaredMethod("getNextAlarm", Integer.TYPE);
         method.setAccessible(true);
         RadioAlarmManager.Alarm alarm = (RadioAlarmManager.Alarm) method.invoke(radioAlarmManager, 1);
 
-        Assert.assertEquals(new RadioAlarmManager.Alarm(7, now.get(Calendar.HOUR_OF_DAY) + 1, 11, 1), alarm);
+        Assert.assertEquals(new RadioAlarmManager.Alarm(nextDay(hh, 11, 2), hh, 11, 1), alarm);
     }
 
     @Test
@@ -108,7 +111,8 @@ public class RadioAlarmManagerTest {
         when(prefs.getBoolean("setting.alarm.1.key.7", false)).thenReturn(false);
 
         Calendar now = Calendar.getInstance();
-        when(prefs.getInt("setting.alarm.1.hh", -1)).thenReturn(now.get(Calendar.HOUR_OF_DAY) + 1);
+        int hh = (now.get(Calendar.HOUR_OF_DAY) + 1) % 24;
+        when(prefs.getInt("setting.alarm.1.hh", -1)).thenReturn(hh);
         when(prefs.getInt("setting.alarm.1.mm", -1)).thenReturn(11);
 
         Method method = RadioAlarmManager.class.getDeclaredMethod("getNextAlarm", Integer.TYPE);
@@ -116,7 +120,7 @@ public class RadioAlarmManagerTest {
         RadioAlarmManager.Alarm alarm = (RadioAlarmManager.Alarm) method.invoke(radioAlarmManager, 1);
 
         System.out.println("result: " + alarm);
-        Assert.assertEquals(new RadioAlarmManager.Alarm(7, now.get(Calendar.HOUR_OF_DAY) + 1, 11, 1), alarm);
+        Assert.assertEquals(new RadioAlarmManager.Alarm(nextDay(hh, 11), hh, 11, 1), alarm);
     }
 
     @Test
@@ -126,7 +130,8 @@ public class RadioAlarmManagerTest {
         when(prefs.getBoolean("setting.alarm.1.key.7", false)).thenReturn(false);
 
         Calendar now = Calendar.getInstance();
-        when(prefs.getInt("setting.alarm.1.hh", -1)).thenReturn(now.get(Calendar.HOUR_OF_DAY) - 1);
+        int hh = (now.get(Calendar.HOUR_OF_DAY) + 23) % 24;
+        when(prefs.getInt("setting.alarm.1.hh", -1)).thenReturn(hh);
         when(prefs.getInt("setting.alarm.1.mm", -1)).thenReturn(11);
 
         Method method = RadioAlarmManager.class.getDeclaredMethod("getNextAlarm", Integer.TYPE);
@@ -134,7 +139,7 @@ public class RadioAlarmManagerTest {
         RadioAlarmManager.Alarm alarm = (RadioAlarmManager.Alarm) method.invoke(radioAlarmManager, 1);
 
         System.out.println("result: " + alarm);
-        Assert.assertEquals(new RadioAlarmManager.Alarm(1, now.get(Calendar.HOUR_OF_DAY) - 1, 11, 1), alarm);
+        Assert.assertEquals(new RadioAlarmManager.Alarm(nextDay(hh, 11), hh, 11, 1), alarm);
     }
 
     @Test
@@ -161,5 +166,30 @@ public class RadioAlarmManagerTest {
 
         System.out.println("result: " + alarm);
         Assert.assertNull(alarm);
+    }
+
+    /**
+     * Day of week (Calendar.SUNDAY..SATURDAY) of the first hh:mm after now that falls on one of
+     * the given days, or on any day if none are given - so the expectation does not depend on
+     * which weekday the tests run.
+     */
+    private static int nextDay(int hh, int mm, int... days) {
+        Calendar now = Calendar.getInstance();
+        Calendar candidate = Calendar.getInstance();
+        candidate.set(Calendar.HOUR_OF_DAY, hh);
+        candidate.set(Calendar.MINUTE, mm);
+        candidate.set(Calendar.SECOND, 0);
+        for (int i = 0; i <= 7; i++) {
+            int day = candidate.get(Calendar.DAY_OF_WEEK);
+            boolean enabled = days.length == 0;
+            for (int d : days) {
+                enabled |= d == day;
+            }
+            if (enabled && candidate.after(now)) {
+                return day;
+            }
+            candidate.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        throw new IllegalStateException("no alarm day found");
     }
 }
