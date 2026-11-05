@@ -30,17 +30,20 @@ import androidx.media.AudioAttributesCompat;
 import androidx.media.AudioFocusRequestCompat;
 import androidx.media.AudioManagerCompat;
 import androidx.media.MediaBrowserServiceCompat;
-import androidx.media3.common.Format;
 import androidx.media3.common.Metadata;
 import androidx.media3.common.util.UnstableApi;
-import androidx.media3.exoplayer.DecoderReuseEvaluation;
-import androidx.media3.exoplayer.analytics.AnalyticsListener;
-import androidx.media3.extractor.metadata.icy.IcyHeaders;
 import androidx.media3.extractor.metadata.icy.IcyInfo;
 import androidx.preference.PreferenceManager;
 import com.devbrackets.android.exomedia.AudioPlayer;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.activity.ClockActivity;
 import timber.log.Timber;
@@ -64,6 +67,9 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   private static final float DUCK_VOLUME = 0.2f;
   /** The clock's station buttons are tagged with this prefix plus the memory number. */
   private static final String STREAM_TAG_PREFIX = "setting.key.stream";
+  /** The name a station gives itself, stored per stream url. */
+  private static final String STATION_NAME_PREFIX = "car.station.name.";
+  private static final int STATION_NAME_TIMEOUT_MS = 5000;
 
   // Android Auto's browse content style hints: show the stations as a grid of big buttons
   private static final String CONTENT_STYLE_SUPPORTED = "android.media.browse.CONTENT_STYLE_SUPPORTED";
@@ -127,8 +133,9 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   private Bitmap currentIcon;
   /** What the station says it plays right now (usually "Artist - Title"); null until it does. */
   private String streamTitle;
-  /** The station's own name, as it sends it; null when it does not. */
-  private String streamStationName;
+  private final ExecutorService stationNameLookups = Executors.newSingleThreadExecutor();
+  /** Stream urls already asked for their name, so a station without one is only asked once. */
+  private final Set<String> lookedUpUrls = new HashSet<>();
   /** Set when a phone call or another app took the audio away for a moment. */
   private boolean resumeOnFocusGain;
 
@@ -159,7 +166,6 @@ public class CarRadioService extends MediaBrowserServiceCompat {
     player.setOnPreparedListener(this::onPrepared);
     player.setOnErrorListener(this::onError);
     player.setMetadataListener(this::onMetadata);
-    player.setAnalyticsListener(new StationNameListener());
 
     session = new MediaSessionCompat(this, "CarRadioService");
     session.setCallback(new SessionCallback());
@@ -197,6 +203,7 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   @Override
   public void onDestroy() {
     instance = null;
+    stationNameLookups.shutdownNow();
     stopPlaying();
     player.release();
     session.setActive(false);
@@ -225,6 +232,7 @@ public class CarRadioService extends MediaBrowserServiceCompat {
                   describe(memory), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE));
         }
       }
+      lookUpStationNames();
     }
     result.sendResult(items);
   }
@@ -260,12 +268,57 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   private MediaDescriptionCompat describe(int memory) {
     return new MediaDescriptionCompat.Builder()
         .setMediaId(String.valueOf(memory))
-        .setTitle(getLabel(memory))
+        .setTitle(stationTitle(memory))
         .setIconBitmap(buttonIcon(memory))
         .build();
   }
 
-  /** A round button with the memory number, looking like the clock's own station buttons. */
+  /** The station's own name once it told us, otherwise the button label. */
+  private String stationTitle(int memory) {
+    return prefs.getString(STATION_NAME_PREFIX + getUrl(memory), getLabel(memory));
+  }
+
+  /** Asks the stations we have no name for yet, in the background. */
+  private void lookUpStationNames() {
+    for (int memory : configuredMemories()) {
+      String url = getUrl(memory);
+      if (!prefs.contains(STATION_NAME_PREFIX + url) && lookedUpUrls.add(url)) {
+        stationNameLookups.execute(() -> lookUpStationName(url));
+      }
+    }
+  }
+
+  private void lookUpStationName(String url) {
+    String name = readIcyName(url);
+    if (name != null) {
+      prefs.edit().putString(STATION_NAME_PREFIX + url, name).apply();
+      notifyChildrenChanged(ROOT_ID);
+    }
+  }
+
+  /** Stations announce their name in the "icy-name" header of the stream's response. */
+  private String readIcyName(String url) {
+    HttpURLConnection connection = null;
+    try {
+      connection = (HttpURLConnection) new URL(url).openConnection();
+      connection.setConnectTimeout(STATION_NAME_TIMEOUT_MS);
+      connection.setReadTimeout(STATION_NAME_TIMEOUT_MS);
+      connection.setRequestProperty("Icy-MetaData", "1");
+      // some stream providers leave the name out for Android's default user agent
+      connection.setRequestProperty("User-Agent", "SimpleRadioClock");
+      String name = connection.getHeaderField("icy-name");
+      return name == null || name.trim().isEmpty() ? null : name.trim();
+    } catch (IOException | RuntimeException e) {
+      Timber.w(e, "Could not ask %s for its name", url);
+      return null;
+    } finally {
+      if (connection != null) {
+        connection.disconnect();
+      }
+    }
+  }
+
+  /** A round button with the station label, looking like the clock's own station buttons. */
   private Bitmap buttonIcon(int memory) {
     int size = 192;
     Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
@@ -274,10 +327,19 @@ public class CarRadioService extends MediaBrowserServiceCompat {
     paint.setColor(0xFF202020);
     canvas.drawRoundRect(new RectF(0, 0, size, size), size / 5f, size / 5f, paint);
     paint.setColor(ContextCompat.getColor(this, R.color.color_clock));
-    paint.setTextSize(size * 0.55f);
     paint.setTextAlign(Paint.Align.CENTER);
+    paint.setTextSize(size * 0.55f);
+    // every button uses the same text size: whatever makes the widest label fit
+    float widest = 0;
+    for (int configured : configuredMemories()) {
+      widest = Math.max(widest, paint.measureText(getLabel(configured)));
+    }
+    float maxWidth = size * 0.84f;
+    if (widest > maxWidth) {
+      paint.setTextSize(paint.getTextSize() * maxWidth / widest);
+    }
     float baseline = size / 2f - (paint.descent() + paint.ascent()) / 2f;
-    canvas.drawText(String.valueOf(memory), size / 2f, baseline, paint);
+    canvas.drawText(getLabel(memory), size / 2f, baseline, paint);
     return bitmap;
   }
 
@@ -305,7 +367,6 @@ public class CarRadioService extends MediaBrowserServiceCompat {
         .apply();
     currentIcon = buttonIcon(memory);
     streamTitle = null;
-    streamStationName = null;
     showNowPlaying();
     setPlaybackState(PlaybackStateCompat.STATE_BUFFERING, null);
     player.setVolume(1f);
@@ -337,39 +398,6 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   }
 
   /**
-   * The station also sends its own name when the stream starts (the "icy-name" header); the player
-   * attaches it to the audio format.
-   */
-  @OptIn(markerClass = UnstableApi.class)
-  private void onAudioFormat(Format format) {
-    Metadata metadata = format.metadata;
-    if (metadata == null) {
-      return;
-    }
-    for (int i = 0; i < metadata.length(); i++) {
-      Metadata.Entry entry = metadata.get(i);
-      if (entry instanceof IcyHeaders) {
-        String name = ((IcyHeaders) entry).name;
-        if (name != null && !name.trim().isEmpty()) {
-          streamStationName = name.trim();
-          showNowPlaying();
-        }
-      }
-    }
-  }
-
-  /**
-   * The name shown for the station: the button label, unless the user never named the button (it
-   * is then just its number) and the station told us its own name.
-   */
-  private String stationName() {
-    String label = getLabel(currentMemory);
-    boolean labelIsJustTheNumber =
-        label.equals(getString(DEFAULT_LABELS[currentMemory - 1]));
-    return labelIsJustTheNumber && streamStationName != null ? streamStationName : label;
-  }
-
-  /**
    * Fills the car's now playing screen: the station on the top line and, underneath, the song when
    * the station tells us what it plays (by convention "Artist - Title").
    */
@@ -377,7 +405,7 @@ public class CarRadioService extends MediaBrowserServiceCompat {
     session.setMetadata(
         new MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, String.valueOf(currentMemory))
-            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, stationName())
+            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, stationTitle(currentMemory))
             .putString(
                 MediaMetadataCompat.METADATA_KEY_ARTIST,
                 streamTitle != null ? streamTitle : getString(R.string.app_name))
@@ -527,17 +555,6 @@ public class CarRadioService extends MediaBrowserServiceCompat {
         .setShowWhen(false)
         .setOngoing(true)
         .build();
-  }
-
-  @OptIn(markerClass = UnstableApi.class)
-  private class StationNameListener implements AnalyticsListener {
-    @Override
-    public void onAudioInputFormatChanged(
-        @NonNull EventTime eventTime,
-        @NonNull Format format,
-        DecoderReuseEvaluation decoderReuseEvaluation) {
-      onAudioFormat(format);
-    }
   }
 
   private class SessionCallback extends MediaSessionCompat.Callback {
