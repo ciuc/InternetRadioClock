@@ -37,9 +37,10 @@
 
         <!-- Settings activity -->
         <activity
-            android:name=".activity.ConfigureButtonsActivity"
+            android:name=".activity.RadioListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="Preferences"
+            android:label="@string/title.streams"
+            android:theme="@style/RadioListTheme"
             android:screenOrientation="fullSensor">
         </activity>
         <activity

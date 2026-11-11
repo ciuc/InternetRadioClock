@@ -6,9 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ServiceInfo;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -26,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 import androidx.media.AudioAttributesCompat;
 import androidx.media.AudioFocusRequestCompat;
 import androidx.media.AudioManagerCompat;
@@ -33,7 +32,6 @@ import androidx.media.MediaBrowserServiceCompat;
 import androidx.media3.common.Metadata;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.extractor.metadata.icy.IcyInfo;
-import androidx.preference.PreferenceManager;
 import com.devbrackets.android.exomedia.AudioPlayer;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -46,13 +44,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.activity.ClockActivity;
+import ro.antiprotv.radioclock.db.Station;
+import ro.antiprotv.radioclock.db.StationPreferences;
+import ro.antiprotv.radioclock.db.StationRepository;
 import timber.log.Timber;
 
 /**
  * Plays the radio memories from the car display (Android Auto).
  *
  * <p>Android Auto draws the whole UI itself: this service only hands it the stations configured on
- * the 8 memory buttons (shown as a grid of buttons) and reacts to play / stop / next / previous.
+ * the saved stations (shown as a grid of buttons) and reacts to play / stop / next / previous.
  *
  * <p>It owns its own player: the clock's player lives with {@link ClockActivity}, which is usually
  * not running while the phone sits in the car. Starting a station here stops the clock's radio, and
@@ -65,10 +66,6 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   private static final int NOTIFICATION_ID = 1002;
   private static final String ACTION_STOP = "ro.antiprotv.radioclock.action.STOP_CAR_PLAY";
   private static final float DUCK_VOLUME = 0.2f;
-  /** The clock's station buttons are tagged with this prefix plus the memory number. */
-  private static final String STREAM_TAG_PREFIX = "setting.key.stream";
-  /** The name a station gives itself, stored per stream url. */
-  private static final String STATION_NAME_PREFIX = "car.station.name.";
   private static final int STATION_NAME_TIMEOUT_MS = 5000;
 
   // Android Auto's browse content style hints: show the stations as a grid of big buttons
@@ -77,52 +74,13 @@ public class CarRadioService extends MediaBrowserServiceCompat {
       "android.media.browse.CONTENT_STYLE_PLAYABLE_HINT";
   private static final int CONTENT_STYLE_GRID_ITEM = 2;
 
-  private static final int[] URL_KEYS = {
-    R.string.setting_key_stream1,
-    R.string.setting_key_stream2,
-    R.string.setting_key_stream3,
-    R.string.setting_key_stream4,
-    R.string.setting_key_stream5,
-    R.string.setting_key_stream6,
-    R.string.setting_key_stream7,
-    R.string.setting_key_stream8
-  };
-  // memories 6-8 have no default station
-  private static final int[] DEFAULT_URLS = {
-    R.string.setting_default_stream1,
-    R.string.setting_default_stream2,
-    R.string.setting_default_stream3,
-    R.string.setting_default_stream4,
-    R.string.setting_default_stream5,
-    0,
-    0,
-    0
-  };
-  private static final int[] LABEL_KEYS = {
-    R.string.setting_key_label1,
-    R.string.setting_key_label2,
-    R.string.setting_key_label3,
-    R.string.setting_key_label4,
-    R.string.setting_key_label5,
-    R.string.setting_key_label6,
-    R.string.setting_key_label7,
-    R.string.setting_key_label8
-  };
-  private static final int[] DEFAULT_LABELS = {
-    R.string.button_name_stream1,
-    R.string.button_name_stream2,
-    R.string.button_name_stream3,
-    R.string.button_name_stream4,
-    R.string.button_name_stream5,
-    R.string.button_name_stream6,
-    R.string.button_name_stream7,
-    R.string.button_name_stream8
-  };
-
   /** The running instance, so the clock can stop the car radio when it starts its own. */
   private static CarRadioService instance;
 
-  private SharedPreferences prefs;
+  private StationRepository stations;
+  private StationPreferences stationPreferences;
+  /** Tells the car to reload the station grid whenever the saved stations change. */
+  private final Observer<List<Station>> stationsObserver = list -> notifyChildrenChanged(ROOT_ID);
   private MediaSessionCompat session;
   private AudioPlayer player;
   private AudioManager audioManager;
@@ -150,7 +108,8 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   public void onCreate() {
     super.onCreate();
     instance = this;
-    prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    stations = StationRepository.getInstance(this);
+    stationPreferences = new StationPreferences(this);
     audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
     focusRequest =
         new AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
@@ -180,6 +139,7 @@ public class CarRadioService extends MediaBrowserServiceCompat {
     setSessionToken(session.getSessionToken());
     setPlaybackState(PlaybackStateCompat.STATE_NONE, null);
     session.setActive(true);
+    stations.observeStations().observeForever(stationsObserver);
   }
 
   @Override
@@ -203,6 +163,7 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   @Override
   public void onDestroy() {
     instance = null;
+    stations.observeStations().removeObserver(stationsObserver);
     stationNameLookups.shutdownNow();
     stopPlaying();
     player.release();
@@ -225,12 +186,10 @@ public class CarRadioService extends MediaBrowserServiceCompat {
       @NonNull String parentId, @NonNull Result<List<MediaBrowserCompat.MediaItem>> result) {
     List<MediaBrowserCompat.MediaItem> items = new ArrayList<>();
     if (ROOT_ID.equals(parentId)) {
-      for (int memory = 1; memory <= URL_KEYS.length; memory++) {
-        if (!getUrl(memory).isEmpty()) {
-          items.add(
-              new MediaBrowserCompat.MediaItem(
-                  describe(memory), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE));
-        }
+      for (int memory : configuredMemories()) {
+        items.add(
+            new MediaBrowserCompat.MediaItem(
+                describe(memory), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE));
       }
       lookUpStationNames();
     }
@@ -241,25 +200,20 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   // Stations
   ////////////////////////////////////////////////////////////////////////////////////////////////
   private String getUrl(int memory) {
-    Resources res = getResources();
-    int defaultUrl = DEFAULT_URLS[memory - 1];
-    String url =
-        prefs.getString(
-            res.getString(URL_KEYS[memory - 1]), defaultUrl == 0 ? "" : res.getString(defaultUrl));
-    return url == null ? "" : url.trim();
+    Station station = stations.getStation(memory);
+    return station == null ? "" : station.url;
   }
 
   private String getLabel(int memory) {
-    Resources res = getResources();
-    return prefs.getString(
-        res.getString(LABEL_KEYS[memory - 1]), res.getString(DEFAULT_LABELS[memory - 1]));
+    Station station = stations.getStation(memory);
+    return station == null ? String.valueOf(memory) : station.label;
   }
 
   private List<Integer> configuredMemories() {
     List<Integer> memories = new ArrayList<>();
-    for (int memory = 1; memory <= URL_KEYS.length; memory++) {
-      if (!getUrl(memory).isEmpty()) {
-        memories.add(memory);
+    for (Station station : stations.getStations()) {
+      if (!station.url.isEmpty()) {
+        memories.add(station.position);
       }
     }
     return memories;
@@ -275,14 +229,15 @@ public class CarRadioService extends MediaBrowserServiceCompat {
 
   /** The station's own name once it told us, otherwise the button label. */
   private String stationTitle(int memory) {
-    return prefs.getString(STATION_NAME_PREFIX + getUrl(memory), getLabel(memory));
+    Station station = stations.getStation(memory);
+    return station == null ? String.valueOf(memory) : station.displayName();
   }
 
   /** Asks the stations we have no name for yet, in the background. */
   private void lookUpStationNames() {
-    for (int memory : configuredMemories()) {
-      String url = getUrl(memory);
-      if (!prefs.contains(STATION_NAME_PREFIX + url) && lookedUpUrls.add(url)) {
+    for (Station station : stations.getStations()) {
+      String url = station.url;
+      if (!url.isEmpty() && station.stationName == null && lookedUpUrls.add(url)) {
         stationNameLookups.execute(() -> lookUpStationName(url));
       }
     }
@@ -291,8 +246,8 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   private void lookUpStationName(String url) {
     String name = readIcyName(url);
     if (name != null) {
-      prefs.edit().putString(STATION_NAME_PREFIX + url, name).apply();
-      notifyChildrenChanged(ROOT_ID);
+      // the car is told to reload by stationsObserver once the name is saved
+      stations.setStationName(url, name);
     }
   }
 
@@ -347,10 +302,11 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   // Playback
   ////////////////////////////////////////////////////////////////////////////////////////////////
   private void play(int memory) {
-    String url = getUrl(memory);
-    if (url.isEmpty()) {
+    Station station = stations.getStation(memory);
+    if (station == null || station.url.isEmpty()) {
       return;
     }
+    String url = station.url;
     if (AudioManagerCompat.requestAudioFocus(audioManager, focusRequest)
         != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
       Timber.w("Car radio did not get the audio focus");
@@ -361,10 +317,7 @@ public class CarRadioService extends MediaBrowserServiceCompat {
 
     currentMemory = memory;
     resumeOnFocusGain = false;
-    prefs
-        .edit()
-        .putString(ClockActivity.LAST_PLAYED, STREAM_TAG_PREFIX + memory)
-        .apply();
+    stationPreferences.setLastPlayed(station);
     currentIcon = buttonIcon(memory);
     streamTitle = null;
     showNowPlaying();
@@ -446,12 +399,12 @@ public class CarRadioService extends MediaBrowserServiceCompat {
     if (currentMemory > 0) {
       return currentMemory;
     }
-    String tag = prefs.getString(ClockActivity.LAST_PLAYED, STREAM_TAG_PREFIX + 1);
-    try {
-      return Integer.parseInt(tag.replace(STREAM_TAG_PREFIX, ""));
-    } catch (NumberFormatException e) {
-      return 1;
+    Station lastPlayed = stationPreferences.getLastPlayed();
+    if (lastPlayed != null) {
+      return lastPlayed.position;
     }
+    List<Integer> memories = configuredMemories();
+    return memories.isEmpty() ? 1 : memories.get(0);
   }
 
   private void onAudioFocusChange(int focusChange) {

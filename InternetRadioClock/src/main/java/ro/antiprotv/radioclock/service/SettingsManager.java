@@ -3,10 +3,12 @@ package ro.antiprotv.radioclock.service;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.preference.PreferenceManager;
-import android.widget.ImageButton;
+import android.widget.Button;
+import java.util.List;
 import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.SleepManager;
 import ro.antiprotv.radioclock.activity.ClockActivity;
+import ro.antiprotv.radioclock.db.Station;
 
 public class SettingsManager implements OnSharedPreferenceChangeListener {
   private final ClockActivity clockActivity;
@@ -32,18 +34,9 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
 
   @Override
   public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-    setupButtons(prefs, key);
-
+    // the memory buttons live in the database now: ClockActivity watches it and calls
+    // onStationsChanged
     setupSleepTimers(prefs, key);
-
-    if (key.equals(clockActivity.getmPlayingStreamTag())) {
-      mediaPlayerService.stopPlaying();
-      // since we stopped, the clicked button is reset
-      // set this one here
-      // TODO: find a better solution
-      buttonManager.setButtonClicked(buttonManager.findButtonByTag(key));
-      mediaPlayerService.play(buttonManager.findButtonByTag(key).getId());
-    }
 
     setupTimers(prefs, key);
 
@@ -94,71 +87,28 @@ public class SettingsManager implements OnSharedPreferenceChangeListener {
     }
   }
 
-  private void setupButtons(SharedPreferences prefs, String key) {
-    // BUTTONS
-    int buttonIndex = -1;
-
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_label1))) {
-      buttonIndex = 0;
+  /**
+   * The saved stations changed: refresh the memory buttons, and if the stream of the station
+   * playing was changed, switch to the new one.
+   */
+  public void onStationsChanged(List<Station> stations) {
+    List<Integer> changed = buttonManager.applyStations(stations);
+    if (!mediaPlayerService.isPlaying()) {
+      return;
     }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_label2))) {
-      buttonIndex = 1;
+    Button playing = buttonManager.findButtonByTag(clockActivity.getmPlayingStreamTag());
+    if (playing == null) {
+      return;
     }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_label3))) {
-      buttonIndex = 2;
+    int index = buttonManager.buttonIndex(playing);
+    if (!changed.contains(index)) {
+      return;
     }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_label4))) {
-      buttonIndex = 3;
-    }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_label5))) {
-      buttonIndex = 4;
-    }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_label6))) {
-      buttonIndex = 5;
-    }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_label7))) {
-      buttonIndex = 6;
-    }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_label8))) {
-      buttonIndex = 7;
-    }
-    if (key.contains("setting.key.label")) {
-      buttonManager.setText(buttonIndex, prefs);
-    }
-
-    int streamIndex = -1;
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_stream1))) {
-      streamIndex = 0;
-    }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_stream2))) {
-      streamIndex = 1;
-    }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_stream3))) {
-      streamIndex = 2;
-    }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_stream4))) {
-      streamIndex = 3;
-    }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_stream5))) {
-      streamIndex = 4;
-    }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_stream6))) {
-      streamIndex = 5;
-    }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_stream7))) {
-      streamIndex = 6;
-    }
-    if (key.equals(clockActivity.getResources().getString(R.string.setting_key_stream8))) {
-      streamIndex = 7;
-    }
-    if (key.contains("stream")) {
-      String url = prefs.getString(key, "");
-      buttonManager.getmUrls().set(streamIndex, url);
-      buttonManager.hideUnhideButtons();
+    mediaPlayerService.stopPlaying();
+    if (!buttonManager.getmUrls().get(index).isEmpty()) {
+      // stopping forgets the clicked button: pick it again
+      buttonManager.setButtonClicked(playing);
+      mediaPlayerService.play(playing.getId());
     }
   }
-
-
-
-
 }

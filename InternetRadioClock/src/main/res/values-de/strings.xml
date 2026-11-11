@@ -8,7 +8,7 @@
     <string name="dialog.button.permission_REMIND_LTR">Später erinnern</string>
 
     <!-- Menü -->
-    <string name="settings.menu.buttons">Tasten konfigurieren</string>
+    <string name="settings.menu.buttons">Meine Radioliste</string>
     <string name="settings.menu.settings">Einstellungen</string>
     <string name="settings.menu.about">Über</string>
     <string name="settings.menu.cheers">Prost!</string>
@@ -155,7 +155,7 @@
     <string name="error">FEHLER</string>
     <string name="times_up">Die Zeit ist um</string>
 
-    <string name="title.streams">Tasten konfigurieren</string>
+    <string name="title.streams">Meine Radioliste</string>
     <string name="title.settings">Einstellungen</string>
     <string name="title.streamFinder">Sendersuche</string>
     <string name="title_activity_stream_finder">StreamFinder</string>
@@ -426,4 +426,19 @@
         <item>Mittel (doppelt so viel)</item>
         <item>Voll (dreimal so viel)</item>
     </string-array>
+
+    <!-- My Radio List -->
+    <string name="radio_list_add">Sender hinzufügen</string>
+    <string name="radio_list_edit">Sender bearbeiten</string>
+    <string name="radio_list_save">Speichern</string>
+    <string name="radio_list_url_hint">Stream-URL</string>
+    <string name="radio_list_label_hint">Tastenbeschriftung (bis zu 4 Zeichen)</string>
+    <string name="radio_list_move_up">Nach oben</string>
+    <string name="radio_list_move_down">Nach unten</string>
+    <string name="radio_list_remove">Entfernen</string>
+    <string name="radio_list_remove_confirm">%1$s aus deiner Liste entfernen?</string>
+    <string name="radio_list_button">Speichertaste %1$d</string>
+    <string name="radio_list_not_on_clock">Nicht auf der Uhr - nur Android Auto</string>
+    <string name="radio_list_url_required">Gib die Stream-URL ein</string>
+    <string name="radio_list_empty">Noch keine Sender. Füge einen mit der Taste + hinzu oder suche einen mit dem Stream Finder.</string>
 </resources>

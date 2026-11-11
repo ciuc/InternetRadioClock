@@ -8,7 +8,7 @@
     <string name="dialog.button.permission_REMIND_LTR">Lembrar mais tarde</string>
 
     <!-- menu -->
-    <string name="settings.menu.buttons">Configurar botões</string>
+    <string name="settings.menu.buttons">Minha lista de rádios</string>
     <string name="settings.menu.settings">Configurações</string>
     <string name="settings.menu.about">Sobre</string>
     <string name="settings.menu.cheers">Saúde!</string>
@@ -155,7 +155,7 @@
     <string name="error">ERRO</string>
     <string name="times_up">Acabou o tempo</string>
 
-    <string name="title.streams">Configurar botões</string>
+    <string name="title.streams">Minha lista de rádios</string>
     <string name="title.settings">Configurações</string>
     <string name="title.streamFinder">Buscador de rádios</string>
     <string name="title_activity_stream_finder">StreamFinder</string>
@@ -426,4 +426,19 @@
         <item>Médio (o dobro)</item>
         <item>Completo (o triplo)</item>
     </string-array>
+
+    <!-- My Radio List -->
+    <string name="radio_list_add">Adicionar estação</string>
+    <string name="radio_list_edit">Editar estação</string>
+    <string name="radio_list_save">Salvar</string>
+    <string name="radio_list_url_hint">URL do stream</string>
+    <string name="radio_list_label_hint">Rótulo do botão (até 4 caracteres)</string>
+    <string name="radio_list_move_up">Mover para cima</string>
+    <string name="radio_list_move_down">Mover para baixo</string>
+    <string name="radio_list_remove">Remover</string>
+    <string name="radio_list_remove_confirm">Remover %1$s da sua lista?</string>
+    <string name="radio_list_button">Botão de memória %1$d</string>
+    <string name="radio_list_not_on_clock">Não aparece no relógio - só no Android Auto</string>
+    <string name="radio_list_url_required">Digite a URL do stream</string>
+    <string name="radio_list_empty">Nenhuma estação ainda. Adicione uma com o botão + ou encontre uma com o Stream Finder.</string>
 </resources>

@@ -6,7 +6,7 @@
     <string name="dialog.button.permission_OK">OK</string>
     <string name="dialog.button.permission_CANCEL">Nu permite</string>
     <string name="dialog.button.permission_REMIND_LTR">Mai târziu</string>
-    <string name="settings.menu.buttons">Configurează butoanele</string>
+    <string name="settings.menu.buttons">Lista mea de radiouri</string>
     <string name="settings.menu.settings">Setări</string>
     <string name="settings.menu.about">Despre</string>
     <string name="settings.menu.cheers">Hai noroc!</string>
@@ -114,7 +114,7 @@
     <string name="yes">Da</string>
     <string name="ok">OK</string>
     <string name="remove">Șterge butonul!</string>
-    <string name="title.streams">Configurează butoanele</string>
+    <string name="title.streams">Lista mea de radiouri</string>
     <string name="title.settings">Setări</string>
     <string name="title.streamFinder">Listă de radiouri online</string>
     <string name="streamFinder.hint">Lista cu radiouri este redată de pe internet. Este menținută de o comunitate de entuziaști și e posibil să nu fie 100% corectă. Sunt peste 15000 de radiouri, deci din această cauză este necesar să căutați cel puțin pe baza țării. Dacă doriți să salvați un radio pe unul din butoane, dați click pe butonul corespunzător.</string>
@@ -405,4 +405,19 @@
         <item>Mediu (de două ori mai mult)</item>
         <item>Complet (de trei ori mai mult)</item>
     </string-array>
+
+    <!-- My Radio List -->
+    <string name="radio_list_add">Adaugă un post</string>
+    <string name="radio_list_edit">Modifică postul</string>
+    <string name="radio_list_save">Salvează</string>
+    <string name="radio_list_url_hint">URL-ul streamului</string>
+    <string name="radio_list_label_hint">Eticheta butonului (până la 4 caractere)</string>
+    <string name="radio_list_move_up">Mută mai sus</string>
+    <string name="radio_list_move_down">Mută mai jos</string>
+    <string name="radio_list_remove">Șterge</string>
+    <string name="radio_list_remove_confirm">Ștergi %1$s din listă?</string>
+    <string name="radio_list_button">Butonul de memorie %1$d</string>
+    <string name="radio_list_not_on_clock">Nu apare pe ceas - doar în Android Auto</string>
+    <string name="radio_list_url_required">Introdu URL-ul streamului</string>
+    <string name="radio_list_empty">Încă nu ai niciun post. Adaugă unul cu butonul + sau caută unul cu Stream Finder.</string>
 </resources>

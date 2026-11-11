@@ -17,7 +17,7 @@
     <string name="button.name.stream8" translatable="false">8</string>
     <!--settings-->
 
-    <string name="settings.menu.buttons">Configure Buttons</string>
+    <string name="settings.menu.buttons">My Radio List</string>
     <string name="settings.menu.settings">Settings</string>
     <string name="settings.menu.about">About</string>
     <string name="settings.menu.cheers">Cheers!</string>
@@ -421,7 +421,7 @@
     <string name="ok">OK</string>
     <string name="remove">Remove this button!</string>
 
-    <string name="title.streams">Configure Buttons</string>
+    <string name="title.streams">My Radio List</string>
     <string name="title.settings">Settings</string>
 
     <string name="title.streamFinder">Stream Finder</string>
@@ -958,4 +958,19 @@
     <string name="weather.uv.high">High</string>
     <string name="weather.uv.very_high">Very high</string>
     <string name="weather.uv.extreme">Extreme</string>
+
+    <!-- My Radio List -->
+    <string name="radio_list_add">Add station</string>
+    <string name="radio_list_edit">Edit station</string>
+    <string name="radio_list_save">Save</string>
+    <string name="radio_list_url_hint">Stream URL</string>
+    <string name="radio_list_label_hint">Button label (up to 4 letters)</string>
+    <string name="radio_list_move_up">Move up</string>
+    <string name="radio_list_move_down">Move down</string>
+    <string name="radio_list_remove">Remove</string>
+    <string name="radio_list_remove_confirm">Remove %1$s from your list?</string>
+    <string name="radio_list_button">Memory button %1$d</string>
+    <string name="radio_list_not_on_clock">Not on the clock - Android Auto only</string>
+    <string name="radio_list_url_required">Enter the stream URL</string>
+    <string name="radio_list_empty">No stations yet. Add one with the + button, or find one with the Stream Finder.</string>
 </resources>

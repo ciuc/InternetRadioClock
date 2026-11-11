@@ -22,6 +22,12 @@ android {
         vectorDrawables.useSupportLibrary = true
         // android 8
         multiDexEnabled = true
+        // Room writes each database version's schema here, so future migrations can be checked
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
         release {
@@ -75,4 +81,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:5.0.9'
 
     implementation 'com.flaviofaria:kenburnsview:1.0.7'
+
+    // Database for the radio stations (the memory buttons)
+    implementation 'androidx.room:room-runtime:2.8.5'
+    annotationProcessor 'androidx.room:room-compiler:2.8.5'
 }

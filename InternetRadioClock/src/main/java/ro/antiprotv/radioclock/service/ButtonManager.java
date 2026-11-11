@@ -1,10 +1,8 @@
 package ro.antiprotv.radioclock.service;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.GradientDrawable;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import ro.antiprotv.radioclock.R;
-import ro.antiprotv.radioclock.activity.ClockActivity;
+import ro.antiprotv.radioclock.db.Station;
+import ro.antiprotv.radioclock.db.StationPreferences;
+import ro.antiprotv.radioclock.db.StationRepository;
 
 public class ButtonManager {
   private final Resources resources;
@@ -25,13 +25,18 @@ public class ButtonManager {
   private final View view;
   private final View.OnTouchListener onTouchListener;
   private final View.OnClickListener playListener;
-  // the map of urls; it is a map of the setting key > url (String)
-  // url(setting_key_stream1 >  http://something)
+  /** The number of memory buttons on the clock. */
+  public static final int MEMORIES = 8;
+
+  private final StationRepository stations;
+  // the stream of each memory button, by button index; "" for an empty memory
   private final List<String> mUrls = new ArrayList<>();
+  // the label of each memory button, by button index
+  private final List<String> mLabels = new ArrayList<>();
+  // the database id of the station on each memory button, by button index; 0 for an empty memory
+  private final List<Long> mStationIds = new ArrayList<>();
+  private final StationPreferences stationPreferences;
   private List<Button> buttons;
-  private List<Integer> settingKeys;
-  private List<Integer> defaultNames;
-  private SharedPreferences prefs;
   // the button we have clicked on
   private Button mButtonClicked;
   private ImageButton onOffButton;
@@ -42,21 +47,21 @@ public class ButtonManager {
   private Button timerMinus1mButton;
 
   public ButtonManager(Context ctx) {
-    this(ctx, null, null, null, null);
+    this(ctx, null, null, null);
   }
 
   public ButtonManager(
       Context ctx,
       View view,
-      SharedPreferences prefs,
       View.OnTouchListener onTouchListener,
       View.OnClickListener playListener) {
     this.context = ctx;
     this.view = view;
-    this.prefs = prefs;
     this.onTouchListener = onTouchListener;
     this.playListener = playListener;
     resources = context.getResources();
+    stations = StationRepository.getInstance(context);
+    stationPreferences = new StationPreferences(context);
   }
 
   public void initializeButtons() {
@@ -70,32 +75,9 @@ public class ButtonManager {
     Button stream8 = view.findViewById(R.id.stream8);
     buttons = Arrays.asList(stream1, stream2, stream3, stream4, stream5, stream6, stream7, stream8);
 
-    settingKeys =
-        Arrays.asList(
-            R.string.setting_key_label1,
-            R.string.setting_key_label2,
-            R.string.setting_key_label3,
-            R.string.setting_key_label4,
-            R.string.setting_key_label5,
-            R.string.setting_key_label6,
-            R.string.setting_key_label7,
-            R.string.setting_key_label8);
-    defaultNames =
-        Arrays.asList(
-            R.string.button_name_stream1,
-            R.string.button_name_stream2,
-            R.string.button_name_stream3,
-            R.string.button_name_stream4,
-            R.string.button_name_stream5,
-            R.string.button_name_stream6,
-            R.string.button_name_stream7,
-            R.string.button_name_stream8);
-
     for (int i = 0; i < buttons.size(); i++) {
       Button b = buttons.get(i);
-      b.setText(
-          prefs.getString(
-              resources.getString(settingKeys.get(i)), resources.getString(defaultNames.get(i))));
+      b.setText(mLabels.get(i));
       b.setOnClickListener(playListener);
       b.setOnTouchListener(onTouchListener);
       b.setOnLongClickListener(new AddLabelOnLongClickListener(i + 1));
@@ -122,40 +104,97 @@ public class ButtonManager {
     }
   }
 
+  /** The button picked last; the station played last, or the first button. */
   public Button getButtonClicked() {
     if (mButtonClicked == null) {
-      mButtonClicked =
-          findButtonByTag(prefs.getString(ClockActivity.LAST_PLAYED, "setting.key.stream1"));
+      Button lastPlayed = findButtonForStation(stationPreferences.getLastPlayed());
+      mButtonClicked = lastPlayed != null ? lastPlayed : buttons.get(0);
     }
     return mButtonClicked;
   }
 
   public void setButtonClicked(Button mButtonClicked) {
     this.mButtonClicked = mButtonClicked;
-    prefs.edit().putString(ClockActivity.LAST_PLAYED, mButtonClicked.getTag().toString()).apply();
+    rememberLastPlayed(mButtonClicked);
   }
 
   public void setButtonClicked(int id) {
     this.mButtonClicked = findButtonById(id);
-    prefs.edit().putString(ClockActivity.LAST_PLAYED, mButtonClicked.getTag().toString()).apply();
+    rememberLastPlayed(mButtonClicked);
   }
 
-  void setText(int index, SharedPreferences newPrefs) {
-    buttons
-        .get(index)
-        .setText(
-            newPrefs.getString(
-                resources.getString(settingKeys.get(index)),
-                resources.getString(defaultNames.get(index))));
-    this.prefs = newPrefs;
+  private void rememberLastPlayed(Button button) {
+    int index = buttonIndex(button);
+    if (index < 0) {
+      return;
+    }
+    Station station = stations.getStationById(mStationIds.get(index));
+    if (station != null) {
+      stationPreferences.setLastPlayed(station);
+    }
+  }
+
+  /**
+   * The button the alarm should play: the wake-up station picked in the settings, or null to play
+   * whatever played last (also when that station was removed).
+   */
+  public Button getWakeUpButton() {
+    return findButtonForStation(stationPreferences.getWakeUpStation());
+  }
+
+  /** The memory button holding this station, or null when it is not on one. */
+  Button findButtonForStation(Station station) {
+    if (station == null || buttons == null) {
+      return null;
+    }
+    int index = mStationIds.indexOf(station.id);
+    return index < 0 ? null : buttons.get(index);
+  }
+
+  /**
+   * Shows the stations as they are now in the database on the memory buttons.
+   *
+   * @return the indexes of the buttons whose stream changed
+   */
+  public List<Integer> applyStations(List<Station> saved) {
+    List<String> oldUrls = new ArrayList<>(mUrls);
+    loadStations(saved);
+    List<Integer> changed = new ArrayList<>();
+    for (int i = 0; i < MEMORIES; i++) {
+      if (i >= oldUrls.size() || !oldUrls.get(i).equals(mUrls.get(i))) {
+        changed.add(i);
+      }
+    }
+    if (buttons != null) {
+      for (int i = 0; i < buttons.size(); i++) {
+        buttons.get(i).setText(mLabels.get(i));
+      }
+      hideUnhideButtons();
+    }
+    return changed;
+  }
+
+  private void loadStations(List<Station> saved) {
+    mUrls.clear();
+    mLabels.clear();
+    mStationIds.clear();
+    for (int i = 0; i < MEMORIES; i++) {
+      mUrls.add("");
+      mLabels.add(String.valueOf(i + 1));
+      mStationIds.add(StationPreferences.NONE);
+    }
+    for (Station station : saved) {
+      int index = station.position - 1;
+      if (index >= 0 && index < MEMORIES) {
+        mUrls.set(index, station.url);
+        mLabels.set(index, station.label);
+        mStationIds.set(index, station.id);
+      }
+    }
   }
 
   public void assignUrlToMemory(String url, int streamNo, String label) {
-    String key = "setting.key.stream" + streamNo;
-    String labelKey = "setting.key.label" + streamNo;
-    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    prefs.edit().putString(key, url).apply();
-    prefs.edit().putString(labelKey, label).apply();
+    stations.assign(streamNo, url, label);
     Toast.makeText(
             context,
             String.format(context.getString(R.string.assigned_to_memory), url, streamNo),
@@ -164,15 +203,11 @@ public class ButtonManager {
   }
 
   void setButtonLabel(int streamNo, String label) {
-    String labelKey = "setting.key.label" + streamNo;
-    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    prefs.edit().putString(labelKey, label).apply();
+    stations.setLabel(streamNo, label);
   }
 
-  void setButtonUrl(int streamNo) {
-    String labelKey = "setting.key.stream" + streamNo;
-    final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-    prefs.edit().putString(labelKey, "").apply();
+  void clearMemory(int streamNo) {
+    stations.removeAtPosition(streamNo);
   }
 
   /** Set disabled to all buttons (cycle through buttons and .setEnabled false) */
@@ -205,6 +240,11 @@ public class ButtonManager {
       }
     }
     return null;
+  }
+
+  /** The button's place among the memory buttons (0-7), or -1. */
+  public int buttonIndex(Button button) {
+    return buttons == null ? -1 : buttons.indexOf(button);
   }
 
   Button findButtonById(int id) {
@@ -278,30 +318,9 @@ public class ButtonManager {
     onOffButton.setColorFilter(context.getResources().getColor(R.color.color_clock_red));
   }
 
+  /** Reads the memories from the database; call before {@link #initializeButtons()}. */
   public void initializeUrls() {
-    mUrls.add(
-        prefs.getString(
-            context.getResources().getString(R.string.setting_key_stream1),
-            context.getResources().getString(R.string.setting_default_stream1)));
-    mUrls.add(
-        prefs.getString(
-            context.getResources().getString(R.string.setting_key_stream2),
-            context.getResources().getString(R.string.setting_default_stream2)));
-    mUrls.add(
-        prefs.getString(
-            context.getResources().getString(R.string.setting_key_stream3),
-            context.getResources().getString(R.string.setting_default_stream3)));
-    mUrls.add(
-        prefs.getString(
-            context.getResources().getString(R.string.setting_key_stream4),
-            context.getResources().getString(R.string.setting_default_stream4)));
-    mUrls.add(
-        prefs.getString(
-            context.getResources().getString(R.string.setting_key_stream5),
-            context.getResources().getString(R.string.setting_default_stream5)));
-    mUrls.add(prefs.getString(context.getResources().getString(R.string.setting_key_stream6), ""));
-    mUrls.add(prefs.getString(context.getResources().getString(R.string.setting_key_stream7), ""));
-    mUrls.add(prefs.getString(context.getResources().getString(R.string.setting_key_stream8), ""));
+    loadStations(stations.getStations());
   }
 
   public List<String> getmUrls() {
@@ -368,7 +387,7 @@ public class ButtonManager {
       builder.setPositiveButton(
           R.string.yes,
           (dialog, which) -> setButtonLabel(streamNo, labelInput.getText().toString()));
-      builder.setNeutralButton(R.string.remove, (dialog, which) -> setButtonUrl(streamNo));
+      builder.setNeutralButton(R.string.remove, (dialog, which) -> clearMemory(streamNo));
       builder.show();
       return true;
     }

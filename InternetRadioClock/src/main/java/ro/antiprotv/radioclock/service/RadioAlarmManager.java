@@ -403,13 +403,11 @@ public class RadioAlarmManager extends BroadcastReceiver {
   @Override
   public void onReceive(Context context, Intent intent) {
     // what do we play?
-    String playMemoryAtWakeup =
-        prefs.getString(
-            context.getResources().getString(R.string.setting_key_wake_up_station), "0");
+    Button wakeUpButton = buttonManager.getWakeUpButton();
     int memory;
-    if (!playMemoryAtWakeup.equals("0")) {
-      memory = buttonManager.findButtonByTag(playMemoryAtWakeup).getId();
-      buttonManager.setButtonClicked(buttonManager.findButtonByTag(playMemoryAtWakeup));
+    if (wakeUpButton != null) {
+      memory = wakeUpButton.getId();
+      buttonManager.setButtonClicked(wakeUpButton);
     } else if (buttonManager.getButtonClicked() == null) {
       memory = R.id.stream1;
       buttonManager.setButtonClicked(clockActivity.findViewById(R.id.stream1));

@@ -75,6 +75,7 @@ import ro.antiprotv.radioclock.listener.TimerPauseOnClickListener;
 import ro.antiprotv.radioclock.service.BackgroundPlaybackService;
 import ro.antiprotv.radioclock.service.BatteryService;
 import ro.antiprotv.radioclock.service.BrightnessManager;
+import ro.antiprotv.radioclock.db.StationRepository;
 import ro.antiprotv.radioclock.service.ButtonManager;
 import ro.antiprotv.radioclock.service.MediaPlayerService;
 import ro.antiprotv.radioclock.service.NowPlayingManager;
@@ -100,7 +101,6 @@ import timber.log.Timber;
 public class ClockActivity extends AppCompatActivity implements IPreviewCallback {
 
   public static final String PREF_NIGHT_MODE = "NIGHT_MODE";
-  public static final String LAST_PLAYED = "LAST_PLAYED";
   public static final String IS_PLAYING = "IS_PLAYING";
   public static final String PLAYING_STREAM_NO = "PLAYING_STREAM_NO";
   public static final String USER_ALARM_PERMISSION_NOT_ALLOWED_PREF = "USER_PERM_NOK";
@@ -439,7 +439,6 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
         new ButtonManager(
             getApplicationContext(),
             mControlsView,
-            prefs,
             mDelayHideTouchListener,
             playOnClickListener);
     buttonManager.initializeUrls();
@@ -518,9 +517,14 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     mediaPlayerService =
         new MediaPlayerService(this, alarmManager, buttonManager, volumeManager, prefs);
     initializeSleepFunction();
-    preferenceChangeListener =
+    SettingsManager settingsManager =
         new SettingsManager(
             this, buttonManager, sleepManager, mediaPlayerService, timerService);
+    preferenceChangeListener = settingsManager;
+    // the memory buttons follow the saved stations (edited in settings or the stream finder)
+    StationRepository.getInstance(this)
+        .observeStations()
+        .observe(this, settingsManager::onStationsChanged);
     alarmManager.setMediaPlayerService(mediaPlayerService);
     // Play at start?
     // button clicked is either last played, or the first; will also set
@@ -1117,7 +1121,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
         return true;
       case R.id.buttons:
         Intent intent = new Intent();
-        intent.setClassName(this, "ro.antiprotv.radioclock.activity.ConfigureButtonsActivity");
+        intent.setClassName(this, "ro.antiprotv.radioclock.activity.RadioListActivity");
         startActivity(intent);
         return true;
       case R.id.night:
