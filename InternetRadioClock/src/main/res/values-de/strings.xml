@@ -144,7 +144,7 @@
     <!-- allgemeine Schaltflächen -->
     <string name="back">Zurück</string>
     <string name="find">Los, suchen!</string>
-    <string name="assign_to">Auf Speicher legen:</string>
+    <string name="assign_to">Vorhandenen ersetzen:</string>
     <string name="cancel">Abbrechen</string>
     <string name="yes">Ja</string>
     <string name="ok">OK</string>
@@ -161,16 +161,20 @@
     <string name="title_activity_stream_finder">StreamFinder</string>
 
     <!-- Sendersuche -->
-    <string name="streamFinder.hint">Die Liste mit den Radiostreams wird aus dem Internet geladen. Sie wird von der Community gepflegt und ist möglicherweise nicht zu 100 % korrekt.\n
-\nEs gibt über 15.000 Radios, deshalb musst du mindestens ein Land als Suchkriterium angeben, sonst wäre die Liste riesig.\n
-\nDu kannst weitere Suchkriterien angeben, z. B. ein Genre oder den Namen des Radios.\n
-\nWenn du ein Radio auf eine Speichertaste legen möchtest, tippe auf die Schaltfläche des gewünschten Speichers.
+    <string name="streamFinder.hint">Die Liste der Radiosender stammt von radio-browser.info, einem freien Verzeichnis, das von seiner Community gepflegt wird. Sie ist möglicherweise nicht zu 100 % korrekt.\n
+\nEs gibt Zehntausende Radios. Die meistgehörten kommen zuerst, weitere werden beim Scrollen nachgeladen.\n
+\nGrenze die Suche mit einem Land, einer Sprache, einem Genre oder dem Namen des Radios ein.\n
+\nTippe auf +, um ein Radio zu deiner Radioliste hinzuzufügen. Tippe auf die Nummer eines deiner Sender, um ihn durch dieses Radio zu ersetzen.
     </string>
     <string name="streamFinder.prompt.country">Land auswählen</string>
     <string name="streamFinder.prompt.language">Sprache auswählen</string>
     <string name="streamFinder.prompt.genre">Genre auswählen</string>
     <string name="streamFinder.label.country">"Land: "</string>
     <string name="streamFinder.label.genre">"Genre: "</string>
+    <string name="streamFinder.label.order">"Sortierung: "</string>
+    <string name="streamFinder.prompt.order">Sortierung auswählen</string>
+    <string name="streamFinder_order_popular">Am beliebtesten</string>
+    <string name="streamFinder_order_alphabetical">Alphabetisch</string>
     <string name="streamFinder.label.language">"Sprache: "</string>
     <string name="streamFinder.label.name">"Name: "</string>
     <string name="streamFinder.click_to_help">"Zum Helfen tippen: "</string>
@@ -178,7 +182,8 @@
     <string name="dialog_radio_list_title">Radioliste</string>
     <string name="no_radios_matching">Keine Radios entsprechen den Kriterien! Bitte versuche es erneut.</string>
     <string name="error_retrieving_radios">"Beim Laden der Liste ist etwas schiefgelaufen. Bitte versuche es später erneut. (Fehler %d) "</string>
-    <string name="found_radios">%d Radios gefunden...</string>
+    <string name="radios_found">Gefundene Radios: %d</string>
+    <string name="radios_found_more">Gefundene Radios: %d+</string>
     <string name="toast_retrieving_radios">Radios werden geladen. Das kann eine Weile dauern...</string>
     <string name="error_retrieving_station_list">Fehler beim Laden der Senderliste!</string>
     <string name="assigned.to.memory">%s auf Speicher %d gelegt</string>
@@ -441,4 +446,13 @@
     <string name="radio_list_not_on_clock">Nicht auf der Uhr - nur Android Auto</string>
     <string name="radio_list_url_required">Gib die Stream-URL ein</string>
     <string name="radio_list_empty">Noch keine Sender. Füge einen mit der Taste + hinzu oder suche einen mit dem Stream Finder.</string>
+
+    <!-- Stream Finder: replace or add -->
+    <string name="sf_add_station">Zu meiner Radioliste hinzufügen</string>
+    <string name="sf_replace_title">%1$s durch %2$s ersetzen?</string>
+    <string name="sf_replace_confirm">Möchtest du diesen Sender wirklich ersetzen?</string>
+    <string name="sf_add_title">%1$s zu meiner Radioliste hinzufügen</string>
+    <string name="sf_added">%1$s als Sender %2$d hinzugefügt</string>
+    <string name="sf_replaced">%1$s ersetzt Sender %2$d</string>
+    <string name="add_android_auto_only">Das wird Sender %1$d. Die Uhr hat nur 8 Tasten, daher ist dieser Sender nur in Android Auto verfügbar.</string>
 </resources>

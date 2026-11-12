@@ -415,7 +415,7 @@
 
     <string name="back">Back</string>
     <string name="find">Go Find!</string>
-    <string name="assign_to">Assign to memory:</string>
+    <string name="assign_to">Replace existing:</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
     <string name="ok">OK</string>
@@ -425,10 +425,10 @@
     <string name="title.settings">Settings</string>
 
     <string name="title.streamFinder">Stream Finder</string>
-    <string name="streamFinder.hint">The list with radio streams is retrieved from the internet. It is maintained by community efforts and might not be 100% accurate.\n
-\nThere are aver 15.000 radios so this is why you need to provide at least a country as search criteria, otherwise the list would be huge.\n
-\nYou can add more search criteria like a category or the name of the radio.\n
-\nIf you want to assign a radio to a memory button, click on the button corresponding to the desired memory.
+    <string name="streamFinder.hint">The list of radio stations comes from radio-browser.info, a free directory maintained by its community. It might not be 100% accurate.\n
+\nThere are tens of thousands of radios. The most listened ones come first, and more load as you scroll down.\n
+\nNarrow the search with a country, a language, a genre or the name of the radio.\n
+\nTo add a radio to My Radio List, press +. To put it in place of one of your stations, press that station\'s number.
     </string>
     <string name="tips.1">- you can setup up to two alarms; they can be recurring by choosing the days\n
 - after alarm starts, clicking on the screen will stop the alarm, but radio continues playing at the current volume; use the volume buttons to set desired volume\n
@@ -477,6 +477,10 @@
     <string name="streamFinder.prompt.genre">Choose genre</string>
     <string name="streamFinder.label.country">Country: </string>
     <string name="streamFinder.label.genre">Genre: </string>
+    <string name="streamFinder.label.order">Order: </string>
+    <string name="streamFinder.prompt.order">Choose the order</string>
+    <string name="streamFinder_order_popular">Most popular</string>
+    <string name="streamFinder_order_alphabetical">Alphabetically</string>
     <string name="streamFinder.label.language">Language: </string>
     <string name="streamFinder.label.name">Name: </string>
     <!-- StreamFinder search criteria: the selected item text is sent as-is to the
@@ -765,7 +769,8 @@
     <string name="new_stuff">New Stuff!</string>
     <string name="no_radios_matching">No radios matching the criteria! Please try again.</string>
     <string name="error_retrieving_radios">"Something went wrong while retrieving list. Please try again later. (error %d) "</string>
-    <string name="found_radios">Found %d radios...</string>
+    <string name="radios_found">Radios found: %d</string>
+    <string name="radios_found_more">Radios found: %d+</string>
     <string name="connecting_to">"Connecting to "</string>
     <string name="stopping_stream">Stopping stream</string>
     <string name="playing">"Playing "</string>
@@ -973,4 +978,13 @@
     <string name="radio_list_not_on_clock">Not on the clock - Android Auto only</string>
     <string name="radio_list_url_required">Enter the stream URL</string>
     <string name="radio_list_empty">No stations yet. Add one with the + button, or find one with the Stream Finder.</string>
+
+    <!-- Stream Finder: replace or add -->
+    <string name="sf_add_station">Add to My Radio List</string>
+    <string name="sf_replace_title">Replace %1$s with %2$s?</string>
+    <string name="sf_replace_confirm">Are you sure you want to replace this station?</string>
+    <string name="sf_add_title">Add %1$s to My Radio List</string>
+    <string name="sf_added">%1$s added as station %2$d</string>
+    <string name="sf_replaced">%1$s replaced station %2$d</string>
+    <string name="add_android_auto_only">This will be station %1$d. The clock only has 8 buttons, so this station will only be available in Android Auto.</string>
 </resources>

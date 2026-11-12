@@ -44,6 +44,10 @@ public interface StationDao {
   @Query("UPDATE stations SET position = position - 1 WHERE position > :position")
   void closeGapAfter(int position);
 
+  /** Fills in a country; never overwrites one the user's own save already gave the station. */
+  @Query("UPDATE stations SET country = :country WHERE id = :id AND country IS NULL")
+  void setCountryIfUnknown(long id, String country);
+
   @Query("UPDATE stations SET station_name = :name WHERE url = :url")
   void setStationName(String url, String name);
 
@@ -63,6 +67,37 @@ public interface StationDao {
   }
 
   /**
+   * Adds a station found by the Stream Finder at the end of the list, with the name and country
+   * the directory gave it; returns its id.
+   */
+  @Transaction
+  default long add(String url, String label, String name, String country) {
+    Station station = new Station(maxPosition() + 1, url, label);
+    station.stationName = emptyToNull(name);
+    station.country = emptyToNull(country);
+    return insert(station);
+  }
+
+  /** Like {@link #assign(int, String, String)}, with the Stream Finder's name and country. */
+  @Transaction
+  default void assign(int position, String url, String label, String name, String country) {
+    Station station = getByPosition(position);
+    if (station == null) {
+      add(url, label, name, country);
+    } else {
+      station.url = url;
+      station.label = label;
+      station.stationName = emptyToNull(name);
+      station.country = emptyToNull(country);
+      update(station);
+    }
+  }
+
+  private static String emptyToNull(String s) {
+    return s == null || s.trim().isEmpty() ? null : s.trim();
+  }
+
+  /**
    * Puts a station on a memory button, replacing the one there. A memory past the end of the list
    * gets the station added at the end instead, so the list keeps no gaps.
    */
@@ -78,8 +113,9 @@ public interface StationDao {
 
   private void change(Station station, String url, String label) {
     if (!station.url.equals(url)) {
-      // a different stream: the name we had belongs to the old one
+      // a different stream: the name and country we had belong to the old one
       station.stationName = null;
+      station.country = null;
     }
     station.url = url;
     station.label = label;

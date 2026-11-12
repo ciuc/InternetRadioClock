@@ -63,6 +63,7 @@
     </LinearLayout>
     <!-- the label gets a line of its own: next to eight buttons it overflows narrow screens -->
     <TextView
+        android:id="@+id/sf_replace_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -80,8 +81,7 @@
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
         android:layout_marginLeft="@dimen/assign_to_mem_button_margin_left"
         android:text="@string/button.name.stream1"
-        android:clickable="false"
-        android:background="@drawable/memory"
+                android:background="@drawable/memory"
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream2"
@@ -91,8 +91,7 @@
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
         android:layout_marginLeft="@dimen/assign_to_mem_button_margin_left"
         android:text="@string/button.name.stream2"
-        android:clickable="false"
-        android:background="@drawable/memory"
+                android:background="@drawable/memory"
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream3"
@@ -102,8 +101,7 @@
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
         android:layout_marginLeft="@dimen/assign_to_mem_button_margin_left"
         android:text="@string/button.name.stream3"
-        android:clickable="false"
-        android:background="@drawable/memory"
+                android:background="@drawable/memory"
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream4"
@@ -113,8 +111,7 @@
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
         android:layout_marginLeft="@dimen/assign_to_mem_button_margin_left"
         android:text="@string/button.name.stream4"
-        android:clickable="false"
-        android:background="@drawable/memory"
+                android:background="@drawable/memory"
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream5"
@@ -124,8 +121,7 @@
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
         android:layout_marginLeft="@dimen/assign_to_mem_button_margin_left"
         android:text="@string/button.name.stream5"
-        android:clickable="false"
-        android:background="@drawable/memory"
+                android:background="@drawable/memory"
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream6"
@@ -135,8 +131,7 @@
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
         android:layout_marginLeft="@dimen/assign_to_mem_button_margin_left"
         android:text="@string/button.name.stream6"
-        android:clickable="false"
-        android:background="@drawable/memory"
+                android:background="@drawable/memory"
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream7"
@@ -146,8 +141,7 @@
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
         android:layout_marginLeft="@dimen/assign_to_mem_button_margin_left"
         android:text="@string/button.name.stream7"
-        android:clickable="false"
-        android:background="@drawable/memory"
+                android:background="@drawable/memory"
         android:textColor="@color/button.color.off" />
     <Button
         android:id="@+id/sf_assign_button_stream8"
@@ -157,8 +151,21 @@
         android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
         android:layout_marginLeft="@dimen/assign_to_mem_button_margin_left"
         android:text="@string/button.name.stream8"
-        android:clickable="false"
-        android:background="@drawable/memory"
+                android:background="@drawable/memory"
         android:textColor="@color/button.color.off" />
+    <!-- adds the stream at the end of My Radio List -->
+    <Button
+        android:id="@+id/sf_add_button"
+        style="@style/imageButtonStyle"
+        android:layout_width="@dimen/streamFinder.button"
+        android:layout_height="@dimen/streamFinder.button"
+        android:layout_marginTop="@dimen/assign_to_mem_button_margin_top"
+        android:layout_marginLeft="@dimen/assign_to_mem_button_margin_left"
+        android:background="@drawable/memory"
+        android:contentDescription="@string/sf_add_station"
+        android:padding="0dp"
+        android:text="+"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>

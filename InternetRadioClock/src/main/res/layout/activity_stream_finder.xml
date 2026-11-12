@@ -40,7 +40,6 @@
             <Spinner
                 android:id="@+id/streamFinder.dropdown.country"
                 style="@style/streamFinder_act_spinner"
-                android:entries="@array/countries"
                 android:prompt="@string/streamFinder.prompt.country" />
         </LinearLayout>
 
@@ -69,7 +68,6 @@
             <Spinner
                 android:id="@+id/streamFinder.dropdown.language"
                 style="@style/streamFinder_act_spinner"
-                android:entries="@array/languages"
                 android:prompt="@string/streamFinder.prompt.language" />
         </LinearLayout>
 
@@ -84,8 +82,21 @@
             <Spinner
                 android:id="@+id/streamFinder.dropdown.tags"
                 style="@style/streamFinder_act_spinner"
-                android:entries="@array/genres"
                 android:prompt="@string/streamFinder.prompt.genre" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/stream_finder_act_linear_layout_criteria">
+
+            <TextView
+                android:layout_width="@dimen/sf_spinner_label"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1pt"
+                android:text="@string/streamFinder.label.order" />
+
+            <Spinner
+                android:id="@+id/streamFinder.dropdown.order"
+                style="@style/streamFinder_act_spinner"
+                android:prompt="@string/streamFinder.prompt.order" />
         </LinearLayout>
 
         <LinearLayout style="@style/stream_finder_act_linear_layout_criteria">

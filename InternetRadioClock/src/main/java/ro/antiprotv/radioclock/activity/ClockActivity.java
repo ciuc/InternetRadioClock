@@ -75,6 +75,7 @@ import ro.antiprotv.radioclock.listener.TimerPauseOnClickListener;
 import ro.antiprotv.radioclock.service.BackgroundPlaybackService;
 import ro.antiprotv.radioclock.service.BatteryService;
 import ro.antiprotv.radioclock.service.BrightnessManager;
+import ro.antiprotv.radioclock.service.StationCountryBackfill;
 import ro.antiprotv.radioclock.db.StationRepository;
 import ro.antiprotv.radioclock.service.ButtonManager;
 import ro.antiprotv.radioclock.service.MediaPlayerService;
@@ -526,6 +527,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
         .observeStations()
         .observe(this, settingsManager::onStationsChanged);
     alarmManager.setMediaPlayerService(mediaPlayerService);
+    StationCountryBackfill.runOnce(this);
     // Play at start?
     // button clicked is either last played, or the first; will also set
     if (prefs.getBoolean(getResources().getString(R.string.setting_key_playAtStart), false)) {

@@ -75,7 +75,8 @@
     <string name="new_stuff">Noutăți!</string>
     <string name="no_radios_matching">Niciun radio nu corespunde criteriilor! Încearcă din nou.</string>
     <string name="error_retrieving_radios">"Ceva nu a mers bine la încărcarea listei. Încearcă mai târziu. (eroare %d) "</string>
-    <string name="found_radios">S-au găsit %d radiouri...</string>
+    <string name="radios_found">Radiouri găsite: %d</string>
+    <string name="radios_found_more">Radiouri găsite: %d+</string>
     <string name="volume_max">Volum MAX</string>
     <string name="muted">Volum închis</string>
     <string name="setting.summary.alwaysDisplayBattery">Activați pentru a afișa nivelul bateriei (posibil să nu funcționeze pe toate telefoanele.)</string>
@@ -109,7 +110,7 @@
     <string name="setting.name.clock_dots">Afișare : între oră, minut, secundă</string>
     <string name="back">Înapoi</string>
     <string name="find">Caută!</string>
-    <string name="assign_to">Pune pe memoria:</string>
+    <string name="assign_to">Înlocuiește un post existent:</string>
     <string name="cancel">Anulare</string>
     <string name="yes">Da</string>
     <string name="ok">OK</string>
@@ -117,12 +118,16 @@
     <string name="title.streams">Lista mea de radiouri</string>
     <string name="title.settings">Setări</string>
     <string name="title.streamFinder">Listă de radiouri online</string>
-    <string name="streamFinder.hint">Lista cu radiouri este redată de pe internet. Este menținută de o comunitate de entuziaști și e posibil să nu fie 100% corectă. Sunt peste 15000 de radiouri, deci din această cauză este necesar să căutați cel puțin pe baza țării. Dacă doriți să salvați un radio pe unul din butoane, dați click pe butonul corespunzător.</string>
+    <string name="streamFinder.hint">Lista cu radiouri vine de la radio-browser.info, un catalog gratuit menținut de o comunitate de entuziaști, și e posibil să nu fie 100% corectă. Sunt zeci de mii de radiouri: cele mai ascultate apar primele, iar restul se încarcă pe măsură ce derulați lista. Puteți restrânge căutarea după țară, limbă, gen sau numele radioului. Apăsați + ca să adăugați un radio în lista dumneavoastră, sau numărul unuia dintre posturile salvate ca să îl înlocuiți.</string>
     <string name="streamFinder.prompt.country">Alegeți țara</string>
     <string name="streamFinder.prompt.language">Alegeți limba</string>
     <string name="streamFinder.prompt.genre">Alegeți genul</string>
     <string name="streamFinder.label.country">Țara:</string>
     <string name="streamFinder.label.genre">Genul:</string>
+    <string name="streamFinder.label.order">Ordine:</string>
+    <string name="streamFinder.prompt.order">Alegeți ordinea</string>
+    <string name="streamFinder_order_popular">Cele mai populare</string>
+    <string name="streamFinder_order_alphabetical">Alfabetic</string>
     <string name="streamFinder.label.language">Limba:</string>
     <string name="streamFinder.label.name">Nume:</string>
     <string name="about.text">"<![CDATA[     <html>     <body style="font-size:8px;">     <style>     p,li{font-weight:normal}     </style>     <h1>Simple Radio Clock<h1> <p>Această aplicație simplă afișează ceasul pe tot ecranul și are 5 butoane, fiecare asociat cu un post de radio online.</p> <p>Din start vine configurată cu Radio Guerrilla, Tananana și RockFM din România, RadioBOB din Germania și Zodiac din Irlanda. Acestea pot fi schimbate și poți avea până la 8 butoane.</p> <p> <b>Inversare</b><br> Schimbă orientarea ecranului. În funcție de poziția butoanelor de volum, s-ar putea să îți fie de folos.<br> <br> <b>Setări</b><br> în această secțiune poți configura o grămadă de lucruri utile: <ul> <li>fontul ceasului: poți alege dintre mai multe fonturi pentru afișarea ceasului.</li> <li>culoarea ceasului</li> <li>luminozitatea ecranului (are prioritate față de setările telefonului)</li> <li>mărimea ceasului</li> <li>activarea/dezactivarea afișării secundelor</li> <li>ceas de 12 ore, cu sau fără afișarea am/pm</li> <li>activarea/dezactivarea mișcării ceasului pe ecran; implicit ceasul se plimbă prin colțurile ecranului - important dacă ai ecran AMOLED (o imagine lăsată mult timp pe un ecran AMOLED poate deteriora ecranul)</li> <li>timp de închidere personalizat: aplicația are un buton de sleep care trece prin câteva valori predefinite (15, 20, 30 de minute); aici poți adăuga valoarea ta preferată -> Poți activa închiderea automată din butonul de sleep de pe ecranul principal. </li> <li>timp de snooze personalizat: îți poți seta propriul timp de snooze (implicit este 10 minute)</li> <li>inversarea butoanelor de radio/alarmă: pune butoanele de radio sus și butoanele de alarmă jos. Poate fi util pentru anumite suporturi de telefon.</li> <li>deblocarea modului landscape, astfel încât ceasul să urmeze orientarea telefonului; de asemenea, posibilitatea de a desena ceasul vertical (cu orele, minutele și/sau secundele una sub alta).</li> <li>poți activa afișarea nivelului bateriei; te rugăm să ții cont că această funcție este încă în stadiu beta și s-ar putea să nu funcționeze pe toate dispozitivele tot timpul.</li> </ul> <b>Configurarea butoanelor</b> <ul> <li>modifică un buton de memorie (adresa stream-ului)</li> <li>atribuie o etichetă unui buton (va fi afișată în locul numărului) - poți face asta și printr-o apăsare lungă pe buton; tot printr-o apăsare lungă poți șterge un buton</li> <li>activează până la 8 butoane (adaugă pur și simplu adresa radioului tău preferat)</li> </ul> <b>Căutare radiouri</b> <ul> <li>poți căuta un post de radio folosind listele derulante și câmpul de nume (numele nu trebuie să fie exact) și poți atribui radioul unei memorii. Aplicația îți va sugera chiar și o etichetă ;)</li> <li>ține cont că lista nu este completă și s-ar putea să nu fie 100% corectă; dacă ai un radio pe care vrei să îl adaug în listă, trimite-mi un email</li> <li>aplicația reține acum ultima țară și ultima limbă folosite</li> </ul> <b>Profilul de noapte</b> <ul> <li>poți defini un set diferit de setări pe care să le activezi la apăsarea unui buton (de exemplu poți seta un ceas mai mare, fără secunde, sau de culoare roșie și cu luminozitatea la 50% pentru noapte, în timp ce ziua să fie mai mic, verde, cu secunde și mai luminos)</li> <li>poți defini și o oră de început și de sfârșit pentru \"profilul de noapte\". Astfel, setările de noapte vor fi aplicate automat la ora specificată</li> </ul>  <b>Alarme</b> <p>Pont: când pornește alarma, atinge ecranul (sau butonul de bifă) ca să o oprești fără să oprești radioul;<br>când alarma sună, apasă butonul de anulare (marcat cu "x") ca să oprești alarma fără să pornească radioul; alarma următoare va fi activată automat.</p> <ul> <li>poți seta până la două alarme care vor porni radioul la ora stabilită. Va porni ultimul radio ascultat sau un radio ales de tine din setări. Dacă nu există conexiune la internet, va suna sunetul implicit de alarmă.</li> <li><b>poți seta alarme recurente în diverse zile ale săptămânii (de exemplu una în zilele lucrătoare, una în weekend)</b></li> <li>există și o funcție de snooze cu un timp de 10 minute; îți poți seta și propriul timp de snooze.</li> <li>poți activa sunetul progresiv: radioul va porni la un volum mic, care va crește la fiecare 10 secunde. Reține că nu va crește volumul dispozitivului (cel controlat de butoanele de volum). <li>poți alege un post cu care să pornească întotdeauna alarma</li> </ul> <p><span style=\"color:red\">Pe Android 14 și mai nou, va trebui să acorzi o permisiune specială pentru a putea folosi alarmele.</span></p> <p> <b>*** ATENȚIE: te rugăm să nu folosești această aplicație drept ceas deșteptător principal. Folosește întotdeauna ceasul tău obișnuit ca să te trezești. ***</b> </p>  <p>Am încercat să o păstrez cât mai simplă, dar dacă ai idei sau crezi că poate fi îmbunătățită, scrie-mi la adresa mea de gmail cristi.ciuc</p> <p>Codul este open source și poate fi găsit pe github: https://github.com/ciuc/InternetRadioClock</p> ]]>     "</string>
@@ -420,4 +425,13 @@
     <string name="radio_list_not_on_clock">Nu apare pe ceas - doar în Android Auto</string>
     <string name="radio_list_url_required">Introdu URL-ul streamului</string>
     <string name="radio_list_empty">Încă nu ai niciun post. Adaugă unul cu butonul + sau caută unul cu Stream Finder.</string>
+
+    <!-- Stream Finder: replace or add -->
+    <string name="sf_add_station">Adaugă în lista mea de radiouri</string>
+    <string name="sf_replace_title">Înlocuiești %1$s cu %2$s?</string>
+    <string name="sf_replace_confirm">Sigur vrei să înlocuiești acest post?</string>
+    <string name="sf_add_title">Adaugi %1$s în lista mea de radiouri</string>
+    <string name="sf_added">%1$s a fost adăugat ca postul %2$d</string>
+    <string name="sf_replaced">%1$s a înlocuit postul %2$d</string>
+    <string name="add_android_auto_only">Acesta va fi postul %1$d. Ceasul are doar 8 butoane, așa că acest post va fi disponibil doar în Android Auto.</string>
 </resources>

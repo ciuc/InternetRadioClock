@@ -37,7 +37,8 @@ public class StationListAdapter extends ListAdapter<Station, StationListAdapter.
           return a.position == b.position
               && a.url.equals(b.url)
               && a.label.equals(b.label)
-              && Objects.equals(a.stationName, b.stationName);
+              && Objects.equals(a.stationName, b.stationName)
+              && Objects.equals(a.country, b.country);
         }
       };
 

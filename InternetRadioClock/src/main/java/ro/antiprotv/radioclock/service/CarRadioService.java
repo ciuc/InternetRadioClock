@@ -116,6 +116,7 @@ public class CarRadioService extends MediaBrowserServiceCompat {
     instance = this;
     stations = StationRepository.getInstance(this);
     stationPreferences = new StationPreferences(this);
+    StationCountryBackfill.runOnce(this);
     audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
     focusRequest =
         new AudioFocusRequestCompat.Builder(AudioManagerCompat.AUDIOFOCUS_GAIN)
@@ -236,10 +237,13 @@ public class CarRadioService extends MediaBrowserServiceCompat {
         .build();
   }
 
-  /** The station's own name once it told us, otherwise the button label. */
+  /**
+   * "Name | Country": the station's own name once it told us (otherwise the button label), and the
+   * country when it was saved from the Stream Finder.
+   */
   private String stationTitle(int memory) {
     Station station = stations.getStation(memory);
-    return station == null ? String.valueOf(memory) : station.displayName();
+    return station == null ? String.valueOf(memory) : station.nameWithCountry();
   }
 
   /** Asks the stations we have no name for yet, in the background. */

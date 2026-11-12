@@ -62,6 +62,16 @@ public class StationRepository {
     writes.execute(() -> dao.assign(position, url.trim(), label));
   }
 
+  /** Puts a Stream Finder station on a memory button, with its name and country. */
+  public void assign(int position, String url, String label, String name, String country) {
+    writes.execute(() -> dao.assign(position, url.trim(), label, name, country));
+  }
+
+  /** Adds a Stream Finder station at the end of the list, with its name and country. */
+  public void add(String url, String label, String name, String country) {
+    writes.execute(() -> dao.add(url.trim(), label, name, country));
+  }
+
   /** Adds a station at the end of the list. */
   public void add(String url, String label) {
     writes.execute(() -> dao.add(url.trim(), label));
@@ -88,6 +98,11 @@ public class StationRepository {
   /** Swaps a station with the one above (offset -1) or below (+1) it. */
   public void move(long id, int offset) {
     writes.execute(() -> dao.move(id, offset));
+  }
+
+  /** Fills in a station's country, unless it has one by now. */
+  public void setCountryIfUnknown(long id, String country) {
+    writes.execute(() -> dao.setCountryIfUnknown(id, country));
   }
 
   /** Remembers the name a stream announced, for every station playing that stream. */

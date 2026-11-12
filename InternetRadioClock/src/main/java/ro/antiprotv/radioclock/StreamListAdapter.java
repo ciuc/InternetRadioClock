@@ -1,6 +1,8 @@
 package ro.antiprotv.radioclock;
 
 import android.app.AlertDialog;
+import android.graphics.Typeface;
+import android.util.TypedValue;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,10 +19,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.devbrackets.android.exomedia.AudioPlayer;
 import com.google.android.material.textfield.TextInputEditText;
+import androidx.appcompat.widget.TooltipCompat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import ro.antiprotv.radioclock.activity.StreamFinderActivity;
+import ro.antiprotv.radioclock.db.Station;
+import ro.antiprotv.radioclock.db.StationRepository;
 import ro.antiprotv.radioclock.service.ButtonManager;
 import ro.antiprotv.radioclock.service.MediaPlayerService;
 import timber.log.Timber;
@@ -28,8 +35,10 @@ import timber.log.Timber;
 public class StreamListAdapter extends RecyclerView.Adapter {
   private final LayoutInflater inflater;
   private final StreamFinderActivity streamFinderActivity;
-  private final ButtonManager buttonManager;
+  private final StationRepository stations;
   private final List<Stream> streams;
+  /** The saved stations, by position; the first ones get a "replace" button on every row. */
+  private List<Station> saved = new ArrayList<>();
 
   /** How long a preview plays once the stream has started. */
   private static final long PREVIEW_DURATION_MS = 5_000;
@@ -45,12 +54,17 @@ public class StreamListAdapter extends RecyclerView.Adapter {
   private AudioPlayer previewPlayer;
   private Stream previewStream;
 
-  public StreamListAdapter(
-      StreamFinderActivity context, ButtonManager buttonManager, List<Stream> streams) {
+  public StreamListAdapter(StreamFinderActivity context, List<Stream> streams) {
     inflater = LayoutInflater.from(context);
     this.streams = streams;
     this.streamFinderActivity = context;
-    this.buttonManager = buttonManager;
+    this.stations = StationRepository.getInstance(context);
+  }
+
+  /** My Radio List changed: show a "replace" button for each of its first stations. */
+  public void setStations(List<Station> saved) {
+    this.saved = saved;
+    notifyDataSetChanged();
   }
 
   @NonNull
@@ -80,10 +94,19 @@ public class StreamListAdapter extends RecyclerView.Adapter {
       streamViewHolder.previewStatus.setTextColor(status.color);
       streamViewHolder.previewStatus.setVisibility(View.VISIBLE);
     }
+    streamViewHolder.bindStations();
     streamViewHolder.countryView.setText(
         String.format(
-            "[FROM: %s | IN: %s | PLAYING: %s]",
-            stream.getCountry(), stream.getLanguage(), stream.getTags()));
+            "[FROM: %s | IN: %s | PLAYING: %s%s]",
+            stream.getCountry(), stream.getLanguage(), stream.getTags(), quality(stream)));
+  }
+
+  /** " | MP3 128 kbps", or as much of it as radio-browser knows. */
+  private static String quality(Stream stream) {
+    String codec = stream.getCodec();
+    String bitrate = stream.getBitrate() > 0 ? stream.getBitrate() + " kbps" : "";
+    String both = (codec + " " + bitrate).trim();
+    return both.isEmpty() ? "" : " | " + both;
   }
 
   @Override
@@ -105,6 +128,7 @@ public class StreamListAdapter extends RecyclerView.Adapter {
     MediaPlayerService.pauseForPreview();
     previewStatuses.put(stream, PreviewStatus.CHECKING);
     previewStream = stream;
+    streamFinderActivity.countClick(stream);
     refresh(stream);
 
     if (previewPlayer == null) {
@@ -219,6 +243,8 @@ public class StreamListAdapter extends RecyclerView.Adapter {
     private final ImageButton previewButton;
     private final TextView previewStatus;
     private String url;
+    private TextView replaceLabel;
+    private List<Button> replaceButtons;
 
     private Stream stream;
 
@@ -236,66 +262,151 @@ public class StreamListAdapter extends RecyclerView.Adapter {
             }
           });
 
-      final Button assignToMemoryButton1 = view.findViewById(R.id.sf_assign_button_stream1);
-      assignToMemoryButton1.setOnClickListener(new OnAssignToMemoryClickListener(1));
-      final Button assignToMemoryButton2 = view.findViewById(R.id.sf_assign_button_stream2);
-      assignToMemoryButton2.setOnClickListener(new OnAssignToMemoryClickListener(2));
-      final Button assignToMemoryButton3 = view.findViewById(R.id.sf_assign_button_stream3);
-      assignToMemoryButton3.setOnClickListener(new OnAssignToMemoryClickListener(3));
-      final Button assignToMemoryButton4 = view.findViewById(R.id.sf_assign_button_stream4);
-      assignToMemoryButton4.setOnClickListener(new OnAssignToMemoryClickListener(4));
-      final Button assignToMemoryButton5 = view.findViewById(R.id.sf_assign_button_stream5);
-      assignToMemoryButton5.setOnClickListener(new OnAssignToMemoryClickListener(5));
-      final Button assignToMemoryButton6 = view.findViewById(R.id.sf_assign_button_stream6);
-      assignToMemoryButton6.setOnClickListener(new OnAssignToMemoryClickListener(6));
-      final Button assignToMemoryButton7 = view.findViewById(R.id.sf_assign_button_stream7);
-      assignToMemoryButton7.setOnClickListener(new OnAssignToMemoryClickListener(7));
-      final Button assignToMemoryButton8 = view.findViewById(R.id.sf_assign_button_stream8);
-      assignToMemoryButton8.setOnClickListener(new OnAssignToMemoryClickListener(8));
+      replaceLabel = view.findViewById(R.id.sf_replace_label);
+      replaceButtons =
+          Arrays.asList(
+              view.findViewById(R.id.sf_assign_button_stream1),
+              view.findViewById(R.id.sf_assign_button_stream2),
+              view.findViewById(R.id.sf_assign_button_stream3),
+              view.findViewById(R.id.sf_assign_button_stream4),
+              view.findViewById(R.id.sf_assign_button_stream5),
+              view.findViewById(R.id.sf_assign_button_stream6),
+              view.findViewById(R.id.sf_assign_button_stream7),
+              view.findViewById(R.id.sf_assign_button_stream8));
+      for (int i = 0; i < replaceButtons.size(); i++) {
+        final int index = i;
+        replaceButtons.get(i).setOnClickListener(v -> showReplaceDialog(saved.get(index)));
+      }
+      Button addButton = view.findViewById(R.id.sf_add_button);
+      addButton.setOnClickListener(v -> showAddDialog());
+    }
+
+    /** One button per saved station, up to the clock's 8 memory buttons. */
+    void bindStations() {
+      int shown = Math.min(saved.size(), ButtonManager.MEMORIES);
+      replaceLabel.setVisibility(shown > 0 ? View.VISIBLE : View.GONE);
+      for (int i = 0; i < replaceButtons.size(); i++) {
+        Button button = replaceButtons.get(i);
+        if (i < shown) {
+          Station station = saved.get(i);
+          button.setVisibility(View.VISIBLE);
+          button.setText(String.valueOf(station.position));
+          button.setContentDescription(station.label);
+          // a long press tells which station sits on the button
+          TooltipCompat.setTooltipText(button, station.label);
+        } else {
+          button.setVisibility(View.GONE);
+        }
+      }
     }
 
     @Override
     public void onCreateContextMenu(
         ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {}
 
-    private class OnAssignToMemoryClickListener implements View.OnClickListener {
-      final int streamNo;
+    private String shortName() {
+      return stream.getName().length() > 10
+          ? stream.getName().substring(0, 10) + "..."
+          : stream.getName();
+    }
 
-      OnAssignToMemoryClickListener(int streamNo) {
-        this.streamNo = streamNo;
+    /** Puts this stream in place of a saved station, after asking. */
+    private void showReplaceDialog(Station station) {
+      // "BOB (RADIO BOB - Livestream Hessen)": the button label, and the name when we know it
+      String name =
+          station.stationName == null || station.stationName.isEmpty()
+              ? station.label
+              : station.label + " (" + station.stationName + ")";
+      LinearLayout layout = inflateLabelDialog(station.label);
+      TextView question = layout.findViewById(R.id.textView);
+      question.setText(R.string.sf_replace_confirm);
+      final TextInputEditText labelInput =
+          layout.findViewById(R.id.streamFinder_textinput_addDialog_label);
+      new AlertDialog.Builder(streamFinderActivity)
+          .setTitle(streamFinderActivity.getString(R.string.sf_replace_title, name, shortName()))
+          .setView(layout)
+          .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel())
+          .setPositiveButton(
+              R.string.yes,
+              (dialog, which) -> {
+                String label = labelOrElse(labelInput, station.label);
+                stations.assign(
+                    station.position,
+                    stream.getUrl(),
+                    label,
+                    stream.getName(),
+                    stream.getCountry());
+                streamFinderActivity.countClick(stream);
+                Toast.makeText(
+                        streamFinderActivity,
+                        streamFinderActivity.getString(
+                            R.string.sf_replaced, stream.getName(), station.position),
+                        Toast.LENGTH_SHORT)
+                    .show();
+              })
+          .show();
+    }
+
+    /** Adds this stream at the end of My Radio List: the next free memory button. */
+    private void showAddDialog() {
+      int position = saved.size() + 1;
+      LinearLayout layout = inflateLabelDialog(String.valueOf(position));
+      TextView note = layout.findViewById(R.id.textView);
+      if (position > ButtonManager.MEMORIES) {
+        // past the clock's buttons: say so before the user adds it
+        note.setText(
+            streamFinderActivity.getString(R.string.add_android_auto_only, position));
+        note.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        note.setTypeface(null, Typeface.ITALIC);
+        note.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+      } else {
+        note.setVisibility(View.GONE);
       }
+      final TextInputEditText labelInput =
+          layout.findViewById(R.id.streamFinder_textinput_addDialog_label);
+      new AlertDialog.Builder(streamFinderActivity)
+          .setTitle(streamFinderActivity.getString(R.string.sf_add_title, shortName()))
+          .setView(layout)
+          .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel())
+          .setPositiveButton(
+              R.string.yes,
+              (dialog, which) -> {
+                stations.add(
+                    stream.getUrl(),
+                    labelOrElse(labelInput, String.valueOf(position)),
+                    stream.getName(),
+                    stream.getCountry());
+                streamFinderActivity.countClick(stream);
+                Toast.makeText(
+                        streamFinderActivity,
+                        streamFinderActivity.getString(
+                            R.string.sf_added, stream.getName(), position),
+                        Toast.LENGTH_SHORT)
+                    .show();
+              })
+          .show();
+    }
 
-      @Override
-      public void onClick(View view) {
+    /** The dialog asking for the button label, suggested from the stream's name. */
+    private LinearLayout inflateLabelDialog(String fallbackLabel) {
+      LinearLayout layout =
+          (LinearLayout)
+              LayoutInflater.from(streamFinderActivity)
+                  .inflate(R.layout.dialog_streamfinder_add_to_memory, null);
+      TextInputEditText labelInput =
+          layout.findViewById(R.id.streamFinder_textinput_addDialog_label);
+      String suggested = calculateLabel(stream.getName());
+      labelInput.setText(suggested.isEmpty() ? fallbackLabel : suggested);
+      labelInput.setSelectAllOnFocus(true);
+      return layout;
+    }
 
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(streamFinderActivity);
-        dialogBuilder.setTitle(
-            String.format(
-                "Assign %s to memory %s",
-                stream.getName().length() > 10
-                    ? stream.getName().substring(0, 10) + "..."
-                    : stream.getName(),
-                streamNo));
-        LinearLayout layout =
-            (LinearLayout)
-                LayoutInflater.from(view.getContext())
-                    .inflate(R.layout.dialog_streamfinder_add_to_memory, null);
-        final TextInputEditText labelInput =
-            layout.findViewById(R.id.streamFinder_textinput_addDialog_label);
-        labelInput.setText(calculateLabel(stream.getName()));
-        labelInput.setSelectAllOnFocus(true);
-        dialogBuilder.setView(layout);
+    private String labelOrElse(TextInputEditText input, String fallback) {
+      String label = input.getText() == null ? "" : input.getText().toString().trim();
+      return label.isEmpty() ? fallback : label;
+    }
 
-        dialogBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
-        dialogBuilder.setPositiveButton(
-            R.string.yes,
-            (dialog, which) ->
-                buttonManager.assignUrlToMemory(
-                    stream.getUrl(), streamNo, labelInput.getText().toString()));
-        dialogBuilder.show();
-      }
-
-      private String calculateLabel(String name) {
+    private String calculateLabel(String name) {
         String label = "";
         name = name.toUpperCase();
         name = name.replaceAll("FM", "");
@@ -328,6 +439,5 @@ public class StreamListAdapter extends RecyclerView.Adapter {
         }
         return name;
       }
-    }
   }
 }

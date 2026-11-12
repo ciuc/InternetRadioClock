@@ -20,7 +20,7 @@ import timber.log.Timber;
 
 @Database(
     entities = {Station.class},
-    version = 2,
+    version = 3,
     exportSchema = true)
 public abstract class RadioClockDatabase extends RoomDatabase {
 
@@ -40,13 +40,22 @@ public abstract class RadioClockDatabase extends RoomDatabase {
                   // screen are built, the way the shared preferences used to be
                   .allowMainThreadQueries()
                   .addCallback(new ImportLegacyMemories(app))
-                  .addMigrations(new CloseGaps(app))
+                  .addMigrations(new CloseGaps(app), ADD_COUNTRY)
                   .build();
         }
       }
     }
     return instance;
   }
+
+  /** Version 3 remembers the country of stations saved from the Stream Finder. */
+  static final Migration ADD_COUNTRY =
+      new Migration(2, 3) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+          db.execSQL("ALTER TABLE stations ADD COLUMN country TEXT");
+        }
+      };
 
   /** Moves the memory buttons out of the shared preferences, once, when the database is made. */
   private static class ImportLegacyMemories extends Callback {

@@ -5,7 +5,7 @@ import android.net.Uri;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import ro.antiprotv.radioclock.service.VolleyQueue;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
@@ -30,28 +30,17 @@ public class WeatherRepository {
 
   private static final int TIMEOUT_MILLIS = 15000;
 
-  /**
-   * One queue for the whole process. Volley starts five dispatcher threads per queue and its disk
-   * cache is one directory, so a queue per caller would both pile up threads and leave two caches
-   * writing over each other - the settings screen searches for a town while the clock screen is
-   * still refreshing its forecast.
-   */
-  private static RequestQueue queue;
-
   /** Identifies this instance's requests, so cancelling one caller does not cancel the other. */
   private final Object tag = new Object();
 
+  /**
+   * The process-wide queue: the settings screen searches for a town while the clock screen is still
+   * refreshing its forecast, and the Stream Finder shares the same disk cache.
+   */
   private final RequestQueue requestQueue;
 
   public WeatherRepository(Context context) {
-    this.requestQueue = sharedQueue(context);
-  }
-
-  private static synchronized RequestQueue sharedQueue(Context context) {
-    if (queue == null) {
-      queue = Volley.newRequestQueue(context.getApplicationContext());
-    }
-    return queue;
+    this.requestQueue = VolleyQueue.get(context);
   }
 
   public interface ForecastCallback {

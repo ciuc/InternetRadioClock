@@ -144,7 +144,7 @@
     <!-- botões gerais -->
     <string name="back">Voltar</string>
     <string name="find">Buscar!</string>
-    <string name="assign_to">Atribuir à memória:</string>
+    <string name="assign_to">Substituir existente:</string>
     <string name="cancel">Cancelar</string>
     <string name="yes">Sim</string>
     <string name="ok">OK</string>
@@ -161,16 +161,20 @@
     <string name="title_activity_stream_finder">StreamFinder</string>
 
     <!-- buscador de rádios -->
-    <string name="streamFinder.hint">A lista de rádios online é obtida da internet. Ela é mantida pela comunidade e pode não estar 100% correta.\n
-\nSão mais de 15.000 rádios, por isso é preciso informar pelo menos um país como critério de busca, senão a lista ficaria enorme.\n
-\nVocê pode acrescentar mais critérios, como um gênero ou o nome da rádio.\n
-\nSe quiser atribuir uma rádio a um botão de memória, toque no botão da memória desejada.
+    <string name="streamFinder.hint">A lista de rádios vem do radio-browser.info, um diretório gratuito mantido pela sua comunidade. Ela pode não estar 100% correta.\n
+\nSão dezenas de milhares de rádios. As mais ouvidas aparecem primeiro, e mais rádios são carregadas conforme você rola a lista.\n
+\nRefine a busca com um país, um idioma, um gênero ou o nome da rádio.\n
+\nPara adicionar uma rádio à sua lista, toque em +. Para colocá-la no lugar de uma das suas estações, toque no número dessa estação.
     </string>
     <string name="streamFinder.prompt.country">Escolha o país</string>
     <string name="streamFinder.prompt.language">Escolha o idioma</string>
     <string name="streamFinder.prompt.genre">Escolha o gênero</string>
     <string name="streamFinder.label.country">"País: "</string>
     <string name="streamFinder.label.genre">"Gênero: "</string>
+    <string name="streamFinder.label.order">"Ordem: "</string>
+    <string name="streamFinder.prompt.order">Escolha a ordem</string>
+    <string name="streamFinder_order_popular">Mais populares</string>
+    <string name="streamFinder_order_alphabetical">Em ordem alfabética</string>
     <string name="streamFinder.label.language">"Idioma: "</string>
     <string name="streamFinder.label.name">"Nome: "</string>
     <string name="streamFinder.click_to_help">"Toque para ajudar: "</string>
@@ -178,7 +182,8 @@
     <string name="dialog_radio_list_title">Lista de rádios</string>
     <string name="no_radios_matching">Nenhuma rádio corresponde aos critérios! Tente novamente.</string>
     <string name="error_retrieving_radios">"Algo deu errado ao carregar a lista. Tente novamente mais tarde. (erro %d) "</string>
-    <string name="found_radios">%d rádios encontradas...</string>
+    <string name="radios_found">Rádios encontradas: %d</string>
+    <string name="radios_found_more">Rádios encontradas: %d+</string>
     <string name="toast_retrieving_radios">Carregando as rádios. Isso pode demorar um pouco...</string>
     <string name="error_retrieving_station_list">Erro ao carregar a lista de estações!</string>
     <string name="assigned.to.memory">%s atribuída à memória %d</string>
@@ -441,4 +446,13 @@
     <string name="radio_list_not_on_clock">Não aparece no relógio - só no Android Auto</string>
     <string name="radio_list_url_required">Digite a URL do stream</string>
     <string name="radio_list_empty">Nenhuma estação ainda. Adicione uma com o botão + ou encontre uma com o Stream Finder.</string>
+
+    <!-- Stream Finder: replace or add -->
+    <string name="sf_add_station">Adicionar à minha lista de rádios</string>
+    <string name="sf_replace_title">Substituir %1$s por %2$s?</string>
+    <string name="sf_replace_confirm">Tem certeza de que deseja substituir esta estação?</string>
+    <string name="sf_add_title">Adicionar %1$s à minha lista de rádios</string>
+    <string name="sf_added">%1$s adicionada como estação %2$d</string>
+    <string name="sf_replaced">%1$s substituiu a estação %2$d</string>
+    <string name="add_android_auto_only">Esta será a estação %1$d. O relógio só tem 8 botões, então esta estação só ficará disponível no Android Auto.</string>
 </resources>

@@ -6,11 +6,19 @@
     android:orientation="vertical"
     app:title="@string/title.streamFinder"
     tools:context=".activity.StreamFinderActivity">
+    <!-- shown while a page of results is on its way -->
+    <ProgressBar
+        android:id="@+id/stream_list_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="invisible" />
     <!-- RADIOS LIST -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stream_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="5pt" />
+        android:layout_marginTop="2pt" />
 
 </LinearLayout>

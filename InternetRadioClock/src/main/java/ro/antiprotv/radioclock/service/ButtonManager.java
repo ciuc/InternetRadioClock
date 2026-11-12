@@ -46,10 +46,6 @@ public class ButtonManager {
   private Button timerPlus1mButton;
   private Button timerMinus1mButton;
 
-  public ButtonManager(Context ctx) {
-    this(ctx, null, null, null);
-  }
-
   public ButtonManager(
       Context ctx,
       View view,
@@ -191,15 +187,6 @@ public class ButtonManager {
         mStationIds.set(index, station.id);
       }
     }
-  }
-
-  public void assignUrlToMemory(String url, int streamNo, String label) {
-    stations.assign(streamNo, url, label);
-    Toast.makeText(
-            context,
-            String.format(context.getString(R.string.assigned_to_memory), url, streamNo),
-            Toast.LENGTH_SHORT)
-        .show();
   }
 
   void setButtonLabel(int streamNo, String label) {

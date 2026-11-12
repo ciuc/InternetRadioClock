@@ -7,6 +7,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+import java.util.Locale;
 
 /**
  * A radio station the user saved.
@@ -33,6 +34,14 @@ public class Station {
   @ColumnInfo(name = "station_name")
   public String stationName;
 
+  /**
+   * The country the station broadcasts from, as the Stream Finder found it (radio-browser's full
+   * name, e.g. "The United Kingdom Of Great Britain And Northern Ireland"); null when unknown.
+   */
+  @Nullable
+  @ColumnInfo(name = "country")
+  public String country;
+
   public Station() {}
 
   @Ignore
@@ -46,5 +55,35 @@ public class Station {
   @NonNull
   public String displayName() {
     return stationName != null && !stationName.isEmpty() ? stationName : label;
+  }
+
+  /** "Radio X | UK": the name, and the country when we know it. Used on the car screen. */
+  @NonNull
+  public String nameWithCountry() {
+    String shortCountry = shortCountry(country);
+    return shortCountry.isEmpty() ? displayName() : displayName() + " | " + shortCountry;
+  }
+
+  /**
+   * The country as it fits on a car screen: radio-browser's two longest everyday names become
+   * "UK" and "USA"; everything else stays as it is.
+   */
+  @NonNull
+  public static String shortCountry(@Nullable String country) {
+    if (country == null) {
+      return "";
+    }
+    String trimmed = country.trim();
+    String lower = trimmed.toLowerCase(Locale.ROOT);
+    if (lower.startsWith("the ")) {
+      lower = lower.substring(4);
+    }
+    if (lower.startsWith("united kingdom")) {
+      return "UK";
+    }
+    if (lower.startsWith("united states")) {
+      return "USA";
+    }
+    return trimmed;
   }
 }

@@ -23,6 +23,7 @@ import ro.antiprotv.radioclock.R;
 import ro.antiprotv.radioclock.StationListAdapter;
 import ro.antiprotv.radioclock.db.Station;
 import ro.antiprotv.radioclock.db.StationRepository;
+import ro.antiprotv.radioclock.service.ButtonManager;
 
 /**
  * My Radio List: every saved station as a card. The order is the order of the clock's memory
@@ -104,13 +105,18 @@ public class RadioListActivity extends AppCompatActivity implements StationListA
           @Override
           public void afterTextChanged(Editable s) {}
         });
-    AlertDialog dialog =
+    AlertDialog.Builder builder =
         new AlertDialog.Builder(this)
             .setTitle(station == null ? R.string.radio_list_add : R.string.radio_list_edit)
             .setView(view)
             .setNegativeButton(R.string.cancel, null)
-            .setPositiveButton(R.string.radio_list_save, null)
-            .show();
+            .setPositiveButton(R.string.radio_list_save, null);
+    int newPosition = adapter.getItemCount() + 1;
+    if (station == null && newPosition > ButtonManager.MEMORIES) {
+      // past the clock's buttons: say so before the user adds it
+      builder.setMessage(getString(R.string.add_android_auto_only, newPosition));
+    }
+    AlertDialog dialog = builder.show();
     // set after show(), so a missing url keeps the dialog open
     dialog
         .getButton(AlertDialog.BUTTON_POSITIVE)
