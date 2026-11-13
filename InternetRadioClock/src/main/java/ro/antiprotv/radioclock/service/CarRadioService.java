@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.media.AudioAttributesCompat;
 import androidx.media.AudioFocusRequestCompat;
@@ -80,7 +81,12 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   private StationRepository stations;
   private StationPreferences stationPreferences;
   /** Tells the car to reload the station grid whenever the saved stations change. */
-  private final Observer<List<Station>> stationsObserver = list -> notifyChildrenChanged(ROOT_ID);
+  private final Observer<List<Station>> stationsObserver =
+      list -> {
+        Timber.d("Stations changed (%d): telling the car to reload", list.size());
+        notifyChildrenChanged(ROOT_ID);
+      };
+  private LiveData<List<Station>> watchedStations;
   private MediaSessionCompat session;
   private AudioPlayer player;
   private AudioManager audioManager;
@@ -139,7 +145,9 @@ public class CarRadioService extends MediaBrowserServiceCompat {
     setSessionToken(session.getSessionToken());
     setPlaybackState(PlaybackStateCompat.STATE_NONE, null);
     session.setActive(true);
-    stations.observeStations().observeForever(stationsObserver);
+    // every observeStations() call hands out a new LiveData: keep ours, to stop watching it later
+    watchedStations = stations.observeStations();
+    watchedStations.observeForever(stationsObserver);
   }
 
   @Override
@@ -163,7 +171,7 @@ public class CarRadioService extends MediaBrowserServiceCompat {
   @Override
   public void onDestroy() {
     instance = null;
-    stations.observeStations().removeObserver(stationsObserver);
+    watchedStations.removeObserver(stationsObserver);
     stationNameLookups.shutdownNow();
     stopPlaying();
     player.release();
@@ -193,6 +201,7 @@ public class CarRadioService extends MediaBrowserServiceCompat {
       }
       lookUpStationNames();
     }
+    Timber.d("Car asked for the stations of %s: sending %d", parentId, items.size());
     result.sendResult(items);
   }
 
