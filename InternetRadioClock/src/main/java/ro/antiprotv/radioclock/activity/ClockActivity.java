@@ -800,6 +800,7 @@ public class ClockActivity extends AppCompatActivity implements IPreviewCallback
     }
     prefs.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener);
     prefs.unregisterOnSharedPreferenceChangeListener(profileManager);
+    profileManager.destroy();
     prefs.unregisterOnSharedPreferenceChangeListener(weatherManager);
     weatherManager.destroy();
     slideshowManager.stopSlideshow();

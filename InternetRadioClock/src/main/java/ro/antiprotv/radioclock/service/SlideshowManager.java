@@ -873,6 +873,11 @@ public class SlideshowManager {
       onReady.ready(loadSavedItems());
       return;
     }
+    // destroy() has run: nothing left to show the listing on, and execute() would throw.
+    if (folderLoader.isShutdown()) {
+      Timber.w("Slideshow load skipped: the slideshow has been destroyed");
+      return;
+    }
     final int generation = ++loadGeneration;
     Context appContext = clockActivity.getApplicationContext();
     Uri treeUri = Uri.parse(folder);

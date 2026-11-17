@@ -52,6 +52,7 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
   private BrightnessManager brightnessManager;
   private ScheduledFuture currentScheduledNightTask;
   private ScheduledFuture currentScheduledDayTask;
+  private volatile boolean destroyed;
   private Profile currentProfile;
   // SeekBar seekbar_brightness;
 
@@ -135,6 +136,17 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
     }
   }
 
+  /**
+   * Called when the activity goes away. A day/night change still scheduled here would otherwise
+   * fire on the closed activity - whose slideshow has already been torn down - and crash the app
+   * when the activity has been recreated in the meantime (a configuration change during the night).
+   */
+  public void destroy() {
+    destroyed = true;
+    clearTask();
+    scheduledExecutorService.shutdownNow();
+  }
+
   /*Called by button click */
   public void toggleNightMode() {
     boolean nightMode = prefs.getBoolean(PREF_NIGHT_MODE, false);
@@ -158,6 +170,11 @@ public class ProfileManager implements SharedPreferences.OnSharedPreferenceChang
    * Else, if there is a schedule, we check in which period we are and schedule the next change.
    */
   public synchronized void applyProfile() {
+    // A change task may already have been posted to the main thread when destroy() ran.
+    if (destroyed) {
+      Timber.d("Profile change skipped: the activity is gone");
+      return;
+    }
     boolean nightMode = prefs.getBoolean(PREF_NIGHT_MODE, false);
 
     boolean nightProfileScheduleEnabled =
